@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Univerzális Mátrix és Memória Szimulátor</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-size: 14px;
+            color: #495057;
+            background: #ffffff;
+            margin: 0;
+            padding: 10px;
+            -webkit-font-smoothing: antialiased;
+        }
+        .matrix-card {
+            max-width: 600px;
+            margin: 10px auto;
+            padding: 25px;
+            background: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            border-top: 6px solid #bb86fc;
+            text-align: center;
+        }
+        h2 { color: #212529; font-size: 20px; margin-bottom: 5px; font-weight: 600; }
+        .input-group {
+            margin: 20px 0;
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            align-items: center;
+        }
+        input[type="number"] {
+            width: 80px;
+            padding: 8px;
+            border: 2px solid #ccc;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: bold;
+            text-align: center;
+            outline: none;
+        }
+        input[type="number"]:focus { border-color: #bb86fc; }
+        .main-btn {
+            padding: 9px 16px;
+            background: #bb86fc;
+            color: #212529;
+            border: none;
+            border-radius: 4px;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 13px;
+            transition: all 0.2s;
+        }
+        .main-btn:hover { background: #9a5cd6; color: white; }
+        
+        .divisor-panel {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            justify-content: center;
+            margin-bottom: 20px;
+            min-height: 35px;
+        }
+        .div-btn {
+            padding: 6px 12px;
+            background: #495057;
+            color: white;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: bold;
+            cursor: pointer;
+            border: none;
+            transition: all 0.2s;
+        }
+        .div-btn:hover { filter: brightness(1.2); }
+        
+        .display-screen {
+            min-height: 240px;
+            max-height: 400px;
+            background: #f8f9fa;
+            border: 1px dashed #ccc;
+            border-radius: 6px;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow-y: auto;
+            margin-bottom: 20px;
+            padding: 15px;
+            box-sizing: border-box;
+        }
+        
+        .egg-grid {
+            display: grid;
+            gap: 4px;
+            padding: 8px;
+            background: #e9ecef;
+            border-radius: 6px;
+            position: relative;
+            box-sizing: border-box;
+        }
+        
+        .egg-cell {
+            background: #e3a857;
+            border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+            animation: popUp 0.25s ease-out forwards;
+        }
+        .egg-empty {
+            background: rgba(255,255,255,0.15);
+            border: 1px dashed #888;
+            box-shadow: none;
+            border-radius: 4px;
+        }
+        
+        .kifrag-frame {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            border: 3px solid #333;
+            box-sizing: border-box;
+            border-radius: 6px;
+            pointer-events: none;
+        }
+        .frame-err { border-color: #d90429; animation: shake 0.4s ease-in-out; }
+
+        @keyframes popUp { 0% { transform: scale(0); } 100% { transform: scale(1); } }
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-6px); }
+            75% { transform: translateX(6px); }
+        }
+        
+        .status-bar {
+            background: #e9ecef;
+            padding: 12px;
+            border-radius: 6px;
+            font-size: 13.5px;
+            color: #212529;
+            min-height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            line-height: 1.4;
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body>
+
+<div class="matrix-card">
+    <h2>🧮 Univerzális Mátrix és Memória Szimulátor</h2>
+    <p style="color: #666; font-size: 13px; margin: 0;">Írj be bármilyen számot, és vizsgáld meg a memóriafoglalási lehetőségeit!</p>
+    
+    <div class="input-group">
+        <label style="font-weight: bold;">Tojások (N) száma:</label>
+        <input type="number" id="egg-count" value="12" min="1" max="100">
+        <button class="main-btn" onclick="calculateDivisors()">Struktúrák elemzése</button>
+    </div>
+    
+    <div id="buttons-panel" class="divisor-panel"></div>
+    
+    <div class="display-screen">
+        <div id="grid-container" class="egg-grid" style="display: none;"></div>
+        <div id="placeholder-text" style="color: #888;">Add meg az N értéket, majd kattints az elemzésre!</div>
+    </div>
+    
+    <div id="status-bar" class="status-bar">Várakozás az adatokra...</div>
+</div>
+
+<script>
+let globalTotal = 12;
+
+function calculateDivisors() {
+    const countInput = document.getElementById('egg-count');
+    const panel = document.getElementById('buttons-panel');
+    const screenText = document.getElementById('placeholder-text');
+    const gridCont = document.getElementById('grid-container');
+    const statusBar = document.getElementById('status-bar');
+    
+    globalTotal = parseInt(countInput.value);
+    if(isNaN(globalTotal) || globalTotal < 1) {
+        alert("Kérlek érvényes, 0-nál nagyobb számot adj meg!");
+        return;
+    }
+    
+    screenText.style.display = 'block';
+    gridCont.style.display = 'none';
+    panel.innerHTML = '';
+    statusBar.innerHTML = `Összes osztópár kiszámolva a(z) ${globalTotal} számhoz. Válassz egy rácsot!`;
+    
+    let divisors = [];
+    for(let i = 1; i <= globalTotal; i++) {
+        if(globalTotal % i === 0) {
+            divisors.push(i);
+        }
+    }
+    
+    divisors.forEach(row => {
+        const col = globalTotal / row;
+        const btn = document.createElement('button');
+        btn.className = 'div-btn';
+        btn.innerHTML = `🔍 ${row} &times; ${col}`;
+        btn.onclick = () => renderMatrix(row, col, globalTotal, false);
+        panel.appendChild(btn);
+    });
+    
+    if(divisors.length === 2) {
+        statusBar.innerHTML = `⚠️ <strong>${globalTotal} egy PRÍMSZÁM!</strong> Csak 1 sorba vagy 1 oszlopba tehető felpazarlás nélkül.`;
+        const nextTarget = globalTotal + 1;
+        
+        let root = Math.ceil(Math.sqrt(nextTarget));
+        let bestCols = root;
+        let bestRows = Math.ceil(nextTarget / root);
+        
+        const primeBtn = document.createElement('button');
+        primeBtn.className = 'div-btn';
+        primeBtn.style.background = '#ff477e';
+        primeBtn.innerHTML = `🚨 Próbáljuk meg rácsba tenni: ${bestRows} &times; ${bestCols}`;
+        primeBtn.onclick = () => renderMatrix(bestRows, bestCols, globalTotal, true);
+        panel.appendChild(primeBtn);
+    }
+}
+
+function renderMatrix(rows, cols, eggs, isPrimeError) {
+    const gridCont = document.getElementById('grid-container');
+    document.getElementById('placeholder-text').style.display = 'none';
+    gridCont.style.display = 'grid';
+    gridCont.innerHTML = '';
+    
+    let cellSize = 22;
+    if (rows > 8 || cols > 8) cellSize = 16;
+    if (rows > 15 || cols > 15) cellSize = 10;
+    
+    gridCont.style.gridTemplateRows = `repeat(${rows}, ${cellSize}px)`;
+    gridCont.style.gridTemplateColumns = `repeat(${cols}, ${cellSize}px)`;
+    
+    const maxCells = rows * cols;
+    
+    for(let i = 0; i < maxCells; i++) {
+        const cell = document.createElement('div');
+        if(i < eggs) {
+            cell.className = 'egg-cell';
+            cell.style.width = `${cellSize - 2}px`;
+            cell.style.height = `${cellSize + 4}px`;
+            if(rows > cols) { cell.style.height = `${cellSize - 2}px`; cell.style.borderRadius = "50%"; }
+        } else {
+            cell.className = 'egg-cell egg-empty';
+            cell.style.width = `${cellSize - 2}px`;
+            cell.style.height = `${cellSize - 2}px`;
+        }
+        gridCont.appendChild(cell);
+    }
+    
+    const frame = document.createElement('div');
+    frame.className = 'kifrag-frame';
+    
+    if(isPrimeError) {
+        frame.className = 'kifrag-frame frame-err';
+        document.getElementById('status-bar').innerHTML = `❌ <strong>Mátrix hiba!</strong> A(z) ${eggs} elemet nem tudtuk hiánytalanul elosztani a(z) ${rows}&times;${cols}-as rácsban. <strong style="color:#d90429;">${maxCells - eggs} fakk üresen maradt (pazarlás)!</strong>`;
+    } else {
+        frame.style.borderColor = '#107c41';
+        document.getElementById('status-bar').innerHTML = `✅ <strong>Sikeres lefedés!</strong> Egy hiánytalan, optimalizált <strong style="color:#107c41;">${rows}&times;${cols}</strong>-as mátrix jött létre a memóriában.`;
+    }
+    gridCont.appendChild(frame);
+}
+
+window.onload = calculateDivisors;
+</script>
+
+</body>
+</html>
