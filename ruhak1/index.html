@@ -1,1 +1,208 @@
 
+<!DOCTYPE html>
+<!-- saved from url=(0068)file:///C:/Users/Utilizator/Downloads/gemini-code-1787750102645.html -->
+<html lang="hu"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <title>Váltakozó számosságú ruhák rendezése</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #0f172a;
+            color: #f8fafc;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+        h2 {
+            margin-bottom: 5px;
+            font-size: 22px;
+        }
+        #status-text {
+            font-size: 14px;
+            color: #38bdf8;
+            margin-bottom: 15px;
+            height: 20px;
+        }
+        #stage {
+            position: relative;
+            width: 1000px;
+            height: 560px;
+            background: #1e293b;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+        }
+        .column-header {
+            position: absolute;
+            top: 20px;
+            width: 200px;
+            text-align: center;
+            font-weight: bold;
+            font-size: 14px;
+            color: #94a3b8;
+            border-bottom: 2px dashed #475569;
+            padding-bottom: 5px;
+        }
+        .garment {
+            position: absolute;
+            width: 75px;
+            height: 85px;
+            background: #3b82f6;
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 11px;
+            transition: all 1s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.4);
+            border: 2px solid rgba(255,255,255,0.15);
+        }
+        .garment .icon {
+            font-size: 20px;
+            margin-bottom: 2px;
+        }
+        .garment span {
+            font-size: 9px;
+            background: rgba(0,0,0,0.5);
+            padding: 1px 5px;
+            border-radius: 4px;
+            color: #e2e8f0;
+            margin-top: 2px;
+        }
+        .controls {
+            margin-top: 20px;
+        }
+        button {
+            padding: 12px 24px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            background-color: #10b981;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            transition: background 0.3s, transform 0.1s;
+        }
+        button:hover {
+            background-color: #059669;
+        }
+        button:active {
+            transform: scale(0.98);
+        }
+    </style>
+</head>
+<body>
+
+    <h2>Váltakozó számosságú ruhák oszlopos rendezése</h2>
+    <div id="status-text">3. Kész! Változó darabszámú ruhák rendezve kategóriákba és méret szerint.</div>
+
+    <div id="stage">
+        <!-- Címkék -->
+        <div class="column-header" style="left: 60px;">Nadrágok (4 db)</div>
+        <div class="column-header" style="left: 290px;">Pólók (2 db)</div>
+        <div class="column-header" style="left: 520px;">Pulóverek (3 db)</div>
+        <div class="column-header" style="left: 750px;">Ingek (3 db)</div>
+
+        <!-- Kezdeti kupac (eltérő darabszámú és méretű elemekkel) -->
+        <div class="garment" id="g0" style="top: 175px; left: 60px; transform: rotate(0deg); background: rgb(29, 78, 216);" data-type="nadrág" data-size="2" data-color="kék"><div class="icon">👖</div>Nadrág<span>#45</span></div>
+        <div class="garment" id="g1" style="top: 375px; left: 60px; transform: rotate(0deg); background: rgb(55, 65, 81);" data-type="nadrág" data-size="4" data-color="fekete"><div class="icon">👖</div>Nadrág<span>#19</span></div>
+        <div class="garment" id="g2" style="top: 75px; left: 520px; transform: rotate(0deg); background: rgb(21, 128, 61);" data-type="pulóver" data-size="1" data-color="zöld"><div class="icon">🧥</div>Pulóver<span>#19</span></div>
+        <div class="garment" id="g3" style="top: 175px; left: 290px; transform: rotate(0deg); background: rgb(185, 28, 28);" data-type="póló" data-size="2" data-color="piros"><div class="icon">👕</div>Póló<span>#37</span></div>
+        <div class="garment" id="g4" style="top: 75px; left: 60px; transform: rotate(0deg); background: rgb(29, 78, 216);" data-type="nadrág" data-size="1" data-color="kék"><div class="icon">👖</div>Nadrág<span>#49</span></div>
+        <div class="garment" id="g5" style="top: 275px; left: 750px; transform: rotate(0deg); background: rgb(71, 85, 105);" data-type="ing" data-size="3" data-color="fehér"><div class="icon">👔</div>Ing<span>#35</span></div>
+        <div class="garment" id="g6" style="top: 175px; left: 520px; transform: rotate(0deg); background: rgb(185, 28, 28);" data-type="pulóver" data-size="2" data-color="piros"><div class="icon">🧥</div>Pulóver<span>#19</span></div>
+        <div class="garment" id="g7" style="top: 75px; left: 750px; transform: rotate(0deg); background: rgb(29, 78, 216);" data-type="ing" data-size="1" data-color="kék"><div class="icon">👔</div>Ing<span>#6</span></div>
+        <div class="garment" id="g8" style="top: 75px; left: 290px; transform: rotate(0deg); background: rgb(21, 128, 61);" data-type="póló" data-size="1" data-color="zöld"><div class="icon">👕</div>Póló<span>#1</span></div>
+        <div class="garment" id="g9" style="top: 275px; left: 60px; transform: rotate(0deg); background: rgb(29, 78, 216);" data-type="nadrág" data-size="3" data-color="kék"><div class="icon">👖</div>Nadrág<span>#43</span></div>
+        <div class="garment" id="g10" style="top: 175px; left: 750px; transform: rotate(0deg); background: rgb(55, 65, 81);" data-type="ing" data-size="2" data-color="fekete"><div class="icon">👔</div>Ing<span>#31</span></div>
+        <div class="garment" id="g11" style="top: 275px; left: 520px; transform: rotate(0deg); background: rgb(29, 78, 216);" data-type="pulóver" data-size="3" data-color="kék"><div class="icon">🧥</div>Pulóver<span>#26</span></div>
+    </div>
+
+    <div class="controls">
+        <button onclick="runDynamicAnimation()">Dinamikus rendezés indítása</button>
+    </div>
+
+    <script>
+        function sleep(ms) {
+            return new Promise(resolve => setTimeout(resolve, ms));
+        }
+
+        async function runDynamicAnimation() {
+            const status = document.getElementById('status-text');
+            const garments = Array.from(document.getElementsByClassName('garment'));
+
+            // 1. Lépés: Sorszámok kiosztása
+            status.innerText = "1. Lépés: Véletlen sorszámok generálása...";
+            garments.forEach((g) => {
+                const span = g.querySelector('span');
+                span.innerText = `#${Math.floor(Math.random() * 50) + 1}`;
+            });
+            await sleep(1800);
+
+            // 2. Lépés: Kategóriákra bontás és méret szerinti rendezés (független darabszámmal)
+            status.innerText = "2. Lépés: Szétrepülés, csoportosítás és méret szerinti rendezés...";
+
+            const columns = {
+                'nadrág': [],
+                'póló': [],
+                'pulóver': [],
+                'ing': []
+            };
+
+            // Elemek besorolása a típusuk alapján
+            garments.forEach(g => {
+                const type = g.dataset.type;
+                if (columns[type]) {
+                    columns[type].push(g);
+                }
+            });
+
+            // Oszlopon belüli rendezés méret szerint növekvőbe
+            Object.keys(columns).forEach(type => {
+                columns[type].sort((a, b) => a.dataset.size - b.dataset.size);
+            });
+
+            // Oszlopok X koordinátái
+            const xCoords = {
+                'nadrág': 60,
+                'póló': 290,
+                'pulóver': 520,
+                'ing': 750
+            };
+
+            // Dinamikus pozicionálás: ahány elem van egy oszlopban, annyit pakol egymás alá
+            Object.keys(columns).forEach(type => {
+                const colGarments = columns[type];
+                const xPos = xCoords[type];
+
+                colGarments.forEach((g, rowIndex) => {
+                    const yPos = 75 + (rowIndex * 100); // Egymás alatti elhelyezkedés
+                    
+                    g.style.left = `${xPos}px`;
+                    g.style.top = `${yPos}px`;
+                    g.style.transform = `rotate(0deg)`;
+
+                    applyColorStyle(g);
+                });
+            });
+
+            await sleep(2500);
+            status.innerText = "3. Kész! Változó darabszámú ruhák rendezve kategóriákba és méret szerint.";
+        }
+
+        function applyColorStyle(element) {
+            const color = element.dataset.color;
+            if(color === 'kék') element.style.background = '#1d4ed8';
+            else if(color === 'piros') element.style.background = '#b91c1c';
+            else if(color === 'zöld') element.style.background = '#15803d';
+            else if(color === 'fekete') element.style.background = '#374151';
+            else if(color === 'fehér') element.style.background = '#475569';
+        }
+    </script>
+
+</body></html>
