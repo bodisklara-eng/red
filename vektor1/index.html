@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ciklus és Tömb Animáció</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-size: 14px;
+            color: #495057;
+            background: #ffffff;
+            margin: 0;
+            padding: 10px;
+            -webkit-font-smoothing: antialiased;
+            text-align: center;
+        }
+        .anim-card {
+            max-width: 600px;
+            margin: 10px auto;
+            padding: 25px;
+            background: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            border-top: 6px solid #107c41;
+        }
+        h2 { color: #212529; font-size: 18px; margin-bottom: 5px; font-weight: 600; }
+        
+        /* Animációs kijelző tér */
+        .stage {
+            height: 180px;
+            background: #f8f9fa;
+            border: 1px dashed #ccc;
+            border-radius: 6px;
+            position: relative;
+            margin: 20px 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* A tömb sora */
+        .array-row {
+            display: flex;
+            gap: 6px;
+            background: #e9ecef;
+            padding: 8px;
+            border-radius: 6px;
+            position: relative;
+        }
+        .array-cell {
+            width: 45px;
+            height: 45px;
+            background: #ffffff;
+            border: 2px solid #ccc;
+            border-radius: 4px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+            font-size: 14px;
+            position: relative;
+            transition: all 0.3s;
+        }
+        .cell-index {
+            position: absolute;
+            top: -18px;
+            font-size: 10px;
+            color: #888;
+            font-family: monospace;
+        }
+
+        /* A mozgó mutató nyíl (i változó) */
+        .loop-pointer {
+            position: absolute;
+            bottom: -35px;
+            left: 18px;
+            font-size: 22px;
+            color: #107c41;
+            font-weight: bold;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-family: monospace;
+            animation: movePointer 10s infinite steps(5);
+        }
+        .pointer-text {
+            font-size: 12px;
+            margin-top: -4px;
+            background: #107c41;
+            color: white;
+            padding: 1px 5px;
+            border-radius: 3px;
+        }
+
+        /* KÓDBLOKK ANIMÁLT KIEMELÉSSEL */
+        .code-box {
+            background: #2d2d2d;
+            padding: 15px;
+            border-radius: 6px;
+            color: #f8f8f2;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            text-align: left;
+            line-height: 1.5;
+            position: relative;
+        }
+        .code-line {
+            padding: 2px 6px;
+            border-radius: 3px;
+            transition: background 0.3s;
+        }
+        .highlight-line {
+            animation: highlightCode 10s infinite linear;
+        }
+
+        /* --- 10 MÁSODPERCES CIKLIKUS CSS ANIMÁCIÓK --- */
+        @keyframes movePointer {
+            0%, 20% { left: 18px; }      /* 0. index */
+            20%, 40% { left: 69px; }     /* 1. index */
+            40%, 60% { left: 120px; }    /* 2. index */
+            60%, 80% { left: 171px; }    /* 3. index */
+            80%, 100% { left: 222px; }   /* 4. index */
+        }
+
+        /* A cellák színeinek változása, amikor a nyíl rájuk mutat */
+        .c0 { animation: activeCell0 10s infinite linear; }
+        .c1 { animation: activeCell1 10s infinite linear; }
+        .c2 { animation: activeCell2 10s infinite linear; }
+        .c3 { animation: activeCell3 10s infinite linear; }
+        .c4 { animation: activeCell4 10s infinite linear; }
+
+        @keyframes activeCell0 { 0%, 20% { background: #e8f5e9; border-color: #107c41; transform: scale(1.05); } 20%, 100% { background: #fff; } }
+        @keyframes activeCell1 { 0%, 20% { background: #fff; } 20%, 40% { background: #e8f5e9; border-color: #107c41; transform: scale(1.05); } 40%, 100% { background: #fff; } }
+        @keyframes activeCell2 { 0%, 40% { background: #fff; } 40%, 60% { background: #e8f5e9; border-color: #107c41; transform: scale(1.05); } 60%, 100% { background: #fff; } }
+        @keyframes activeCell3 { 0%, 60% { background: #fff; } 60%, 80% { background: #e8f5e9; border-color: #107c41; transform: scale(1.05); } 80%, 100% { background: #fff; } }
+        @keyframes activeCell4 { 0%, 80% { background: #fff; } 80%, 100% { background: #e8f5e9; border-color: #107c41; transform: scale(1.05); } }
+
+        /* A kód belső sorának pulzálása, jelezve a végrehajtást */
+        @keyframes highlightCode {
+            0%, 100% { background: rgba(16, 124, 65, 0.4); }
+            50% { background: rgba(16, 124, 65, 0.1); }
+        }
+    </style>
+</head>
+<body>
+
+<div class="anim-card">
+    <h2>🔄 Ciklusok működése a tömbben (Iteráció)</h2>
+    <p style="color: #666; font-size: 13px; margin: 0;">Figyeld meg, hogyan lépked a <code style="font-family: monospace; font-weight: bold;">for</code> ciklus <code style="font-family: monospace; font-weight: bold; color: #107c41;">i</code> változója az indexeken fentről lefelé!</p>
+    
+    <!-- ANIMÁCIÓS SZÍNPAD -->
+    <div class="stage">
+        <div class="array-row">
+            <!-- Cellák indexekkel és értékekkel -->
+            <div class="array-cell c0"><span class="cell-index">i=0</span>5</div>
+            <div class="array-cell c1"><span class="cell-index">i=1</span>3</div>
+            <div class="array-cell c2"><span class="cell-index">i=2</span>4</div>
+            <div class="array-cell c3"><span class="cell-index">i=3</span>2</div>
+            <div class="array-cell c4"><span class="cell-index">i=4</span>5</div>
+            
+            <!-- A mozgó zöld nyíl mutató -->
+            <div class="loop-pointer">▲<span class="pointer-text">i</span></div>
+        </div>
+    </div>
+    
+    <!-- KÓDBLOKK -->
+    <div class="code-box">
+        <div class="code-line"><span style="color: #f92672;">for</span> (<span style="color: #66d9ef;">int</span> i = <span style="color: #ae81ff;">0</span>; i &lt; <span style="color: #ae81ff;">5</span>; i++) {</div>
+        <div class="code-line highlight-line">&nbsp;&nbsp;&nbsp;&nbsp;std::cout &lt;&lt; jegyek[<span style="color: #ffb703; font-weight: bold;">i</span>] &lt;&lt; std::endl;</div>
+        <div class="code-line">}</div>
+    </div>
+</div>
+
+</body>
+</html>
