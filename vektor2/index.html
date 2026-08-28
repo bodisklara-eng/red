@@ -1,0 +1,41 @@
+Az alábbiakban részletesen bemutatom, hogyan működik az **indexelés** a különböző szimulációs esetek mögötti programozási logikában, azaz a kódban hogyan érjük el vagy szűrjük a 12 tojást/csibét.
+
+---
+
+### Mi az az indexelés a programozásban?
+
+A programozásban a gyűjtemények (mint a 12 darab csibe-elem) elemeit sorszámokkal, úgynevezett **indexekkel** azonosítjuk. A mi rendszerünkben a tojások és csibék 1-től 12-ig vannak számozva (`1`-től `12`-ig), amelyek a DOM-ban (`.c1`, `.ss1`, `.c2`, `.ss2` stb.) felelnek meg az egyes elemeknek. Az indexek segítségével tudja a JavaScript eldönteni, hogy melyik elemmel mi történjen.
+
+---
+
+### Az indexelés és logika a 6 különböző esetben:
+
+#### 1. Párhuzamos / Szinkron feldolgozás („Egyszerre mind”)
+
+* **Indexelés / Bejárás:** A kód egy egyszerű `for` ciklust használ, amely végigmegy az összes indexen `1`-től `12`-ig anélkül, hogy bármit kihagyna vagy késleltetne.
+* **Hogyan működik:** `for (let i = 1; i <= 12; i++)` -> A ciklus mindenegyes `i` értékre (1, 2, 3... 12) azonnal átváltja a tojást csibévé, mert nincs feltétel vagy késleltetés.
+
+#### 2. Szekvenciális iteráció („Egyesével sorban”)
+
+* **Indexelés / Bejárás:** Szigorúan növekvő indexsorrend szerinti haladás, ahol az index ($i$) határozza meg a várakozási időt (késleltetést).
+* **Hogyan működés:** `let delay = (i - 1) * 0.3;` -> Az első elem (`i = 1`) késleltetése `(1 - 1) * 0.3 = 0` másodperc (azonnal indul), a második elem (`i = 2`) késleltetése `(2 - 1) * 0.3 = 0.3` másodperc, a harmadiké `0.6` másodperc, és így tovább, szigorú sorrendben.
+
+#### 3. Feltételes szűrés („Egyesek nem”)
+
+* **Indexelés / Bejárás:** Itt az indexeket egy előre megadott tömb (szűrőfeltétel) alapján vizsgálja a rendszer: `const activeIndices = [1, 3, 6, 8, 11];`.
+* **Hogyan működik:** A `for` ciklus ugyan 1-től 12-ig végigfut mindenen, de a ciklus belsejében van egy feltétel: `if (activeIndices.includes(i))`. Ez azt jelenti, hogy *csak* az 1-es, 3-as, 6-os, 8-as és 11-es indexű elemek kapnak kikelési parancsot, a többi indexű elem (mivel nincsen benne a listában) inaktív marad.
+
+#### 4. Aszinkron / Eseményvezérelt ütemezés („Véletlenszerűen”)
+
+* **Indexelés / Bejárás:** Nem szigorú sorrendű, hanem egyedi kulcs-érték alapú index-hozzárendelés (egy objektum segítségével), ami meghatározza, hogy melyik index mikor reagál.
+* **Hogyan működik:** A kódban egy `delays` nevű szótár/objektum rendeli hozzá az indexekhez a másodperceket (pl. a `2`, `7`, `12`-es indexek `0.1` mp-nél, míg a `3`, `6`, `8`, `11`-es indexek `1.9` mp-nél kelnek ki). A ciklus lekérdezi: `if (delays[i] !== undefined)`, és csak azokra az indexekre ütemez időzítést, amelyek szerepelnek a listában.
+
+#### 5. Kötegelt feldolgozás („Kettesével elszórva”)
+
+* **Indexelés / Bejárás:** Az indexeket csoportokba (csomagokba/batch-ekbe) rendezzük, és nem egyenként, hanem tömbökön belül iterálunk végig rajta.
+* **Hogyan működik:** A `pairs` tömb indexcsoportokat tartalmaz, például `{ items: [3, 10], delay: 0.2 }`. A rendszer a csoporton belüli indexeket (`3` és `10`) egyszerre, azonos késleltetéssel (`0.2s`) szólaltatja meg, így szimulálva a kötegelt (batch) adatelemzést.
+
+#### 6. Kivételkezelés / Hibaállapot („Egy sem kel ki”)
+
+* **Indexelés / Bejárás:** A rendszer átvizsgálja ugyan az indexeket, de egy kivétel (hiba) miatt a feldolgozó szál megszakad.
+* **Hogyan működik:** Itt a kód nem módosítja az egyes elemek (`.ss` és `.c`) átlátszóságát vagy méretét, hanem az egész konténerre (`grid`) rátesz egy hibaállapotot (`shaking` azaz rázkódás osztályt), így az indexek szerinti iteráció elmarad, a tranzakció megáll az eredeti állapotban.
