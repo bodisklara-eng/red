@@ -1,41 +1,301 @@
-Az alábbiakban részletesen bemutatom, hogyan működik az **indexelés** a különböző szimulációs esetek mögötti programozási logikában, azaz a kódban hogyan érjük el vagy szűrjük a 12 tojást/csibét.
+<!DOCTYPE html>
+<!-- saved from url=(0068)file:///C:/Users/Utilizator/Downloads/gemini-code-1787906023650.html -->
+<html lang="hu"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Csibe Szimuláció és Elmélet</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            background-color: #f8f9fa;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .livresq-wrapper * { box-sizing: border-box; }
+        .livresq-container { font-size: 14px; color: #495057; line-height: 1.5; -webkit-font-smoothing: antialiased; width: 100%; max-width: 650px; margin: 0 auto; padding: 25px; background: #ffffff; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); border-top: 6px solid #4ea8de; }
+        .livresq-container .btn-click { transition: filter 0.2s; }
+        .livresq-container .btn-click:hover { filter: brightness(1.2); cursor: pointer; }
+        .livresq-container .b { width: 40px; height: 50px; position: relative; display: flex; justify-content: center; align-items: center; }
+        
+        .livresq-container .eg { position: absolute; width: 30px; height: 40px; background: #e3a857; border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%; box-shadow: 0 2px 4px rgba(0,0,0,0.15); z-index: 2; opacity: 1; transform: scale(1); transition: opacity 0.3s ease, transform 0.3s ease; }
+        .livresq-container .ch { font-size: 24px; z-index: 1; opacity: 0; transform: scale(0); transition: opacity 0.3s ease, transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
 
----
+        .livresq-container .h-grid { display: none; grid-template-columns: repeat(6, 40px); gap: 6px; padding: 8px; background: #e9ecef; border-radius: 6px; position: relative; }
+        .livresq-container .msg-init { display: block; color: #888; font-size: 13px; padding: 10px; }
+        
+        .livresq-container .t { display: none; }
+        .livresq-container .t-init { display: block; }
 
-### Mi az az indexelés a programozásban?
+        @keyframes gridShake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-3px); }
+            75% { transform: translateX(3px); }
+        }
+        .livresq-container .shaking { animation: gridShake 0.4s ease-in-out infinite; border-color: #d90429 !important; }
 
-A programozásban a gyűjtemények (mint a 12 darab csibe-elem) elemeit sorszámokkal, úgynevezett **indexekkel** azonosítjuk. A mi rendszerünkben a tojások és csibék 1-től 12-ig vannak számozva (`1`-től `12`-ig), amelyek a DOM-ban (`.c1`, `.ss1`, `.c2`, `.ss2` stb.) felelnek meg az egyes elemeknek. Az indexek segítségével tudja a JavaScript eldönteni, hogy melyik elemmel mi történjen.
+        /* Elméleti szekció stílusai */
+        .theory-section {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #dee2e6;
+            text-align: left;
+        }
+        .theory-section h3 {
+            font-size: 16px;
+            color: #2b2d42;
+            margin-bottom: 10px;
+        }
+        .theory-section h4 {
+            font-size: 14px;
+            color: #1d3557;
+            margin-top: 15px;
+            margin-bottom: 5px;
+        }
+        .theory-section p, .theory-section li {
+            font-size: 13px;
+            color: #4a4e69;
+        }
+        .theory-section ul {
+            padding-left: 20px;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
 
----
+<div class="livresq-wrapper">
+<div class="livresq-container" id="chicken-sim">
+    <div style="text-align: center;">
+        <div class="h-screen" style="width: 320px; height: 160px; background: #ffffff; border: 1px solid #ddd; border-radius: 6px; margin: 0 auto 20px auto; display: flex; justify-content: center; align-items: center; overflow: hidden; position: relative;">
+            <div class="msg-init" style="display: none;">Kattints az alsó gombok egyikére a szimuláció elindításához!</div>
+            <div class="h-grid shaking" id="h-grid" style="display: grid;">
+                <div class="b"><div class="ch c1" style="transition: opacity 0.3s, transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); opacity: 0; transform: scale(0);">🐥</div><div class="eg ss1" style="transition: opacity 0.3s, transform 0.3s; opacity: 1; transform: scale(1);"></div></div>
+                <div class="b"><div class="ch c2" style="transition: opacity 0.3s, transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); opacity: 0; transform: scale(0);">🐥</div><div class="eg ss2" style="transition: opacity 0.3s, transform 0.3s; opacity: 1; transform: scale(1);"></div></div>
+                <div class="b"><div class="ch c3" style="transition: opacity 0.3s, transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); opacity: 0; transform: scale(0);">🐥</div><div class="eg ss3" style="transition: opacity 0.3s, transform 0.3s; opacity: 1; transform: scale(1);"></div></div>
+                <div class="b"><div class="ch c4" style="transition: opacity 0.3s, transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); opacity: 0; transform: scale(0);">🐥</div><div class="eg ss4" style="transition: opacity 0.3s, transform 0.3s; opacity: 1; transform: scale(1);"></div></div>
+                <div class="b"><div class="ch c5" style="transition: opacity 0.3s, transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); opacity: 0; transform: scale(0);">🐥</div><div class="eg ss5" style="transition: opacity 0.3s, transform 0.3s; opacity: 1; transform: scale(1);"></div></div>
+                <div class="b"><div class="ch c6" style="transition: opacity 0.3s, transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); opacity: 0; transform: scale(0);">🐥</div><div class="eg ss6" style="transition: opacity 0.3s, transform 0.3s; opacity: 1; transform: scale(1);"></div></div>
+                <div class="b"><div class="ch c7" style="transition: opacity 0.3s, transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); opacity: 0; transform: scale(0);">🐥</div><div class="eg ss7" style="transition: opacity 0.3s, transform 0.3s; opacity: 1; transform: scale(1);"></div></div>
+                <div class="b"><div class="ch c8" style="transition: opacity 0.3s, transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); opacity: 0; transform: scale(0);">🐥</div><div class="eg ss8" style="transition: opacity 0.3s, transform 0.3s; opacity: 1; transform: scale(1);"></div></div>
+                <div class="b"><div class="ch c9" style="transition: opacity 0.3s, transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); opacity: 0; transform: scale(0);">🐥</div><div class="eg ss9" style="transition: opacity 0.3s, transform 0.3s; opacity: 1; transform: scale(1);"></div></div>
+                <div class="b"><div class="ch c10" style="transition: opacity 0.3s, transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); opacity: 0; transform: scale(0);">🐥</div><div class="eg ss10" style="transition: opacity 0.3s, transform 0.3s; opacity: 1; transform: scale(1);"></div></div>
+                <div class="b"><div class="ch c11" style="transition: opacity 0.3s, transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); opacity: 0; transform: scale(0);">🐥</div><div class="eg ss11" style="transition: opacity 0.3s, transform 0.3s; opacity: 1; transform: scale(1);"></div></div>
+                <div class="b"><div class="ch c12" style="transition: opacity 0.3s, transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); opacity: 0; transform: scale(0);">🐥</div><div class="eg ss12" style="transition: opacity 0.3s, transform 0.3s; opacity: 1; transform: scale(1);"></div></div>
+                <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 2px solid #555; border-radius: 6px; pointer-events: none; box-sizing: border-box;"></div>
+            </div>
+        </div>
+     
+        <!-- Státuszmagyarázatok -->
+        <div class="h-status" style="background: #e9ecef; padding: 10px; border-radius: 5px; font-size: 12.5px; font-weight: 500; min-height: 45px; display: flex; align-items: center; justify-content: center; max-width: 520px; margin: 0 auto 20px auto; line-height: 1.4;">
+            <span class="t t-init" style="display: none;">Várakozás az elméleti modell kiválasztására...</span>
+            <span class="t t-all" style="color: rgb(16, 124, 65); display: none;"><strong>Egyszerre mind:</strong> Minden tojásból azonnal, egyszerre kelnek ki a kiscsibék.</span>
+            <span class="t t-seq" style="color: rgb(0, 89, 156); display: none;"><strong>Egyesével sorban:</strong> Szigorú szekvenciális iteráció, a tojások index szerint, egymás után nyílnak meg.</span>
+            <span class="t t-sel" style="color: rgb(243, 114, 44); display: none;"><strong>Egyesek nem:</strong> Feltételes szűrés alapján csak a kiválasztott pozíciókban kelnek ki a csibék.</span>
+            <span class="t t-rnd" style="color: rgb(123, 44, 191); display: none;"><strong>Véletlenszerűen:</strong> Aszinkron szálkezeléshez hasonlóan, dinamikus és eltérő ütemben bújnak elő az elemek.</span>
+            <span class="t t-pair" style="color: rgb(224, 122, 95); display: none;"><strong>Kettesével elszórva:</strong> Batch (kötegelt) feldolgozási logika alapján párosával aktiválódnak a csibék.</span>
+            <span class="t t-none" style="color: rgb(217, 4, 41); display: block;"><strong>Egy sem kel ki:</strong> Kivételkezelési hiba miatt a tojások megmaradnak, egyetlen csibe sem bújik elő.</span>
+        </div>
+     
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; max-width: 480px; margin: 0 auto;">
+            <button class="btn-click" onclick="runSim(&#39;all&#39;)" style="background: #107c41; padding: 8px; color: white; border: none; border-radius: 4px; font-size: 11px; font-weight: bold; user-select: none;">Egyszerre mind</button>
+            <button class="btn-click" onclick="runSim(&#39;seq&#39;)" style="background: #00599c; padding: 8px; color: white; border: none; border-radius: 4px; font-size: 11px; font-weight: bold; user-select: none;">Egyesével sorban</button>
+            <button class="btn-click" onclick="runSim(&#39;sel&#39;)" style="background: #f3722c; padding: 8px; color: white; border: none; border-radius: 4px; font-size: 11px; font-weight: bold; user-select: none;">Egyesek nem</button>
+            <button class="btn-click" onclick="runSim(&#39;rnd&#39;)" style="background: #7b2cbf; padding: 8px; color: white; border: none; border-radius: 4px; font-size: 11px; font-weight: bold; user-select: none;">Véletlenszerűen</button>
+            <button class="btn-click" onclick="runSim(&#39;pair&#39;)" style="background: #e07a5f; padding: 8px; color: white; border: none; border-radius: 4px; font-size: 11px; font-weight: bold; user-select: none;">Kettesével elszórva</button>
+            <button class="btn-click" onclick="runSim(&#39;none&#39;)" style="background: #d90429; padding: 8px; color: white; border: none; border-radius: 4px; font-size: 11px; font-weight: bold; user-select: none;">Egy sem kel ki</button>
+            <button class="btn-click" onclick="runSim(&#39;init&#39;)" style="background: #6c757d; padding: 8px; color: white; border: none; border-radius: 4px; font-size: 11px; font-weight: bold; user-select: none; grid-column: span 3;">🔄 Újraindítás</button>
+        </div>
+    </div>
 
-### Az indexelés és logika a 6 különböző esetben:
+    <!-- Elméleti háttér és részletes indexelési magyarázat -->
+    <div class="theory-section">
+        <h3>Elméleti háttér (A feldolgozási modellek és az indexelés)</h3>
+        
+        <h4>Mi az az indexelés a programozásban?</h4>
+        <p>A programozásban a gyűjtemények (mint a 12 darab csibe-elem) elemeit sorszámokkal, úgynevezett indexekkel azonosítjuk. A mi rendszerünkben a tojások és csibék 1-től 12-ig vannak számozva (1-től 12-ig), amelyek a DOM-ban (.c1, .ss1, .c2, .ss2 stb.) felelnek meg az egyes elemeknek. Az indexek segítségével tudja a JavaScript eldönteni, hogy melyik elemmel mi történjen.</p>
 
-#### 1. Párhuzamos / Szinkron feldolgozás („Egyszerre mind”)
+        <h3>Az indexelés és logika a 6 különböző esetben:</h3>
 
-* **Indexelés / Bejárás:** A kód egy egyszerű `for` ciklust használ, amely végigmegy az összes indexen `1`-től `12`-ig anélkül, hogy bármit kihagyna vagy késleltetne.
-* **Hogyan működik:** `for (let i = 1; i <= 12; i++)` -> A ciklus mindenegyes `i` értékre (1, 2, 3... 12) azonnal átváltja a tojást csibévé, mert nincs feltétel vagy késleltetés.
+        <h4>1. Párhuzamos / Szinkron feldolgozás („Egyszerre mind”)</h4>
+        <p><strong>Indexelés / Bejárás:</strong> A kód egy egyszerű for ciklust használ, amely végigmegy az összes indexen 1-től 12-ig anélkül, hogy bármit kihagyna vagy késleltetne.</p>
+        <p><strong>Hogyan működik:</strong> <code>for (let i = 1; i &lt;= 12; i++)</code> -&gt; A ciklus mindenegyes i értékre (1, 2, 3... 12) azonnal átváltja a tojást csibévé, mert nincs feltétel vagy késleltetés.</p>
 
-#### 2. Szekvenciális iteráció („Egyesével sorban”)
+        <h4>2. Szekvenciális iteráció („Egyesével sorban”)</h4>
+        <p><strong>Indexelés / Bejárás:</strong> Szigorúan növekvő indexsorrend szerinti haladás, ahol az index ($i$) határozza meg a várakozási időt (késleltetést).</p>
+        <p><strong>Hogyan működik:</strong> <code>let delay = (i - 1) * 0.3;</code> -&gt; Az első elem (i = 1) késleltetése (1 - 1) * 0.3 = 0 másodperc (azonnal indul), a második elem (i = 2) késleltetése (2 - 1) * 0.3 = 0.3 másodperc, a harmadiké 0.6 másodperc, és így tovább, szigorú sorrendben.</p>
 
-* **Indexelés / Bejárás:** Szigorúan növekvő indexsorrend szerinti haladás, ahol az index ($i$) határozza meg a várakozási időt (késleltetést).
-* **Hogyan működés:** `let delay = (i - 1) * 0.3;` -> Az első elem (`i = 1`) késleltetése `(1 - 1) * 0.3 = 0` másodperc (azonnal indul), a második elem (`i = 2`) késleltetése `(2 - 1) * 0.3 = 0.3` másodperc, a harmadiké `0.6` másodperc, és így tovább, szigorú sorrendben.
+        <h4>3. Feltételes szűrés („Egyesek nem”)</h4>
+        <p><strong>Indexelés / Bejárás:</strong> Itt az indexeket egy előre megadott tömb (szűrőfeltétel) alapján vizsgálja a rendszer: <code>const activeIndices = [1, 3, 6, 8, 11];</code>.</p>
+        <p><strong>Hogyan működik:</strong> A for ciklus ugyan 1-től 12-ig végigfut mindenen, de a ciklus belsejében van egy feltétel: <code>if (activeIndices.includes(i))</code>. Ez azt jelenti, hogy csak az 1-es, 3-as, 6-os, 8-as és 11-es indexű elemek kapnak kikelési parancsot, a többi indexű elem (mivel nincsen benne a listában) inaktív marad.</p>
 
-#### 3. Feltételes szűrés („Egyesek nem”)
+        <h4>4. Aszinkron / Eseményvezérelt ütemezés („Véletlenszerűen”)</h4>
+        <p><strong>Indexelés / Bejárás:</strong> Nem szigorú sorrendű, hanem egyedi kulcs-érték alapú index-hozzárendelés (egy objektum segítségével), ami meghatározza, hogy melyik index mikor reagál.</p>
+        <p><strong>Hogyan működik:</strong> A kódban egy <code>delays</code> nevű szótár/objektum rendeli hozzá az indexekhez a másodperceket (pl. a 2, 7, 12-es indexek 0.1 mp-nél, míg a 3, 6, 8, 11-es indexek 1.9 mp-nél kelnek ki). A ciklus lekérdezi: <code>if (delays[i] !== undefined)</code>, és csak azokra az indexekre ütemez időzítést, amelyek szerepelnek a listában.</p>
 
-* **Indexelés / Bejárás:** Itt az indexeket egy előre megadott tömb (szűrőfeltétel) alapján vizsgálja a rendszer: `const activeIndices = [1, 3, 6, 8, 11];`.
-* **Hogyan működik:** A `for` ciklus ugyan 1-től 12-ig végigfut mindenen, de a ciklus belsejében van egy feltétel: `if (activeIndices.includes(i))`. Ez azt jelenti, hogy *csak* az 1-es, 3-as, 6-os, 8-as és 11-es indexű elemek kapnak kikelési parancsot, a többi indexű elem (mivel nincsen benne a listában) inaktív marad.
+        <h4>5. Kötegelt feldolgozás („Kettesével elszórva”)</h4>
+        <p><strong>Indexelés / Bejárás:</strong> Az indexeket csoportokba (csomagokba/batch-ekbe) rendezzük, és nem egyenként, hanem tömbökön belül iterálunk végig rajta.</p>
+        <p><strong>Hogyan működik:</strong> A <code>pairs</code> tömb indexcsoportokat tartalmaz, például <code>{ items: [3, 10], delay: 0.2 }</code>. A rendszer a csoporton belüli indexeket (3 és 10) egyszerre, azonos késleltetéssel (0.2s) szólaltatja meg, így szimulálva a kötegelt (batch) adatelemzést.</p>
 
-#### 4. Aszinkron / Eseményvezérelt ütemezés („Véletlenszerűen”)
+        <h4>6. Kivételkezelés / Hibaállapot („Egy sem kel ki”)</h4>
+        <p><strong>Indexelés / Bejárás:</strong> A rendszer átvizsgálja ugyan az indexeket, de egy kivétel (hiba) miatt a feldolgozó szál megszakad.</p>
+        <p><strong>Hogyan működik:</strong> Itt a kód nem módosítja az egyes elemek (.ss és .c) átlátszóságát vagy méretét, hanem az egész konténerre (grid) rátesz egy hibaállapotot (shaking azaz rázkódás osztályt), így az indexek szerinti iteráció elmarad, a tranzakció megáll az eredeti állapotban.</p>
 
-* **Indexelés / Bejárás:** Nem szigorú sorrendű, hanem egyedi kulcs-érték alapú index-hozzárendelés (egy objektum segítségével), ami meghatározza, hogy melyik index mikor reagál.
-* **Hogyan működik:** A kódban egy `delays` nevű szótár/objektum rendeli hozzá az indexekhez a másodperceket (pl. a `2`, `7`, `12`-es indexek `0.1` mp-nél, míg a `3`, `6`, `8`, `11`-es indexek `1.9` mp-nél kelnek ki). A ciklus lekérdezi: `if (delays[i] !== undefined)`, és csak azokra az indexekre ütemez időzítést, amelyek szerepelnek a listában.
+        <h3>Hány ilyen eset létezhet még?</h3>
+        <p>A lehetséges esetek száma attól függ, hogy matematikai kombinatorika vagy programozási logikák szemszögéből nézzük:</p>
+        
+        <h4>1. Kombinatorikus variációk (A kikelő elemek mintázata):</h4>
+        <p>Ha 12 darab független elemünk van, és mindegyik elem eldöntheti, hogy kikel-e vagy sem (2 opció elemenként), akkor a lehetséges logikai kombinációk száma:</p>
+        <p style="text-align: center; font-weight: bold;">2<sup>12</sup> = 4096 féle állapot</p>
+        <p>Ez azt jelenti, hogy önmagában a „melyik tojás kel ki és melyik nem” kérdésre 4096 különböző kimenet létezhet.</p>
 
-#### 5. Kötegelt feldolgozás („Kettesével elszórva”)
+        <h4>2. Időzítési és sorrendi variációk:</h4>
+        <p>Ha azt is figyelembe vesszük, hogy a 12 elem milyen sorrendben kelhet ki (permutáció), akkor a sorrendek száma:</p>
+        <p style="text-align: center; font-weight: bold;">12! = 479 001 600</p>
+        <p>közel fél milliárd különböző sorrendi variáció létezhet.</p>
 
-* **Indexelés / Bejárás:** Az indexeket csoportokba (csomagokba/batch-ekbe) rendezzük, és nem egyenként, hanem tömbökön belül iterálunk végig rajta.
-* **Hogyan működik:** A `pairs` tömb indexcsoportokat tartalmaz, például `{ items: [3, 10], delay: 0.2 }`. A rendszer a csoporton belüli indexeket (`3` és `10`) egyszerre, azonos késleltetéssel (`0.2s`) szólaltatja meg, így szimulálva a kötegelt (batch) adatelemzést.
+        <h4>Gyakorlati szempontból:</h4>
+        <p>Bár matematikai alapon ezermilliárdnyi kombináció generálható, a felhasználói felületeken és oktatóanyagokban általában csak a legfontosabb szemléltető modelleket (mint a fenti 6 alapeset) szokás bemutatni, mert ezek fedik le a logikus programozási és matematikai alapelveket.</p>
+    </div>
+</div>
+</div>
 
-#### 6. Kivételkezelés / Hibaállapot („Egy sem kel ki”)
+<script>
+function runSim(type) {
+    const container = document.getElementById('chicken-sim');
+    const grid = container.querySelector('#h-grid');
+    const msgInit = container.querySelector('.msg-init');
+    const texts = container.querySelectorAll('.t');
+    
+    texts.forEach(t => t.style.display = 'none');
+    container.querySelector('.t-' + type).style.display = 'block';
 
-* **Indexelés / Bejárás:** A rendszer átvizsgálja ugyan az indexeket, de egy kivétel (hiba) miatt a feldolgozó szál megszakad.
-* **Hogyan működik:** Itt a kód nem módosítja az egyes elemek (`.ss` és `.c`) átlátszóságát vagy méretét, hanem az egész konténerre (`grid`) rátesz egy hibaállapotot (`shaking` azaz rázkódás osztályt), így az indexek szerinti iteráció elmarad, a tranzakció megáll az eredeti állapotban.
+    if (type === 'init') {
+        msgInit.style.display = 'block';
+        grid.style.display = 'none';
+        grid.classList.remove('shaking');
+        for (let i = 1; i <= 12; i++) {
+            const eg = container.querySelector('.ss' + i);
+            const ch = container.querySelector('.c' + i);
+            if(eg) { eg.style.opacity = '1'; eg.style.transform = 'scale(1)'; }
+            if(ch) { ch.style.opacity = '0'; ch.style.transform = 'scale(0)'; }
+        }
+        return;
+    }
+
+    msgInit.style.display = 'none';
+    grid.style.display = 'grid';
+    grid.classList.remove('shaking');
+
+    for (let i = 1; i <= 12; i++) {
+        const eg = container.querySelector('.ss' + i);
+        const ch = container.querySelector('.c' + i);
+        if(eg) {
+            eg.style.transition = 'none';
+            eg.style.opacity = '1';
+            eg.style.transform = 'scale(1)';
+        }
+        if(ch) {
+            ch.style.transition = 'none';
+            ch.style.opacity = '0';
+            ch.style.transform = 'scale(0)';
+        }
+    }
+
+    void grid.offsetWidth;
+
+    for (let i = 1; i <= 12; i++) {
+        const eg = container.querySelector('.ss' + i);
+        const ch = container.querySelector('.c' + i);
+        if(eg) eg.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+        if(ch) ch.style.transition = 'opacity 0.3s ease, transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
+    }
+
+    if (type === 'all') {
+        for (let i = 1; i <= 12; i++) {
+            container.querySelector('.ss' + i).style.opacity = '0';
+            container.querySelector('.ss' + i).style.transform = 'scale(0)';
+            container.querySelector('.c' + i).style.opacity = '1';
+            container.querySelector('.c' + i).style.transform = 'scale(1)';
+        }
+    } 
+    else if (type === 'seq') {
+        for (let i = 1; i <= 12; i++) {
+            let delay = (i - 1) * 0.3;
+            let eg = container.querySelector('.ss' + i);
+            let ch = container.querySelector('.c' + i);
+            
+            eg.style.transitionDelay = delay + 's';
+            ch.style.transitionDelay = (delay + 0.15) + 's';
+            
+            eg.style.opacity = '0';
+            eg.style.transform = 'scale(0)';
+            ch.style.opacity = '1';
+            ch.style.transform = 'scale(1)';
+        }
+    }
+    else if (type === 'sel') {
+        const activeIndices = [1, 3, 6, 8, 11];
+        for (let i = 1; i <= 12; i++) {
+            let eg = container.querySelector('.ss' + i);
+            let ch = container.querySelector('.c' + i);
+            if (activeIndices.includes(i)) {
+                eg.style.opacity = '0';
+                eg.style.transform = 'scale(0)';
+                ch.style.opacity = '1';
+                ch.style.transform = 'scale(1)';
+            }
+        }
+    }
+    else if (type === 'rnd') {
+        const delays = {
+            2: 0.1, 7: 0.1, 12: 0.1,
+            4: 0.7, 5: 0.7,
+            1: 1.3, 9: 1.3, 10: 1.3,
+            3: 1.9, 6: 1.9, 8: 1.9, 11: 1.9
+        };
+        for (let i = 1; i <= 12; i++) {
+            if (delays[i] !== undefined) {
+                let eg = container.querySelector('.ss' + i);
+                let ch = container.querySelector('.c' + i);
+                eg.style.transitionDelay = delays[i] + 's';
+                ch.style.transitionDelay = (delays[i] + 0.1) + 's';
+                eg.style.opacity = '0';
+                eg.style.transform = 'scale(0)';
+                ch.style.opacity = '1';
+                ch.style.transform = 'scale(1)';
+            }
+        }
+    }
+    else if (type === 'pair') {
+        const pairs = [
+            { items: [3, 10], delay: 0.2 },
+            { items: [1, 8], delay: 0.8 },
+            { items: [5, 12], delay: 1.4 },
+            { items: [2, 6], delay: 2.0 },
+            { items: [4, 7, 9, 11], delay: 2.6 }
+        ];
+        pairs.forEach(group => {
+            group.items.forEach(i => {
+                let eg = container.querySelector('.ss' + i);
+                let ch = container.querySelector('.c' + i);
+                eg.style.transitionDelay = group.delay + 's';
+                ch.style.transitionDelay = (group.delay + 0.1) + 's';
+                eg.style.opacity = '0';
+                eg.style.transform = 'scale(0)';
+                ch.style.opacity = '1';
+                ch.style.transform = 'scale(1)';
+            });
+        });
+    }
+    else if (type === 'none') {
+        grid.classList.add('shaking');
+    }
+}
+</script>
+
+
+</body></html>
