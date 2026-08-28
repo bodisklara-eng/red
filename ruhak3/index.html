@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<!-- saved from url=(0068)file:///C:/Users/Utilizator/Downloads/gemini-code-1787749966767.html -->
+<html lang="hu"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <title>Végső Interaktív Ruharendező Stúdió</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #0f172a;
+            color: #f8fafc;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            user-select: none;
+        }
+        h2 {
+            margin-bottom: 5px;
+            font-size: 20px;
+        }
+        #status-text {
+            font-size: 13px;
+            color: #38bdf8;
+            margin-bottom: 8px;
+            height: 18px;
+        }
+        .panel {
+            background: #1e293b;
+            padding: 8px 15px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+            font-size: 13px;
+        }
+        .panel select, .panel button {
+            padding: 5px 8px;
+            border-radius: 4px;
+            border: 1px solid #475569;
+            background: #0f172a;
+            color: white;
+        }
+        .panel button.add-btn {
+            background-color: #3b82f6;
+            cursor: pointer;
+            border: none;
+        }
+        .panel button.add-btn:hover {
+            background-color: #2563eb;
+        }
+        #stage {
+            position: relative;
+            width: 1000px;
+            height: 500px;
+            background: #1e293b;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+        }
+        .column-header {
+            position: absolute;
+            top: 10px;
+            width: 200px;
+            text-align: center;
+            font-weight: bold;
+            font-size: 13px;
+            color: #94a3b8;
+            border-bottom: 2px dashed #475569;
+            padding-bottom: 3px;
+        }
+        .column-footer {
+            position: absolute;
+            bottom: 10px;
+            width: 200px;
+            text-align: center;
+            font-size: 11px;
+            color: #38bdf8;
+            background: rgba(56, 189, 248, 0.1);
+            padding: 4px;
+            border-radius: 4px;
+        }
+        /* Vizuális százalékos sáv az oszlop alján */
+        .stat-bar-container {
+            width: 100%;
+            height: 4px;
+            background: #334155;
+            border-radius: 2px;
+            margin-top: 4px;
+            overflow: hidden;
+        }
+        .stat-bar-fill {
+            height: 100%;
+            background: #38bdf8;
+            width: 0%;
+            transition: width 0.5s;
+        }
+        .garment {
+            position: absolute;
+            width: 70px;
+            height: 80px;
+            background: #3b82f6;
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 10px;
+            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.4);
+            border: 2px solid rgba(255,255,255,0.15);
+            cursor: grab;
+        }
+        .garment:active {
+            cursor: grabbing;
+        }
+        .garment .icon {
+            font-size: 18px;
+            margin-bottom: 2px;
+        }
+        .garment span {
+            font-size: 8px;
+            background: rgba(0,0,0,0.5);
+            padding: 1px 4px;
+            border-radius: 3px;
+            color: #e2e8f0;
+            margin-top: 2px;
+        }
+        .action-controls {
+            margin-top: 12px;
+            display: flex;
+            gap: 10px;
+        }
+        button.main-btn {
+            padding: 8px 16px;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            background-color: #10b981;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            transition: background 0.3s;
+        }
+        button.main-btn:hover { background-color: #059669; }
+        button.reset-btn {
+            background-color: #ef4444;
+        }
+        button.reset-btn:hover { background-color: #dc2626; }
+    </style>
+</head>
+<body>
+
+    <h2>Végső Interaktív Ruharendező Stúdió</h2>
+    <div id="status-text">Kész! Dupla kattintással törölheted, vagy húzhatod az elemeket.</div>
+
+    <!-- Hozzáadó panel -->
+    <div class="panel">
+        <label>Típus:</label>
+        <select id="new-type">
+            <option value="nadrág">Nadrág</option>
+            <option value="póló">Póló</option>
+            <option value="pulóver">Pulóver</option>
+            <option value="ing">Ing</option>
+        </select>
+        
+        <label>Méret:</label>
+        <select id="new-size">
+            <option value="1">1 (Kicsi)</option>
+            <option value="2">2 (Közepes)</option>
+            <option value="3">3 (Nagy)</option>
+        </select>
+
+        <label>Szín:</label>
+        <select id="new-color">
+            <option value="kék">Kék</option>
+            <option value="piros">Piros</option>
+            <option value="zöld">Zöld</option>
+            <option value="fekete">Fekete</option>
+        </select>
+
+        <button class="add-btn" onclick="addNewGarmentManual()">+ Hozzáadás</button>
+    </div>
+
+    <div id="stage">
+        <!-- Oszlopcímkék -->
+        <div class="column-header" style="left: 60px;">Nadrágok</div>
+        <div class="column-header" style="left: 290px;">Pólók</div>
+        <div class="column-header" style="left: 520px;">Pulóverek</div>
+        <div class="column-header" style="left: 750px;">Ingek</div>
+
+        <!-- Oszlopok alatti láblécek statisztikával -->
+        <div class="column-footer" id="footer-nadrág" style="left: 60px;">
+            <span>Nadrág: 2 db (40%)</span>
+            <div class="stat-bar-container"><div class="stat-bar-fill" id="bar-nadrág" style="width: 40%;"></div></div>
+        </div>
+        <div class="column-footer" id="footer-póló" style="left: 290px;">
+            <span>Póló: 1 db (20%)</span>
+            <div class="stat-bar-container"><div class="stat-bar-fill" id="bar-póló" style="width: 20%;"></div></div>
+        </div>
+        <div class="column-footer" id="footer-pulóver" style="left: 520px;">
+            <span>Pulóver: 1 db (20%)</span>
+            <div class="stat-bar-container"><div class="stat-bar-fill" id="bar-pulóver" style="width: 20%;"></div></div>
+        </div>
+        <div class="column-footer" id="footer-ing" style="left: 750px;">
+            <span>Ing: 1 db (20%)</span>
+            <div class="stat-bar-container"><div class="stat-bar-fill" id="bar-ing" style="width: 20%;"></div></div>
+        </div>
+    <div class="garment" data-index="0" data-type="nadrág" data-size="2" data-color="kék" style="background: rgb(29, 78, 216); left: 60px; top: 150px; transform: rotate(0deg);"><div class="icon">👖</div>Nadrág<span>#25</span></div><div class="garment" data-index="1" data-type="póló" data-size="1" data-color="piros" style="background: rgb(185, 28, 28); left: 290px; top: 60px; transform: rotate(0deg);"><div class="icon">👕</div>Póló<span>#69</span></div><div class="garment" data-index="2" data-type="pulóver" data-size="3" data-color="zöld" style="background: rgb(21, 128, 61); left: 520px; top: 60px; transform: rotate(0deg);"><div class="icon">🧥</div>Pulóver<span>#56</span></div><div class="garment" data-index="3" data-type="ing" data-size="2" data-color="fekete" style="background: rgb(55, 65, 81); left: 750px; top: 60px; transform: rotate(0deg);"><div class="icon">👔</div>Ing<span>#64</span></div><div class="garment" data-index="4" data-type="nadrág" data-size="1" data-color="kék" style="background: rgb(29, 78, 216); left: 60px; top: 60px; transform: rotate(0deg);"><div class="icon">👖</div>Nadrág<span>#45</span></div></div>
+
+    <div class="action-controls">
+        <button class="main-btn" onclick="runStudioAnimation()">Rendezés indítása</button>
+        <button class="main-btn reset-btn" onclick="scrambleToPile()">Kupac újrakeverése</button>
+    </div>
+
+    <script>
+        const icons = { 'nadrág': '👖', 'póló': '👕', 'pulóver': '🧥', 'ing': '👔' };
+        const xCoords = { 'nadrág': 60, 'póló': 290, 'pulóver': 520, 'ing': 750 };
+
+        let garmentsData = JSON.parse(localStorage.getItem('ruhak_data')) || [
+            { type: 'nadrág', size: '2', color: 'kék' },
+            { type: 'póló', size: '1', color: 'piros' },
+            { type: 'pulóver', size: '3', color: 'zöld' },
+            { type: 'ing', size: '2', color: 'fekete' }
+        ];
+
+        function saveToStorage() {
+            localStorage.setItem('ruhak_data', JSON.stringify(garmentsData));
+        }
+
+        function initStage() {
+            const stage = document.getElementById('stage');
+            // Meglévő ruhák eltávolítása a DOM-ból
+            document.querySelectorAll('.garment').forEach(el => el.remove());
+
+            garmentsData.forEach((data, index) => {
+                createGarmentElement(data, index, false);
+            });
+            updateStats();
+        }
+
+        function createGarmentElement(data, index, isPile = true) {
+            const stage = document.getElementById('stage');
+            const div = document.createElement('div');
+            div.className = 'garment';
+            div.dataset.index = index;
+            div.dataset.type = data.type;
+            div.dataset.size = data.size;
+            div.dataset.color = data.color;
+
+            if (isPile) {
+                const randX = 440 + Math.floor(Math.random() * 60) - 30;
+                const randY = 220 + Math.floor(Math.random() * 40) - 20;
+                const randRot = Math.floor(Math.random() * 40) - 20;
+                div.style.left = `${randX}px`;
+                div.style.top = `${randY}px`;
+                div.style.transform = `rotate(${randRot}deg)`;
+            }
+
+            div.innerHTML = `<div class="icon">${icons[data.type]}</div>${data.type.charAt(0).toUpperCase() + data.type.slice(1)}<span>#${Math.floor(Math.random() * 90) + 1}</span>`;
+            applyColorStyle(div, data.color);
+
+            // Törlés dupla kattintásra vagy jobb klikkre
+            div.addEventListener('dblclick', (e) => {
+                e.stopPropagation();
+                garmentsData.splice(index, 1);
+                saveToStorage();
+                initStage();
+            });
+
+            // Drag & Drop események kezelése
+            makeDraggable(div);
+
+            stage.appendChild(div);
+        }
+
+        function addNewGarmentManual() {
+            const type = document.getElementById('new-type').value;
+            const size = document.getElementById('new-size').value;
+            const color = document.getElementById('new-color').value;
+
+            garmentsData.push({ type, size, color });
+            saveToStorage();
+            initStage();
+            scrambleToPile();
+        }
+
+        function scrambleToPile() {
+            const garments = document.querySelectorAll('.garment');
+            garments.forEach(g => {
+                const randX = 440 + Math.floor(Math.random() * 60) - 30;
+                const randY = 220 + Math.floor(Math.random() * 40) - 20;
+                const randRot = Math.floor(Math.random() * 40) - 20;
+                g.style.left = `${randX}px`;
+                g.style.top = `${randY}px`;
+                g.style.transform = `rotate(${randRot}deg)`;
+            });
+            document.getElementById('status-text').innerText = "Kupac újrakeverve!";
+        }
+
+        async function runStudioAnimation() {
+            const status = document.getElementById('status-text');
+            const garments = Array.from(document.getElementsByClassName('garment'));
+
+            if (garments.length === 0) {
+                status.innerText = "Nincs ruha a stúdióban!";
+                return;
+            }
+
+            status.innerText = "Rendezés típus és méret szerint...";
+
+            const columns = { 'nadrág': [], 'póló': [], 'pulóver': [], 'ing': [] };
+
+            garments.forEach(g => {
+                const type = g.dataset.type;
+                if (columns[type]) columns[type].push(g);
+            });
+
+            Object.keys(columns).forEach(type => {
+                columns[type].sort((a, b) => a.dataset.size - b.dataset.size);
+            });
+
+            Object.keys(columns).forEach(type => {
+                const colGarments = columns[type];
+                const xPos = xCoords[type];
+
+                colGarments.forEach((g, rowIndex) => {
+                    const yPos = 60 + (rowIndex * 90);
+                    g.style.left = `${xPos}px`;
+                    g.style.top = `${yPos}px`;
+                    g.style.transform = `rotate(0deg)`;
+                });
+            });
+
+            updateStats();
+            status.innerText = "Kész! Dupla kattintással törölheted, vagy húzhatod az elemeket.";
+        }
+
+        function updateStats() {
+            const counts = { 'nadrág': 0, 'póló': 0, 'pulóver': 0, 'ing': 0 };
+            garmentsData.forEach(g => { if (counts[g.type] !== undefined) counts[g.type]++; });
+            
+            const total = garmentsData.length;
+
+            Object.keys(counts).forEach(type => {
+                const count = counts[type];
+                const percent = total > 0 ? Math.round((count / total) * 100) : 0;
+                
+                document.getElementById(`footer-${type}`).querySelector('span').innerText = `${type.charAt(0).toUpperCase() + type.slice(1)}: ${count} db (${percent}%)`;
+                document.getElementById(`bar-${type}`).style.width = `${percent}%`;
+            });
+        }
+
+        function applyColorStyle(element, color) {
+            if(color === 'kék') element.style.background = '#1d4ed8';
+            else if(color === 'piros') element.style.background = '#b91c1c';
+            else if(color === 'zöld') element.style.background = '#15803d';
+            else if(color === 'fekete') element.style.background = '#374151';
+        }
+
+        // Egyszerű Drag & Drop támogatás egérrel
+        function makeDraggable(elmnt) {
+            let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+            elmnt.onmousedown = dragMouseDown;
+
+            function dragMouseDown(e) {
+                e.preventDefault();
+                pos3 = e.clientX;
+                pos4 = e.clientY;
+                document.onmouseup = closeDragElement;
+                document.onmousemove = elementDrag;
+            }
+
+            function elementDrag(e) {
+                e.preventDefault();
+                pos1 = pos3 - e.clientX;
+                pos2 = pos4 - e.clientY;
+                pos3 = e.clientX;
+                pos4 = e.clientY;
+                elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+                elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+                elmnt.style.transform = `rotate(0deg)`;
+            }
+
+            function closeDragElement() {
+                document.onmouseup = null;
+                document.onmousemove = null;
+            }
+        }
+
+        // Oldal betöltésekor inicializálás
+        window.onload = () => {
+            initStage();
+            scrambleToPile();
+        };
+    </script>
+
+</body></html>
