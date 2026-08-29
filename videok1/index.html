@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<!-- saved from url=(0068)file:///C:/Users/Utilizator/Downloads/gemini-code-1787995804933.html -->
+<html lang="hu"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>STEAM Videó Rendszerező</title>
+  <style>
+    /* Alapbeállítások és sötét téma */
+    body {
+      background-color: #020617;
+      color: #f8fafc;
+      font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+    }
+
+    .livresq-task-container {
+      max-width: 900px;
+      margin: 20px auto;
+      background-color: #0f172a;
+      border-radius: 12px;
+      padding: 25px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+      border: 1px solid #1e293b;
+    }
+
+    .livresq-task-header {
+      border-bottom: 2px solid #334155;
+      padding-bottom: 15px;
+      margin-bottom: 20px;
+    }
+
+    .livresq-task-title {
+      font-size: 24px;
+      color: #38bdf8;
+      margin: 0 0 10px 0;
+    }
+
+    .livresq-instruction {
+      font-size: 16px;
+      line-height: 1.5;
+      background-color: #1e293b;
+      border-left: 4px solid #38bdf8;
+      padding: 12px 15px;
+      border-radius: 4px;
+      color: #e2e8f0;
+    }
+
+    .livresq-category-block {
+      background-color: #1e293b;
+      border: 1px solid #334155;
+      border-radius: 8px;
+      padding: 18px;
+      margin-bottom: 18px;
+    }
+
+    .livresq-category-title {
+      font-size: 18px;
+      font-weight: 600;
+      color: #f1f5f9;
+      margin-top: 0;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+    }
+
+    .livresq-item-row {
+      margin-bottom: 10px;
+    }
+
+    .livresq-item-label {
+      display: block;
+      font-size: 14px;
+      color: #94a3b8;
+      margin-bottom: 4px;
+    }
+
+    .livresq-input {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid #475569;
+      border-radius: 6px;
+      background-color: #0f172a;
+      color: #38bdf8;
+      font-size: 14px;
+      box-sizing: border-box;
+      transition: all 0.2s ease;
+    }
+
+    .livresq-input:focus {
+      outline: none;
+      border-color: #38bdf8;
+      box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.2);
+    }
+
+    .livresq-input.correct {
+      border-color: #22c55e;
+      background-color: rgba(34, 197, 94, 0.1);
+    }
+
+    .livresq-input.incorrect {
+      border-color: #ef4444;
+      background-color: rgba(239, 68, 68, 0.1);
+    }
+
+    /* Gombok */
+    .livresq-actions {
+      display: flex;
+      gap: 12px;
+      margin-top: 25px;
+      flex-wrap: wrap;
+    }
+
+    .livresq-btn {
+      padding: 12px 24px;
+      border: none;
+      border-radius: 6px;
+      font-weight: 600;
+      cursor: pointer;
+      font-size: 15px;
+      transition: background-color 0.2s;
+    }
+
+    .livresq-btn-primary {
+      background-color: #0284c7;
+      color: white;
+    }
+
+    .livresq-btn-primary:hover {
+      background-color: #0369a1;
+    }
+
+    .livresq-btn-reveal {
+      background-color: #d97706;
+      color: white;
+    }
+
+    .livresq-btn-reveal:hover {
+      background-color: #b45309;
+    }
+
+    .livresq-btn-secondary {
+      background-color: #475569;
+      color: white;
+    }
+
+    .livresq-btn-secondary:hover {
+      background-color: #334155;
+    }
+
+    .livresq-feedback {
+      margin-top: 15px;
+      padding: 12px;
+      border-radius: 6px;
+      display: none;
+      font-weight: 500;
+    }
+
+    /* Tabos Interaktív Felület */
+    .steam-container {
+      display: none;
+    }
+
+    .steam-header-title {
+      color: #38bdf8;
+      font-size: 1.6rem;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 8px;
+      margin-top: 0;
+    }
+
+    .steam-subtitle {
+      color: #94a3b8;
+      font-size: 0.9rem;
+      margin-bottom: 20px;
+      border-bottom: 2px solid #334155;
+      padding-bottom: 12px;
+    }
+
+    .steam-tabs {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding-bottom: 10px;
+      margin-bottom: 20px;
+    }
+
+    .steam-tab-btn {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 16px;
+      border-radius: 20px;
+      border: 1px solid #334155;
+      background-color: #1e293b;
+      color: #cbd5e1;
+      font-weight: 600;
+      font-size: 0.85rem;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.2s;
+    }
+
+    .steam-tab-btn.active {
+      background-color: #0284c7;
+      color: #ffffff;
+      border-color: #38bdf8;
+    }
+
+    .steam-tab-content {
+      display: none;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .steam-tab-content.active {
+      display: flex;
+    }
+
+    .steam-card {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 18px;
+      background-color: #1e293b;
+      border: 1px solid #334155;
+      border-radius: 8px;
+      text-decoration: none;
+      color: #f1f5f9;
+      font-weight: 600;
+      font-size: 0.92rem;
+      transition: all 0.2s;
+    }
+
+    .steam-card:hover {
+      background-color: #334155;
+      border-color: #38bdf8;
+      color: #38bdf8;
+      transform: translateY(-1px);
+    }
+
+    .steam-card-icon {
+      font-size: 1.1rem;
+      flex-shrink: 0;
+    }
+
+    .steam-card-globe {
+      margin-left: auto;
+      font-size: 1rem;
+      color: #64748b;
+    }
+  </style>
+</head>
+<body>
+
+<div class="livresq-task-container">
+  <!-- 1. BEVITELI FELÜLET -->
+  <div id="livresq-task-section">
+    <div class="livresq-task-header">
+      <h1 class="livresq-task-title">📝 Videó Rendszerezési Feladat</h1>
+      <div class="livresq-instruction">
+        Készítsetek csoportosítást a megtekintett videókból az alábbi kategóriák szerint, és másoljátok a megfelelő linkeket válaszként a megadott helyekre!
+      </div>
+    </div>
+
+    <form id="livresq-task-form">
+      <!-- Kategória 1 -->
+      <div class="livresq-category-block">
+        <h2 class="livresq-category-title">⚡ 1. Megújuló energia és Energiatermelés</h2>
+        <div class="livresq-item-row">
+          <label class="livresq-item-label">Vízgyűjtő egyensúly:</label>
+          <input class="livresq-input" data-target="https://www.youtube.com/watch?v=aNNhI-qWTJE" placeholder="Illeszd be a YouTube linket ide..." type="url">
+        </div>
+        <div class="livresq-item-row">
+          <label class="livresq-item-label">Szélgenerátor modell újrahasznosítható anyagokból:</label>
+          <input class="livresq-input" data-target="https://www.youtube.com/watch?v=WAfzSYDH6xA" placeholder="Illeszd be a YouTube linket ide..." type="url">
+        </div>
+        <div class="livresq-item-row">
+          <label class="livresq-item-label">Ingyenenergiás vízkerék modell áram nélkül:</label>
+          <input class="livresq-input" data-target="https://www.youtube.com/watch?v=Wn2eexjum6Q" placeholder="Illeszd be a YouTube linket ide..." type="url">
+        </div>
+        <div class="livresq-item-row">
+          <label class="livresq-item-label">Vízkerekes áramfejlesztő (DIY):</label>
+          <input class="livresq-input" data-target="https://www.youtube.com/watch?v=e2wR0dsm9yU" placeholder="Illeszd be a YouTube linket ide..." type="url">
+        </div>
+        <div class="livresq-item-row">
+          <label class="livresq-item-label">Ingyenenergiás vízturbina (Szökőkút):</label>
+          <input class="livresq-input" data-target="https://www.youtube.com/watch?v=Fccgvstrn9Y" placeholder="Illeszd be a YouTube linket ide..." type="url">
+        </div>
+        <div class="livresq-item-row">
+          <label class="livresq-item-label">Gumiszalagos ventilátorgép (Ingyenenergia):</label>
+          <input class="livresq-input" data-target="https://www.youtube.com/watch?v=yXyqiwbldTw" placeholder="Illeszd be a YouTube linket ide..." type="url">
+        </div>
+      </div>
+
+      <!-- Kategória 2 -->
+      <div class="livresq-category-block">
+        <h2 class="livresq-category-title">🚨 2. Érzékelők, Riasztók és Elektronika</h2>
+        <div class="livresq-item-row">
+          <label class="livresq-item-label">Földrengésjelző projekt (Inspire Manak Award):</label>
+          <input class="livresq-input" data-target="https://www.youtube.com/watch?v=OFyBCcY8iLg" placeholder="Illeszd be a YouTube linket ide..." type="url">
+        </div>
+        <div class="livresq-item-row">
+          <label class="livresq-item-label">Egyszerű földrengésérzékelő riasztó:</label>
+          <input class="livresq-input" data-target="https://www.youtube.com/watch?v=udMoWquyekM" placeholder="Illeszd be a YouTube linket ide..." type="url">
+        </div>
+        <div class="livresq-item-row">
+          <label class="livresq-item-label">Automata tűzoltó készülék Arduino nélkül:</label>
+          <input class="livresq-input" data-target="https://www.youtube.com/watch?v=BQU5yZs9XwQ" placeholder="Illeszd be a YouTube linket ide..." type="url">
+        </div>
+        <div class="livresq-item-row">
+          <label class="livresq-item-label">Lézeres biztonsági riasztó Arduino-val:</label>
+          <input class="livresq-input" data-target="https://www.youtube.com/watch?v=y273Hrv9uyQ" placeholder="Illeszd be a YouTube linket ide..." type="url">
+        </div>
+        <div class="livresq-item-row">
+          <label class="livresq-item-label">Automata kapu (Teachable Machine &amp; Micro:Bit):</label>
+          <input class="livresq-input" data-target="https://www.youtube.com/watch?v=h7ADWXokjLM" placeholder="Illeszd be a YouTube linket ide..." type="url">
+        </div>
+        <div class="livresq-item-row">
+          <label class="livresq-item-label">Automata utcai világítás iskolai projekt:</label>
+          <input class="livresq-input" data-target="https://www.youtube.com/watch?v=tCWMk0kgnKI" placeholder="Illeszd be a YouTube linket ide..." type="url">
+        </div>
+      </div>
+
+      <!-- Kategória 3 -->
+      <div class="livresq-category-block">
+        <h2 class="livresq-category-title">⚙️ 3. Automata játékok és Mechanikus szerkezetek</h2>
+        <div class="livresq-item-row">
+          <label class="livresq-item-label">Hernyó automata játék kartonból:</label>
+          <input class="livresq-input" data-target="https://www.youtube.com/watch?v=_eKhOqsT898" placeholder="Illeszd be a YouTube linket ide..." type="url">
+        </div>
+        <div class="livresq-item-row">
+          <label class="livresq-item-label">Hogyan készítsünk automatákat (Előzetes):</label>
+          <input class="livresq-input" data-target="https://www.youtube.com/watch?v=9OqEze9JTu0" placeholder="Illeszd be a YouTube linket ide..." type="url">
+        </div>
+        <div class="livresq-item-row">
+          <label class="livresq-item-label">Koreai automata készítő bemutatása:</label>
+          <input class="livresq-input" data-target="https://www.youtube.com/watch?v=Ek-yN5ytThw" placeholder="Illeszd be a YouTube linket ide..." type="url">
+        </div>
+        <div class="livresq-item-row">
+          <label class="livresq-item-label">Kaméleon automata játék kartonból:</label>
+          <input class="livresq-input" data-target="https://www.youtube.com/watch?v=POjj7yokWXU" placeholder="Illeszd be a YouTube linket ide..." type="url">
+        </div>
+        <div class="livresq-item-row">
+          <label class="livresq-item-label">Repülő madár mechanizmus:</label>
+          <input class="livresq-input" data-target="https://www.youtube.com/watch?v=RtX4c42an68" placeholder="Illeszd be a YouTube linket ide..." type="url">
+        </div>
+        <div class="livresq-item-row">
+          <label class="livresq-item-label">Húzódzkodó emberke kartonból:</label>
+          <input class="livresq-input" data-target="https://www.youtube.com/watch?v=1KR_-8AOyz0" placeholder="Illeszd be a YouTube linket ide..." type="url">
+        </div>
+        <div class="livresq-item-row">
+          <label class="livresq-item-label">Theo Jansen szerkezet kartonból (DC motoros):</label>
+          <input class="livresq-input" data-target="https://www.youtube.com/watch?v=j7NSp0smeeY" placeholder="Illeszd be a YouTube linket ide..." type="url">
+        </div>
+        <div class="livresq-item-row">
+          <label class="livresq-item-label">Automata játék kartonból:</label>
+          <input class="livresq-input" data-target="https://www.youtube.com/watch?v=AH9sbyPgwFM" placeholder="Illeszd be a YouTube linket ide..." type="url">
+        </div>
+      </div>
+
+      <!-- Kategória 4 -->
+      <div class="livresq-category-block">
+        <h2 class="livresq-category-title">🎡 4. Mozgólépcsők, Libegők és Vidámparki modellek</h2>
+        <div class="livresq-item-row">
+          <label class="livresq-item-label">Karton drótkötélpálya / libegő modell:</label>
+          <input class="livresq-input" data-target="https://www.youtube.com/watch?v=9A9vKCtj04w" placeholder="Illeszd be a YouTube linket ide..." type="url">
+        </div>
+        <div class="livresq-item-row">
+          <label class="livresq-item-label">Kézműves karton mozgólépcső modell:</label>
+          <input class="livresq-input" data-target="https://www.youtube.com/watch?v=sBSlJwZmuGc" placeholder="Illeszd be a YouTube linket ide..." type="url">
+        </div>
+        <div class="livresq-item-row">
+          <label class="livresq-item-label">Működő mozgólépcső modell:</label>
+          <input class="livresq-input" data-target="https://www.youtube.com/watch?v=8gUp_DvAXdY" placeholder="Illeszd be a YouTube linket ide..." type="url">
+        </div>
+        <div class="livresq-item-row">
+          <label class="livresq-item-label">Automata lépcsők / mozgólépcső kartonból:</label>
+          <input class="livresq-input" data-target="https://www.youtube.com/watch?v=FZC21K4zNQA" placeholder="Illeszd be a YouTube linket ide..." type="url">
+        </div>
+        <div class="livresq-item-row">
+          <label class="livresq-item-label">Működő mozgólépcső modell iskolai projekt:</label>
+          <input class="livresq-input" data-target="https://www.youtube.com/watch?v=inh0SRW-iMY" placeholder="Illeszd be a YouTube linket ide..." type="url">
+        </div>
+        <div class="livresq-item-row">
+          <label class="livresq-item-label">Karton óriáskerék DC akkumulátorral:</label>
+          <input class="livresq-input" data-target="https://www.youtube.com/watch?v=gnW9doFq2Pc" placeholder="Illeszd be a YouTube linket ide..." type="url">
+        </div>
+        <div class="livresq-item-row">
+          <label class="livresq-item-label">Körhinta készítése kartonból:</label>
+          <input class="livresq-input" data-target="https://www.youtube.com/watch?v=UFSVMoPw8RA" placeholder="Illeszd be a YouTube linket ide..." type="url">
+        </div>
+        <div class="livresq-item-row">
+          <label class="livresq-item-label">Óriáskerék fapálcikákból és DC motorból:</label>
+          <input class="livresq-input" data-target="https://www.youtube.com/watch?v=NNcM9gh63bk" placeholder="Illeszd be a YouTube linket ide..." type="url">
+        </div>
+      </div>
+
+      <!-- Kategória 5 -->
+      <div class="livresq-category-block">
+        <h2 class="livresq-category-title">🎨 5. Golyópályák és Rajzológépek</h2>
+        <div class="livresq-item-row">
+          <label class="livresq-item-label">Golyópálya mozgólépcsővel kartonból:</label>
+          <input class="livresq-input" data-target="https://www.youtube.com/watch?v=aHqr9Ma8gEY" placeholder="Illeszd be a YouTube linket ide..." type="url">
+        </div>
+        <div class="livresq-item-row">
+          <label class="livresq-item-label">DIY golyópálya játék:</label>
+          <input class="livresq-input" data-target="https://www.youtube.com/watch?v=hKp5Ms0U-s0" placeholder="Illeszd be a YouTube linket ide..." type="url">
+        </div>
+        <div class="livresq-item-row">
+          <label class="livresq-item-label">Karton rajzológép készítése:</label>
+          <input class="livresq-input" data-target="https://www.youtube.com/watch?v=Fy4oglIu8UA" placeholder="Illeszd be a YouTube linket ide..." type="url">
+        </div>
+        <div class="livresq-item-row">
+          <label class="livresq-item-label">Geometriai automata rajzológép kartonból:</label>
+          <input class="livresq-input" data-target="https://www.youtube.com/watch?v=y0HiDOBzKvs" placeholder="Illeszd be a YouTube linket ide..." type="url">
+        </div>
+      </div>
+
+      <!-- Kategória 6 -->
+      <div class="livresq-category-block">
+        <h2 class="livresq-category-title">🕹️ 6. Egyéb DIY Karton modellek és Háztartási gépek</h2>
+        <div class="livresq-item-row">
+          <label class="livresq-item-label">Hidraulikus robotkar kartondobozból:</label>
+          <input class="livresq-input" data-target="https://www.youtube.com/watch?v=P2r9U4wkjcc" placeholder="Illeszd be a YouTube linket ide..." type="url">
+        </div>
+        <div class="livresq-item-row">
+          <label class="livresq-item-label">RC repülő műanyag palackokból:</label>
+          <input class="livresq-input" data-target="https://www.youtube.com/watch?v=e2wR0dsm9yU" placeholder="Illeszd be a YouTube linket ide..." type="url">
+        </div>
+        <div class="livresq-item-row">
+          <label class="livresq-item-label">Helikopter műanyag palackból:</label>
+          <input class="livresq-input" data-target="https://www.youtube.com/watch?v=j8cG48hOYbU" placeholder="Illeszd be a YouTube linket ide..." type="url">
+        </div>
+        <div class="livresq-item-row">
+          <label class="livresq-item-label">Karton persely készítése:</label>
+          <input class="livresq-input" data-target="https://www.youtube.com/watch?v=Y6Be22k8jBQ" placeholder="Illeszd be a YouTube linket ide..." type="url">
+        </div>
+        <div class="livresq-item-row">
+          <label class="livresq-item-label">Saját ATM automata (DC motor nélkül):</label>
+          <input class="livresq-input" data-target="https://www.youtube.com/watch?v=Wjg-4zVeVHg" placeholder="Illeszd be a YouTube linket ide..." type="url">
+        </div>
+      </div>
+
+      <!-- GOMBOK -->
+      <div class="livresq-actions">
+        <button class="livresq-btn livresq-btn-primary" onclick="checkAnswers()" type="button">Ellenőrzés</button>
+        <button class="livresq-btn livresq-btn-reveal" onclick="revealSolution()" type="button">💡 Súgó / Megoldás</button>
+        <button class="livresq-btn livresq-btn-secondary" onclick="resetForm()" type="button">Modul ürítése</button>
+      </div>
+
+      <div class="livresq-feedback" id="livresq-feedback">&nbsp;</div>
+    </form>
+  </div>
+
+  <!-- 2. HELYES KITÖLTÉSKOR VAGY SÚGÓRA KATTINTVA ELÉRHERŐ INTERAKTÍV NÉZET -->
+  <div id="steam-container" class="steam-container">
+    <h2 class="steam-header-title">🚀 Innovatív STEAM Projektötletek</h2>
+    <div class="steam-subtitle">
+      Kattints a fenti kategóriákra a témák közötti váltáshoz. A magyar nyelvű címekre kattintva a hozzájuk tartozó hivatalos YouTube videós útmutató nyílik meg új ablakban.
+    </div>
+
+    <div class="steam-tabs">
+      <button type="button" class="steam-tab-btn active" onclick="switchTab(event, &#39;tab-1&#39;)">⚡ Energia</button>
+      <button type="button" class="steam-tab-btn" onclick="switchTab(event, &#39;tab-2&#39;)">🚨 Érzékelők</button>
+      <button type="button" class="steam-tab-btn" onclick="switchTab(event, &#39;tab-3&#39;)">⚙️ Automata</button>
+      <button type="button" class="steam-tab-btn" onclick="switchTab(event, &#39;tab-4&#39;)">🎡 Vidámpark</button>
+      <button type="button" class="steam-tab-btn" onclick="switchTab(event, &#39;tab-5&#39;)">🎨 Rajzgépek</button>
+      <button type="button" class="steam-tab-btn" onclick="switchTab(event, &#39;tab-6&#39;)">🕹️ Egyéb DIY</button>
+    </div>
+
+    <!-- Tab Content 1 -->
+    <div id="tab-1" class="steam-tab-content active">
+      <a href="https://www.youtube.com/watch?v=aNNhI-qWTJE" target="_blank" class="steam-card"><span class="steam-card-icon">💧</span> Vízgyűjtő egyensúly <span class="steam-card-globe">🌐</span></a>
+      <a href="https://www.youtube.com/watch?v=WAfzSYDH6xA" target="_blank" class="steam-card"><span class="steam-card-icon">💨</span> Szélgenerátor modell újrahasznosítható anyagokból <span class="steam-card-globe">🌐</span></a>
+      <a href="https://www.youtube.com/watch?v=Wn2eexjum6Q" target="_blank" class="steam-card"><span class="steam-card-icon">⚙️</span> Ingyenenergiás vízkerék modell áram nélkül <span class="steam-card-globe">🌐</span></a>
+      <a href="https://www.youtube.com/watch?v=e2wR0dsm9yU" target="_blank" class="steam-card"><span class="steam-card-icon">⚡</span> Vízkerekes áramfejlesztő (DIY) <span class="steam-card-globe">🌐</span></a>
+      <a href="https://www.youtube.com/watch?v=Fccgvstrn9Y" target="_blank" class="steam-card"><span class="steam-card-icon">🌊</span> Ingyenenergiás vízturbina (Szökőkút) <span class="steam-card-globe">🌐</span></a>
+      <a href="https://www.youtube.com/watch?v=yXyqiwbldTw" target="_blank" class="steam-card"><span class="steam-card-icon">🌀</span> Gumiszalagos ventilátorgép <span class="steam-card-globe">🌐</span></a>
+    </div>
+
+    <!-- Tab Content 2 -->
+    <div id="tab-2" class="steam-tab-content">
+      <a href="https://www.youtube.com/watch?v=OFyBCcY8iLg" target="_blank" class="steam-card"><span class="steam-card-icon">🚨</span> Földrengésjelző projekt <span class="steam-card-globe">🌐</span></a>
+      <a href="https://www.youtube.com/watch?v=udMoWquyekM" target="_blank" class="steam-card"><span class="steam-card-icon">🔔</span> Egyszerű földrengésérzékelő riasztó <span class="steam-card-globe">🌐</span></a>
+      <a href="https://www.youtube.com/watch?v=BQU5yZs9XwQ" target="_blank" class="steam-card"><span class="steam-card-icon">🔥</span> Automata tűzoltó készülék Arduino nélkül <span class="steam-card-globe">🌐</span></a>
+      <a href="https://www.youtube.com/watch?v=y273Hrv9uyQ" target="_blank" class="steam-card"><span class="steam-card-icon">🔴</span> Lézeres biztonsági riasztó Arduino-val <span class="steam-card-globe">🌐</span></a>
+      <a href="https://www.youtube.com/watch?v=h7ADWXokjLM" target="_blank" class="steam-card"><span class="steam-card-icon">🚧</span> Automata kapu (AI / Micro:Bit) <span class="steam-card-globe">🌐</span></a>
+      <a href="https://www.youtube.com/watch?v=tCWMk0kgnKI" target="_blank" class="steam-card"><span class="steam-card-icon">💡</span> Automata utcai világítás <span class="steam-card-globe">🌐</span></a>
+    </div>
+
+    <!-- Tab Content 3 -->
+    <div id="tab-3" class="steam-tab-content">
+      <a href="https://www.youtube.com/watch?v=_eKhOqsT898" target="_blank" class="steam-card"><span class="steam-card-icon">🐛</span> Hernyó automata játék kartonból <span class="steam-card-globe">🌐</span></a>
+      <a href="https://www.youtube.com/watch?v=9OqEze9JTu0" target="_blank" class="steam-card"><span class="steam-card-icon">📖</span> Hogyan készítsünk automatákat <span class="steam-card-globe">🌐</span></a>
+      <a href="https://www.youtube.com/watch?v=Ek-yN5ytThw" target="_blank" class="steam-card"><span class="steam-card-icon">🎨</span> Koreai automata készítő bemutatása <span class="steam-card-globe">🌐</span></a>
+      <a href="https://www.youtube.com/watch?v=POjj7yokWXU" target="_blank" class="steam-card"><span class="steam-card-icon">🦎</span> Kaméleon automata játék kartonból <span class="steam-card-globe">🌐</span></a>
+      <a href="https://www.youtube.com/watch?v=RtX4c42an68" target="_blank" class="steam-card"><span class="steam-card-icon">🦅</span> Repülő madár mechanizmus <span class="steam-card-globe">🌐</span></a>
+      <a href="https://www.youtube.com/watch?v=1KR_-8AOyz0" target="_blank" class="steam-card"><span class="steam-card-icon">🏋️</span> Húzódzkodó emberke kartonból <span class="steam-card-globe">🌐</span></a>
+      <a href="https://www.youtube.com/watch?v=j7NSp0smeeY" target="_blank" class="steam-card"><span class="steam-card-icon">🕷️</span> Theo Jansen szerkezet kartonból <span class="steam-card-globe">🌐</span></a>
+      <a href="https://www.youtube.com/watch?v=AH9sbyPgwFM" target="_blank" class="steam-card"><span class="steam-card-icon">🤖</span> Automata játék kartonból <span class="steam-card-globe">🌐</span></a>
+    </div>
+
+    <!-- Tab Content 4 -->
+    <div id="tab-4" class="steam-tab-content">
+      <a href="https://www.youtube.com/watch?v=9A9vKCtj04w" target="_blank" class="steam-card"><span class="steam-card-icon">🪢</span> Karton drótkötélpálya / libegő <span class="steam-card-globe">🌐</span></a>
+      <a href="https://www.youtube.com/watch?v=sBSlJwZmuGc" target="_blank" class="steam-card"><span class="steam-card-icon">🪜</span> Kézműves karton mozgólépcső modell <span class="steam-card-globe">🌐</span></a>
+      <a href="https://www.youtube.com/watch?v=8gUp_DvAXdY" target="_blank" class="steam-card"><span class="steam-card-icon">📶</span> Működő mozgólépcső modell <span class="steam-card-globe">🌐</span></a>
+      <a href="https://www.youtube.com/watch?v=FZC21K4zNQA" target="_blank" class="steam-card"><span class="steam-card-icon">🧱</span> Automata lépcsők kartonból <span class="steam-card-globe">🌐</span></a>
+      <a href="https://www.youtube.com/watch?v=inh0SRW-iMY" target="_blank" class="steam-card"><span class="steam-card-icon">🏫</span> Mozgólépcső iskolai projekt <span class="steam-card-globe">🌐</span></a>
+      <a href="https://www.youtube.com/watch?v=gnW9doFq2Pc" target="_blank" class="steam-card"><span class="steam-card-icon">🎡</span> Karton óriáskerék DC akkumulátorral <span class="steam-card-globe">🌐</span></a>
+      <a href="https://www.youtube.com/watch?v=UFSVMoPw8RA" target="_blank" class="steam-card"><span class="steam-card-icon">🎠</span> Körhinta készítése kartonból <span class="steam-card-globe">🌐</span></a>
+      <a href="https://www.youtube.com/watch?v=NNcM9gh63bk" target="_blank" class="steam-card"><span class="steam-card-icon">🎡</span> Óriáskerék fapálcikákból <span class="steam-card-globe">🌐</span></a>
+    </div>
+
+    <!-- Tab Content 5 -->
+    <div id="tab-5" class="steam-tab-content">
+      <a href="https://www.youtube.com/watch?v=aHqr9Ma8gEY" target="_blank" class="steam-card"><span class="steam-card-icon">⚽</span> Golyópálya mozgólépcsővel kartonból <span class="steam-card-globe">🌐</span></a>
+      <a href="https://www.youtube.com/watch?v=hKp5Ms0U-s0" target="_blank" class="steam-card"><span class="steam-card-icon">🎯</span> DIY golyópálya játék <span class="steam-card-globe">🌐</span></a>
+      <a href="https://www.youtube.com/watch?v=Fy4oglIu8UA" target="_blank" class="steam-card"><span class="steam-card-icon">✏️</span> Karton rajzológép készítése <span class="steam-card-globe">🌐</span></a>
+      <a href="https://www.youtube.com/watch?v=y0HiDOBzKvs" target="_blank" class="steam-card"><span class="steam-card-icon">📐</span> Geometriai automata rajzológép <span class="steam-card-globe">🌐</span></a>
+    </div>
+
+    <!-- Tab Content 6 -->
+    <div id="tab-6" class="steam-tab-content">
+      <a href="https://www.youtube.com/watch?v=P2r9U4wkjcc" target="_blank" class="steam-card"><span class="steam-card-icon">🦾</span> Hidraulikus robotkar kartondobozból <span class="steam-card-globe">🌐</span></a>
+      <a href="https://www.youtube.com/watch?v=e2wR0dsm9yU" target="_blank" class="steam-card"><span class="steam-card-icon">✈️</span> RC repülő műanyag palackokból <span class="steam-card-globe">🌐</span></a>
+      <a href="https://www.youtube.com/watch?v=j8cG48hOYbU" target="_blank" class="steam-card"><span class="steam-card-icon">🚁</span> Helikopter műanyag palackból <span class="steam-card-globe">🌐</span></a>
+      <a href="https://www.youtube.com/watch?v=Y6Be22k8jBQ" target="_blank" class="steam-card"><span class="steam-card-icon">🪙</span> Karton persely készítése <span class="steam-card-globe">🌐</span></a>
+      <a href="https://www.youtube.com/watch?v=Wjg-4zVeVHg" target="_blank" class="steam-card"><span class="steam-card-icon">🏧</span> Saját ATM automata <span class="steam-card-globe">🌐</span></a>
+    </div>
+  </div>
+</div>
+
+<script>
+  function checkAnswers() {
+    const inputs = document.querySelectorAll('.livresq-input');
+    let correctCount = 0;
+    let totalCount = inputs.length;
+
+    inputs.forEach(input => {
+      const userValue = input.value.trim();
+      const expectedValue = input.getAttribute('data-target').trim();
+
+      if (userValue === '') {
+        input.classList.remove('correct', 'incorrect');
+      } else if (userValue === expectedValue) {
+        input.classList.add('correct');
+        input.classList.remove('incorrect');
+        correctCount++;
+      } else {
+        input.classList.add('incorrect');
+        input.classList.remove('correct');
+      }
+    });
+
+    const feedback = document.getElementById('livresq-feedback');
+
+    if (correctCount === totalCount) {
+      document.getElementById('livresq-task-section').style.display = 'none';
+      document.getElementById('steam-container').style.display = 'block';
+    } else {
+      feedback.style.display = 'block';
+      feedback.style.backgroundColor = 'rgba(239, 68, 68, 0.2)';
+      feedback.style.color = '#f87171';
+      feedback.style.border = '1px solid #ef4444';
+      feedback.innerHTML = `Helyesen kitöltött mezők: <strong>${correctCount} / ${totalCount}</strong>. A pirossal jelölt linkeket ellenőrizd újra, vagy kattints a Súgó gombra!`;
+    }
+  }
+
+  function revealSolution() {
+    const inputs = document.querySelectorAll('.livresq-input');
+    inputs.forEach(input => {
+      const expectedValue = input.getAttribute('data-target').trim();
+      input.value = expectedValue;
+      input.classList.add('correct');
+      input.classList.remove('incorrect');
+    });
+
+    document.getElementById('livresq-task-section').style.display = 'none';
+    document.getElementById('steam-container').style.display = 'block';
+  }
+
+  function resetForm() {
+    const inputs = document.querySelectorAll('.livresq-input');
+    inputs.forEach(input => {
+      input.value = '';
+      input.classList.remove('correct', 'incorrect');
+    });
+    const feedback = document.getElementById('livresq-feedback');
+    feedback.style.display = 'none';
+  }
+
+  function switchTab(evt, tabId) {
+    const parent = evt.target.closest('#steam-container');
+    const contents = parent.querySelectorAll('.steam-tab-content');
+    contents.forEach(content => content.classList.remove('active'));
+
+    const buttons = parent.querySelectorAll('.steam-tab-btn');
+    buttons.forEach(btn => btn.classList.remove('active'));
+
+    parent.querySelector('#' + tabId).classList.add('active');
+    evt.target.classList.add('active');
+  }
+</script>
+
+
+</body></html>
