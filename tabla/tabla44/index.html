@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<!-- saved from url=(0068)file:///C:/Users/Utilizator/Downloads/gemini-code-1787638280761.html -->
+<html lang="hu"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VBoard Gyorsindító</title>
+    <style>
+        body { 
+            font-family: system-ui, -apple-system, sans-serif; 
+            text-align: center; 
+            padding-top: 15vh; 
+            background-color: #f8fafc; 
+            color: #1e293b;
+        }
+        
+        .vboard-btn {
+            background-color: #2563eb;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 1.2rem;
+            border-radius: 8px;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: background-color 0.2s;
+        }
+        .vboard-btn:hover { 
+            background-color: #1d4ed8; 
+        }
+
+        kbd {
+            background-color: #e2e8f0;
+            border: 1px solid #cbd5e1;
+            border-radius: 4px;
+            padding: 0.2rem 0.5rem;
+            font-family: monospace;
+        }
+
+        .hint {
+            margin-top: 1.5rem;
+            color: #64748b;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>VBoard Gyorsindító</h1>
+    <p class="hint">Kattints az alábbi gombra, vagy nyomd meg a <kbd>V</kbd> billentyűt:</p>
+    <br>
+
+    <!-- Gomb a VBoard megnyitásához új lapon -->
+    <button class="vboard-btn" onclick="openVBoard()">VBoard Megnyitása</button>
+
+    <script>
+        const vboardUrl = "https://vboard.ro/lesson/3f419281-97f3-40b8-8f01-47766a27ef6b";
+
+        function openVBoard() {
+            window.open(vboardUrl, '_blank');
+        }
+
+        // Gyorsbillentyű: 'v' vagy 'V' betűre új lapon megnyitja
+        window.addEventListener('keydown', function(event) {
+            if ((event.key === 'v' || event.key === 'V') && 
+                document.activeElement.tagName !== 'INPUT' && 
+                document.activeElement.tagName !== 'TEXTAREA') {
+                openVBoard();
+            }
+        });
+    </script>
+
+
+</body></html>

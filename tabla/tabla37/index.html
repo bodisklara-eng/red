@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<!-- saved from url=(0068)file:///C:/Users/Utilizator/Downloads/gemini-code-1787597236854.html -->
+<html lang="hu"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <title>Szökőkút Vízvezetéke - Tabos Elmélet</title>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; background: #0f172a; color: #f8fafc; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; margin: 0; padding: 15px; }
+        .box { background: #1e293b; padding: 30px; border-radius: 16px; border: 2px solid #10b981; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.5); max-width: 780px; width: 100%; }
+        h1 { color: #10b981; margin-top: 0; font-size: 22px; }
+        .instruction { font-size: 14px; color: #cbd5e1; margin-bottom: 20px; background: #0f172a; padding: 15px; border-radius: 8px; border-left: 4px solid #10b981; text-align: left; line-height: 1.5; }
+        
+        .matrix-grid { 
+            display: grid; 
+            grid-template-columns: repeat(4, 75px); 
+            grid-template-rows: repeat(4, 75px); 
+            gap: 10px; 
+            justify-content: center; 
+            margin-bottom: 20px; 
+            background: #090d16;
+            padding: 15px;
+            border-radius: 12px;
+            border: 2px solid #334155;
+        }
+
+        .grid-cell { 
+            width: 75px; 
+            height: 75px; 
+            background: #334155; 
+            border: 2px solid #64748b; 
+            border-radius: 10px; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            justify-content: center; 
+            font-size: 22px; 
+            cursor: pointer; 
+            transition: 0.2s; 
+            user-select: none; 
+        }
+        .grid-cell:hover { border-color: #10b981; background: #475569; transform: scale(1.03); }
+
+        .palette { display: flex; justify-content: center; gap: 15px; margin-bottom: 20px; }
+        .palette-btn { background: #334155; border: 2px solid #64748b; padding: 10px 15px; border-radius: 8px; color: white; cursor: pointer; font-size: 15px; transition: 0.2s; font-weight: bold; }
+        .palette-btn.active { border-color: #10b981; background: #065f46; box-shadow: 0 0 10px rgba(16, 185, 129, 0.4); }
+
+        #msgBox { font-weight: normal; margin-bottom: 15px; min-height: 110px; font-size: 13px; text-align: left; background: #090d16; padding: 15px; border-radius: 8px; line-height: 1.5; border: 1px solid #334155; display: flex; flex-direction: column; gap: 10px; }
+        
+        .theory-container { display: flex; align-items: center; gap: 15px; margin-top: 5px; }
+        .mini-matrix { display: grid; grid-template-columns: repeat(3, 38px); grid-template-rows: repeat(3, 38px); gap: 4px; background: #1e293b; padding: 6px; border-radius: 6px; border: 1px solid #64748b; flex-shrink: 0; }
+        .mini-cell { width: 38px; height: 38px; background: #334155; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: bold; color: #cbd5e1; }
+        
+        @keyframes pulse-green { 0% { background: #334155; border-color: #64748b; } 50% { background: #065f46; border-color: #10b981; transform: scale(1.08); } 100% { background: #334155; border-color: #64748b; } }
+        @keyframes pulse-red { 0% { background: #334155; border-color: #64748b; } 50% { background: #7f1d1d; border-color: #ef4444; transform: scale(1.08); } 100% { background: #334155; border-color: #64748b; } }
+        @keyframes pulse-center { 0% { background: #1e293b; } 50% { background: #3b82f6; color: white; } 100% { background: #1e293b; } }
+
+        .anim-center { animation: pulse-center 1.5s infinite; border: 2px dashed #60a5fa; }
+        .anim-neumann { animation: pulse-green 1.5s infinite; border: 2px solid #10b981; color: #10b981; }
+        .anim-moore { animation: pulse-red 1.5s infinite; border: 2px solid #ef4444; color: #ef4444; }
+
+        /* Kattintható kulcsszavak */
+        .keyword-link { color: #38bdf8; text-decoration: underline; cursor: pointer; font-weight: bold; transition: 0.2s; }
+        .keyword-link:hover { color: #7dd3fc; }
+
+        .btn-group { display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; }
+        button.action-btn { background: #10b981; color: white; border: none; padding: 10px 18px; border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.2s; }
+        button.action-btn:hover { background: #34d399; }
+        
+        .theory-btn { background: #3b82f6 !important; }
+        .theory-btn:hover { background: #60a5fa !important; }
+        
+        a.back-btn { display: inline-block; background: #475569; color: white; padding: 10px 18px; border-radius: 8px; font-weight: bold; text-decoration: none; transition: 0.2s; }
+        a.back-btn:hover { background: #64748b; }
+
+        /* Modális ablak és Tabok stílusa */
+        .modal { display: none; position: fixed; z-index: 100; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.75); align-items: center; justify-content: center; padding: 15px; box-sizing: border-box; }
+        .modal-content { background: #1e293b; border: 2px solid #3b82f6; padding: 25px; border-radius: 16px; max-width: 680px; width: 100%; max-height: 85vh; overflow-y: auto; text-align: left; box-shadow: 0 15px 35px rgba(0,0,0,0.6); }
+        
+        /* Fülek (Tabs) */
+        .tab-header { display: flex; gap: 10px; border-bottom: 2px solid #334155; margin-bottom: 20px; padding-bottom: 10px; }
+        .tab-btn { background: #334155; border: none; padding: 8px 16px; border-radius: 6px; color: #cbd5e1; cursor: pointer; font-weight: bold; font-size: 14px; transition: 0.2s; }
+        .tab-btn.active { background: #3b82f6; color: white; box-shadow: 0 0 10px rgba(59, 130, 246, 0.4); }
+        
+        .tab-pane { display: none; }
+        .tab-pane.active { display: block; }
+
+        .modal-content h3 { color: #34d399; font-size: 16px; margin-top: 10px; }
+        .modal-content p, .modal-content li { font-size: 13px; color: #cbd5e1; line-height: 1.6; }
+        .modal-content ul { padding-left: 20px; }
+        
+        .close-btn { background: #ef4444; color: white; border: none; padding: 10px 20px; border-radius: 8px; font-weight: bold; cursor: pointer; display: block; margin: 25px auto 0 auto; transition: 0.2s; }
+        .close-btn:hover { background: #dc2626; }
+    </style>
+</head>
+<body>
+    <div class="box">
+        <h1>🌊 Szökőkút Vízvezetéke</h1>
+        
+        <div class="instruction">
+            <b>Feladat:</b> Kösd össze a Startot (`🟢 [0][0]`) a Céggel (`🔴 [3][3]`). A kód a <span class="keyword-link" onclick="openModal(&#39;neumannTab&#39;)">Neumann-szomszédságot</span> használja.
+        </div>
+
+        <div class="matrix-grid" id="matrixGrid"><div class="grid-cell">🟢<span style="font-size:9px; color:#94a3b8; margin-top:2px;">[0][0]</span></div><div class="grid-cell">⬛<span style="font-size:9px; color:#94a3b8; margin-top:2px;">[0][1]</span></div><div class="grid-cell">⬛<span style="font-size:9px; color:#94a3b8; margin-top:2px;">[0][2]</span></div><div class="grid-cell">⬛<span style="font-size:9px; color:#94a3b8; margin-top:2px;">[0][3]</span></div><div class="grid-cell">⬛<span style="font-size:9px; color:#94a3b8; margin-top:2px;">[1][0]</span></div><div class="grid-cell">🔧<span style="font-size:9px; color:#94a3b8; margin-top:2px;">[1][1]</span></div><div class="grid-cell">⬛<span style="font-size:9px; color:#94a3b8; margin-top:2px;">[1][2]</span></div><div class="grid-cell">⬛<span style="font-size:9px; color:#94a3b8; margin-top:2px;">[1][3]</span></div><div class="grid-cell">⬛<span style="font-size:9px; color:#94a3b8; margin-top:2px;">[2][0]</span></div><div class="grid-cell">🔧<span style="font-size:9px; color:#94a3b8; margin-top:2px;">[2][1]</span></div><div class="grid-cell">⬛<span style="font-size:9px; color:#94a3b8; margin-top:2px;">[2][2]</span></div><div class="grid-cell">⬛<span style="font-size:9px; color:#94a3b8; margin-top:2px;">[2][3]</span></div><div class="grid-cell">⬛<span style="font-size:9px; color:#94a3b8; margin-top:2px;">[3][0]</span></div><div class="grid-cell">⬛<span style="font-size:9px; color:#94a3b8; margin-top:2px;">[3][1]</span></div><div class="grid-cell">⬛<span style="font-size:9px; color:#94a3b8; margin-top:2px;">[3][2]</span></div><div class="grid-cell">🔴<span style="font-size:9px; color:#94a3b8; margin-top:2px;">[3][3]</span></div></div>
+
+        <div class="palette">
+            <button class="palette-btn active" onclick="selectTool(1)">🔧 Csőelem lerakása</button>
+            <button class="palette-btn" onclick="selectTool(0)">⬛ Törlés (Üres)</button>
+        </div>
+
+        <div id="msgBox" style="color: rgb(248, 113, 113);">
+                    ❌ <b>Hiba: Nincs érvényes <span class="keyword-link" onclick="openModal(&#39;neumannTab&#39;)">Neumann</span>-útvonal!</b><br>
+                    • A rendszer a <span class="keyword-link" onclick="openModal(&#39;neumannTab&#39;)">Neumann-szomszédságot</span> igényli.<br>
+                    • Az <span class="keyword-link" onclick="openModal(&#39;mooreTab&#39;)">Moore-szomszédság</span> (átlós) itt érvénytelen. Kattints a szavakra a részletekért!
+                </div>
+
+        <div class="btn-group">
+            <button class="action-btn" onclick="checkPath()">Útvonal Tesztelése 💧</button>
+            <button class="action-btn theory-btn" onclick="openModal(&#39;neumannTab&#39;)">📖 Teljes Elmélet (Tabok)</button>
+            <button class="action-btn" style="background:#64748b;" onclick="resetGrid()">Törlés 🔄</button>
+            <a href="file:///C:/Users/Utilizator/Downloads/fo_oldal.html" class="back-btn">⬅ Vissza</a>
+        </div>
+    </div>
+
+    <!-- EGYESÍTETT MODÁLIS ABLAK FÜLEKKEL (TABS) -->
+    <div id="theoryModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <!-- Fülek fejléc -->
+            <div class="tab-header">
+                <button class="tab-btn active" id="btnNeumannTab" onclick="switchTab(&#39;neumannTab&#39;)">🟢 Neumann-szomszédság</button>
+                <button class="tab-btn" id="btnMooreTab" onclick="switchTab(&#39;mooreTab&#39;)">🔴 Moore-szomszédság</button>
+                <button class="tab-btn" id="btnFullTab" onclick="switchTab(&#39;fullTab&#39;)">📖 Teljes Áttekintés</button>
+            </div>
+
+            <!-- 1. Neumann Fül -->
+            <div id="neumannTab" class="tab-pane active">
+                <h3>1. Neumann-szomszédság (Él-szomszédság) – A helyes választás</h3>
+                <p>A Neumann-féle szomszédság azt mondja ki, hogy egy cellának csak azok a szomszédai, amelyekkel <b>él mentén (közös határvonallal)</b> érintkeznek.</p>
+                
+                <div class="theory-container" style="margin: 15px 0;">
+                    <div class="mini-matrix">
+                        <div class="mini-cell">[0][0]</div>
+                        <div class="mini-cell anim-neumann">[0][1]</div>
+                        <div class="mini-cell">[0][2]</div>
+                        <div class="mini-cell anim-neumann">[1][0]</div>
+                        <div class="mini-cell anim-center">[1][1]</div>
+                        <div class="mini-cell anim-neumann">[1][2]</div>
+                        <div class="mini-cell">[2][0]</div>
+                        <div class="mini-cell anim-neumann">[2][1]</div>
+                        <div class="mini-cell">[2][2]</div>
+                    </div>
+                    <div>
+                        <p style="margin:0; font-size:12px;"><b>Koordináták:</b> Fent <code>[r-1][c]</code>, Lent <code>[r+1][c]</code>, Balra <code>[r][c-1]</code>, Jobbra <code>[r][c+1]</code>.<br><br>
+                        <b>Fizikai magyarázat:</b> A csövek oldalfalai illeszkednek egymáshoz. Sakktábla példa: a <b>bástya</b> mozgása.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2. Moore Fül -->
+            <div id="mooreTab" class="tab-pane">
+                <h3>2. Moore-szomszédság (Csomópont / Sakk-szomszédság) – Az átlós</h3>
+                <p>Magába foglalja az összes irányt: a 4 élszomszédot plusz a 4 átlós sarkot is (pl. <code>[0][0]</code>-ból <code>[1][1]</code>).</p>
+                
+                <div class="theory-container" style="margin: 15px 0;">
+                    <div class="mini-matrix">
+                        <div class="mini-cell anim-moore">[0][0]</div>
+                        <div class="mini-cell">[0][1]</div>
+                        <div class="mini-cell">[0][2]</div>
+                        <div class="mini-cell">[1][0]</div>
+                        <div class="mini-cell anim-center">[1][1]</div>
+                        <div class="mini-cell">[1][2]</div>
+                        <div class="mini-cell">[2][0]</div>
+                        <div class="mini-cell">[2][1]</div>
+                        <div class="mini-cell">[2][2]</div>
+                    </div>
+                    <div>
+                        <p style="margin:0; font-size:12px;"><b>Miért hibás a csöveknél?</b><br>
+                        1. <i>Geometriai akadály:</i> Pontszerű sarok-érintkezésnél nincs keresztmetszet, a víz elfolyna.<br>
+                        2. <i>Gráfelmélet:</i> Átlósan átugorhatna a falakon.<br>
+                        Sakktábla példa: a <b>futó vagy király</b> lépése.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3. Teljes Fül -->
+            <div id="fullTab" class="tab-pane">
+                <h3>Összefoglaló elméleti háttér</h3>
+                <p>Az informatikában, a matematikában és a hálózatelméletben a 2D tömbökön alapuló rácsoknál szigorú szabályokat alkalmazunk.</p>
+                <ul>
+                    <li><b>Csövekhez:</b> Kizárólag a <i>Neumann-szomszédság</i> alkalmazható a fizikai folytonosság miatt.</li>
+                    <li><b>Navigációhoz/Játékokhoz:</b> Bizonyos esetekben (pl. sakkbábuk, távolságszámítás) hasznos a <i>Moore-szomszédság</i> is, de vízvezetékeknél érvénytelen.</li>
+                </ul>
+            </div>
+
+            <button class="close-btn" onclick="closeModal()">Bezárás ✖</button>
+        </div>
+    </div>
+
+    <script>
+        let gridMatrix = [
+            [9, 0, 0, 0], // [0][0] Start
+            [0, 0, 0, 0],
+            [0, 0, 0, 0],
+            [0, 0, 0, 8]  // [3][3] Cél
+        ];
+
+        let waterFlow = [
+            [0, 0, 0, 0],
+            [0, 0, 0, 0],
+            [0, 0, 0, 0],
+            [0, 0, 0, 0]
+        ];
+
+        let selectedVal = 1;
+
+        function selectTool(val) {
+            selectedVal = val;
+            document.querySelectorAll('.palette-btn').forEach(b => b.classList.remove('active'));
+            event.currentTarget.classList.add('active');
+        }
+
+        function openModal(tabName) {
+            document.getElementById('theoryModal').style.display = 'flex';
+            if(tabName) {
+                switchTab(tabName);
+            }
+        }
+
+        function closeModal() {
+            document.getElementById('theoryModal').style.display = 'none';
+        }
+
+        function switchTab(tabId) {
+            // Minden fül elrejtése
+            document.querySelectorAll('.tab-pane').forEach(pane => pane.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+
+            // Kiválasztott fül és gomb aktiválása
+            document.getElementById(tabId).classList.add('active');
+            if(tabId === 'neumannTab') document.getElementById('btnNeumannTab').classList.add('active');
+            if(tabId === 'mooreTab') document.getElementById('btnMooreTab').classList.add('active');
+            if(tabId === 'fullTab') document.getElementById('btnFullTab').classList.add('active');
+        }
+
+        window.onclick = function(event) {
+            let modal = document.getElementById('theoryModal');
+            if (event.target === modal) {
+                closeModal();
+            }
+        }
+
+        function renderGrid() {
+            const gridEl = document.getElementById('matrixGrid');
+            gridEl.innerHTML = '';
+            
+            for(let r = 0; r < 4; r++) {
+                for(let c = 0; c < 4; c++) {
+                    let cell = document.createElement('div');
+                    cell.className = 'grid-cell';
+                    let val = gridMatrix[r][c];
+                    let hasWater = waterFlow[r][c] === 2;
+                    
+                    let displayChar = '⬛';
+                    if(val === 9) displayChar = '🟢';
+                    else if(val === 8) displayChar = '🔴';
+                    else if(val === 1) displayChar = hasWater ? '💧' : '🔧';
+
+                    cell.innerHTML = `${displayChar}<span style="font-size:9px; color:#94a3b8; margin-top:2px;">[${r}][${c}]</span>`;
+                    
+                    cell.onclick = () => {
+                        if(gridMatrix[r][c] !== 9 && gridMatrix[r][c] !== 8) {
+                            gridMatrix[r][c] = selectedVal;
+                            waterFlow[r][c] = 0;
+                            renderGrid();
+                        } else {
+                            document.getElementById('msgBox').style.color = '#f87171';
+                            document.getElementById('msgBox').innerText = 'A Start és Cél mező nem módosítható!';
+                        }
+                    };
+                    
+                    gridEl.appendChild(cell);
+                }
+            }
+        }
+
+        function resetGrid() {
+            gridMatrix = [
+                [9, 0, 0, 0],
+                [0, 0, 0, 0],
+                [0, 0, 0, 0],
+                [0, 0, 0, 8]
+            ];
+            waterFlow = [
+                [0, 0, 0, 0],
+                [0, 0, 0, 0],
+                [0, 0, 0, 0],
+                [0, 0, 0, 0]
+            ];
+            document.getElementById('msgBox').style.color = '#cbd5e1';
+            document.getElementById('msgBox').innerText = 'A tábla alaphelyzetbe állt.';
+            renderGrid();
+        }
+
+        function checkPath() {
+            waterFlow = Array(4).fill(0).map(() => Array(4).fill(0));
+            let visited = Array(4).fill(0).map(() => Array(4).fill(false));
+            let parentMap = {};
+            let queue = [];
+            
+            queue.push([0, 0]);
+            visited[0][0] = true;
+            let reachedTarget = false;
+
+            let dr = [-1, 1, 0, 0];
+            let dc = [0, 0, -1, 1];
+
+            while(queue.length > 0) {
+                let [currR, currC] = queue.shift();
+
+                if(gridMatrix[currR][currC] === 8) {
+                    reachedTarget = true;
+                    let currKey = `${currR},${currC}`;
+                    while(parentMap[currKey]) {
+                        let [př, pc] = parentMap[currKey].split(',').map(Number);
+                        if(gridMatrix[př][pc] === 1) {
+                            waterFlow[př][pc] = 2;
+                        }
+                        currKey = `${př},${pc}`;
+                    }
+                    break;
+                }
+
+                for(let i = 0; i < 4; i++) {
+                    let nextR = currR + dr[i];
+                    let nextC = currC + dc[i];
+
+                    if(nextR >= 0 && nextR < 4 && nextC >= 0 && nextC < 4) {
+                        if(!visited[nextR][nextC] && (gridMatrix[nextR][nextC] === 1 || gridMatrix[nextR][nextC] === 8)) {
+                            visited[nextR][nextC] = true;
+                            parentMap[`${nextR},${nextC}`] = `${currR},${currC}`;
+                            queue.push([nextR, nextC]);
+                        }
+                    }
+                }
+            }
+
+            renderGrid();
+            let msg = document.getElementById('msgBox');
+
+            if(reachedTarget) {
+                msg.style.color = '#10b981';
+                msg.innerHTML = '✅ <b>Siker!</b> A víz folytonosan áramlik a 💧 csepeken keresztül!';
+            } else {
+                msg.style.color = '#f87171';
+                msg.innerHTML = `
+                    ❌ <b>Hiba: Nincs érvényes <span class="keyword-link" onclick="openModal('neumannTab')">Neumann</span>-útvonal!</b><br>
+                    • A rendszer a <span class="keyword-link" onclick="openModal('neumannTab')">Neumann-szomszédságot</span> igényli.<br>
+                    • Az <span class="keyword-link" onclick="openModal('mooreTab')">Moore-szomszédság</span> (átlós) itt érvénytelen. Kattints a szavakra a részletekért!
+                `;
+            }
+        }
+
+        renderGrid();
+    </script>
+
+</body></html>

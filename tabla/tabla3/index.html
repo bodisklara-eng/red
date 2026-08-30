@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<!-- saved from url=(0068)file:///C:/Users/Utilizator/Downloads/gemini-code-1787594125605.html -->
+<html lang="hu"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <title>Edulib Stílus - Algoritmus Építő</title>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; background: #0f172a; color: #f8fafc; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; margin: 0; }
+        .box { background: #1e293b; padding: 30px; border-radius: 16px; border: 2px solid #06b6d4; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.5); max-width: 600px; width: 100%; }
+        h1 { color: #06b6d4; margin-top: 0; }
+        .instruction { font-size: 16px; color: #94a3b8; margin-bottom: 20px; }
+        .step-btn { display: block; width: 100%; margin: 8px 0; padding: 12px; background: #334155; border: 2px solid #475569; border-radius: 8px; color: white; cursor: pointer; transition: 0.2s; font-size: 15px; }
+        .step-btn:hover { background: #475569; }
+        .step-btn.selected { background: #0ea5e9; border-color: #38bdf8; }
+        .step-btn.correct { background: #10b981; border-color: #34d399; }
+        .result { margin-top: 15px; font-weight: bold; height: 20px; color: #f59e0b; }
+        a.back-btn { display: inline-block; margin-top: 25px; background: #f59e0b; color: #0f172a; padding: 10px 20px; border-radius: 8px; font-weight: bold; text-decoration: none; transition: 0.2s; }
+        a.back-btn:hover { background: #fbbf24; }
+    </style>
+</head>
+<body>
+    <div class="box">
+        <h1>🧩 Algoritmus Okosfeladat</h1>
+        <div class="instruction">Kattints a lépésekre a megfelelő sorrendben, hogy összeállítsd a jelszavas beléptető algoritmusát! (1. Kérés -&gt; 2. Beolvasás -&gt; 3. Ellenőrzés -&gt; 4. Eredmény)</div>
+        
+        <div id="steps-container">
+            <button class="step-btn" data-order="3">Ha a jelszó helyes, engedd be a felhasználót!</button>
+            <button class="step-btn" data-order="1">Kérd be a felhasználótól a jelszót!</button>
+            <button class="step-btn" data-order="4">Ha a jelszó hibás, írd ki: "Sikertelen belépés"!</button>
+            <button class="step-btn" data-order="2">Olvasd be és tárold el a beírt karaktereket!</button>
+        </div>
+
+        <div class="result" id="resultText">Válaszd ki az 1. lépést!</div>
+        <button onclick="resetGame()" style="margin-top:10px; padding:8px 15px; border-radius:5px; border:none; cursor:pointer;">Újraindítás</button>
+        <br>
+        <a href="file:///C:/Users/Utilizator/Downloads/fo_oldal.html" class="back-btn">⬅ Vissza a Varázsajtóhoz</a>
+    </div>
+
+    <script>
+        let currentStep = 1;
+        const buttons = document.querySelectorAll('.step-btn');
+        const resultText = document.getElementById('resultText');
+
+        buttons.forEach(btn => {
+            btn.addEventListener('click', function() {
+                if(this.classList.contains('correct')) return;
+                let order = parseInt(this.getAttribute('data-order'));
+                if(order === currentStep) {
+                    this.classList.add('correct');
+                    currentStep++;
+                    if(currentStep > 4) {
+                        resultText.style.color = '#10b981';
+                        resultText.innerText = '✅ Helyes! Az algoritmus tökéletes.';
+                    } else {
+                        resultText.innerText = `Jó! Most válaszd ki a(z) ${currentStep}. lépést!`;
+                    }
+                } else {
+                    resultText.style.color = '#ef4444';
+                    resultText.innerText = '❌ Helytelen sorrend! Gondold újra.';
+                    setTimeout(() => { resultText.style.color = '#f59e0b'; resultText.innerText = `Keresd a(z) ${currentStep}. lépést!`; }, 2000);
+                }
+            });
+        });
+
+        function resetGame() {
+            currentStep = 1;
+            buttons.forEach(btn => btn.classList.remove('correct', 'selected'));
+            resultText.style.color = '#f59e0b';
+            resultText.innerText = 'Válaszd ki az 1. lépést!';
+        }
+    </script>
+
+</body></html>

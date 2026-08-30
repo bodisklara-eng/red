@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A Suttogó Erdő - PET Szökőkút & Tömb Mágia</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #0d0f18;
+            color: #ffffff;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+        }
+        h1 {
+            margin-bottom: 8px;
+            color: #7aa2f7;
+            font-size: 1.4rem;
+        }
+        #game-container {
+            position: relative;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+            border-radius: 12px;
+            overflow: hidden;
+            border: 2px solid #2ac3de;
+        }
+        canvas {
+            display: block;
+            cursor: pointer;
+        }
+        .instruction {
+            margin-top: 10px;
+            color: #a9b1d6;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>A Suttogó Erdő - PET Szökőkút & Tömb Vezérlés</h1>
+    <div id="game-container">
+        <canvas id="canvas" width="800" height="480"></canvas>
+    </div>
+    <p class="instruction">🔑 Kattints a farkas előtt lebegő tömbelemekre, a barlangra vagy a kulcsra!</p>
+
+<script>
+const canvas = document.getElementById('canvas');
+const ctx = canvas.getContext('2d');
+
+let state = {
+    keyState: 'floating', 
+    doorOpen: false,
+    doorProgress: 0,
+    message: "A barlangból kirepülnek a szökőkút rendszer eszközei és a vezérlő tömb adatai a farkas elé!",
+    messageTimer: 260,
+    keyX: 490,
+    keyY: 260,
+    targetX: 668,
+    targetY: 235,
+    keyAngle: 0
+};
+
+// CSILLOGÓ RENDSZERRÉSZEK ÉS TÖMBADATOK (Infografika alapján)
+const systemDataList = [
+    { label: "Felső PET palack", detail: "1 db (2L víztároló)", icon: "🍾" },
+    { label: "Alsó PET palack", detail: "1 db (2L gyűjtőedény)", icon: "🛢️" },
+    { label: "Vízszivattyú", detail: "1 db (12V / PWM)", icon: "⚙️" },
+    { label: "Műanyag vízcsövek", detail: "2 db (8mm átmérő)", icon: "🌀" },
+    { label: "Szökőkút kupakok", detail: "n = 4 db (kifolyók)", icon: "⛲" },
+    { label: "Tömb méret (n)", detail: "n = 4 elem", icon: "📊" },
+    { label: "tomb[0]", detail: "80% nyitottság", icon: "🔢" },
+    { label: "tomb[1]", detail: "60% nyitottság", icon: "🔢" },
+    { label: "tomb[2]", detail: "40% nyitottság", icon: "🔢" },
+    { label: "tomb[3]", detail: "100% nyitottság", icon: "🔢" }
+];
+
+// FARKAS ELÉ REPÜLŐ ADATKÁRTYÁK
+const flyingNodes = systemDataList.map((item, i) => {
+    return {
+        ...item,
+        x: 80,
+        y: 330,
+        // Célpozíciók a farkas körül/előtt (x: 170..310, y: 170..290)
+        targetX: 160 + (i % 2) * 110,
+        targetY: 160 + Math.floor(i / 2) * 32,
+        progress: (i * 0.1), // Eltolt indítás
+        speed: 0.008,
+        pulse: Math.random() * Math.PI
+    };
+});
+
+// VARÁZSPORSZEMCSÉK
+const particles = [];
+for (let i = 0; i < 35; i++) {
+    particles.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        radius: Math.random() * 2 + 1,
+        speedY: Math.random() * 0.4 + 0.1,
+        alpha: Math.random()
+    });
+}
+
+// DENEVÉREK & ÉJSZAKAI GÖMBÖK
+const caveBats = [];
+for (let i = 0; i < 4; i++) {
+    caveBats.push({
+        x: 80, y: 330,
+        vx: Math.random() * 1.5 + 0.8,
+        vy: -(Math.random() * 1.5 + 0.8),
+        size: Math.random() * 4 + 5,
+        phase: Math.random() * Math.PI * 2
+    });
+}
+
+const caveOrbs = [];
+for (let i = 0; i < 10; i++) {
+    caveOrbs.push({
+        x: 80, y: 330,
+        vx: (Math.random() - 0.2) * 1.2,
+        vy: -(Math.random() * 1.5 + 0.5),
+        radius: Math.random() * 2 + 1.5,
+        alpha: Math.random(),
+        color: Math.random() > 0.5 ? '#38bdf8' : '#2dd4bf'
+    });
+}
+
+// KATTINTÁSOK KEZELÉSE
+canvas.addEventListener('click', (e) => {
+    const rect = canvas.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+
+    // Repülő tömbelemek kattintása a farkas előtt
+    for (let node of flyingNodes) {
+        if (Math.hypot(x - node.currentX, y - node.currentY) < 25) {
+            showMessage(`Eszköz/Adat: ${node.label} | Mennyiség/Érték: ${node.detail}`);
+            return;
+        }
+    }
+
+    // Barlang kattintás
+    if (Math.hypot(x - 80, y - 330) < 40) {
+        showMessage("A barlangból a PET-palackos szökőkút építőelemei és tömbkódjai áramlanak ki!");
+        return;
+    }
+
+    // Farkas kattintás
+    if (x > 180 && x < 310 && y > 220 && y < 370) {
+        showMessage("A farkas az egydimenziós tömb adatait őrzi: tomb[] = {80, 60, 40, 100}");
+        return;
+    }
+
+    // Kút kattintás
+    if (x > 390 && x < 470 && y > 280 && y < 370) {
+        showMessage("A kőkút felett vízsugarak táncolnak a tömb értékeinek megfelelően!");
+        return;
+    }
+
+    // Kulcs kattintás
+    let currentKeyY = state.keyState === 'floating' ? state.keyY + Math.sin(tick * 0.06) * 10 : state.keyY;
+    if (Math.hypot(x - state.keyX, y - currentKeyY) < 40 && state.keyState === 'floating') {
+        state.keyState = 'moving';
+        state.keyY = currentKeyY;
+        showMessage("A mágikus kulcs elindul a kapu zára felé...");
+        return;
+    }
+});
+
+function showMessage(text) {
+    state.message = text;
+    state.messageTimer = 240;
+}
+
+// BARLANGBÓL KIREPÜLŐ ADATOK ÉS ESZKÖZÖK KIRAJZOLÁSA A FARKAS ELÉ
+function updateAndDrawFlyingSystemData(tick) {
+    flyingNodes.forEach((node) => {
+        node.progress += node.speed;
+        if (node.progress > 1) node.progress = 0; // Folyamatos körforgás
+
+        // Parabola pálya a barlangból (80,330) a farkas előtti helyre
+        let currentX = (1 - node.progress) * 80 + node.progress * node.targetX;
+        let arcY = Math.sin(node.progress * Math.PI) * -60; // Íves repülés
+        let currentY = (1 - node.progress) * 330 + node.progress * node.targetY + arcY;
+
+        // Finom lebegés, amikor megérkezik
+        let floatY = Math.sin(tick * 0.05 + node.pulse) * 4;
+        node.currentX = currentX;
+        node.currentY = currentY + floatY;
+
+        ctx.save();
+        ctx.translate(node.currentX, node.currentY);
+
+        // Áttetszőség a repülés fázisában
+        let alpha = Math.sin(node.progress * Math.PI);
+        ctx.globalAlpha = Math.max(0.2, alpha);
+
+        // Kártya háttér
+        ctx.fillStyle = 'rgba(15, 23, 42, 0.85)';
+        ctx.beginPath();
+        ctx.roundRect(-45, -14, 90, 26, 6);
+        ctx.fill();
+
+        ctx.strokeStyle = node.label.includes('tomb') ? '#38bdf8' : '#22c55e';
+        ctx.lineWidth = 1.2;
+        ctx.stroke();
+
+        // Ikon és Szöveg
+        ctx.font = '10px Segoe UI';
+        ctx.fillStyle = '#f8fafc';
+        ctx.textAlign = 'center';
+        ctx.fillText(`${node.icon} ${node.label}`, 0, -1);
+
+        ctx.font = '8px Segoe UI';
+        ctx.fillStyle = '#94a3b8';
+        ctx.fillText(node.detail, 0, 9);
+
+        ctx.restore();
+    });
+}
+
+// CSILLOGÓ HOLD & ERDŐ
+function drawSparklingMoon(x, y, radius, tick) {
+    let aura = radius + 20 + Math.sin(tick * 0.05) * 6;
+    let moonGlow = ctx.createRadialGradient(x, y, radius * 0.4, x, y, aura);
+    moonGlow.addColorStop(0, 'rgba(224, 247, 250, 0.9)');
+    moonGlow.addColorStop(1, 'rgba(125, 207, 255, 0)');
+    
+    ctx.fillStyle = moonGlow;
+    ctx.beginPath();
+    ctx.arc(x, y, aura, 0, Math.PI * 2);
+    ctx.fill();
+
+    ctx.fillStyle = '#f0fdfa';
+    ctx.beginPath();
+    ctx.arc(x, y, radius, 0, Math.PI * 2);
+    ctx.fill();
+}
+
+function drawPineTree(x, baseY, width, height, color) {
+    ctx.fillStyle = color;
+    ctx.fillRect(x - width * 0.1, baseY - height * 0.2, width * 0.2, height * 0.2);
+    for (let i = 0; i < 3; i++) {
+        let layerY = baseY - height * 0.15 - (i * (height * 0.26));
+        let layerWidth = width * (1 - i * 0.22);
+        ctx.beginPath();
+        ctx.moveTo(x, layerY - height * 0.45);
+        ctx.lineTo(x + layerWidth / 2, layerY);
+        ctx.lineTo(x - layerWidth / 2, layerY);
+        ctx.closePath();
+        ctx.fill();
+    }
+}
+
+function drawCave() {
+    ctx.save();
+    ctx.fillStyle = '#1e293b';
+    ctx.beginPath();
+    ctx.moveTo(30, 360);
+    ctx.quadraticCurveTo(50, 280, 80, 280);
+    ctx.quadraticCurveTo(120, 280, 130, 360);
+    ctx.fill();
+
+    ctx.fillStyle = '#020617';
+    ctx.beginPath();
+    ctx.ellipse(80, 332, 28, 20, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
+}
+
+// SZÖKŐKÚT VÍZSUGARAK A KŐKÚTBÓL (Tömb értékek alapján)
+function drawStoneWellWithFountains(x, y, tick) {
+    ctx.save();
+    // Kút teste
+    ctx.fillStyle = '#334155';
+    ctx.beginPath();
+    ctx.ellipse(x, y - 20, 28, 10, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillRect(x - 28, y - 20, 56, 24);
+    ctx.beginPath();
+    ctx.ellipse(x, y + 4, 28, 10, 0, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Vízfelszín
+    ctx.fillStyle = '#0284c7';
+    ctx.beginPath();
+    ctx.ellipse(x, y - 20, 22, 7, 0, 0, Math.PI * 2);
+    ctx.fill();
+
+    // 4 KISMÉRETŰ SZÖKŐKÚT SUGÁR (tomb[0..3] = 80%, 60%, 40%, 100%)
+    const heights = [28, 21, 14, 35]; // Magasságok a tömbértékek arányában
+    for (let i = 0; i < 4; i++) {
+        let fx = x - 15 + i * 10;
+        let fy = y - 20;
+        let fh = heights[i] + Math.sin(tick * 0.1 + i) * 3;
+
+        ctx.strokeStyle = 'rgba(56, 189, 248, 0.85)';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(fx, fy);
+        ctx.quadraticCurveTo(fx - 2, fy - fh, fx - 4, fy - fh + 5);
+        ctx.moveTo(fx, fy);
+        ctx.quadraticCurveTo(fx + 2, fy - fh, fx + 4, fy - fh + 5);
+        ctx.stroke();
+    }
+    ctx.restore();
+}
+
+// BARKAS KIRAJZOLÁSA
+function drawWolf(x, y, tick) {
+    ctx.save();
+    ctx.translate(x, y);
+    let breath = Math.sin(tick * 0.06) * 2;
+
+    ctx.fillStyle = '#475569';
+    ctx.beginPath();
+    ctx.moveTo(-5, -45 + breath);
+    ctx.bezierCurveTo(-30, -25, -38, 5, -30, 25);
+    ctx.bezierCurveTo(-20, 45, 5, 40, 15, 45);
+    ctx.bezierCurveTo(25, 25, 28, -5, 18, -35 + breath);
+    ctx.closePath();
+    ctx.fill();
+
+    // Fej és szemek
+    ctx.fillStyle = '#64748b';
+    ctx.beginPath();
+    ctx.arc(12, -40 + breath, 12, 0, Math.PI * 2);
+    ctx.fill();
+
+    ctx.fillStyle = '#38bdf8';
+    ctx.shadowColor = '#38bdf8';
+    ctx.shadowBlur = 6;
+    ctx.beginPath();
+    ctx.arc(16, -42 + breath, 2.5, 0, Math.PI * 2);
+    ctx.fill();
+
+    ctx.restore();
+}
+
+// KAPU ÉS ZÁR
+function drawGate(tick) {
+    ctx.save();
+    ctx.fillStyle = state.doorOpen ? '#0284c7' : '#0f172a';
+    ctx.fillRect(625, 130, 90, 230);
+
+    if (!state.doorOpen) {
+        ctx.fillStyle = '#7c2d12';
+        ctx.fillRect(625, 130, 44, 230);
+        ctx.fillRect(671, 130, 44, 230);
+
+        ctx.fillStyle = '#fbbf24';
+        ctx.beginPath();
+        ctx.arc(670, 235, 10, 0, Math.PI * 2);
+        ctx.fill();
+    }
+    ctx.restore();
+}
+
+// MÁGIKUS KULCS
+function updateKey(tick) {
+    if (state.keyState === 'unlocked') return;
+
+    let curX = state.keyX;
+    let curY = state.keyY;
+
+    if (state.keyState === 'floating') {
+        curY += Math.sin(tick * 0.06) * 8;
+    } else if (state.keyState === 'moving') {
+        state.keyX += (state.targetX - state.keyX) * 0.08;
+        state.keyY += (state.targetY - state.keyY) * 0.08;
+        curX = state.keyX;
+        curY = state.keyY;
+
+        if (Math.hypot(state.targetX - state.keyX, state.targetY - state.keyY) < 4) {
+            state.keyState = 'unlocked';
+            state.doorOpen = true;
+            showMessage("Katt! A kapu feltárult!");
+        }
+    }
+
+    ctx.save();
+    ctx.translate(curX, curY);
+    ctx.fillStyle = '#fbbf24';
+    ctx.shadowColor = '#fbbf24';
+    ctx.shadowBlur = 10;
+    ctx.beginPath();
+    ctx.arc(-8, 0, 7, 0, Math.PI * 2);
+    ctx.rect(0, -2, 16, 4);
+    ctx.rect(10, 2, 4, 5);
+    ctx.fill();
+    ctx.restore();
+}
+
+// FŐ CIKLUS
+let tick = 0;
+function animate() {
+    tick++;
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    // HÁTTÉR
+    ctx.fillStyle = '#090c19';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    drawSparklingMoon(120, 90, 35, tick);
+    drawPineTree(40, 360, 70, 180, '#131b2e');
+    drawPineTree(510, 360, 75, 190, '#131b2e');
+
+    drawCave();
+
+    // Talaj
+    ctx.fillStyle = '#0b1120';
+    ctx.fillRect(0, 360, canvas.width, 120);
+
+    drawStoneWellWithFountains(430, 355, tick);
+    drawGate(tick);
+    drawWolf(230, 315, tick);
+
+    // REPÜLŐ PET SZÖKŐKÚT ÉS TÖMB ELEMEK (Barlang -> Farkas)
+    updateAndDrawFlyingSystemData(tick);
+
+    updateKey(tick);
+
+    // ÜZENET PANEL
+    if (state.messageTimer > 0) {
+        state.messageTimer--;
+        ctx.fillStyle = 'rgba(15, 23, 42, 0.9)';
+        ctx.fillRect(30, 15, 740, 42);
+        ctx.strokeStyle = '#38bdf8';
+        ctx.strokeRect(30, 15, 740, 42);
+
+        ctx.fillStyle = '#f8fafc';
+        ctx.font = '14px Segoe UI';
+        ctx.textAlign = 'center';
+        ctx.fillText(state.message, 400, 41);
+    }
+
+    requestAnimationFrame(animate);
+}
+
+animate();
+</script>
+</body>
+</html>

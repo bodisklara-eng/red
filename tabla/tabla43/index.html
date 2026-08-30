@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<!-- saved from url=(0068)file:///C:/Users/Utilizator/Downloads/gemini-code-1787595244222.html -->
+<html lang="hu"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <title>Szökőkút Építő - 2D Tömbök Gyakorlása</title>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; background: #0f172a; color: #f8fafc; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; margin: 0; padding: 15px; }
+        .box { background: #1e293b; padding: 30px; border-radius: 16px; border: 2px solid #0ea5e9; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.5); max-width: 650px; width: 100%; }
+        h1 { color: #0ea5e9; margin-top: 0; font-size: 22px; }
+        .instruction { font-size: 15px; color: #cbd5e1; margin-bottom: 20px; background: #0f172a; padding: 15px; border-radius: 8px; border-left: 4px solid #0ea5e9; text-align: left; line-height: 1.5; }
+        
+        /* 2D Mátrix Rács vizuális megjelenítése */
+        .matrix-grid { display: grid; grid-template-columns: repeat(3, 80px); gap: 10px; justify-content: center; margin-bottom: 20px; }
+        .grid-cell { width: 80px; height: 80px; background: #334155; border: 2px solid #64748b; border-radius: 10px; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 26px; cursor: pointer; transition: 0.2s; }
+        .grid-cell:hover { border-color: #0ea5e9; background: #475569; }
+
+        .palette { display: flex; justify-content: center; gap: 15px; margin-bottom: 20px; }
+        .palette-btn { background: #334155; border: 2px solid #64748b; padding: 10px 15px; border-radius: 8px; color: white; cursor: pointer; font-size: 20px; transition: 0.2s; }
+        .palette-btn.active { border-color: #0ea5e9; background: #0369a1; }
+
+        .dashboard { display: flex; justify-content: space-around; background: #0f172a; padding: 10px; border-radius: 8px; font-size: 15px; margin-bottom: 15px; }
+        .score { color: #10b981; font-weight: bold; }
+
+        #msgBox { font-weight: bold; margin-bottom: 15px; min-height: 24px; font-size: 15px; }
+        .btn-group { display: flex; justify-content: center; gap: 10px; }
+        button.action-btn { background: #0ea5e9; color: white; border: none; padding: 10px 20px; border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.2s; }
+        button.action-btn:hover { background: #38bdf8; }
+        a.back-btn { display: inline-block; background: #475569; color: white; padding: 10px 20px; border-radius: 8px; font-weight: bold; text-decoration: none; transition: 0.2s; }
+        a.back-btn:hover { background: #64748b; }
+    </style>
+</head>
+<body>
+    <div class="box">
+        <h1>⛲ Szökőkút Építő (2D Mátrix Munkatér)</h1>
+        
+        <div class="dashboard">
+            <div>Aktuális szint: <span class="score" id="levelCount">2</span> / 3</div>
+        </div>
+
+        <div class="instruction" id="taskInstruction"><b>2. Szint: Kettős vízsugár (Két középső elem víz)</b></div>
+
+        <!-- 3x3-as rács a 2D tömb szimulálására -->
+        <div class="matrix-grid" id="matrixGrid"><div class="grid-cell">⬛<span style="font-size:10px; color:#64748b;">[0][0]</span></div><div class="grid-cell">⬛<span style="font-size:10px; color:#64748b;">[0][1]</span></div><div class="grid-cell">⬛<span style="font-size:10px; color:#64748b;">[0][2]</span></div><div class="grid-cell">⬛<span style="font-size:10px; color:#64748b;">[1][0]</span></div><div class="grid-cell">⬛<span style="font-size:10px; color:#64748b;">[1][1]</span></div><div class="grid-cell">⬛<span style="font-size:10px; color:#64748b;">[1][2]</span></div><div class="grid-cell">⬛<span style="font-size:10px; color:#64748b;">[2][0]</span></div><div class="grid-cell">⬛<span style="font-size:10px; color:#64748b;">[2][1]</span></div><div class="grid-cell">⬛<span style="font-size:10px; color:#64748b;">[2][2]</span></div></div>
+
+        <div style="font-size: 13px; color: #94a3b8; margin-bottom: 8px;">Válaszd ki az építőelemet, majd kattints a rács mezőire:</div>
+        <div class="palette" id="paletteContainer">
+            <button class="palette-btn" onclick="selectElement(&#39;🧱&#39;, 1)">🧱 Szegély</button>
+            <button class="palette-btn active" onclick="selectElement(&#39;💧&#39;, 2)">💧 Vízsugár</button>
+            <button class="palette-btn" onclick="selectElement(&#39;⬛&#39;, 0)">⬛ Üres kő</button>
+        </div>
+
+        <div id="msgBox" style="color: rgb(16, 185, 129);"></div>
+
+        <div class="btn-group">
+            <button class="action-btn" onclick="checkMatrix()">Mátrix Ellenőrzése 🔍</button>
+            <button class="action-btn" style="background:#64748b;" onclick="resetMatrix()">Törlés 🔄</button>
+            <a href="file:///C:/Users/Utilizator/Downloads/fo_oldal.html" class="back-btn">⬅ Vissza</a>
+        </div>
+    </div>
+
+    <script>
+        // 2D tömb a felhasználó által épített rácshoz (3 sor, 3 oszlop)
+        let userMatrix = [
+            [0, 0, 0],
+            [0, 0, 0],
+            [0, 0, 0]
+        ];
+
+        let selectedSymbol = '🧱';
+        let selectedValue = 1;
+        let currentLevel = 1;
+
+        // Elvárt minták a szintekhöz (2D tömbök formájában)
+        const levelGoals = [
+            {
+                name: "1. Szint: Alap szökőkút (Középen víz, szélen szegély)",
+                // 1 jelöli a szegélyt, 2 a vizet, 0 az üreset
+                target: [
+                    [1, 1, 1],
+                    [1, 2, 1],
+                    [1, 1, 1]
+                ]
+            },
+            {
+                name: "2. Szint: Kettős vízsugár (Két középső elem víz)",
+                target: [
+                    [1, 1, 1],
+                    [2, 2, 1],
+                    [1, 1, 1]
+                ]
+            },
+            {
+                name: "3. Szint: Sarok nélküli medence",
+                target: [
+                    [0, 1, 0],
+                    [1, 2, 1],
+                    [0, 1, 0]
+                ]
+            }
+        ];
+
+        function initLevel() {
+            if(currentLevel > levelGoals.length) {
+                document.querySelector('.box').innerHTML = `<h1>🎉 Gratulálok!</h1><p>Mesterépítő lettél! Sikeresen elsajátítottad a 2D tömbök és a szökőkút elemek tervezését.</p><a href="fo_oldal.html" class="back-btn">Vissza a főoldalra</a>`;
+                return;
+            }
+            document.getElementById('levelCount').innerText = currentLevel;
+            document.getElementById('taskInstruction').innerHTML = `<b>${levelGoals[currentLevel-1].name}</b>`;
+            resetMatrix();
+        }
+
+        function selectElement(symbol, val) {
+            selectedSymbol = symbol;
+            selectedValue = val;
+            document.querySelectorAll('.palette-btn').forEach(b => b.classList.remove('active'));
+            event.currentTarget.classList.add('active');
+        }
+
+        function renderGrid() {
+            const gridEl = document.getElementById('matrixGrid');
+            gridEl.innerHTML = '';
+            
+            for(let r = 0; r < 3; r++) {
+                for(let c = 0; c < 3; c++) {
+                    let cell = document.createElement('div');
+                    cell.className = 'grid-cell';
+                    
+                    let val = userMatrix[r][c];
+                    let displayChar = val === 1 ? '🧱' : (val === 2 ? '💧' : '⬛');
+                    
+                    cell.innerHTML = `${displayChar}<span style="font-size:10px; color:#64748b;">[${r}][${c}]</span>`;
+                    cell.onclick = () => {
+                        userMatrix[r][c] = selectedValue;
+                        renderGrid();
+                    };
+                    gridEl.appendChild(cell);
+                }
+            }
+        }
+
+        function resetMatrix() {
+            userMatrix = [
+                [0, 0, 0],
+                [0, 0, 0],
+                [0, 0, 0]
+            ];
+            document.getElementById('msgBox').innerText = '';
+            renderGrid();
+        }
+
+        function checkMatrix() {
+            let target = levelGoals[currentLevel - 1].target;
+            let isMatch = true;
+
+            for(let r = 0; r < 3; r++) {
+                for(let c = 0; c < 3; c++) {
+                    if(userMatrix[r][c] !== target[r][c]) {
+                        isMatch = false;
+                    }
+                }
+            }
+
+            if(isMatch) {
+                document.getElementById('msgBox').style.color = '#10b981';
+                document.getElementById('msgBox').innerText = '✅ Tökéletes! A 2D mátrix megegyezik a tervvel.';
+                currentLevel++;
+                setTimeout(initLevel, 2000);
+            } else {
+                document.getElementById('msgBox').style.color = '#f87171';
+                document.getElementById('msgBox').innerText = '❌ A mátrix elemei nem stimmelnek a céllal. Ellenőrizd a koordinátákat ([sor][oszlop])!';
+            }
+        }
+
+        initLevel();
+    </script>
+
+</body></html>

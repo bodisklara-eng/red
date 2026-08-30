@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<!-- saved from url=(0068)file:///C:/Users/Utilizator/Downloads/gemini-code-1787594154435.html -->
+<html lang="hu"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <title>Adatábrázolás - Kettes Számrendszer</title>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; background: #0f172a; color: #f8fafc; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; margin: 0; }
+        .box { background: #1e293b; padding: 40px; border-radius: 16px; border: 2px solid #ec4899; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.5); max-width: 650px; width: 100%; }
+        h1 { color: #ec4899; margin-top: 0; }
+        .instruction { font-size: 16px; color: #cbd5e1; margin-bottom: 20px; }
+        .bits-container { display: flex; justify-content: center; gap: 10px; margin-bottom: 20px; }
+        .bit-box { display: flex; flex-direction: column; align-items: center; }
+        .bit-val { font-size: 12px; color: #94a3b8; margin-bottom: 5px; }
+        .bit-btn { width: 50px; height: 60px; font-size: 24px; font-weight: bold; background: #334155; color: #94a3b8; border: 2px solid #475569; border-radius: 8px; cursor: pointer; transition: 0.3s; }
+        .bit-btn.active { background: #ec4899; color: white; border-color: #f472b6; box-shadow: 0 0 15px rgba(236, 72, 153, 0.6); }
+        .dashboard { display: flex; justify-content: space-around; background: #0f172a; padding: 15px; border-radius: 8px; font-size: 20px; }
+        .target { color: #facc15; font-weight: bold; }
+        .current { color: #38bdf8; font-weight: bold; }
+        a.back-btn { display: inline-block; margin-top: 25px; background: #ec4899; color: white; padding: 10px 20px; border-radius: 8px; font-weight: bold; text-decoration: none; transition: 0.2s; }
+        a.back-btn:hover { background: #f472b6; }
+    </style>
+</head>
+<body>
+    <div class="box">
+        <h1>🔢 Bináris Dekódoló</h1>
+        <div class="instruction">Kapcsold be (1) vagy ki (0) a biteket, hogy az összegük kiadja a keresett számot! Ez a számítógépek nyelve.</div>
+        
+        <div class="bits-container" id="bitsContainer"><div class="bit-box"><div class="bit-val">128</div><button class="bit-btn" data-val="128">0</button></div><div class="bit-box"><div class="bit-val">64</div><button class="bit-btn" data-val="64">0</button></div><div class="bit-box"><div class="bit-val">32</div><button class="bit-btn" data-val="32">0</button></div><div class="bit-box"><div class="bit-val">16</div><button class="bit-btn" data-val="16">0</button></div><div class="bit-box"><div class="bit-val">8</div><button class="bit-btn" data-val="8">0</button></div><div class="bit-box"><div class="bit-val">4</div><button class="bit-btn" data-val="4">0</button></div><div class="bit-box"><div class="bit-val">2</div><button class="bit-btn" data-val="2">0</button></div><div class="bit-box"><div class="bit-val">1</div><button class="bit-btn" data-val="1">0</button></div></div>
+
+        <div class="dashboard">
+            <div>Keresett szám: <span class="target" id="targetNum">53</span></div>
+            <div>Jelenlegi érték: <span class="current" id="currentNum">0</span></div>
+        </div>
+
+        <div id="successMsg" style="color:#10b981; font-weight:bold; margin-top:15px; height:20px;"></div>
+
+        <a href="file:///C:/Users/Utilizator/Downloads/fo_oldal.html" class="back-btn">⬅ Vissza a Varázsajtóhoz</a>
+    </div>
+
+    <script>
+        const bitValues = [128, 64, 32, 16, 8, 4, 2, 1];
+        let targetNumber = 0;
+        let currentSum = 0;
+
+        function initGame() {
+            targetNumber = Math.floor(Math.random() * 255) + 1; // 1-255 közötti random szám
+            document.getElementById('targetNum').innerText = targetNumber;
+            document.getElementById('currentNum').innerText = "0";
+            document.getElementById('successMsg').innerText = "";
+            currentSum = 0;
+
+            const container = document.getElementById('bitsContainer');
+            container.innerHTML = '';
+
+            bitValues.forEach(val => {
+                const box = document.createElement('div');
+                box.className = 'bit-box';
+                
+                const label = document.createElement('div');
+                label.className = 'bit-val';
+                label.innerText = val;
+
+                const btn = document.createElement('button');
+                btn.className = 'bit-btn';
+                btn.innerText = '0';
+                btn.dataset.val = val;
+                btn.onclick = () => toggleBit(btn);
+
+                box.appendChild(label);
+                box.appendChild(btn);
+                container.appendChild(box);
+            });
+        }
+
+        function toggleBit(btn) {
+            let val = parseInt(btn.dataset.val);
+            if (btn.classList.contains('active')) {
+                btn.classList.remove('active');
+                btn.innerText = '0';
+                currentSum -= val;
+            } else {
+                btn.classList.add('active');
+                btn.innerText = '1';
+                currentSum += val;
+            }
+            
+            document.getElementById('currentNum').innerText = currentSum;
+
+            if (currentSum === targetNumber) {
+                document.getElementById('successMsg').innerText = "✅ Rendszer feltörve! Helyes bináris kód!";
+                setTimeout(initGame, 3000); // Új játék 3 mp múlva
+            } else if (currentSum > targetNumber) {
+                document.getElementById('successMsg').innerText = "Túl sok! Kapcsolj ki biteket.";
+                document.getElementById('successMsg').style.color = "#ef4444";
+            } else {
+                document.getElementById('successMsg').innerText = "";
+            }
+        }
+
+        initGame();
+    </script>
+
+</body></html>

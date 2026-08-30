@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<!-- saved from url=(0068)file:///C:/Users/Utilizator/Downloads/gemini-code-1787595118013.html -->
+<html lang="hu"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <title>Játékok Elrendezése - Logikai Feladat</title>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; background: #0f172a; color: #f8fafc; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; margin: 0; padding: 15px; }
+        .box { background: #1e293b; padding: 30px; border-radius: 16px; border: 2px solid #3b82f6; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.5); max-width: 650px; width: 100%; }
+        h1 { color: #3b82f6; margin-top: 0; font-size: 22px; }
+        .instruction { font-size: 15px; color: #cbd5e1; margin-bottom: 20px; background: #0f172a; padding: 15px; border-radius: 8px; border-left: 4px solid #3b82f6; text-align: left; line-height: 1.5; }
+        
+        .slots-container { display: flex; justify-content: center; gap: 15px; margin-bottom: 25px; }
+        .slot { width: 100px; height: 110px; background: #334155; border: 2px dashed #64748b; border-radius: 12px; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 32px; cursor: pointer; transition: 0.2s; }
+        .slot.highlight { border-color: #3b82f6; background: #1e3a8a; }
+
+        .items-pool { display: flex; justify-content: center; gap: 15px; margin-bottom: 20px; }
+        .toy-card { background: #475569; border: 2px solid #64748b; padding: 10px 15px; border-radius: 10px; cursor: pointer; font-size: 28px; transition: 0.2s; display: flex; flex-direction: column; align-items: center; gap: 5px; }
+        .toy-card:hover { background: #64748b; transform: translateY(-3px); }
+        .toy-card span { font-size: 12px; color: #e2e8f0; font-weight: bold; }
+
+        .dashboard { display: flex; justify-content: space-around; background: #0f172a; padding: 10px; border-radius: 8px; font-size: 15px; margin-bottom: 15px; }
+        .score { color: #10b981; font-weight: bold; }
+
+        #msgBox { font-weight: bold; margin-bottom: 15px; min-height: 24px; font-size: 15px; }
+        
+        .btn-group { display: flex; justify-content: center; gap: 10px; }
+        button.action-btn { background: #3b82f6; color: white; border: none; padding: 10px 20px; border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.2s; }
+        button.action-btn:hover { background: #60a5fa; }
+        a.back-btn { display: inline-block; background: #475569; color: white; padding: 10px 20px; border-radius: 8px; font-weight: bold; text-decoration: none; transition: 0.2s; }
+        a.back-btn:hover { background: #64748b; }
+    </style>
+</head>
+<body>
+    <div class="box">
+        <h1>🧸 Játékok Elrendezése (Két Feltétel)</h1>
+        
+        <div class="dashboard">
+            <div>Teljesített szintek: <span class="score" id="scoreCount">0</span> / 5</div>
+        </div>
+
+        <div class="instruction" id="ruleText">1. <b>Az autó (🚗)</b> balra van a <b>macitól (🧸)</b>.<br>2. <b>A labda (⚽)</b> a legszélső helyen (jobbra) van.</div>
+
+        <div class="slots-container">
+            <div class="slot" id="slot-0" onclick="placeToy(0)" style="border-color: rgb(100, 116, 139);">1.</div>
+            <div class="slot" id="slot-1" onclick="placeToy(1)" style="border-color: rgb(100, 116, 139);">2.</div>
+            <div class="slot" id="slot-2" onclick="placeToy(2)" style="border-color: rgb(100, 116, 139);">3.</div>
+        </div>
+
+        <div style="font-size: 13px; color: #94a3b8; margin-bottom: 8px;">Válaszd ki a játékot, majd kattints a helyére:</div>
+        <div class="items-pool" id="itemsPool"><div class="toy-card">🧸<span>Maci</span></div><div class="toy-card">🚗<span>Autó</span></div><div class="toy-card">⚽<span>Labda</span></div></div>
+
+        <div id="msgBox"></div>
+
+        <div class="btn-group">
+            <button class="action-btn" onclick="checkSolution()">Ellenőrzés 🔍</button>
+            <button class="action-btn" style="background:#64748b;" onclick="resetLevel()">Újra 🔄</button>
+            <a href="file:///C:/Users/Utilizator/Downloads/fo_oldal.html" class="back-btn">⬅ Vissza</a>
+        </div>
+    </div>
+
+    <script>
+        // Játék definíciók (ikon, név, belső azonosító)
+        const allToys = [
+            { id: 'teddy', icon: '🧸', name: 'Maci' },
+            { id: 'car', icon: '🚗', name: 'Autó' },
+            { id: 'ball', icon: '⚽', name: 'Labda' }
+        ];
+
+        let currentLevel = 0;
+        let score = 0;
+        let userPlacement = [null, null, null]; // 3 hely
+        let activeSelectedToy = null; // Kiválasztott elem a készletből
+        let activeRules = {};
+
+        // Előre definiált nehézségi szintek 2 relatív constrângere-vel (feltétellel)
+        const levels = [
+            {
+                rulesText: "1. <b>Az autó (🚗)</b> balra van a <b>macitól (🧸)</b>.<br>2. <b>A labda (⚽)</b> a legszélső helyen (jobbra) van.",
+                validator: (p) => p[0] === 'car' && p[1] === 'teddy' && p[2] === 'ball'
+            },
+            {
+                rulesText: "1. <b>A maci (🧸)</b> nem lehet a szélső helyeken.<br>2. <b>Az autó (🚗)</b> közvetlenül a <b>maci (🧸)</b> bal oldalán áll.",
+                validator: (p) => p[0] === 'car' && p[1] === 'teddy' && p[2] === 'ball'
+            },
+            {
+                rulesText: "1. <b>A labda (⚽)</b> balra van az <b>autótól (🚗)</b>.<br>2. <b>A maci (🧸)</b> a jobb szélen van.",
+                validator: (p) => p[0] === 'ball' && p[1] === 'car' && p[2] === 'teddy'
+            }
+        ];
+
+        function initLevel() {
+            if(currentLevel >= levels.length) {
+                document.querySelector('.box').innerHTML = `<h1>🎉 Gratulálok!</h1><p>Minden elrendezési feladatot sikeresen megoldottál!</p><a href="fo_oldal.html" class="back-btn">Vissza a főoldalra</a>`;
+                return;
+            }
+            userPlacement = [null, null, null];
+            activeSelectedToy = null;
+            document.getElementById('ruleText').innerHTML = levels[currentLevel].rulesText;
+            document.getElementById('scoreCount').innerText = score;
+            document.getElementById('msgBox').innerText = '';
+            renderBoard();
+        }
+
+        function selectToy(toyId) {
+            activeSelectedToy = toyId;
+            document.querySelectorAll('.toy-card').forEach(c => c.style.borderColor = '#64748b');
+            event.currentTarget.style.borderColor = '#3b82f6';
+        }
+
+        function placeToy(slotIndex) {
+            if(!activeSelectedToy) {
+                document.getElementById('msgBox').style.color = '#f87171';
+                document.getElementById('msgBox').innerText = 'Előbb kattints egy játékra alul!';
+                return;
+            }
+            // Ha már van ott elem, kivesszük
+            userPlacement[slotIndex] = activeSelectedToy;
+            activeSelectedToy = null;
+            document.querySelectorAll('.toy-card').forEach(c => c.style.borderColor = '#64748b');
+            renderBoard();
+        }
+
+        function renderBoard() {
+            // Helyek frissítése
+            for(let i=0; i<3; i++) {
+                let slotEl = document.getElementById(`slot-${i}`);
+                if(userPlacement[i]) {
+                    let toyObj = allToys.find(t => t.id === userPlacement[i]);
+                    slotEl.innerHTML = `${toyObj.icon}<span style="font-size:11px; color:#94a3b8;">${toyObj.name}</span>`;
+                    slotEl.style.borderColor = '#3b82f6';
+                } else {
+                    slotEl.innerHTML = `${i+1}.`;
+                    slotEl.style.borderColor = '#64748b';
+                }
+            }
+
+            // Pool frissítése (melyik nincs még lerakva)
+            let poolEl = document.getElementById('itemsPool');
+            poolEl.innerHTML = '';
+            allToys.forEach(toy => {
+                // Ha még nincs a pályán
+                if(!userPlacement.includes(toy.id)) {
+                    let card = document.createElement('div');
+                    card.className = 'toy-card';
+                    card.innerHTML = `${toy.icon}<span>${toy.name}</span>`;
+                    card.onclick = () => selectToy(toy.id);
+                    poolEl.appendChild(card);
+                }
+            });
+        }
+
+        function resetLevel() {
+            userPlacement = [null, null, null];
+            activeSelectedToy = null;
+            document.getElementById('msgBox').innerText = '';
+            renderBoard();
+        }
+
+        function checkSolution() {
+            // Ellenőrizzük, hogy minden hely ki van-e töltve
+            if(userPlacement.includes(null)) {
+                document.getElementById('msgBox').style.color = '#f87171';
+                document.getElementById('msgBox').innerText = 'Előbb töltsd ki mind a 3 helyet!';
+                return;
+            }
+
+            let isCorrect = levels[currentLevel].validator(userPlacement);
+            if(isCorrect) {
+                document.getElementById('msgBox').style.color = '#10b981';
+                document.getElementById('msgBox').innerText = '✅ Helyes elrendezés! Minden feltétel teljesült.';
+                score++;
+                currentLevel++;
+                setTimeout(initLevel, 2000);
+            } else {
+                document.getElementById('msgBox').style.color = '#f87171';
+                document.getElementById('msgBox').innerText = '❌ Nem jó! Ellenőrizd újra a két szabályt.';
+            }
+        }
+
+        initLevel();
+    </script>
+
+</body></html>

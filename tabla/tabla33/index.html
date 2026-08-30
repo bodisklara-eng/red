@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Animált oktatóvideó – Tömb maximuma és buborékok</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#202a30;color:#eef4f5;font-family:Arial,Helvetica,sans-serif}
+.app{max-width:1280px;margin:auto;padding:14px}
+.top{background:#116f72;border-radius:14px;padding:18px 22px;box-shadow:0 7px 0 #0b4d50}
+.top h1{margin:0;font-size:clamp(24px,4vw,42px)}
+.top p{margin:6px 0 0;font-size:17px}
+.stage{position:relative;margin-top:15px;height:590px;overflow:hidden;border-radius:16px;
+ background:linear-gradient(#d9e5e6 0 59%,#e8d39a 59%);border:5px solid #111c21}
+.wall{position:absolute;inset:0 0 41% 0;background:
+ repeating-linear-gradient(90deg,transparent 0 118px,rgba(70,90,90,.10) 119px 121px),
+ repeating-linear-gradient(0deg,transparent 0 72px,rgba(70,90,90,.08) 73px 75px)}
+.floorline{position:absolute;left:0;right:0;top:59%;height:8px;background:#45565b}
+.table{position:absolute;left:5%;right:5%;bottom:106px;height:34px;background:#8d5b3d;border:5px solid #4d3326;border-radius:5px}
+.leg{position:absolute;bottom:0;width:25px;height:112px;background:#67432f;border:4px solid #493023}.leg.a{left:8%}.leg.b{right:8%}
+
+.machine{position:absolute;left:6%;bottom:140px;width:210px;height:235px;background:#737e83;
+border:8px solid #39464d;border-radius:22px 22px 12px 12px;box-shadow:inset 0 0 0 9px #aab1b2;z-index:5}
+.machine .head{margin:14px 16px 7px;background:#eee5bd;border:4px solid #4e493b;padding:9px 5px;text-align:center;
+font-weight:900;color:#292e30;font-size:15px}
+.nozzle{position:absolute;left:50%;top:102px;transform:translateX(-50%);width:95px;height:95px;border-radius:50%;
+background:#242d31;border:9px solid #313c42;box-shadow:inset 0 0 0 7px #12191c}
+.nozzle:after{content:"";position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+width:38px;height:38px;border-radius:50%;background:#66777b}
+.ring{position:absolute;left:50%;top:112px;transform:translateX(-50%);width:72px;height:72px;border-radius:50%;
+border:4px dashed #d7f4f5;animation:spin 1.1s linear infinite;opacity:.75}
+.motor{position:absolute;right:-65px;bottom:15px;background:#df713a;color:white;border:4px solid #73351f;
+padding:9px;font-weight:900;transform:rotate(-6deg);animation:shake .16s infinite alternate}
+.switch{position:absolute;right:16px;top:16px;width:28px;height:45px;border:3px solid #28343a;background:#202a2d}
+.switch:after{content:"";position:absolute;left:6px;top:5px;width:10px;height:27px;background:#e8b52d;transform:rotate(-22deg)}
+@keyframes spin{to{transform:translateX(-50%) rotate(360deg)}}
+@keyframes shake{from{transform:rotate(-7deg) translateX(-1px)}to{transform:rotate(-5deg) translateX(2px)}}
+
+.bubble{position:absolute;border-radius:50%;border:3px solid rgba(255,255,255,.95);
+background:radial-gradient(circle at 28% 23%,#fff 0 8%,rgba(190,240,255,.75) 17%,rgba(90,190,225,.25) 47%,rgba(255,255,255,.08) 72%);
+box-shadow:inset -8px -9px 15px rgba(70,150,190,.20),0 0 7px rgba(255,255,255,.55);
+z-index:4;pointer-events:none}
+.bubble:after{content:"";position:absolute;right:16%;top:17%;width:16%;height:16%;background:white;border-radius:50%;opacity:.9}
+.fly{animation:float 2.7s ease-in-out infinite alternate}
+@keyframes float{from{transform:translate(0,0) rotate(0)}to{transform:translate(8px,-18px) rotate(7deg)}}
+.pop{animation:pop .45s ease-out forwards}
+@keyframes pop{0%{transform:scale(1);opacity:1}55%{transform:scale(1.3);opacity:.8}100%{transform:scale(.05);opacity:0}}
+
+.panel{position:absolute;right:3%;top:3%;width:57%;height:92%;background:rgba(250,248,239,.96);
+border:5px solid #35444b;border-radius:10px;padding:18px;color:#26343a;z-index:10}
+.tag{display:inline-block;background:#df713a;color:white;padding:6px 10px;border-radius:4px;font-weight:900;font-size:12px}
+.panel h2{margin:9px 0 4px;font-size:26px}
+.question{font-size:18px;margin-bottom:8px}
+.array{display:flex;gap:6px;flex-wrap:wrap;margin:24px 0 13px}
+.cell{position:relative;width:57px;height:58px;border:3px solid #45545b;background:white;
+display:flex;align-items:center;justify-content:center;font:bold 22px Arial;border-radius:5px;transition:.35s}
+.cell small{position:absolute;top:-21px;font-size:11px;font-weight:normal}
+.cell.scan{background:#ffe083;border-color:#b17b00;transform:translateY(-8px) scale(1.06)}
+.cell.max{background:#74c98a;border-color:#2d7141}
+.cell.reject{opacity:.48}
+.status{font-size:18px;font-weight:700;min-height:46px}
+.explain{background:#263746;color:#fff;border-radius:7px;padding:12px 14px;min-height:74px;
+line-height:1.35;font-size:16px}
+.code{margin-top:11px;background:#18242c;color:#eaf3f4;border-radius:7px;padding:12px;
+font:15px/1.45 Consolas,monospace;white-space:pre-wrap}
+.hl{background:#5b6f27;color:white;padding:1px 4px;border-radius:3px}
+.kw{color:#f3ca65}.num{color:#7edce0}.com{color:#9bb09f}
+
+.controls{display:flex;gap:9px;align-items:center;flex-wrap:wrap;background:#f4efe4;color:#26343a;
+padding:13px;border:4px solid #111c21;border-radius:10px;margin-top:14px}
+button{cursor:pointer;border:3px solid #3e4a4f;background:#e8b52d;padding:9px 14px;font-weight:900;border-radius:5px}
+button:hover{filter:brightness(1.08)}
+input[type=range]{width:150px}
+input[type=text]{width:280px;padding:9px;border:3px solid #556167}
+.info{margin-top:12px;background:#f4efe4;color:#26343a;border-radius:9px;padding:13px;font-size:15px}
+</style>
+</head>
+<body>
+<div class="app">
+<div class="top">
+<h1>🔵 Melyik buborék repült a legmesszebbre?</h1>
+<p>Animált történet + Python: keressük meg egy egydimenziós tömb maximumát.</p>
+</div>
+
+<div class="stage" id="stage">
+<div class="wall"></div><div class="floorline"></div>
+<div class="machine">
+<div class="head">BUBORÉKFÚJÓ GÉP</div><div class="switch"></div>
+<div class="nozzle"></div><div class="ring"></div><div class="motor">DC MOTOR</div>
+</div>
+<div class="table"></div><div class="leg a"></div><div class="leg b"></div>
+
+<div class="panel">
+<span class="tag">ANIMÁLT ALGORITMUS</span>
+<h2>Keressük meg a maximumot!</h2>
+<div class="question">A buborékok repülési távolságai:</div>
+<div class="array" id="array"></div>
+<div class="status" id="status">▶ Indítsd el az animációt!</div>
+<div class="explain" id="explain">A gép egymás után buborékokat fúj ki. A program minden távolságot összehasonlít az eddigi legnagyobb értékkel.</div>
+<div class="code" id="code"><span class="com"># A buborékok repülési távolságai</span>
+<span class="kw">tavolsag</span> = [12, 25, 18, 42, 31, 27, 56, 39]
+
+<span class="kw">max_ertek</span> = tavolsag[0]
+
+<span class="kw">for</span> x <span class="kw">in</span> tavolsag:
+    <span class="kw">if</span> x &gt; max_ertek:
+        max_ertek = x
+
+<span class="kw">print</span>(max_ertek)  <span class="com"># 56</span></div>
+</div>
+</div>
+
+<div class="controls">
+<button id="start">▶ Indítás</button>
+<button id="pause">⏸ Szünet</button>
+<button id="step">⏭ Egy lépés</button>
+<button id="reset">↺ Újrakezdés</button>
+<label>Gyorsaság <input id="speed" type="range" min="450" max="1800" value="1000" step="50"></label>
+<label>Tömb <input id="custom" type="text" value="12,25,18,42,31,27,56,39"></label>
+<button id="apply">Alkalmaz</button>
+<button id="voice">🔊 Narráció</button>
+</div>
+
+<div class="info">
+<b>Tanórai használat:</b> állítsd meg minden elemnél, és kérdezd meg a tanulókat:
+„Nagyobb-e a most vizsgált érték az eddigi maximumnál?” Ezután lépj tovább.
+</div>
+</div>
+
+<script>
+let values=[12,25,18,42,31,27,56,39];
+let i=0,maxIndex=0,running=false,timer=null;
+
+const stage=document.getElementById('stage'), array=document.getElementById('array'),
+status=document.getElementById('status'), explain=document.getElementById('explain'),
+code=document.getElementById('code');
+
+function renderArray(){
+ array.innerHTML='';
+ values.forEach((v,k)=>{
+   const c=document.createElement('div'); c.className='cell';
+   if(k===i && i<values.length)c.classList.add('scan');
+   if(k===maxIndex && i>0)c.classList.add('max');
+   if(k<i && k!==maxIndex)c.classList.add('reject');
+   c.innerHTML=`<small>${k}. index</small>${v}`;
+   array.appendChild(c);
+ });
+}
+
+function makeBubbles(){
+ stage.querySelectorAll('.bubble').forEach(x=>x.remove());
+ const max=Math.max(...values);
+ values.forEach((v,k)=>{
+   const b=document.createElement('div');
+   b.className='bubble fly';
+   const size=20+(v%4)*7;
+   b.style.width=size+'px'; b.style.height=size+'px';
+   b.style.left=(230+k*30)+'px';
+   b.style.bottom=(110+(v/max)*360)+'px';
+   b.style.animationDelay=(-k*.32)+'s';
+   b.dataset.index=k;
+   stage.appendChild(b);
+ });
+}
+
+function shoot(index){
+ const b=stage.querySelector(`.bubble[data-index="${index}"]`);
+ if(!b)return;
+ b.classList.remove('fly'); void b.offsetWidth;
+ b.style.transition='left 1.1s ease-out,bottom 1.1s ease-out,transform 1.1s ease-out';
+ b.style.left=(260+index*55)+'px';
+ b.style.bottom=(150+(values[index]/Math.max(...values))*390)+'px';
+ b.style.transform='scale(1.15) rotate(12deg)';
+}
+
+function step(){
+ if(i>=values.length){
+   running=false;clearInterval(timer);timer=null;
+   status.innerHTML=`🎉 Kész! A maximum = <b>${values[maxIndex]}</b>`;
+   explain.innerHTML=`A program végignézte az összes elemet. A <b>${values[maxIndex]}</b> érték a legnagyobb,
+   ezért ez jelöli a <b>legmesszebbre repült buborékot</b>.`;
+   renderArray(); return;
+ }
+ shoot(i);
+ if(i===0){
+   maxIndex=0;
+   status.innerHTML=`1. lépés: kezdő maximum = <b>${values[0]}</b>`;
+   explain.innerHTML=`Először az első értéket választjuk ki ideiglenes maximumnak.`;
+ }else if(values[i]>values[maxIndex]){
+   const old=values[maxIndex]; maxIndex=i;
+   status.innerHTML=`ÚJ MAXIMUM! <b>${values[i]}</b> &gt; ${old}`;
+   explain.innerHTML=`A <b>${values[i]}</b> nagyobb az eddigi ${old} maximumnál, ezért lecseréljük a maximumot.`;
+ }else{
+   status.innerHTML=`Nincs csere: <b>${values[i]}</b> ≤ ${values[maxIndex]}`;
+   explain.innerHTML=`A <b>${values[i]}</b> nem nagyobb az eddigi maximumként tárolt <b>${values[maxIndex]}</b> értéknél.`;
+ }
+ i++; renderArray();
+}
+
+function start(){
+ if(running)return; running=true; step();
+ timer=setInterval(step,Number(document.getElementById('speed').value));
+}
+function pause(){running=false;clearInterval(timer);timer=null}
+function reset(){
+ pause();i=0;maxIndex=0;renderArray();makeBubbles();
+ status.innerHTML='▶ Indítsd el az animációt!';
+ explain.innerHTML='A gép egymás után buborékokat fúj ki. A program minden távolságot összehasonlít az eddigi legnagyobb értékkel.';
+}
+function apply(){
+ const a=document.getElementById('custom').value.split(',').map(x=>Number(x.trim())).filter(Number.isFinite);
+ if(!a.length)return;
+ values=a.slice(0,12);
+ code.textContent=`# A buborékok repülési távolságai
+tavolsag = [${values.join(', ')}]
+
+max_ertek = tavolsag[0]
+
+for x in tavolsag:
+    if x > max_ertek:
+        max_ertek = x
+
+print(max_ertek)`;
+ reset();
+}
+function voice(){
+ if(!('speechSynthesis'in window)){alert('A böngésző nem támogatja a felolvasást.');return}
+ speechSynthesis.cancel();
+ const t=`A buborékfújó gép nyolc buborékot indít el. A távolságokat egy egydimenziós tömbben tároljuk.
+ Először az első értéket tekintjük maximumnak. Ezután sorban összehasonlítjuk a többi elemmel.
+ Ha nagyobb értéket találunk, lecseréljük az eddigi maximumot. A végén a legnagyobb érték megmutatja,
+ melyik buborék repült a legmesszebbre. Ebben a példában az eredmény ${Math.max(...values)}.`;
+ const u=new SpeechSynthesisUtterance(t);u.lang='hu-HU';u.rate=.9;speechSynthesis.speak(u);
+}
+document.getElementById('start').onclick=start;
+document.getElementById('pause').onclick=pause;
+document.getElementById('step').onclick=()=>{pause();step()};
+document.getElementById('reset').onclick=reset;
+document.getElementById('apply').onclick=apply;
+document.getElementById('voice').onclick=voice;
+document.getElementById('speed').oninput=()=>{if(running){pause();start()}};
+makeBubbles();renderArray();
+</script>
+</body>
+</html>

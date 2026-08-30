@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A Suttogó Erdő - Élethű Farkas Animáció</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #0d0f18;
+            color: #ffffff;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+        }
+        h1 {
+            margin-bottom: 10px;
+            color: #7aa2f7;
+            font-size: 1.5rem;
+        }
+        #game-container {
+            position: relative;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+            border-radius: 12px;
+            overflow: hidden;
+            border: 2px solid #2ac3de;
+        }
+        canvas {
+            display: block;
+            cursor: pointer;
+        }
+        .instruction {
+            margin-top: 12px;
+            color: #a9b1d6;
+            font-size: 0.95rem;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>A Suttogó Erdő - Interaktív Animáció</h1>
+    <div id="game-container">
+        <canvas id="canvas" width="800" height="480"></canvas>
+    </div>
+    <p class="instruction">💡 Kattints a farkasra, a lebegő kulcsra vagy a kőkapura!</p>
+
+<script>
+const canvas = document.getElementById('canvas');
+const ctx = canvas.getContext('2d');
+
+let state = {
+    hasKey: false,
+    doorOpen: false,
+    doorProgress: 0,
+    message: "Kattints a farkasra vagy a tárgyakra!",
+    messageTimer: 200
+};
+
+// Varázsporszemcsék
+const particles = [];
+for (let i = 0; i < 40; i++) {
+    particles.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        radius: Math.random() * 2 + 1,
+        speedY: Math.random() * 0.4 + 0.1,
+        alpha: Math.random()
+    });
+}
+
+// Kattintás-érzékelés
+canvas.addEventListener('click', (e) => {
+    const rect = canvas.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+
+    // Farkas kattintási területe (x: 180-310, y: 220-370)
+    if (x > 180 && x < 310 && y > 220 && y < 370) {
+        if (!state.hasKey) {
+            showMessage("Az ezüstfarkas halk morgással figyel. A lebegő mágikus kulcsra vár!");
+        } else {
+            showMessage("A farkas üdvözöl, és a kapu felé bök az orrával. Készen állsz!");
+        }
+    }
+
+    // Kulcs kattintás (x: 480-540, y: 260-340)
+    if (!state.hasKey && x > 480 && x < 540 && y > 260 && y < 340) {
+        state.hasKey = true;
+        showMessage("Megszerezted a Mágikus Rézkulcsot! Kattints a Kőkapura a kinyitáshoz!");
+    }
+
+    // Kapu kattintás (x: 620-740, y: 150-380)
+    if (x > 620 && x < 740 && y > 150 && y < 380) {
+        if (state.hasKey) {
+            state.doorOpen = true;
+            showMessage("A kapu széthúzódott! Sikeresen átjutottál a következő fejezetbe!");
+        } else {
+            showMessage("A kapu zárva van. Szükséged lesz a lebegő kulcsra!");
+        }
+    }
+});
+
+function showMessage(text) {
+    state.message = text;
+    state.messageTimer = 220;
+}
+
+// Részletes Farkas Rajzolása Vector Path-ekkel
+function drawRealisticWolf(x, y, tick) {
+    ctx.save();
+    ctx.translate(x, y);
+
+    let breath = Math.sin(tick * 0.06) * 2.5;
+    let tailWag = Math.sin(tick * 0.08) * 5;
+
+    // 1. DÚS FAROK (Mögötte)
+    ctx.fillStyle = '#334155';
+    ctx.beginPath();
+    ctx.moveTo(-20, 20);
+    ctx.quadraticCurveTo(-55 + tailWag, 15, -65 + tailWag, -5);
+    ctx.quadraticCurveTo(-60 + tailWag, -25, -40, -15);
+    ctx.quadraticCurveTo(-25, -5, -15, 10);
+    ctx.closePath();
+    ctx.fill();
+
+    // Farok szőrmegrádiens
+    let tailGrad = ctx.createLinearGradient(-60, -20, -15, 20);
+    tailGrad.addColorStop(0, '#475569');
+    tailGrad.addColorStop(1, '#1e293b');
+    ctx.fillStyle = tailGrad;
+    ctx.fill();
+
+    // 2. TEST ÉS LÁBAK (Ülő póz)
+    let bodyGrad = ctx.createLinearGradient(0, -60, 0, 40);
+    bodyGrad.addColorStop(0, '#334155'); // Sötétebb hát
+    bodyGrad.addColorStop(0.5, '#475569'); 
+    bodyGrad.addColorStop(1, '#94a3b8'); // Világosabb has/mellső láb
+
+    ctx.fillStyle = bodyGrad;
+    ctx.beginPath();
+    ctx.moveTo(-5, -45 + breath * 0.5); // Nyak hátsó része
+    ctx.bezierCurveTo(-30, -25, -38, 5, -30, 25); // Hát íve a farig
+    ctx.bezierCurveTo(-40, 30, -35, 45, -20, 45); // Hátsó mancs
+    ctx.bezierCurveTo(-5, 45, 5, 40, 15, 45); // Mellső mancsok
+    ctx.bezierCurveTo(25, 25, 28, -5, 18, -35 + breath); // Dús mellkas és sörény
+    ctx.lineTo(-5, -45 + breath * 0.5);
+    ctx.closePath();
+    ctx.fill();
+
+    // Mellkas szőrzet kiemelés
+    ctx.fillStyle = '#cbd5e1';
+    ctx.beginPath();
+    ctx.moveTo(10, -30 + breath);
+    ctx.bezierCurveTo(22, -10, 20, 15, 10, 35);
+    ctx.bezierCurveTo(2, 20, 2, -10, 10, -30 + breath);
+    ctx.closePath();
+    ctx.fill();
+
+    // 3. FEJ ÉS POFA (A kapu felé néz)
+    ctx.save();
+    ctx.translate(8, -48 + breath);
+
+    let headGrad = ctx.createLinearGradient(-15, -25, 35, 10);
+    headGrad.addColorStop(0, '#334155');
+    headGrad.addColorStop(0.6, '#64748b');
+    headGrad.addColorStop(1, '#cbd5e1');
+
+    ctx.fillStyle = headGrad;
+    ctx.beginPath();
+    ctx.moveTo(-10, -12); // Fejtető
+    ctx.lineTo(-6, -34);  // Hátsó fül csúcsa
+    ctx.lineTo(2, -16);
+    ctx.lineTo(14, -8);   // Homlok / Stopper
+    ctx.lineTo(34, -4);   // Hosszú farkaspofa felső része
+    ctx.lineTo(33, 4);    // Orr hegye
+    ctx.lineTo(16, 8);    // Áll / Alsó állkapocs
+    ctx.bezierCurveTo(5, 16, -8, 12, -12, 0); // Pofa alja / nyak
+    ctx.closePath();
+    ctx.fill();
+
+    // Elülső fül (részletes)
+    ctx.fillStyle = '#1e293b';
+    ctx.beginPath();
+    ctx.moveTo(1, -14);
+    ctx.lineTo(9, -36);
+    ctx.lineTo(16, -14);
+    ctx.closePath();
+    ctx.fill();
+
+    ctx.fillStyle = '#64748b'; // Fül belseje
+    ctx.beginPath();
+    ctx.moveTo(4, -16);
+    ctx.lineTo(9, -31);
+    ctx.lineTo(13, -16);
+    ctx.closePath();
+    ctx.fill();
+
+    // Fekete orr
+    ctx.fillStyle = '#0f172a';
+    ctx.beginPath();
+    ctx.arc(33, -2, 3, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Izzó kék mágikus szem
+    ctx.fillStyle = '#38bdf8';
+    ctx.shadowColor = '#38bdf8';
+    ctx.shadowBlur = 8;
+    ctx.beginPath();
+    ctx.ellipse(14, -6, 3.5, 2, Math.PI / 6, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.shadowBlur = 0; // Árnyék visszaállítása
+
+    // Pupilla
+    ctx.fillStyle = '#0284c7';
+    ctx.beginPath();
+    ctx.arc(14.5, -6, 1, 0, Math.PI * 2);
+    ctx.fill();
+
+    ctx.restore(); // Fej vége
+    ctx.restore(); // Farkas vége
+}
+
+// Fő animációs ciklus
+let tick = 0;
+function animate() {
+    tick++;
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    // HÁTTÉR
+    let bgGrad = ctx.createLinearGradient(0, 0, 0, canvas.height);
+    bgGrad.addColorStop(0, '#0a0d1a');
+    bgGrad.addColorStop(1, '#1a2238');
+    ctx.fillStyle = bgGrad;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // Hold
+    ctx.fillStyle = '#e0f7fa';
+    ctx.beginPath();
+    ctx.arc(100, 80, 40, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Részecskék
+    ctx.fillStyle = '#7dcfff';
+    particles.forEach(p => {
+        p.y -= p.speedY;
+        if (p.y < 0) p.y = canvas.height;
+        ctx.globalAlpha = Math.sin(tick * 0.05 + p.alpha) * 0.5 + 0.5;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+        ctx.fill();
+    });
+    ctx.globalAlpha = 1.0;
+
+    // Talaj
+    ctx.fillStyle = '#0f172a';
+    ctx.fillRect(0, 360, canvas.width, 120);
+
+    // KŐKAPU
+    ctx.fillStyle = '#334155';
+    ctx.fillRect(620, 160, 120, 200);
+    
+    ctx.fillStyle = state.doorOpen ? '#2ac3de' : '#1e293b';
+    ctx.fillRect(630, 170, 100, 190);
+
+    if (state.doorOpen && state.doorProgress < 45) {
+        state.doorProgress += 0.5;
+    }
+    ctx.fillStyle = '#475569';
+    ctx.fillRect(630 - state.doorProgress, 170, 50, 190);
+    ctx.fillRect(680 + state.doorProgress, 170, 50, 190);
+
+    // ÉLETHŰ FARKAS RAJZOLÁSA (x: 230, y: 315 pozícióban)
+    drawRealisticWolf(230, 315, tick);
+
+    // LEBEGŐ KULCS
+    if (!state.hasKey) {
+        let keyY = 300 + Math.sin(tick * 0.06) * 10;
+        
+        let glow = ctx.createRadialGradient(510, keyY, 5, 510, keyY, 30);
+        glow.addColorStop(0, 'rgba(251, 191, 36, 0.8)');
+        glow.addColorStop(1, 'rgba(251, 191, 36, 0)');
+        ctx.fillStyle = glow;
+        ctx.beginPath();
+        ctx.arc(510, keyY, 30, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.strokeStyle = '#fbbf24';
+        ctx.lineWidth = 4;
+        ctx.beginPath();
+        ctx.arc(500, keyY, 10, 0, Math.PI * 2);
+        ctx.moveTo(510, keyY);
+        ctx.lineTo(525, keyY);
+        ctx.lineTo(525, keyY + 6);
+        ctx.stroke();
+    }
+
+    // ÜZENET BUBORÉK
+    if (state.messageTimer > 0) {
+        state.messageTimer--;
+        ctx.fillStyle = 'rgba(15, 23, 42, 0.88)';
+        ctx.fillRect(40, 20, 720, 50);
+        ctx.strokeStyle = '#38bdf8';
+        ctx.lineWidth = 1;
+        ctx.strokeRect(40, 20, 720, 50);
+
+        ctx.fillStyle = '#f8fafc';
+        ctx.font = '16px Segoe UI';
+        ctx.textAlign = 'center';
+        ctx.fillText(state.message, 400, 51);
+    }
+
+    requestAnimationFrame(animate);
+}
+
+animate();
+</script>
+</body>
+</html>

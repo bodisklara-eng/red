@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Animált Interaktív Mese</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #0d0f18;
+            color: #ffffff;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+        }
+        h1 {
+            margin-bottom: 10px;
+            color: #7aa2f7;
+            font-size: 1.5rem;
+        }
+        #game-container {
+            position: relative;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+            border-radius: 12px;
+            overflow: hidden;
+            border: 2px solid #2ac3de;
+        }
+        canvas {
+            display: block;
+            cursor: pointer;
+        }
+        .instruction {
+            margin-top: 12px;
+            color: #a9b1d6;
+            font-size: 0.95rem;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>A Suttogó Erdő - Animált Jelenet</h1>
+    <div id="game-container">
+        <canvas id="canvas" width="800" height="480"></canvas>
+    </div>
+    <p class="instruction">💡 Kattints a farkasra, a lebegő kulcsra vagy a kőkapura!</p>
+
+<script>
+const canvas = document.getElementById('canvas');
+const ctx = canvas.getContext('2d');
+
+// Játékállapot
+let state = {
+    hasKey: false,
+    doorOpen: false,
+    doorProgress: 0,
+    message: "Kattints a szereplőkre vagy a tárgyakra!",
+    messageTimer: 180
+};
+
+// Varázsporszemcsék (háttéranimáció)
+const particles = [];
+for (let i = 0; i < 40; i++) {
+    particles.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        radius: Math.random() * 2 + 1,
+        speedY: Math.random() * 0.5 + 0.2,
+        alpha: Math.random()
+    });
+}
+
+// Kattintás-érzékelés
+canvas.addEventListener('click', (e) => {
+    const rect = canvas.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+
+    // Farkas kattintás (x: 180-320, y: 260-380)
+    if (x > 180 && x < 320 && y > 260 && y < 380) {
+        if (!state.hasKey) {
+            showMessage("A mágikus farkas halkan morgat. Úgy tűnik, a lebegő kulcsra vár!");
+        } else {
+            showMessage("A farkas elégedetten dörzsölődik hozzád. Készen állsz belépni!");
+        }
+    }
+
+    // Kulcs kattintás (x: 480-540, y: 280-340)
+    if (!state.hasKey && x > 480 && x < 540 && y > 270 && y < 350) {
+        state.hasKey = true;
+        showMessage("Magszerezted a Mágikus Rézkulcsot! Most kattints a Kőkapura!");
+    }
+
+    // Kapu kattintás (x: 620-740, y: 150-380)
+    if (x > 620 && x < 740 && y > 150 && y < 380) {
+        if (state.hasKey) {
+            state.doorOpen = true;
+            showMessage("A kapu feltárult! Sikeresen megoldottad az első fejezetet!");
+        } else {
+            showMessage("A kapu zárva van. Szükséged lesz a lebegő kulcsra!");
+        }
+    }
+});
+
+function showMessage(text) {
+    state.message = text;
+    state.messageTimer = 220;
+}
+
+// Fő animációs ciklus
+let tick = 0;
+function animate() {
+    tick++;
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    // 1. HÁTTÉR (Éjszakai erdő)
+    let bgGrad = ctx.createLinearGradient(0, 0, 0, canvas.height);
+    bgGrad.addColorStop(0, '#0a0d1a');
+    bgGrad.addColorStop(1, '#1a2238');
+    ctx.fillStyle = bgGrad;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // Hold
+    ctx.fillStyle = '#e0f7fa';
+    ctx.beginPath();
+    ctx.arc(100, 80, 40, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Részecskék mozgása
+    ctx.fillStyle = '#7dcfff';
+    particles.forEach(p => {
+        p.y -= p.speedY;
+        if (p.y < 0) p.y = canvas.height;
+        ctx.globalAlpha = Math.sin(tick * 0.05 + p.alpha) * 0.5 + 0.5;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+        ctx.fill();
+    });
+    ctx.globalAlpha = 1.0;
+
+    // Talaj
+    ctx.fillStyle = '#0f172a';
+    ctx.fillRect(0, 360, canvas.width, 120);
+
+    // 2. KŐKAPU (Animált nyitódás)
+    ctx.fillStyle = '#334155';
+    ctx.fillRect(620, 160, 120, 200); // Keret
+    
+    // Kapu belseje / Portál fény
+    ctx.fillStyle = state.doorOpen ? '#2ac3de' : '#1e293b';
+    ctx.fillRect(630, 170, 100, 190);
+
+    // Ajtószárnyak nyílása
+    if (state.doorOpen && state.doorProgress < 45) {
+        state.doorProgress += 0.5;
+    }
+    ctx.fillStyle = '#475569';
+    ctx.fillRect(630 - state.doorProgress, 170, 50, 190); // Bal szárny
+    ctx.fillRect(680 + state.doorProgress, 170, 50, 190); // Jobb szárny
+
+    // 3. FARKAS (Lélegző animáció)
+    let wolfBreath = Math.sin(tick * 0.08) * 3;
+    
+    // Test
+    ctx.fillStyle = '#94a3b8';
+    ctx.beginPath();
+    ctx.ellipse(250, 320 + wolfBreath * 0.3, 45, 30, 0, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Fej
+    ctx.beginPath();
+    ctx.arc(220, 280 + wolfBreath, 22, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Fülek
+    ctx.beginPath();
+    ctx.moveTo(210, 265 + wolfBreath);
+    ctx.lineTo(200, 245 + wolfBreath);
+    ctx.lineTo(220, 260 + wolfBreath);
+    ctx.fill();
+
+    // Izzó kék szem
+    ctx.fillStyle = '#38bdf8';
+    ctx.beginPath();
+    ctx.arc(212, 278 + wolfBreath, 4, 0, Math.PI * 2);
+    ctx.fill();
+
+    // 4. LEBEGŐ KULCS (Hullámzó mozgás + fényaurája)
+    if (!state.hasKey) {
+        let keyY = 300 + Math.sin(tick * 0.06) * 10;
+        
+        // Fényaura
+        let glow = ctx.createRadialGradient(510, keyY, 5, 510, keyY, 30);
+        glow.addColorStop(0, 'rgba(251, 191, 36, 0.8)');
+        glow.addColorStop(1, 'rgba(251, 191, 36, 0)');
+        ctx.fillStyle = glow;
+        ctx.beginPath();
+        ctx.arc(510, keyY, 30, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Kulcs rajzolása
+        ctx.strokeStyle = '#fbbf24';
+        ctx.lineWidth = 4;
+        ctx.beginPath();
+        ctx.arc(500, keyY, 10, 0, Math.PI * 2); // Fej
+        ctx.moveTo(510, keyY);
+        ctx.lineTo(525, keyY); // Szár
+        ctx.lineTo(525, keyY + 6); // Toll
+        ctx.stroke();
+    }
+
+    // 5. DIALÓGUS BUBORÉK / ÜZENET
+    if (state.messageTimer > 0) {
+        state.messageTimer--;
+        ctx.fillStyle = 'rgba(15, 23, 42, 0.85)';
+        ctx.fillRect(40, 20, 720, 50);
+        ctx.strokeStyle = '#38bdf8';
+        ctx.lineWidth = 1;
+        ctx.strokeRect(40, 20, 720, 50);
+
+        ctx.fillStyle = '#f8fafc';
+        ctx.font = '16px Segoe UI';
+        ctx.textAlign = 'center';
+        ctx.fillText(state.message, 400, 51);
+    }
+
+    requestAnimationFrame(animate);
+}
+
+animate();
+</script>
+</body>
+</html>

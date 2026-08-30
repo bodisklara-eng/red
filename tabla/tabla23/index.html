@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A Suttogó Erdő - Automata Műhely</title>
+    <style>
+        :root {
+            --bg: #090d16;
+            --panel: #1e293b;
+            --accent: #38bdf8;
+            --text: #f8fafc;
+        }
+
+        body {
+            margin: 0;
+            padding: 20px;
+            background: var(--bg);
+            color: var(--text);
+            font-family: system-ui, -apple-system, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        h1 { color: var(--accent); margin-bottom: 10px; }
+
+        .layout {
+            display: flex;
+            gap: 20px;
+            max-width: 1000px;
+            width: 100%;
+            flex-wrap: wrap;
+        }
+
+        /* ANIMÁCIÓS SZÍNPAD */
+        .stage {
+            position: relative;
+            width: 580px;
+            height: 380px;
+            background: radial-gradient(circle at 20% 30%, #1e293b 0%, #090d16 100%);
+            border: 2px solid var(--accent);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+        }
+
+        .moon {
+            position: absolute;
+            top: 20px; left: 30px;
+            width: 40px; height: 40px;
+            background: #fef08a;
+            border-radius: 50%;
+            box-shadow: 0 0 15px #fef08a;
+        }
+
+        .ground {
+            position: absolute;
+            bottom: 0; width: 100%; height: 90px;
+            background: #0f172a;
+            border-top: 2px solid #334155;
+        }
+
+        /* KAPU */
+        .gate-frame {
+            position: absolute;
+            right: 40px; bottom: 80px;
+            width: 100px; height: 160px;
+            background: #334155;
+            border-radius: 50px 50px 0 0;
+            padding: 5px;
+            box-sizing: border-box;
+            perspective: 1000px;
+        }
+
+        .door {
+            width: 100%; height: 100%;
+            background: #78350f;
+            border-radius: 45px 45px 0 0;
+            display: flex;
+            transition: transform 0.8s ease-in-out;
+            transform-style: preserve-3d;
+        }
+
+        .gate-frame.open .door {
+            transform: rotateY(-100deg);
+        }
+
+        /* KULCS */
+        .key-btn {
+            position: absolute;
+            left: 260px; top: 160px;
+            font-size: 2.5rem;
+            cursor: pointer;
+            user-select: none;
+            transition: all 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            z-index: 10;
+        }
+
+        .key-btn.used {
+            left: 430px;
+            top: 220px;
+            transform: scale(0.2) rotate(360deg);
+            opacity: 0;
+        }
+
+        /* KIREPÜLŐ KÁRTYÁK */
+        .card {
+            position: absolute;
+            right: 60px; bottom: 120px;
+            width: 110px; height: 50px;
+            background: rgba(15, 23, 42, 0.95);
+            border: 1px solid var(--accent);
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            opacity: 0;
+            transition: all 0.7s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+            z-index: 5;
+        }
+
+        .card.fly { opacity: 1; }
+
+        /* JOBB PANEL */
+        .panel {
+            flex: 1; min-width: 300px; height: 380px;
+            background: var(--panel);
+            border: 1px solid #334155;
+            border-radius: 12px; padding: 15px;
+            box-sizing: border-box; overflow-y: auto;
+        }
+
+        .step-card {
+            background: #0f172a;
+            border-left: 4px solid var(--accent);
+            padding: 8px; margin-bottom: 8px;
+            border-radius: 0 6px 6px 0;
+            font-size: 0.85rem;
+        }
+
+        /* AI DOBOZ */
+        .ai-panel {
+            width: 100%; max-width: 1000px; margin-top: 20px;
+            background: var(--panel); padding: 15px;
+            border-radius: 12px; border: 1px solid #334155;
+            box-sizing: border-box;
+        }
+
+        .row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+        input[type="password"] { padding: 8px; border-radius: 6px; background: #0f172a; border: 1px solid #475569; color: #fff; width: 220px; }
+        .btn { background: #2563eb; color: #fff; padding: 8px 14px; border-radius: 6px; cursor: pointer; border: none; font-weight: bold; }
+        .btn:hover { background: #1d4ed8; }
+    </style>
+</head>
+<body>
+
+    <h1 id="app-title">🌲 A Suttogó Erdő Útmutató</h1>
+
+    <div class="layout">
+        <div class="stage">
+            <div class="moon"></div>
+            <div class="ground"></div>
+
+            <div class="gate-frame" id="gateFrame">
+                <div class="door"></div>
+            </div>
+
+            <div class="key-btn" id="keyBtn" onclick="unlockGate()">🔑</div>
+            <div id="cardLayer"></div>
+        </div>
+
+        <div class="panel">
+            <h2 style="color:var(--accent); margin-top:0;">🛠️ Lépések</h2>
+            <div id="stepsList">
+                <div class="step-card"><b style="color:#4ade80;">1. Lépés: Kupakok fúrása</b><br>Készíts 6-8mm lyukakat a PET kupakokra.</div>
+                <div class="step-card"><b style="color:#4ade80;">2. Lépés: Csövezés</b><br>Fűzd át a szilikoncsöveket és szigeteld ragasztóval.</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="ai-panel">
+        <h3 style="margin-top:0; color:var(--accent);">🖼️ AI Kép elemzés (Autatikus Modellszelekció)</h3>
+        <div class="row">
+            <input type="password" id="apiKey" placeholder="Gemini API kulcs...">
+            <input type="file" id="fileInput" accept="image/*" style="display:none" onchange="onFileSelected(event)">
+            <button class="btn" onclick="document.getElementById('fileInput').click()">📁 Kép feltöltése</button>
+            <span id="status" style="color:#4ade80; font-weight:bold;"></span>
+        </div>
+    </div>
+
+<script>
+let items = [
+    { name: "PET Palack", qty: "2 db", icon: "🍾" },
+    { name: "Kupakok", qty: "2 db", icon: "🔵" },
+    { name: "Fúró", qty: "1 db", icon: "🛠️" },
+    { name: "Szilikoncső", qty: "2 db", icon: "🌀" },
+    { name: "Ragasztó", qty: "1 db", icon: "🔫" },
+    { name: "Tiszta víz", qty: "1 Liter", icon: "💧" }
+];
+
+let isGateUnlocked = false;
+
+function unlockGate() {
+    if (isGateUnlocked) return;
+    isGateUnlocked = true;
+
+    document.getElementById('keyBtn').classList.add('used');
+    setTimeout(() => {
+        document.getElementById('gateFrame').classList.add('open');
+        flyOutCards();
+    }, 500);
+}
+
+function flyOutCards() {
+    const layer = document.getElementById('cardLayer');
+    layer.innerHTML = ''; 
+
+    items.forEach((item, index) => {
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.innerHTML = `<span>${item.icon} <b>${item.name}</b></span><span style="color:#38bdf8">${item.qty}</span>`;
+        layer.appendChild(card);
+
+        const col = index % 3;
+        const row = Math.floor(index / 3);
+
+        setTimeout(() => {
+            card.classList.add('fly');
+            card.style.right = 'auto';
+            card.style.left = `${30 + (col * 125)}px`;
+            card.style.bottom = `${15 + (row * 55)}px`;
+        }, index * 120);
+    });
+}
+
+async function onFileSelected(event) {
+    const file = event.target.files[0];
+    const key = document.getElementById('apiKey').value.trim();
+    const status = document.getElementById('status');
+
+    if (!file) return;
+
+    status.textContent = "⏳ Feldolgozás...";
+
+    const reader = new FileReader();
+    reader.onload = async (e) => {
+        const base64Data = e.target.result.split(',')[1];
+
+        if (!key) {
+            status.textContent = "⚠️ Nincs API kulcs! Demó kirepülés...";
+            triggerNewDataAnimation(getDemoData());
+            return;
+        }
+
+        try {
+            const data = await requestGeminiAutoModel(key, base64Data, file.type);
+            triggerNewDataAnimation(data);
+            status.textContent = "✅ Sikeres elemzés!";
+        } catch (err) {
+            console.error(err);
+            status.textContent = "❌ Hiba történt! Demó adatok betöltése...";
+            triggerNewDataAnimation(getDemoData());
+        }
+    };
+    reader.readAsDataURL(file);
+}
+
+// DINAMIKUS MODELL-KERESŐ ÉS BIZTONSÁGOS KÉRÉS
+async function requestGeminiAutoModel(apiKey, base64Data, mimeType) {
+    // 1. Lekérjük az elérhető modellek listáját a Google API-tól
+    const listUrl = `https://generativelanguage.googleapis.com/v1beta/models?key=${apiKey}`;
+    const listRes = await fetch(listUrl);
+    if (!listRes.ok) throw new Error("API Kulcs hiba: " + listRes.status);
+    
+    const listData = await listRes.json();
+    
+    // 2. Kiszűrjük a legalkalmasabb "flash" modellt, ami támogatja a tartalomgenerálást
+    const flashModel = listData.models.find(m => 
+        m.name.includes("flash") && 
+        m.supportedGenerationMethods && 
+        m.supportedGenerationMethods.includes("generateContent")
+    );
+
+    // Ha találtunk dinamikus modellt, azt használjuk, egyébként tartalékot választunk
+    const selectedModel = flashModel ? flashModel.name : "models/gemini-2.5-flash";
+
+    // 3. Végrehajtjuk az elemzést a működő modellre
+    const endpoint = `https://generativelanguage.googleapis.com/v1beta/${selectedModel}:generateContent?key=${apiKey}`;
+    
+    const body = {
+        contents: [{
+            parts: [
+                { text: "Elemezd a képet és adj vissza kizárólag érvényes JSON-t markdown blokkok nélkül! Szerkezet: {\"title\": \"Cím\", \"steps\": [{\"title\": \"Lépés\", \"desc\": \"Leírás\"}], \"tools\": [{\"name\": \"Név\", \"qty\": \"1 db\", \"icon\": \"📦\"}]}" },
+                { inline_data: { mime_type: mimeType, data: base64Data } }
+            ]
+        }]
+    };
+
+    const res = await fetch(endpoint, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+    });
+
+    if (!res.ok) throw new Error("HTTP Hiba: " + res.status);
+
+    const json = await res.json();
+    let text = json.candidates[0].content.parts[0].text;
+    text = text.replace(/```json/g, '').replace(/```/g, '').trim();
+    return JSON.parse(text);
+}
+
+function triggerNewDataAnimation(data) {
+    if (data.title) document.getElementById('app-title').textContent = `🌲 ${data.title}`;
+
+    if (data.steps && data.steps.length) {
+        const list = document.getElementById('stepsList');
+        list.innerHTML = '';
+        data.steps.forEach(s => {
+            list.innerHTML += `<div class="step-card"><b style="color:#4ade80;">${s.title}</b><br>${s.desc}</div>`;
+        });
+    }
+
+    if (data.tools && data.tools.length) {
+        items = data.tools.map(t => ({ name: t.name || "Elem", qty: t.qty || "1 db", icon: t.icon || "📦" }));
+        
+        if (!isGateUnlocked) {
+            unlockGate();
+        } else {
+            flyOutCards();
+        }
+    }
+}
+
+function getDemoData() {
+    return {
+        title: "Kép Alapján Azonosított Projekt",
+        steps: [
+            { title: "1. Lépés: Összeszerelés", desc: "Illeszd össze a képen azonosított főbb komponenseket." },
+            { title: "2. Lépés: Tesztelés", desc: "Ellenőrizd a csatlakozások szilárdságát." }
+        ],
+        tools: [
+            { name: "Fő Modul", qty: "1 db", icon: "🧩" },
+            { name: "Rögzítő", qty: "4 db", icon: "🔩" },
+            { name: "Kábel", qty: "1 db", icon: "🔌" }
+        ]
+    };
+}
+</script>
+</body>
+</html>

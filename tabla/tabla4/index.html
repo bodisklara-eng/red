@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<!-- saved from url=(0068)file:///C:/Users/Utilizator/Downloads/gemini-code-1787632890337.html -->
+<html lang="hu"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interaktív Kézírásos &amp; PDF Teszt Generátor</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f7f6;
+            margin: 0;
+            padding: 20px;
+            color: #333;
+        }
+        .container {
+            max-width: 800px;
+            background: #ffffff;
+            margin: 0 auto;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 5px;
+        }
+        .subtitle {
+            text-align: center;
+            color: #7f8c8d;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+        .question-card {
+            background: #fafbfc;
+            border: 1px solid #e1e4e8;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .question-title {
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: #34495e;
+            font-size: 17px;
+        }
+        canvas {
+            border: 2px dashed #cbd5e1;
+            background: #fff;
+            border-radius: 6px;
+            cursor: crosshair;
+            display: block;
+            margin-bottom: 10px;
+            touch-action: none;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        input[type="text"] {
+            padding: 8px 12px;
+            border: 1px solid #cbd5e1;
+            border-radius: 4px;
+            font-size: 16px;
+            width: 100%;
+            box-sizing: border-box;
+            margin-top: 5px;
+        }
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        button {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .btn-clear {
+            background-color: #e2e8f0;
+            color: #475569;
+        }
+        .btn-clear:hover { background-color: #cbd5e1; }
+        
+        .action-bar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: space-between;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #e2e8f0;
+        }
+        .btn-primary {
+            background-color: #3b82f6;
+            color: white;
+            padding: 10px 20px;
+            font-size: 16px;
+        }
+        .btn-primary:hover { background-color: #2563eb; }
+
+        .btn-reset-print {
+            background-color: #10b981;
+            color: white;
+            padding: 10px 20px;
+            font-size: 16px;
+        }
+        .btn-reset-print:hover { background-color: #059669; }
+
+        #feedback-box {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 6px;
+            background: #f0fdf4;
+            border: 1px solid #bbf7d0;
+            color: #166534;
+            display: none;
+        }
+        #feedback-box h3 {
+            margin-top: 0;
+            margin-bottom: 8px;
+        }
+
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+            }
+            .container {
+                box-shadow: none;
+                padding: 0;
+                max-width: 100%;
+            }
+            .action-bar, .btn-group, #feedback-box {
+                display: none !important;
+            }
+            canvas {
+                border: 1px solid #94a3b8;
+                background: #fff !important;
+            }
+            input[type="text"] {
+                border: none;
+                border-bottom: 1px solid #000;
+                border-radius: 0;
+                padding: 2px 0;
+            }
+            input[type="text"]::placeholder {
+                color: transparent;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Interaktív Feladatlap</h1>
+    <div class="subtitle">Kézírásos &amp; Szöveges feladatok magyarázattal</div>
+
+    <!-- 1. Feladat -->
+    <div class="question-card">
+        <div class="question-title">1. Számítsd ki és írd le kézzel a helyes eredményt: 2 × 3 + 4 = ?</div>
+        <canvas id="canvas1" width="740" height="120"></canvas>
+        <div class="btn-group">
+            <button type="button" class="btn-clear" onclick="clearCanvas(&#39;canvas1&#39;)">Törlés / Újra</button>
+        </div>
+    </div>
+
+    <!-- 2. Feladat -->
+    <div class="question-card">
+        <div class="question-title">2. Nevezd meg a vízkörforgás fő fázisait:</div>
+        <input type="text" id="answer2" placeholder="Ide írd a választ (pl. párolgás, kicsapódás, csapadék)...">
+    </div>
+
+    <!-- Visszajelzés és magyarázat -->
+    <div id="feedback-box" style="display: block;">
+        <h3>Eredmények és Magyarázat:</h3>
+        <p id="explanation-text">
+            <strong>1. Feladat magyarázata:</strong> A helyes válasz a <strong>10</strong>.<br>
+            A műveleti sorrend szabályai szerint először a szorzást végezzük el (2 × 3 = 6), majd ehhez adjuk hozzá a négyet (6 + 4 = 10).<br><br>
+            <strong>2. Feladat értékelése és magyarázata:</strong> Az általad beírt válasz: "<em>(üres)</em>".<br>
+            A vízkörforgás fő fázisai helyesen: <strong>párolgás</strong>, <strong>kicsapódás (kondenzáció)</strong> és a <strong>csapadék</strong>.
+        </p>
+    </div>
+
+    <!-- Gombok -->
+    <div class="action-bar">
+        <button type="button" class="btn-primary" onclick="checkAnswers()">Válaszok ellenőrzése és magyarázata</button>
+        <button type="button" class="btn-reset-print" onclick="resetAndPrintPDF()">Válaszok törlése és üres sablon PDF mentése</button>
+    </div>
+</div>
+
+<script>
+    function setupCanvas(canvasId) {
+        const canvas = document.getElementById(canvasId);
+        const ctx = canvas.getContext('2d');
+        let painting = false;
+
+        function startPosition(e) {
+            painting = true;
+            draw(e);
+        }
+
+        function endPosition() {
+            painting = false;
+            ctx.beginPath();
+        }
+
+        function draw(e) {
+            if (!painting) return;
+            ctx.lineWidth = 3;
+            ctx.lineCap = 'round';
+            ctx.strokeStyle = '#1e293b';
+
+            const rect = canvas.getBoundingClientRect();
+            const clientX = e.clientX || (e.touches ? e.touches[0].clientX : 0);
+            const clientY = e.clientY || (e.touches ? e.touches[0].clientY : 0);
+
+            ctx.lineTo(clientX - rect.left, clientY - rect.top);
+            ctx.stroke();
+            ctx.beginPath();
+            ctx.moveTo(clientX - rect.left, clientY - rect.top);
+        }
+
+        canvas.addEventListener('mousedown', startPosition);
+        canvas.addEventListener('mouseup', endPosition);
+        canvas.addEventListener('mousemove', draw);
+
+        canvas.addEventListener('touchstart', (e) => { startPosition(e); e.preventDefault(); });
+        canvas.addEventListener('touchend', (e) => { endPosition(); e.preventDefault(); });
+        canvas.addEventListener('touchmove', (e) => { draw(e); e.preventDefault(); });
+    }
+
+    function clearCanvas(canvasId) {
+        const canvas = document.getElementById(canvasId);
+        const ctx = canvas.getContext('2d');
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+    }
+
+    function resetAndPrintPDF() {
+        clearCanvas('canvas1');
+        document.getElementById('answer2').value = '';
+        document.getElementById('feedback-box').style.display = 'none';
+
+        setTimeout(() => {
+            window.print();
+        }, 100);
+    }
+
+    function checkAnswers() {
+        const textVal = document.getElementById('answer2').value.trim();
+        const feedbackBox = document.getElementById('feedback-box');
+        const explanationText = document.getElementById('explanation-text');
+
+        // Közvetlen, tiszta karakterek használata a hibátlan megjelenítéshez
+        let explanationHTML = `
+            <strong>1. Feladat magyarázata:</strong> A helyes válasz a <strong>10</strong>.<br>
+            A műveleti sorrend szabályai szerint először a szorzást végezzük el (2 × 3 = 6), majd ehhez adjuk hozzá a négyet (6 + 4 = 10).<br><br>
+            <strong>2. Feladat értékelése és magyarázata:</strong> Az általad beírt válasz: "<em>${textVal || '(üres)'}</em>".<br>
+            A vízkörforgás fő fázisai helyesen: <strong>párolgás</strong>, <strong>kicsapódás (kondenzáció)</strong> és a <strong>csapadék</strong>.
+        `;
+
+        explanationText.innerHTML = explanationHTML;
+        feedbackBox.style.display = 'block';
+    }
+
+    setupCanvas('canvas1');
+</script>
+
+
+</body></html>

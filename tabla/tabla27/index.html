@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A Suttogó Erdő - Kőfal és Barna Faajtó</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #0d0f18;
+            color: #ffffff;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+        }
+        h1 {
+            margin-bottom: 10px;
+            color: #7aa2f7;
+            font-size: 1.5rem;
+        }
+        #game-container {
+            position: relative;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+            border-radius: 12px;
+            overflow: hidden;
+            border: 2px solid #2ac3de;
+        }
+        canvas {
+            display: block;
+            cursor: pointer;
+        }
+        .instruction {
+            margin-top: 12px;
+            color: #a9b1d6;
+            font-size: 0.95rem;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>A Suttogó Erdő - Interaktív Animáció</h1>
+    <div id="game-container">
+        <canvas id="canvas" width="800" height="480"></canvas>
+    </div>
+    <p class="instruction">💡 Kattints a farkasra, a lebegő kulcsra vagy a kőkapura!</p>
+
+<script>
+const canvas = document.getElementById('canvas');
+const ctx = canvas.getContext('2d');
+
+let state = {
+    hasKey: false,
+    doorOpen: false,
+    doorProgress: 0,
+    message: "Kattints a farkasra vagy a tárgyakra!",
+    messageTimer: 200
+};
+
+// Varázsporszemcsék
+const particles = [];
+for (let i = 0; i < 40; i++) {
+    particles.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        radius: Math.random() * 2 + 1,
+        speedY: Math.random() * 0.4 + 0.1,
+        alpha: Math.random()
+    });
+}
+
+// Kattintás-érzékelés
+canvas.addEventListener('click', (e) => {
+    const rect = canvas.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+
+    // Farkas kattintási területe
+    if (x > 180 && x < 310 && y > 220 && y < 370) {
+        if (!state.hasKey) {
+            showMessage("Az ezüstfarkas halk morgással figyel. A lebegő mágikus kulcsra vár!");
+        } else {
+            showMessage("A farkas üdvözöl, és a kapu felé bök az orrával. Készen állsz!");
+        }
+    }
+
+    // Kulcs kattintás
+    if (!state.hasKey && x > 480 && x < 540 && y > 260 && y < 340) {
+        state.hasKey = true;
+        showMessage("Megszerezted a Mágikus Rézkulcsot! Kattints a Kőkapura a kinyitáshoz!");
+    }
+
+    // Kapu kattintás (Szikla/Kőfal kapurésszel)
+    if (x > 580 && x < 780 && y > 120 && y < 380) {
+        if (state.hasKey) {
+            state.doorOpen = true;
+            showMessage("A barna árnyalatos kapuszárnyak besiklottak a kőfal mögé!");
+        } else {
+            showMessage("A kapu zárva van. Szükséged lesz a lebegő kulcsra!");
+        }
+    }
+});
+
+function showMessage(text) {
+    state.message = text;
+    state.messageTimer = 220;
+}
+
+// 1. CSILLOGÓ HOLD & CSILLAGOK
+function drawSparklingMoon(x, y, radius, tick) {
+    let auraRadius = radius + 25 + Math.sin(tick * 0.05) * 8;
+    let moonGlow = ctx.createRadialGradient(x, y, radius * 0.4, x, y, auraRadius);
+    moonGlow.addColorStop(0, 'rgba(224, 247, 250, 0.9)');
+    moonGlow.addColorStop(0.4, 'rgba(125, 207, 255, 0.35)');
+    moonGlow.addColorStop(1, 'rgba(125, 207, 255, 0)');
+    
+    ctx.fillStyle = moonGlow;
+    ctx.beginPath();
+    ctx.arc(x, y, auraRadius, 0, Math.PI * 2);
+    ctx.fill();
+
+    ctx.fillStyle = '#f0fdfa';
+    ctx.beginPath();
+    ctx.arc(x, y, radius, 0, Math.PI * 2);
+    ctx.fill();
+
+    ctx.fillStyle = 'rgba(148, 163, 184, 0.2)';
+    ctx.beginPath();
+    ctx.arc(x - 10, y - 8, 8, 0, Math.PI * 2);
+    ctx.arc(x + 12, y + 10, 10, 0, Math.PI * 2);
+    ctx.arc(x - 5, y + 15, 6, 0, Math.PI * 2);
+    ctx.fill();
+
+    const sparkles = [
+        { dx: -22, dy: -18, speed: 0.07, phase: 0 },
+        { dx: 28, dy: -12, speed: 0.05, phase: 1.5 },
+        { dx: 18, dy: 22, speed: 0.08, phase: 3.0 },
+        { dx: -28, dy: 14, speed: 0.06, phase: 4.5 },
+        { dx: 2, dy: -32, speed: 0.09, phase: 0.8 }
+    ];
+
+    sparkles.forEach(s => {
+        let alpha = Math.max(0, Math.sin(tick * s.speed + s.phase));
+        if (alpha > 0) {
+            draw4PointStar(x + s.dx, y + s.dy, 7 * alpha, alpha);
+        }
+    });
+}
+
+function draw4PointStar(cx, cy, size, alpha) {
+    ctx.save();
+    ctx.globalAlpha = alpha;
+    ctx.fillStyle = '#ffffff';
+    ctx.beginPath();
+    ctx.moveTo(cx, cy - size);
+    ctx.quadraticCurveTo(cx, cy, cx + size, cy);
+    ctx.quadraticCurveTo(cx, cy, cx, cy + size);
+    ctx.quadraticCurveTo(cx, cy, cx - size, cy);
+    ctx.quadraticCurveTo(cx, cy, cx, cy - size);
+    ctx.fill();
+    ctx.restore();
+}
+
+// 2. ERDŐ / FÁK
+function drawPineTree(x, baseY, width, height, color) {
+    ctx.fillStyle = color;
+    ctx.fillRect(x - width * 0.1, baseY - height * 0.2, width * 0.2, height * 0.2);
+
+    let layers = 3;
+    for (let i = 0; i < layers; i++) {
+        let layerY = baseY - height * 0.15 - (i * (height * 0.26));
+        let layerWidth = width * (1 - i * 0.22);
+        let layerHeight = height * 0.45;
+
+        ctx.beginPath();
+        ctx.moveTo(x, layerY - layerHeight);
+        ctx.lineTo(x + layerWidth / 2, layerY);
+        ctx.lineTo(x - layerWidth / 2, layerY);
+        ctx.closePath();
+        ctx.fill();
+    }
+}
+
+function drawForest() {
+    drawPineTree(40, 360, 70, 180, '#131b2e');
+    drawPineTree(110, 360, 55, 140, '#131b2e');
+    drawPineTree(170, 360, 80, 200, '#0f172a');
+    drawPineTree(550, 360, 75, 190, '#131b2e');
+
+    drawPineTree(-10, 370, 90, 230, '#090d16');
+}
+
+// BARNA ÁRNYALATOS KEVERT SZÍNŰ AJTÓ RAJZOLÁSA
+function drawMixedBrownDoor(x, y, w, h, tick) {
+    // Összetett kevert barna gradiens
+    let doorGrad = ctx.createLinearGradient(x, y, x + w, y + h);
+    doorGrad.addColorStop(0.0, '#3d2314');
+    doorGrad.addColorStop(0.2, '#6b4226');
+    doorGrad.addColorStop(0.4, '#8a5329');
+    doorGrad.addColorStop(0.6, '#4a2c16');
+    doorGrad.addColorStop(0.8, '#704323');
+    doorGrad.addColorStop(1.0, '#2e190c');
+
+    ctx.fillStyle = doorGrad;
+    ctx.fillRect(x, y, w, h);
+
+    // Barna fa erezet mintázat
+    ctx.strokeStyle = 'rgba(40, 20, 10, 0.4)';
+    ctx.lineWidth = 1.5;
+    for (let i = 5; i < w; i += 8) {
+        ctx.beginPath();
+        ctx.moveTo(x + i, y);
+        ctx.quadraticCurveTo(x + i + Math.sin(i) * 4, y + h * 0.5, x + i, y + h);
+        ctx.stroke();
+    }
+
+    // Fa deszka szegélyek
+    ctx.strokeStyle = '#241207';
+    ctx.lineWidth = 2;
+    ctx.strokeRect(x + 1, y + 1, w - 2, h - 2);
+}
+
+// 3. KŐFAL ÉS BARNA ABLAKOS AJTÓ
+function drawStoneDoorWithWindow(tick) {
+    let gateX = 610;
+    let gateY = 150;
+    let gateW = 120;
+    let gateH = 210;
+
+    // A) Belső nyílás háttér
+    ctx.fillStyle = state.doorOpen ? '#2ac3de' : '#0a0f1d';
+    ctx.fillRect(gateX + 10, gateY + 20, gateW - 20, gateH - 20);
+
+    // Ajtónyitás animáció
+    if (state.doorOpen && state.doorProgress < 42) {
+        state.doorProgress += 0.5;
+    }
+
+    // B) Mozgó Szárnyak (a kőfal mögé csúsznak)
+    ctx.save();
+    ctx.beginPath();
+    ctx.rect(gateX + 10, gateY + 20, gateW - 20, gateH - 20);
+    ctx.clip();
+
+    let doorLeftX = (gateX + 10) - state.doorProgress;
+    let doorRightX = (gateX + 60) + state.doorProgress;
+    let doorW = 50;
+    let doorH = 190;
+
+    // Bal ajtószárny - Barna árnyalatú kevert fa
+    drawMixedBrownDoor(doorLeftX, gateY + 20, doorW, doorH, tick);
+    drawDoorWindow(doorLeftX + 15, gateY + 60, tick);
+
+    // Jobb ajtószárny - Barna árnyalatú kevert fa
+    drawMixedBrownDoor(doorRightX, gateY + 20, doorW, doorH, tick);
+    drawDoorWindow(doorRightX + 15, gateY + 60, tick);
+
+    ctx.restore();
+
+    // C) TÖBB KŐVEL BEFEDETT KŐFAL
+    ctx.fillStyle = '#263345';
+    ctx.beginPath();
+    ctx.moveTo(560, 360);
+    ctx.lineTo(580, 120);
+    ctx.quadraticCurveTo(670, 95, 790, 115);
+    ctx.lineTo(800, 360);
+    ctx.closePath();
+    ctx.fill();
+
+    // Kőíves nyílás kerete
+    ctx.fillStyle = '#3b4859';
+    ctx.beginPath();
+    ctx.arc(gateX + 60, gateY + 25, 58, Math.PI, 0, false);
+    ctx.lineTo(gateX + 118, gateY + 210);
+    ctx.lineTo(gateX + 94, gateY + 210);
+    ctx.lineTo(gateX + 94, gateY + 25);
+    ctx.arc(gateX + 60, gateY + 25, 34, 0, Math.PI, true);
+    ctx.lineTo(gateX + 26, gateY + 210);
+    ctx.lineTo(gateX + 2, gateY + 210);
+    ctx.closePath();
+    ctx.fill();
+
+    // Részletes kőtégla befedés
+    drawDenseStoneBricks();
+
+    // ZÖLD FŰ A KŐFALON ÉS A KŐFAL TETEJE KÖRÜL
+    drawGrassOnWall(tick);
+}
+
+// Ablak rajzolása a kapura
+function drawDoorWindow(wx, wy, tick) {
+    let glow = Math.sin(tick * 0.08) * 0.3 + 0.7;
+
+    ctx.fillStyle = `rgba(56, 189, 248, ${glow})`;
+    ctx.beginPath();
+    ctx.arc(wx + 10, wy + 10, 10, Math.PI, 0);
+    ctx.rect(wx, wy + 10, 20, 20);
+    ctx.fill();
+
+    ctx.strokeStyle = '#1e1107';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(wx + 10, wy);
+    ctx.lineTo(wx + 10, wy + 30);
+    ctx.moveTo(wx, wy + 15);
+    ctx.lineTo(wx + 20, wy + 15);
+    ctx.stroke();
+}
+
+// Sűrűbb kőfal mintázat
+function drawDenseStoneBricks() {
+    ctx.lineWidth = 1.5;
+
+    const bricks = [
+        {x: 580, y: 130, w: 22, h: 16, c: '#475569'},
+        {x: 605, y: 118, w: 26, h: 18, c: '#334155'},
+        {x: 635, y: 110, w: 28, h: 18, c: '#52627a'},
+        {x: 668, y: 112, w: 26, h: 18, c: '#38475a'},
+        {x: 698, y: 120, w: 24, h: 16, c: '#475569'},
+        {x: 725, y: 130, w: 30, h: 20, c: '#334155'},
+        {x: 760, y: 140, w: 35, h: 22, c: '#475569'},
+        
+        {x: 565, y: 160, w: 30, h: 18, c: '#38475a'},
+        {x: 560, y: 182, w: 32, h: 20, c: '#475569'},
+        {x: 558, y: 206, w: 28, h: 22, c: '#2c3746'},
+        {x: 555, y: 232, w: 34, h: 20, c: '#52627a'},
+        {x: 552, y: 256, w: 30, h: 24, c: '#38475a'},
+        {x: 550, y: 284, w: 36, h: 22, c: '#475569'},
+        {x: 548, y: 310, w: 32, h: 25, c: '#334155'},
+        {x: 545, y: 338, w: 38, h: 22, c: '#2c3746'},
+
+        {x: 735, y: 160, w: 32, h: 20, c: '#52627a'},
+        {x: 770, y: 168, w: 28, h: 22, c: '#334155'},
+        {x: 730, y: 184, w: 36, h: 22, c: '#38475a'},
+        {x: 770, y: 194, w: 28, h: 20, c: '#475569'},
+        {x: 732, y: 210, w: 30, h: 24, c: '#2c3746'},
+        {x: 766, y: 218, w: 32, h: 22, c: '#52627a'},
+        {x: 730, y: 238, w: 38, h: 22, c: '#475569'},
+        {x: 772, y: 244, w: 26, h: 24, c: '#334155'},
+        {x: 728, y: 264, w: 35, h: 22, c: '#38475a'},
+        {x: 767, y: 272, w: 31, h: 22, c: '#52627a'},
+        {x: 726, y: 290, w: 38, h: 25, c: '#475569'},
+        {x: 768, y: 298, w: 30, h: 24, c: '#2c3746'},
+        {x: 725, y: 318, w: 34, h: 22, c: '#334155'},
+        {x: 763, y: 326, w: 35, h: 24, c: '#38475a'},
+        {x: 723, y: 344, w: 40, h: 18, c: '#52627a'}
+    ];
+
+    bricks.forEach(b => {
+        ctx.fillStyle = b.c;
+        ctx.fillRect(b.x, b.y, b.w, b.h);
+        ctx.strokeStyle = '#121a24';
+        ctx.strokeRect(b.x, b.y, b.w, b.h);
+
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.08)';
+        ctx.fillRect(b.x + 2, b.y + 2, b.w - 4, 3);
+    });
+}
+
+// ZÖLD FŰ RAJZOLÁSA A KŐFALRA
+function drawGrassOnWall(tick) {
+    let wind = Math.sin(tick * 0.05) * 3;
+
+    function drawGrassTuft(bx, by, count, height, mainColor, tipColor) {
+        ctx.save();
+        for (let i = 0; i < count; i++) {
+            let angle = ((i / count) - 0.5) * 0.8;
+            let tipX = bx + Math.sin(angle) * height + wind;
+            let tipY = by - Math.cos(angle) * height;
+
+            ctx.strokeStyle = (i % 2 === 0) ? mainColor : tipColor;
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(bx + (i * 2 - count), by);
+            ctx.quadraticCurveTo(bx + angle * 5, by - height * 0.5, tipX, tipY);
+            ctx.stroke();
+        }
+        ctx.restore();
+    }
+
+    // Fű a kőfal tetején
+    const topGrassPoints = [
+        {x: 575, y: 125}, {x: 595, y: 115}, {x: 615, y: 108}, {x: 640, y: 102},
+        {x: 665, y: 103}, {x: 690, y: 110}, {x: 715, y: 120}, {x: 740, y: 128},
+        {x: 765, y: 135}, {x: 785, y: 142}
+    ];
+
+    topGrassPoints.forEach(p => {
+        drawGrassTuft(p.x, p.y, 6, 14, '#15803d', '#4ade80');
+    });
+
+    // Fűcsomók a kőfal oldalán
+    const wallGrassPoints = [
+        {x: 568, y: 180}, {x: 562, y: 250}, {x: 740, y: 180}, 
+        {x: 775, y: 215}, {x: 735, y: 285}, {x: 770, y: 320}
+    ];
+
+    wallGrassPoints.forEach(p => {
+        drawGrassTuft(p.x, p.y, 4, 10, '#166534', '#22c55e');
+    });
+
+    // Fű a fal tövénél
+    for (let gx = 540; gx <= 790; gx += 12) {
+        drawGrassTuft(gx, 360, 7, 18 + (gx % 5), '#15803d', '#86efac');
+    }
+}
+
+// 4. ÉLETHŰ FARKAS
+function drawRealisticWolf(x, y, tick) {
+    ctx.save();
+    ctx.translate(x, y);
+
+    let breath = Math.sin(tick * 0.06) * 2.5;
+    let tailWag = Math.sin(tick * 0.08) * 5;
+
+    ctx.fillStyle = '#334155';
+    ctx.beginPath();
+    ctx.moveTo(-20, 20);
+    ctx.quadraticCurveTo(-55 + tailWag, 15, -65 + tailWag, -5);
+    ctx.quadraticCurveTo(-60 + tailWag, -25, -40, -15);
+    ctx.quadraticCurveTo(-25, -5, -15, 10);
+    ctx.closePath();
+    ctx.fill();
+
+    let tailGrad = ctx.createLinearGradient(-60, -20, -15, 20);
+    tailGrad.addColorStop(0, '#475569');
+    tailGrad.addColorStop(1, '#1e293b');
+    ctx.fillStyle = tailGrad;
+    ctx.fill();
+
+    let bodyGrad = ctx.createLinearGradient(0, -60, 0, 40);
+    bodyGrad.addColorStop(0, '#334155');
+    bodyGrad.addColorStop(0.5, '#475569');
+    bodyGrad.addColorStop(1, '#94a3b8');
+
+    ctx.fillStyle = bodyGrad;
+    ctx.beginPath();
+    ctx.moveTo(-5, -45 + breath * 0.5);
+    ctx.bezierCurveTo(-30, -25, -38, 5, -30, 25);
+    ctx.bezierCurveTo(-40, 30, -35, 45, -20, 45);
+    ctx.bezierCurveTo(-5, 45, 5, 40, 15, 45);
+    ctx.bezierCurveTo(25, 25, 28, -5, 18, -35 + breath);
+    ctx.lineTo(-5, -45 + breath * 0.5);
+    ctx.closePath();
+    ctx.fill();
+
+    ctx.fillStyle = '#cbd5e1';
+    ctx.beginPath();
+    ctx.moveTo(10, -30 + breath);
+    ctx.bezierCurveTo(22, -10, 20, 15, 10, 35);
+    ctx.bezierCurveTo(2, 20, 2, -10, 10, -30 + breath);
+    ctx.closePath();
+    ctx.fill();
+
+    ctx.save();
+    ctx.translate(8, -48 + breath);
+
+    let headGrad = ctx.createLinearGradient(-15, -25, 35, 10);
+    headGrad.addColorStop(0, '#334155');
+    headGrad.addColorStop(0.6, '#64748b');
+    headGrad.addColorStop(1, '#cbd5e1');
+
+    ctx.fillStyle = headGrad;
+    ctx.beginPath();
+    ctx.moveTo(-10, -12);
+    ctx.lineTo(-6, -34);
+    ctx.lineTo(2, -16);
+    ctx.lineTo(14, -8);
+    ctx.lineTo(34, -4);
+    ctx.lineTo(33, 4);
+    ctx.lineTo(16, 8);
+    ctx.bezierCurveTo(5, 16, -8, 12, -12, 0);
+    ctx.closePath();
+    ctx.fill();
+
+    ctx.fillStyle = '#1e293b';
+    ctx.beginPath();
+    ctx.moveTo(1, -14);
+    ctx.lineTo(9, -36);
+    ctx.lineTo(16, -14);
+    ctx.closePath();
+    ctx.fill();
+
+    ctx.fillStyle = '#64748b';
+    ctx.beginPath();
+    ctx.moveTo(4, -16);
+    ctx.lineTo(9, -31);
+    ctx.lineTo(13, -16);
+    ctx.closePath();
+    ctx.fill();
+
+    ctx.fillStyle = '#0f172a';
+    ctx.beginPath();
+    ctx.arc(33, -2, 3, 0, Math.PI * 2);
+    ctx.fill();
+
+    ctx.fillStyle = '#38bdf8';
+    ctx.shadowColor = '#38bdf8';
+    ctx.shadowBlur = 8;
+    ctx.beginPath();
+    ctx.ellipse(14, -6, 3.5, 2, Math.PI / 6, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.shadowBlur = 0;
+
+    ctx.fillStyle = '#0284c7';
+    ctx.beginPath();
+    ctx.arc(14.5, -6, 1, 0, Math.PI * 2);
+    ctx.fill();
+
+    ctx.restore();
+    ctx.restore();
+}
+
+// FŐ ANIMÁCIÓS CIKLUS
+let tick = 0;
+function animate() {
+    tick++;
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    // ÉJSZAKAI ÉGBOLT HÁTTÉR
+    let bgGrad = ctx.createLinearGradient(0, 0, 0, canvas.height);
+    bgGrad.addColorStop(0, '#090c19');
+    bgGrad.addColorStop(1, '#1a2238');
+    ctx.fillStyle = bgGrad;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // 1. CSILLOGÓ HOLD
+    drawSparklingMoon(120, 90, 38, tick);
+
+    // 2. ERDŐ
+    drawForest();
+
+    // Varázsporszemcsék
+    ctx.fillStyle = '#7dcfff';
+    particles.forEach(p => {
+        p.y -= p.speedY;
+        if (p.y < 0) p.y = canvas.height;
+        ctx.globalAlpha = Math.sin(tick * 0.05 + p.alpha) * 0.5 + 0.5;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+        ctx.fill();
+    });
+    ctx.globalAlpha = 1.0;
+
+    // TALAJ
+    ctx.fillStyle = '#0b1120';
+    ctx.fillRect(0, 360, canvas.width, 120);
+
+    // 3. TÖBB KŐVEL ÉS FŰVEL BEFEDETT KŐFAL, BARNA KEVERT KAPUVAL
+    drawStoneDoorWithWindow(tick);
+
+    // 4. FARKAS
+    drawRealisticWolf(230, 315, tick);
+
+    // 5. LEBEGŐ KULCS
+    if (!state.hasKey) {
+        let keyY = 300 + Math.sin(tick * 0.06) * 10;
+        
+        let glow = ctx.createRadialGradient(490, keyY, 5, 490, keyY, 30);
+        glow.addColorStop(0, 'rgba(251, 191, 36, 0.8)');
+        glow.addColorStop(1, 'rgba(251, 191, 36, 0)');
+        ctx.fillStyle = glow;
+        ctx.beginPath();
+        ctx.arc(490, keyY, 30, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.strokeStyle = '#fbbf24';
+        ctx.lineWidth = 4;
+        ctx.beginPath();
+        ctx.arc(480, keyY, 10, 0, Math.PI * 2);
+        ctx.moveTo(490, keyY);
+        ctx.lineTo(505, keyY);
+        ctx.lineTo(505, keyY + 6);
+        ctx.stroke();
+    }
+
+    // ÜZENET BUBORÉK
+    if (state.messageTimer > 0) {
+        state.messageTimer--;
+        ctx.fillStyle = 'rgba(15, 23, 42, 0.88)';
+        ctx.fillRect(40, 20, 720, 50);
+        ctx.strokeStyle = '#38bdf8';
+        ctx.lineWidth = 1;
+        ctx.strokeRect(40, 20, 720, 50);
+
+        ctx.fillStyle = '#f8fafc';
+        ctx.font = '16px Segoe UI';
+        ctx.textAlign = 'center';
+        ctx.fillText(state.message, 400, 51);
+    }
+
+    requestAnimationFrame(animate);
+}
+
+animate();
+</script>
+</body>
+</html>

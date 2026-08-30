@@ -1,0 +1,1675 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A Suttogó Erdő - Varázslatos Kert és PET Szökőkút Útmutató</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            background-color: #0d0f18;
+            color: #ffffff;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            box-sizing: border-box;
+        }
+
+        /* --- CSILLOGÓ, KÖRBEFUTÓ SÁVÚ MENÜSOR --- */
+        .navbar {
+            position: relative;
+            width: 100%;
+            max-width: 1240px;
+            margin-bottom: 25px;
+            padding: 3px; /* border helyett a háttérvilágításhoz */
+            border-radius: 12px;
+            overflow: hidden;
+            background: rgba(30, 41, 59, 0.8);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+        }
+
+        /* Körbefutó csillogó animált sáv */
+        .navbar::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: conic-gradient(
+                transparent, 
+                rgba(56, 189, 248, 0.2), 
+                #38bdf8, 
+                #4ade80, 
+                rgba(56, 189, 248, 0.2), 
+                transparent 60%
+            );
+            animation: rotateGlow 4s linear infinite;
+            z-index: 0;
+        }
+
+        @keyframes rotateGlow {
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .navbar-content {
+            position: relative;
+            z-index: 1;
+            background: #0d0f18;
+            border-radius: 10px;
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .navbar-title {
+            color: #7aa2f7;
+            font-size: 1.2rem;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .navbar-links {
+            display: flex;
+            gap: 15px;
+        }
+
+        .navbar-links a {
+            color: #a9b1d6;
+            text-decoration: none;
+            font-size: 0.9rem;
+            padding: 6px 12px;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+        }
+
+        .navbar-links a:hover {
+            color: #ffffff;
+            background: rgba(56, 189, 248, 0.2);
+            box-shadow: 0 0 10px rgba(56, 189, 248, 0.4);
+        }
+
+        h1 {
+            margin-top: 0;
+            margin-bottom: 15px;
+            color: #7aa2f7;
+            font-size: 1.6rem;
+            text-align: center;
+        }
+        .main-layout {
+            display: flex;
+            flex-direction: row;
+            gap: 20px;
+            align-items: flex-start;
+            justify-content: center;
+            max-width: 1240px;
+            width: 100%;
+        }
+        .canvas-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        #game-container {
+            position: relative;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+            border-radius: 12px;
+            overflow: hidden;
+            border: 2px solid #2ac3de;
+        }
+        canvas {
+            display: block;
+            cursor: pointer;
+        }
+        .instruction {
+            margin-top: 12px;
+            color: #a9b1d6;
+            font-size: 0.95rem;
+            text-align: center;
+        }
+        #guide-panel {
+            background: rgba(30, 41, 59, 0.95);
+            border: 2px solid #2ac3de;
+            border-radius: 12px;
+            padding: 20px;
+            width: 380px;
+            height: 480px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+            box-sizing: border-box;
+            overflow-y: auto;
+        }
+        #guide-panel h2 {
+            margin-top: 0;
+            color: #38bdf8;
+            font-size: 1.25rem;
+            border-bottom: 2px solid #334155;
+            padding-bottom: 8px;
+        }
+        .step {
+            margin-bottom: 15px;
+            background: rgba(15, 23, 42, 0.6);
+            padding: 10px;
+            border-radius: 8px;
+            border-left: 4px solid #7aa2f7;
+        }
+        .step-title {
+            font-weight: bold;
+            color: #4ade80;
+            margin-bottom: 5px;
+            font-size: 0.95rem;
+        }
+        .step-desc {
+            color: #cbd5e1;
+            font-size: 0.85rem;
+            line-height: 1.4;
+        }
+        .warning-box {
+            background: rgba(225, 29, 72, 0.15);
+            border: 1px solid #f43f5e;
+            border-radius: 6px;
+            padding: 8px;
+            font-size: 0.8rem;
+            color: #fecdd3;
+            margin-top: 10px;
+        }
+        .image-section {
+            margin-top: 25px;
+            width: 100%;
+            max-width: 1200px;
+            background: rgba(30, 41, 59, 0.95);
+            border: 2px solid #2ac3de;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .image-section h2 {
+            margin-top: 0;
+            color: #38bdf8;
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+        }
+        .api-container {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+            width: 100%;
+            max-width: 500px;
+        }
+        .api-input {
+            flex: 1;
+            padding: 8px 12px;
+            border-radius: 6px;
+            border: 1px solid #475569;
+            background: #0f172a;
+            color: #fff;
+            font-size: 0.9rem;
+        }
+        .upload-controls {
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .upload-btn {
+            background: #2563eb;
+            color: #ffffff;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: background 0.2s;
+            display: inline-block;
+        }
+        .upload-btn:hover {
+            background: #1d4ed8;
+        }
+        #image-upload {
+            display: none;
+        }
+        #status-message {
+            color: #38bdf8;
+            font-size: 0.9rem;
+            font-weight: bold;
+        }
+        #image-container {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 150px;
+            border: 2px dashed #475569;
+            border-radius: 8px;
+            padding: 10px;
+            box-sizing: border-box;
+            background: rgba(15, 23, 42, 0.5);
+        }
+        #uploaded-image {
+            max-width: 100%;
+            max-height: 600px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+            display: none;
+        }
+        #placeholder-text {
+            color: #94a3b8;
+            font-size: 0.9rem;
+            text-align: center;
+        }
+
+        /* --- GALÉRIA ÉS KÉPEK EGYMÁS MELLETT --- */
+        .gallery-section {
+            margin-top: 25px;
+            width: 100%;
+            max-width: 1200px;
+            background: rgba(30, 41, 59, 0.95);
+            border: 2px solid #2ac3de;
+            border-radius: 12px;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .gallery-section h2 {
+            margin-top: 0;
+            color: #38bdf8;
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .gallery-grid {
+            display: flex;
+            flex-direction: row;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+        }
+
+        .gallery-card {
+            position: relative;
+            width: 360px;
+            background: #0f172a;
+            border: 1px solid #334155;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .img-wrapper {
+            position: relative;
+            width: 100%;
+            height: 240px;
+            overflow: hidden;
+            cursor: zoom-in;
+            background: #000;
+        }
+
+        .img-wrapper img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+        .img-wrapper:hover img {
+            transform: scale(1.05);
+        }
+
+        /* Jobb alsó sarokba helyezett kelléklista rányitó panel */
+        .overlay-tools {
+            position: absolute;
+            bottom: 8px;
+            right: 8px;
+            background: rgba(15, 23, 42, 0.9);
+            border: 1px solid #38bdf8;
+            border-radius: 8px;
+            padding: 8px;
+            max-width: 200px;
+            backdrop-filter: blur(4px);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.6);
+            z-index: 2;
+        }
+
+        .overlay-tools h4 {
+            margin: 0 0 5px 0;
+            color: #38bdf8;
+            font-size: 0.75rem;
+            border-bottom: 1px solid #334155;
+            padding-bottom: 2px;
+        }
+
+        .overlay-tools ul {
+            margin: 0;
+            padding-left: 14px;
+            font-size: 0.7rem;
+            color: #cbd5e1;
+        }
+
+        .overlay-tools li {
+            margin-bottom: 3px;
+        }
+
+        /* --- ZOOM MODAL (KATTINTÁSOS ÉS GÖRGŐS NÉZŐKE) --- */
+        .zoom-modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100vw; height: 100vh;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        .zoom-modal.active {
+            display: flex;
+        }
+
+        .zoom-modal img {
+            max-width: 90%;
+            max-height: 90%;
+            transition: transform 0.1s ease-out;
+            cursor: grab;
+            border-radius: 8px;
+            box-shadow: 0 0 25px rgba(56, 189, 248, 0.4);
+        }
+
+        .zoom-close {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            color: #fff;
+            font-size: 2rem;
+            cursor: pointer;
+            z-index: 1001;
+        }
+
+        .zoom-info {
+            position: absolute;
+            bottom: 20px;
+            color: #38bdf8;
+            font-size: 0.9rem;
+            background: rgba(15, 23, 42, 0.8);
+            padding: 6px 15px;
+            border-radius: 20px;
+        }
+
+        #guide-panel::-webkit-scrollbar { width: 6px; }
+        #guide-panel::-webkit-scrollbar-track { background: #0f172a; border-radius: 10px; }
+        #guide-panel::-webkit-scrollbar-thumb { background: #2ac3de; border-radius: 10px; }
+    </style>
+</head>
+<body>
+
+    <!-- CSILLOGÓ, KÖRBEFUTÓ SÁVÚ MENÜSOR -->
+    <nav class="navbar">
+        <div class="navbar-content">
+            <div class="navbar-title">🌲 A Suttogó Erdő Műhely</div>
+            <div class="navbar-links">
+                <a href="#game-container">Szimuláció</a>
+                <a href="#guide-panel">Építési Útmutató</a>
+                <a href="#image-section">AI Elemzés</a>
+                <a href="#gallery-section">Galéria & Kellékek</a>
+            </div>
+        </div>
+    </nav>
+
+    <h1 id="main-title">A Suttogó Erdő - PET Szökőkút Animáció és Építési Útmutató</h1>
+    
+    <div class="main-layout">
+        <div class="canvas-section">
+            <div id="game-container">
+                <canvas id="canvas" width="800" height="480"></canvas>
+            </div>
+            <p class="instruction">🔑 Nyisd ki a kaput a kulccsal! A kellékek kirepülnek az ajtóból a farkas alá.</p>
+        </div>
+
+        <div id="guide-panel">
+            <h2 id="guide-panel-title">🛠️ Szökőkút Építés Lépésről Lépésre</h2>
+            <div id="steps-container">
+                <div class="step">
+                    <div class="step-title">1. Lépés: A kupakok kifúrása</div>
+                    <div class="step-desc">
+                        Vedd le a 2 db PET-palack kupakját. Fúróval vagy forrasztópákával alakíts ki lyukakat (Ø 6–8 mm):
+                        <br>• <strong>Felső kupak:</strong> 1 db lyuk.
+                        <br>• <strong>Alsó kupak:</strong> 2 db lyuk egymás mellett.
+                    </div>
+                </div>
+
+                <div class="step">
+                    <div class="step-title">2. Lépés: A szilikoncsövek behelyezése</div>
+                    <div class="step-desc">
+                        • Vágj egy 45 cm-es és egy 90 cm-es szilikoncsövet.
+                        <br>• A <strong>45 cm-es csövet</strong> fűzd át a felső kupakon és az alsó kupak egyik lyukán (ez köti össze a tartályokat).
+                        <br>• A <strong>90 cm-es csövet</strong> fűzd át az alsó kupak 2. lyukán – ez vezeti fel a vizet a felső szökőkút-tálba.
+                    </div>
+                </div>
+
+                <div class="step">
+                    <div class="step-title">3. Lépés: Légmentes tömítés</div>
+                    <div class="step-desc">
+                        Melegítsd fel a ragasztópisztolyt, és a csövek körül mindkét kupak külső és belső oldalát alaposan nyomd körbe ragasztóval.
+                    </div>
+                </div>
+
+                <div class="step">
+                    <div class="step-title">4. Lépés: Rögzítés a fa állványra</div>
+                    <div class="step-desc">
+                        Szereld fel a két PET-palackot függőlegesen a 40–60 cm-es fa állványra úgy, hogy az egyik palack pontosan a másik fölött helyezkedjen el.
+                    </div>
+                </div>
+
+                <div class="step">
+                    <div class="step-title">5. Lépés: Feltöltés és beindítás</div>
+                    <div class="step-desc">
+                        Töltsd fel az alsó palackot félig vízzel, csavard rá a kupakot, majd fordítsd meg a rendszert. A gravitációs nyomáskülönbség hatására a szökőkút azonnal beindul!
+                    </div>
+                </div>
+            </div>
+
+            <div class="warning-box">
+                ⚠️ <strong>Fontos:</strong> Ellenőrizd a pontos és légmentes illeszkedéseket!
+            </div>
+        </div>
+    </div>
+
+    <div class="image-section" id="image-section">
+        <h2>🖼️ Csatolt Kép & AI Elemzés</h2>
+        
+        <div class="api-container">
+            <input type="password" id="api-key-input" class="api-input" placeholder="Google Gemini API Key megadása...">
+        </div>
+
+        <div class="upload-controls">
+            <label for="image-upload" class="upload-btn">📁 Kép kiválasztása és elemzése</label>
+            <input type="file" id="image-upload" accept="image/*">
+            <span id="status-message"></span>
+        </div>
+
+        <div id="image-container">
+            <img id="uploaded-image" src="keped_helye.jpg" alt="Feltöltött kép">
+            <p id="placeholder-text">Add meg az API kulcsot, majd kattints a fenti gombra a kép elemzéséhez!</p>
+        </div>
+    </div>
+
+    <!-- GYŰJTEMÉNY ÉS KELEKKEL ELLÁTOTT KÉPGALÉRIA -->
+    <div class="gallery-section" id="gallery-section">
+        <h2>📸 Képes Útmutató és Kellék Galéria</h2>
+        <div class="gallery-grid" id="gallery-grid">
+            <!-- Dinamikusan vagy előre megadva generált kártyák -->
+        </div>
+    </div>
+
+    <!-- PROFI JAVASCRIPT ZOOM MODAL -->
+    <div class="zoom-modal" id="zoom-modal">
+        <span class="zoom-close" onclick="closeZoom()">&times;</span>
+        <img id="zoom-img" src="" alt="Zoomolt kép">
+        <div class="zoom-info">💡 Használd az egérgörgőt a nagyításhoz!</div>
+    </div>
+
+<script>
+let requiredTools = [
+    { id: 1, name: "1. PET-palack", qty: "2 db", size: "1,5 – 2 Liter", prop: "Átlátszó, tiszta", icon: "🍾" },
+    { id: 2, name: "2. Kupakok", qty: "2 db", size: "Gyári méret", prop: "Felső:1 lyuk, Alsó:2 lyuk", icon: "🔵" },
+    { id: 3, name: "3. Fúró / Páka", qty: "1 db", size: "Ø 6–8 mm", prop: "Lyukkészítéshez", icon: "🛠️" },
+    { id: 4, name: "4. Szilikoncső", qty: "2 db", size: "Ø 6–8 mm (45 cm / 90 cm)", prop: "Átlátszó, rugalmas", icon: "🌀" },
+    { id: 5, name: "5. Rag. pisztoly", qty: "1 db", size: "Szigetelő rúd", prop: "Légmentes tömítés", icon: "🔫" },
+    { id: 6, name: "6. Fa állvány", qty: "1 db", size: "M: 40–60 cm", prop: "Tartó szerkezet", icon: "🪵" },
+    { id: 7, name: "7. Tiszta víz", qty: "1.5 - 2 L", size: "Szükség szerint", prop: "Rendszer feltöltés", icon: "💧" }
+];
+
+// ELŐRE MEGADOTT / DEMÓ KÉPEK KELLEK-ADATOKKAL A GALÉRIÁHOZ
+const defaultGalleryItems = [
+    {
+        url: "https://images.unsplash.com/photo-1584467541268-b040f83be3fd?w=600&auto=format&fit=crop",
+        title: "PET Tartály Előkészítés",
+        tools: [
+            { name: "PET Palack", qty: "2 db", size: "2.0 L", type: "Műanyag" },
+            { name: "Szigetelés", qty: "1 db", size: "Gyári", type: "Gumi" }
+        ]
+    },
+    {
+        url: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=600&auto=format&fit=crop",
+        title: "Kupak Fúrás és Csövezés",
+        tools: [
+            { name: "Fúrófej", qty: "1 db", size: "Ø 8mm", type: "Acél" },
+            { name: "Szilikoncső", qty: "2 db", size: "90 cm", type: "Rugalmas" }
+        ]
+    },
+    {
+        url: "https://images.unsplash.com/photo-1518837695005-2083093ee35b?w=600&auto=format&fit=crop",
+        title: "Kész Szökőkút Vízáramlás",
+        tools: [
+            { name: "Fa állvány", qty: "1 db", size: "50 cm", type: "Tölgy" },
+            { name: "Víz", qty: "1.5 L", size: "-", type: "Tiszta víz" }
+        ]
+    }
+];
+
+// GALÉRIA GENERÁLÁSA
+function renderGallery(items) {
+    const grid = document.getElementById('gallery-grid');
+    grid.innerHTML = '';
+
+    items.forEach(item => {
+        const card = document.createElement('div');
+        card.className = 'gallery-card';
+
+        let toolsListHtml = item.tools.map(t => 
+            `<li><strong>${t.name}</strong>: ${t.qty} | ${t.size} (${t.type})</li>`
+        ).join('');
+
+        card.innerHTML = `
+            <div class="img-wrapper" onclick="openZoom('${item.url}')">
+                <img src="${item.url}" alt="${item.title}">
+                <div class="overlay-tools">
+                    <h4>📦 Kellekek:</h4>
+                    <ul>${toolsListHtml}</ul>
+                </div>
+            </div>
+        `;
+        grid.appendChild(card);
+    });
+}
+
+renderGallery(defaultGalleryItems);
+
+// PROFI JAVASCRIPT ZOOM MOTOR
+let currentZoom = 1;
+const zoomModal = document.getElementById('zoom-modal');
+const zoomImg = document.getElementById('zoom-img');
+
+function openZoom(url) {
+    zoomImg.src = url;
+    currentZoom = 1;
+    zoomImg.style.transform = `scale(${currentZoom})`;
+    zoomModal.classList.add('active');
+}
+
+function closeZoom() {
+    zoomModal.classList.remove('active');
+}
+
+zoomModal.addEventListener('wheel', function(e) {
+    e.preventDefault();
+    if (e.deltaY < 0) {
+        currentZoom = Math.min(currentZoom + 0.25, 4);
+    } else {
+        currentZoom = Math.max(currentZoom - 0.25, 1);
+    }
+    zoomImg.style.transform = `scale(${currentZoom})`;
+});
+
+let flyingItems = [];
+
+function buildFlyingItems() {
+    flyingItems = requiredTools.map((tool, idx) => {
+        let startX = 670;
+        let startY = 235;
+
+        let row = idx < 4 ? 0 : 1;
+        let col = idx < 4 ? idx : idx - 4;
+        let targetX = row === 0 ? (85 + col * 95) : (130 + col * 95);
+        let targetY = row === 0 ? 398 : 445;
+
+        return {
+            ...tool,
+            startX: startX,
+            startY: startY,
+            currentX: startX,
+            currentY: startY,
+            targetX: targetX,
+            targetY: targetY,
+            progress: 0,
+            speed: 0.016,
+            delay: idx * 12
+        };
+    });
+}
+buildFlyingItems();
+
+document.getElementById('image-upload').addEventListener('change', async function(e) {
+    const file = e.target.files[0];
+    const apiKey = document.getElementById('api-key-input').value.trim();
+    const statusMsg = document.getElementById('status-message');
+
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = async function(event) {
+        const img = document.getElementById('uploaded-image');
+        img.src = event.target.result;
+        img.style.display = 'block';
+        document.getElementById('placeholder-text').style.display = 'none';
+
+        // Új feltöltött kép hozzáadása a galériához
+        const newGalleryItem = {
+            url: event.target.result,
+            title: "Feltöltött Kép",
+            tools: requiredTools.map(t => ({ name: t.name, qty: t.qty, size: t.size, type: t.prop }))
+        };
+        defaultGalleryItems.unshift(newGalleryItem);
+        renderGallery(defaultGalleryItems);
+
+        if (!apiKey) {
+            statusMsg.textContent = "⚠️ Kép betöltve! Az AI elemzéshez add meg az API kulcsot.";
+            return;
+        }
+
+        statusMsg.textContent = "⏳ Elemzés a Gemini API segítségével...";
+
+        try {
+            const base64Data = event.target.result.split(',')[1];
+            const mimeType = file.type;
+
+            const aiResult = await analyzeImageWithGemini(base64Data, mimeType, apiKey);
+            
+            if (aiResult) {
+                updateUIWithAnalysis(aiResult);
+                statusMsg.textContent = "✅ Sikeres elemzés!";
+            }
+        } catch (err) {
+            console.error(err);
+            statusMsg.textContent = "❌ Hiba történt az elemzés során!";
+        }
+    };
+    reader.readAsDataURL(file);
+});
+
+async function analyzeImageWithGemini(base64Data, mimeType, apiKey) {
+    const cleanKey = apiKey.trim();
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${cleanKey}`;
+    
+    const promptText = `Analizáld a képet és határozd meg a rajta látható tárgy/építmény elkészítési lépéseit és a hozzá szükséges kellékeket.
+Válaszolj KIZÁRÓLAG tiszta JSON formátumban:
+{
+  "title": "A képen látható tárgy neve",
+  "steps": [
+    { "title": "1. Lépés címe", "desc": "Leírás" }
+  ],
+  "tools": [
+    { "id": 1, "name": "Elem neve", "qty": "mennyiség", "size": "méret", "prop": "funkció", "icon": "📦" }
+  ]
+}`;
+
+    const payload = {
+        contents: [{
+            parts: [
+                { text: promptText },
+                { inline_data: { mime_type: mimeType, data: base64Data } }
+            ]
+        }]
+    };
+
+    const response = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+    });
+
+    if (!response.ok) {
+        const errorJson = await response.json().catch(() => ({}));
+        throw new Error(errorJson.error?.message || `API hiba: ${response.status}`);
+    }
+
+    const data = await response.json();
+    let rawText = data.candidates[0].content.parts[0].text;
+    
+    rawText = rawText.replace(/```json/g, '').replace(/```/g, '').trim();
+    return JSON.parse(rawText);
+}
+
+function updateUIWithAnalysis(data) {
+    if (data.title) {
+        document.getElementById('main-title').textContent = `${data.title} - Útmutató és Animáció`;
+        document.getElementById('guide-panel-title').textContent = `🛠️ ${data.title} Lépései`;
+    }
+
+    if (data.steps && data.steps.length > 0) {
+        const stepsContainer = document.getElementById('steps-container');
+        stepsContainer.innerHTML = '';
+        data.steps.forEach(step => {
+            const stepDiv = document.createElement('div');
+            stepDiv.className = 'step';
+            stepDiv.innerHTML = `
+                <div class="step-title">${step.title}</div>
+                <div class="step-desc">${step.desc}</div>
+            `;
+            stepsContainer.appendChild(stepDiv);
+        });
+    }
+
+    if (data.tools && data.tools.length > 0) {
+        requiredTools = data.tools.map((t, idx) => ({
+            id: idx + 1,
+            name: t.name || `Elem ${idx + 1}`,
+            qty: t.qty || "1 db",
+            size: t.size || "-",
+            prop: t.prop || "-",
+            icon: t.icon || "📦"
+        }));
+
+        state.doorOpen = false;
+        state.doorProgress = 0;
+        state.keyState = 'floating';
+        state.keyX = 490;
+        state.keyY = 260;
+        state.keyAngle = 0;
+
+        buildFlyingItems();
+        showMessage("Az új kellékek betöltve! Kattints a kulcsra a nyitáshoz!");
+    }
+}
+
+const canvas = document.getElementById('canvas');
+const ctx = canvas.getContext('2d');
+
+let state = {
+    keyState: 'floating', 
+    doorOpen: false,
+    doorProgress: 0,
+    message: "A mágikus kert kapuja zárva van! Kattints a lebegő kulcsra a nyitáshoz!",
+    messageTimer: 240,
+    keyX: 490,
+    keyY: 260,
+    targetX: 670,
+    targetY: 235,
+    keyAngle: 0
+};
+
+const particles = [];
+for (let i = 0; i < 40; i++) {
+    particles.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        radius: Math.random() * 2 + 1,
+        speedY: Math.random() * 0.4 + 0.1,
+        alpha: Math.random()
+    });
+}
+
+canvas.addEventListener('click', (e) => {
+    const rect = canvas.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+
+    if (state.doorOpen) {
+        for (let item of flyingItems) {
+            if (Math.abs(x - item.currentX) < 42 && Math.abs(y - item.currentY) < 20) {
+                showMessage(`${item.name} | Mennyiség: ${item.qty} | Méret: ${item.size} | (${item.prop})`);
+                return;
+            }
+        }
+    }
+
+    if (x > 180 && x < 310 && y > 220 && y < 370) {
+        if (!state.doorOpen) {
+            showMessage("Az ezüstfarkas a mágikus kulcsra mutat. Kattints rá a nyitáshoz!");
+        } else {
+            showMessage("Az ezüstfarkas vigyáz az ajtóból kirepült szökőkút kellékekre.");
+        }
+        return;
+    }
+
+    if (x > 390 && x < 470 && y > 280 && y < 370) {
+        showMessage("A régi kőkút mélyén kristálytiszta, varázslatos víz dereng...");
+        return;
+    }
+
+    if (y > 370 && x < 550) {
+        if (x < 180) {
+            showMessage("Világító gombák és kirepült kellékek pihennek a farkas alatt.");
+        } else {
+            showMessage("Illatos, éjszaka derengő kerti virágok nyílnak a pázsiton.");
+        }
+        return;
+    }
+
+    let currentKeyY = state.keyState === 'floating' ? state.keyY + Math.sin(tick * 0.06) * 10 : state.keyY;
+    let distToKey = Math.hypot(x - state.keyX, y - currentKeyY);
+    
+    if (distToKey < 45 && state.keyState === 'floating') {
+        state.keyState = 'moving';
+        state.keyY = currentKeyY;
+        showMessage("A kulcs a zár felé repül...");
+        return;
+    }
+
+    if (x > 610 && x < 730 && y > 130 && y < 360) {
+        if (state.doorOpen) {
+            showMessage("A kapu nyitva áll! A kellékek kirepültek az ajtóból a farkas alá.");
+        } else if (state.keyState === 'moving' || state.keyState === 'unlocking') {
+            showMessage("A kulcs épp nyitja a zárat, egy pillanat...");
+        } else {
+            showMessage("A kapu szorosan zárva van! Kattints a lebegő kulcsra a kinyitásához!");
+        }
+        return;
+    }
+});
+
+function showMessage(text) {
+    state.message = text;
+    state.messageTimer = 220;
+}
+
+function updateAndDrawFlyingItems(tick) {
+    if (!state.doorOpen) return;
+
+    flyingItems.forEach((item) => {
+        if (tick > item.delay) {
+            if (item.progress < 1) {
+                item.progress += item.speed;
+                if (item.progress > 1) item.progress = 1;
+            }
+
+            let p = item.progress;
+            let arcY = Math.sin(p * Math.PI) * -60;
+            item.currentX = (1 - p) * item.startX + p * item.targetX;
+            item.currentY = (1 - p) * item.startY + p * item.targetY + arcY;
+        }
+
+        if (item.progress > 0) {
+            ctx.save();
+            ctx.translate(item.currentX, item.currentY);
+
+            let floatY = item.progress === 1 ? Math.sin(tick * 0.05 + item.id) * 2 : 0;
+            ctx.translate(0, floatY);
+
+            ctx.fillStyle = 'rgba(15, 23, 42, 0.92)';
+            ctx.beginPath();
+            ctx.roundRect(-42, -18, 84, 36, 5);
+            ctx.fill();
+
+            ctx.strokeStyle = '#38bdf8';
+            ctx.lineWidth = 1.1;
+            ctx.stroke();
+
+            ctx.font = 'bold 9px Segoe UI';
+            ctx.fillStyle = '#f8fafc';
+            ctx.textAlign = 'center';
+            ctx.fillText(`${item.icon} ${item.name}`, 0, -5);
+
+            ctx.font = '8px Segoe UI';
+            ctx.fillStyle = '#38bdf8';
+            ctx.fillText(`📏 ${item.size}`, 0, 5);
+
+            ctx.fillStyle = '#4ade80';
+            ctx.fillText(`📦 ${item.qty}`, 0, 13);
+
+            ctx.restore();
+        }
+    });
+}
+
+function drawSparklingMoon(x, y, radius, tick) {
+    let auraRadius = radius + 25 + Math.sin(tick * 0.05) * 8;
+    let moonGlow = ctx.createRadialGradient(x, y, radius * 0.4, x, y, auraRadius);
+    moonGlow.addColorStop(0, 'rgba(224, 247, 250, 0.9)');
+    moonGlow.addColorStop(0.4, 'rgba(125, 207, 255, 0.35)');
+    moonGlow.addColorStop(1, 'rgba(125, 207, 255, 0)');
+    
+    ctx.fillStyle = moonGlow;
+    ctx.beginPath();
+    ctx.arc(x, y, auraRadius, 0, Math.PI * 2);
+    ctx.fill();
+
+    ctx.fillStyle = '#f0fdfa';
+    ctx.beginPath();
+    ctx.arc(x, y, radius, 0, Math.PI * 2);
+    ctx.fill();
+
+    const sparkles = [
+        { dx: -22, dy: -18, speed: 0.07, phase: 0 },
+        { dx: 28, dy: -12, speed: 0.05, phase: 1.5 },
+        { dx: 18, dy: 22, speed: 0.08, phase: 3.0 },
+        { dx: -28, dy: 14, speed: 0.06, phase: 4.5 }
+    ];
+
+    sparkles.forEach(s => {
+        let alpha = Math.max(0, Math.sin(tick * s.speed + s.phase));
+        if (alpha > 0) {
+            draw4PointStar(x + s.dx, y + s.dy, 7 * alpha, alpha);
+        }
+    });
+}
+
+function draw4PointStar(cx, cy, size, alpha) {
+    ctx.save();
+    ctx.globalAlpha = alpha;
+    ctx.fillStyle = '#ffffff';
+    ctx.beginPath();
+    ctx.moveTo(cx, cy - size);
+    ctx.quadraticCurveTo(cx, cy, cx + size, cy);
+    ctx.quadraticCurveTo(cx, cy, cx, cy + size);
+    ctx.quadraticCurveTo(cx, cy, cx - size, cy);
+    ctx.quadraticCurveTo(cx, cy, cx, cy - size);
+    ctx.fill();
+    ctx.restore();
+}
+
+function drawPineTree(x, baseY, width, height, color) {
+    ctx.fillStyle = color;
+    ctx.fillRect(x - width * 0.1, baseY - height * 0.2, width * 0.2, height * 0.2);
+
+    let layers = 3;
+    for (let i = 0; i < layers; i++) {
+        let layerY = baseY - height * 0.15 - (i * (height * 0.26));
+        let layerWidth = width * (1 - i * 0.22);
+        let layerHeight = height * 0.45;
+
+        ctx.beginPath();
+        ctx.moveTo(x, layerY - layerHeight);
+        ctx.lineTo(x + layerWidth / 2, layerY);
+        ctx.lineTo(x - layerWidth / 2, layerY);
+        ctx.closePath();
+        ctx.fill();
+    }
+}
+
+function drawForest() {
+    drawPineTree(40, 360, 70, 180, '#131b2e');
+    drawPineTree(110, 360, 55, 140, '#131b2e');
+    drawPineTree(170, 360, 80, 200, '#0f172a');
+    drawPineTree(510, 360, 75, 190, '#131b2e');
+    drawPineTree(-10, 370, 90, 230, '#090d16');
+}
+
+function drawGardenPath() {
+    ctx.save();
+    const stones = [
+        {x: 665, y: 368, rx: 18, ry: 6},
+        {x: 655, y: 382, rx: 22, ry: 8},
+        {x: 635, y: 398, rx: 26, ry: 9},
+        {x: 610, y: 416, rx: 30, ry: 11},
+        {x: 575, y: 436, rx: 35, ry: 12},
+        {x: 530, y: 458, rx: 42, ry: 14},
+        {x: 475, y: 475, rx: 48, ry: 15}
+    ];
+
+    stones.forEach(s => {
+        ctx.fillStyle = '#334155';
+        ctx.beginPath();
+        ctx.ellipse(s.x, s.y, s.rx, s.ry, 0, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.strokeStyle = '#1e293b';
+        ctx.lineWidth = 1.5;
+        ctx.stroke();
+
+        ctx.fillStyle = '#475569';
+        ctx.beginPath();
+        ctx.ellipse(s.x - 2, s.y - 1, s.rx * 0.7, s.ry * 0.6, 0, 0, Math.PI * 2);
+        ctx.fill();
+    });
+    ctx.restore();
+}
+
+function drawGardenBushes() {
+    ctx.save();
+    
+    function drawSingleBush(cx, cy, radius, mainColor, accentColor) {
+        ctx.fillStyle = mainColor;
+        ctx.beginPath();
+        ctx.arc(cx, cy, radius, 0, Math.PI * 2);
+        ctx.arc(cx - radius * 0.6, cy + 2, radius * 0.7, 0, Math.PI * 2);
+        ctx.arc(cx + radius * 0.6, cy + 2, radius * 0.7, 0, Math.PI * 2);
+        ctx.arc(cx - radius * 0.3, cy - radius * 0.5, radius * 0.65, 0, Math.PI * 2);
+        ctx.arc(cx + radius * 0.3, cy - radius * 0.5, radius * 0.65, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.fillStyle = accentColor;
+        const berries = [
+            {dx: -radius * 0.4, dy: -radius * 0.2},
+            {dx: radius * 0.3, dy: -radius * 0.4},
+            {dx: radius * 0.5, dy: 0},
+            {dx: -radius * 0.2, dy: radius * 0.3},
+            {dx: 0, dy: -radius * 0.6}
+        ];
+        berries.forEach(b => {
+            ctx.beginPath();
+            ctx.arc(cx + b.dx, cy + b.dy, 2.5, 0, Math.PI * 2);
+            ctx.fill();
+        });
+    }
+
+    drawSingleBush(360, 365, 18, '#14532d', '#f43f5e');
+    drawSingleBush(495, 365, 16, '#166534', '#fbbf24');
+    drawSingleBush(320, 370, 22, '#064e3b', '#38bdf8');
+    drawSingleBush(525, 368, 15, '#14532d', '#f43f5e');
+
+    ctx.restore();
+}
+
+function drawMushrooms(tick) {
+    ctx.save();
+    const mushrooms = [
+        {x: 60, y: 375, scale: 0.9, color: '#ec4899'},
+        {x: 72, y: 378, scale: 0.7, color: '#38bdf8'},
+        {x: 310, y: 382, scale: 0.85, color: '#a855f7'},
+        {x: 505, y: 375, scale: 0.75, color: '#38bdf8'}
+    ];
+
+    mushrooms.forEach(m => {
+        let glow = Math.sin(tick * 0.08 + m.x) * 0.25 + 0.75;
+        ctx.save();
+        ctx.translate(m.x, m.y);
+        ctx.scale(m.scale, m.scale);
+
+        ctx.fillStyle = '#e2e8f0';
+        ctx.beginPath();
+        ctx.moveTo(-2, 0);
+        ctx.lineTo(-3, -12);
+        ctx.lineTo(3, -12);
+        ctx.lineTo(2, 0);
+        ctx.closePath();
+        ctx.fill();
+
+        ctx.fillStyle = m.color;
+        ctx.shadowColor = m.color;
+        ctx.shadowBlur = 10 * glow;
+        ctx.beginPath();
+        ctx.arc(0, -12, 9, Math.PI, 0);
+        ctx.fill();
+
+        ctx.shadowBlur = 0;
+        ctx.fillStyle = '#ffffff';
+        ctx.beginPath();
+        ctx.arc(-4, -15, 1.5, 0, Math.PI * 2);
+        ctx.arc(2, -17, 1.2, 0, Math.PI * 2);
+        ctx.arc(4, -13, 1.2, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.restore();
+    });
+    ctx.restore();
+}
+
+function drawWallVines(tick) {
+    ctx.save();
+    ctx.strokeStyle = '#15803d';
+    ctx.lineWidth = 2;
+
+    ctx.beginPath();
+    ctx.moveTo(560, 360);
+    ctx.quadraticCurveTo(575, 270, 565, 200);
+    ctx.quadraticCurveTo(555, 150, 580, 130);
+    ctx.stroke();
+
+    ctx.beginPath();
+    ctx.moveTo(780, 360);
+    ctx.quadraticCurveTo(760, 260, 775, 180);
+    ctx.quadraticCurveTo(785, 130, 750, 115);
+    ctx.stroke();
+
+    const leaves = [
+        {x: 568, y: 320, angle: -0.5},
+        {x: 572, y: 270, angle: 0.8},
+        {x: 566, y: 220, angle: -0.6},
+        {x: 560, y: 170, angle: 0.7},
+        {x: 770, y: 310, angle: 0.6},
+        {x: 765, y: 250, angle: -0.7},
+        {x: 774, y: 190, angle: 0.5}
+    ];
+
+    ctx.fillStyle = '#22c55e';
+    leaves.forEach(l => {
+        ctx.save();
+        ctx.translate(l.x, l.y);
+        ctx.rotate(l.angle);
+        ctx.beginPath();
+        ctx.ellipse(0, 0, 6, 3, 0, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+    });
+
+    const vineFlowers = [
+        {x: 572, y: 270, c: '#f472b6'},
+        {x: 560, y: 170, c: '#38bdf8'},
+        {x: 765, y: 250, c: '#fbbf24'}
+    ];
+    vineFlowers.forEach(vf => {
+        let pulse = Math.sin(tick * 0.06 + vf.x) * 1 + 3;
+        ctx.fillStyle = vf.c;
+        ctx.beginPath();
+        ctx.arc(vf.x, vf.y, pulse, 0, Math.PI * 2);
+        ctx.fill();
+    });
+
+    ctx.restore();
+}
+
+function drawFlowers(tick) {
+    ctx.save();
+    const flowers = [
+        {x: 410, y: 400, color: '#f43f5e', stemH: 14},
+        {x: 440, y: 425, color: '#a855f7', stemH: 18},
+        {x: 470, y: 410, color: '#38bdf8', stemH: 12},
+        {x: 500, y: 435, color: '#fbbf24', stemH: 16}
+    ];
+
+    flowers.forEach(f => {
+        let sway = Math.sin(tick * 0.05 + f.x) * 3;
+
+        ctx.strokeStyle = '#16a34a';
+        ctx.lineWidth = 1.8;
+        ctx.beginPath();
+        ctx.moveTo(f.x, f.y);
+        ctx.quadraticCurveTo(f.x + sway * 0.5, f.y - f.stemH * 0.5, f.x + sway, f.y - f.stemH);
+        ctx.stroke();
+
+        let headX = f.x + sway;
+        let headY = f.y - f.stemH;
+        let petals = 5;
+
+        ctx.fillStyle = f.color;
+        for (let i = 0; i < petals; i++) {
+            let angle = (i * 2 * Math.PI) / petals + tick * 0.02;
+            let px = headX + Math.cos(angle) * 4;
+            let py = headY + Math.sin(angle) * 4;
+            ctx.beginPath();
+            ctx.arc(px, py, 3, 0, Math.PI * 2);
+            ctx.fill();
+        }
+
+        ctx.fillStyle = '#fef08a';
+        ctx.beginPath();
+        ctx.arc(headX, headY, 2.5, 0, Math.PI * 2);
+        ctx.fill();
+    });
+
+    ctx.restore();
+}
+
+function drawStoneWell(x, y, tick) {
+    ctx.save();
+
+    ctx.fillStyle = '#4a2511';
+    ctx.fillRect(x - 24, y - 65, 6, 45);
+    ctx.fillRect(x + 18, y - 65, 6, 45);
+
+    ctx.fillStyle = '#7c3f1d';
+    ctx.beginPath();
+    ctx.moveTo(x - 32, y - 62);
+    ctx.lineTo(x, y - 85);
+    ctx.lineTo(x + 32, y - 62);
+    ctx.lineTo(x + 28, y - 56);
+    ctx.lineTo(x, y - 76);
+    ctx.lineTo(x - 28, y - 56);
+    ctx.closePath();
+    ctx.fill();
+
+    ctx.strokeStyle = '#271105';
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
+
+    ctx.fillStyle = '#a0522d';
+    ctx.fillRect(x - 18, y - 55, 36, 8);
+    ctx.fillStyle = '#fbbf24';
+    ctx.fillRect(x - 6, y - 54, 12, 6);
+
+    ctx.strokeStyle = '#d97706';
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.moveTo(x, y - 48);
+    ctx.lineTo(x, y - 30);
+    ctx.stroke();
+
+    ctx.fillStyle = '#5c2c16';
+    ctx.fillRect(x - 5, y - 30, 10, 9);
+
+    let stoneGrad = ctx.createLinearGradient(x - 28, y, x + 28, y);
+    stoneGrad.addColorStop(0, '#334155');
+    stoneGrad.addColorStop(0.5, '#64748b');
+    stoneGrad.addColorStop(1, '#1e293b');
+
+    ctx.fillStyle = stoneGrad;
+    ctx.beginPath();
+    ctx.ellipse(x, y - 20, 28, 10, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillRect(x - 28, y - 20, 56, 24);
+    ctx.beginPath();
+    ctx.ellipse(x, y + 4, 28, 10, 0, 0, Math.PI * 2);
+    ctx.fill();
+
+    ctx.strokeStyle = '#0f172a';
+    ctx.lineWidth = 1;
+    ctx.strokeRect(x - 20, y - 15, 12, 7);
+    ctx.strokeRect(x, y - 15, 12, 7);
+    ctx.strokeRect(x - 10, y - 8, 12, 7);
+    ctx.strokeRect(x + 10, y - 8, 10, 7);
+
+    ctx.fillStyle = '#0f172a';
+    ctx.beginPath();
+    ctx.ellipse(x, y - 20, 22, 7, 0, 0, Math.PI * 2);
+    ctx.fill();
+
+    let waterGlow = Math.sin(tick * 0.08) * 0.3 + 0.7;
+    let waterGrad = ctx.createRadialGradient(x, y - 20, 1, x, y - 20, 18);
+    waterGrad.addColorStop(0, `rgba(56, 189, 248, ${waterGlow})`);
+    waterGrad.addColorStop(1, 'rgba(15, 23, 42, 0.9)');
+
+    ctx.fillStyle = waterGrad;
+    ctx.beginPath();
+    ctx.ellipse(x, y - 20, 20, 6, 0, 0, Math.PI * 2);
+    ctx.fill();
+
+    ctx.fillStyle = '#15803d';
+    ctx.beginPath();
+    ctx.arc(x - 22, y + 2, 5, 0, Math.PI * 2);
+    ctx.arc(x + 20, y + 4, 6, 0, Math.PI * 2);
+    ctx.fill();
+
+    ctx.restore();
+}
+
+function drawRichBrownDoorWing(x, y, w, h) {
+    let grad = ctx.createLinearGradient(x, y, x + w, y);
+    grad.addColorStop(0.0, '#4a2511');
+    grad.addColorStop(0.25, '#7c3f1d');
+    grad.addColorStop(0.5, '#a0522d');
+    grad.addColorStop(0.75, '#6b3416');
+    grad.addColorStop(1.0, '#3d1d0c');
+
+    ctx.fillStyle = grad;
+    ctx.fillRect(x, y, w, h);
+
+    ctx.strokeStyle = '#271105';
+    ctx.lineWidth = 2;
+    ctx.strokeRect(x, y, w, h);
+
+    ctx.beginPath();
+    ctx.moveTo(x + w * 0.33, y); ctx.lineTo(x + w * 0.33, y + h);
+    ctx.moveTo(x + w * 0.66, y); ctx.lineTo(x + w * 0.66, y + h);
+    ctx.stroke();
+
+    ctx.fillStyle = '#1e293b';
+    ctx.fillRect(x, y + 25, w, 5);
+    ctx.fillRect(x, y + h - 35, w, 5);
+}
+
+function drawDoorWindow(wx, wy, tick) {
+    let glow = Math.sin(tick * 0.08) * 0.3 + 0.7;
+
+    ctx.fillStyle = `rgba(56, 189, 248, ${glow})`;
+    ctx.beginPath();
+    ctx.arc(wx + 10, wy + 10, 10, Math.PI, 0);
+    ctx.rect(wx, wy + 10, 20, 20);
+    ctx.fill();
+
+    ctx.strokeStyle = '#1e1107';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(wx + 10, wy);
+    ctx.lineTo(wx + 10, wy + 30);
+    ctx.moveTo(wx, wy + 15);
+    ctx.lineTo(wx + 20, wy + 15);
+    ctx.stroke();
+}
+
+function drawStoneDoorWithWindow(tick) {
+    let archCenterX = 670;
+    let archCenterY = 175;
+    let archRadius = 45;
+
+    ctx.fillStyle = state.doorOpen ? '#102a45' : '#050811';
+    ctx.beginPath();
+    ctx.arc(archCenterX, archCenterY, archRadius, Math.PI, 0);
+    ctx.rect(625, archCenterY, 90, 185);
+    ctx.fill();
+
+    if (state.doorOpen) {
+        let portalGlow = ctx.createRadialGradient(archCenterX, 240, 10, archCenterX, 240, 80);
+        portalGlow.addColorStop(0, '#38bdf8');
+        portalGlow.addColorStop(1, 'rgba(56, 189, 248, 0)');
+        ctx.fillStyle = portalGlow;
+        ctx.beginPath();
+        ctx.arc(archCenterX, archCenterY, archRadius, Math.PI, 0);
+        ctx.rect(625, archCenterY, 90, 185);
+        ctx.fill();
+    }
+
+    if (state.doorOpen && state.doorProgress < 46) {
+        state.doorProgress += 0.8;
+    }
+
+    ctx.save();
+    ctx.beginPath();
+    ctx.arc(archCenterX, archCenterY, archRadius, Math.PI, 0);
+    ctx.rect(625, archCenterY, 90, 185);
+    ctx.clip();
+
+    let leftDoorX = 625 - state.doorProgress;
+    let rightDoorX = 670 + state.doorProgress;
+
+    drawRichBrownDoorWing(leftDoorX, 130, 45, 230);
+    drawDoorWindow(leftDoorX + 12, 185, tick);
+
+    drawRichBrownDoorWing(rightDoorX, 130, 45, 230);
+    drawDoorWindow(rightDoorX + 12, 185, tick);
+
+    if (!state.doorOpen) {
+        ctx.fillStyle = '#d97706';
+        ctx.strokeStyle = '#78350f';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.arc(archCenterX, 235, 12, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.stroke();
+
+        ctx.fillStyle = '#0f172a';
+        ctx.beginPath();
+        ctx.arc(archCenterX, 233, 3, 0, Math.PI * 2);
+        ctx.rect(archCenterX - 1.5, 233, 3, 7);
+        ctx.fill();
+    }
+
+    ctx.restore();
+
+    ctx.fillStyle = '#2d3748';
+    ctx.beginPath();
+    ctx.moveTo(540, 360);
+    ctx.lineTo(560, 110);
+    ctx.quadraticCurveTo(670, 80, 790, 100);
+    ctx.lineTo(800, 360);
+    ctx.lineTo(715, 360);
+    ctx.lineTo(715, archCenterY);
+    ctx.arc(archCenterX, archCenterY, archRadius, 0, Math.PI, true);
+    ctx.lineTo(625, 360);
+    ctx.closePath();
+    ctx.fill();
+
+    drawDenseStoneBricks();
+    drawGrassOnWall(tick);
+}
+
+function drawDenseStoneBricks() {
+    ctx.lineWidth = 1.5;
+    const bricks = [
+        {x: 570, y: 125, w: 26, h: 16, c: '#475569'},
+        {x: 600, y: 112, w: 28, h: 18, c: '#334155'},
+        {x: 632, y: 102, w: 32, h: 18, c: '#52627a'},
+        {x: 668, y: 100, w: 32, h: 18, c: '#38475a'},
+        {x: 704, y: 108, w: 28, h: 18, c: '#475569'},
+        {x: 736, y: 118, w: 30, h: 20, c: '#334155'},
+        {x: 550, y: 160, w: 32, h: 20, c: '#38475a'},
+        {x: 548, y: 190, w: 34, h: 22, c: '#475569'},
+        {x: 545, y: 220, w: 36, h: 22, c: '#52627a'},
+        {x: 542, y: 250, w: 38, h: 24, c: '#38475a'},
+        {x: 540, y: 282, w: 38, h: 24, c: '#334155'},
+        {x: 755, y: 150, w: 32, h: 20, c: '#52627a'},
+        {x: 752, y: 180, w: 34, h: 22, c: '#38475a'},
+        {x: 750, y: 210, w: 36, h: 22, c: '#475569'},
+        {x: 748, y: 240, w: 38, h: 24, c: '#334155'}
+    ];
+
+    bricks.forEach(b => {
+        ctx.fillStyle = b.c;
+        ctx.fillRect(b.x, b.y, b.w, b.h);
+        ctx.strokeStyle = '#121a24';
+        ctx.strokeRect(b.x, b.y, b.w, b.h);
+    });
+}
+
+function drawGrassOnWall(tick) {
+    let wind = Math.sin(tick * 0.05) * 3;
+
+    function drawGrassTuft(bx, by, count, height, mainColor, tipColor) {
+        ctx.save();
+        for (let i = 0; i < count; i++) {
+            let angle = ((i / count) - 0.5) * 0.8;
+            let tipX = bx + Math.sin(angle) * height + wind;
+            let tipY = by - Math.cos(angle) * height;
+
+            ctx.strokeStyle = (i % 2 === 0) ? mainColor : tipColor;
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(bx + (i * 2 - count), by);
+            ctx.quadraticCurveTo(bx + angle * 5, by - height * 0.5, tipX, tipY);
+            ctx.stroke();
+        }
+        ctx.restore();
+    }
+
+    const topPoints = [
+        {x: 565, y: 115}, {x: 590, y: 108}, {x: 620, y: 98}, 
+        {x: 650, y: 92}, {x: 685, y: 92}, {x: 720, y: 102}, {x: 750, y: 112}
+    ];
+
+    topPoints.forEach(p => {
+        drawGrassTuft(p.x, p.y, 6, 14, '#16a34a', '#86efac');
+    });
+
+    for (let gx = 530; gx <= 790; gx += 14) {
+        drawGrassTuft(gx, 360, 7, 18 + (gx % 5), '#15803d', '#4ade80');
+    }
+}
+
+function updateAndDrawKey(tick) {
+    if (state.keyState === 'unlocked') return;
+
+    let currentX = state.keyX;
+    let currentY = state.keyY;
+
+    if (state.keyState === 'floating') {
+        currentY += Math.sin(tick * 0.06) * 10;
+    } 
+    else if (state.keyState === 'moving') {
+        state.keyX += (state.targetX - state.keyX) * 0.08;
+        state.keyY += (state.targetY - state.keyY) * 0.08;
+        currentX = state.keyX;
+        currentY = state.keyY;
+
+        let dist = Math.hypot(state.targetX - state.keyX, state.targetY - state.keyY);
+        if (dist < 3) {
+            state.keyX = state.targetX;
+            state.keyY = state.targetY;
+            state.keyState = 'unlocking';
+            showMessage("A kulcs elfordul a zárban!");
+        }
+    }
+    else if (state.keyState === 'unlocking') {
+        currentX = state.targetX;
+        currentY = state.targetY;
+        state.keyAngle += 0.08;
+
+        if (state.keyAngle >= Math.PI) {
+            state.keyState = 'unlocked';
+            state.doorOpen = true;
+            showMessage("Katt! A kapu kinyílt, a kellékek kirepülnek az ajtóból a farkas alá!");
+        }
+    }
+
+    ctx.save();
+    ctx.translate(currentX, currentY);
+    ctx.rotate(state.keyAngle);
+
+    let glow = ctx.createRadialGradient(0, 0, 5, 0, 0, 25);
+    glow.addColorStop(0, 'rgba(251, 191, 36, 0.9)');
+    glow.addColorStop(1, 'rgba(251, 191, 36, 0)');
+    ctx.fillStyle = glow;
+    ctx.beginPath();
+    ctx.arc(0, 0, 25, 0, Math.PI * 2);
+    ctx.fill();
+
+    ctx.strokeStyle = '#fbbf24';
+    ctx.lineWidth = 4;
+    ctx.beginPath();
+    ctx.arc(-10, 0, 8, 0, Math.PI * 2);
+    ctx.moveTo(0, 0);
+    ctx.lineTo(16, 0);
+    ctx.lineTo(16, 6);
+    ctx.moveTo(11, 0);
+    ctx.lineTo(11, 5);
+    ctx.stroke();
+
+    ctx.restore();
+}
+
+function drawRealisticWolf(x, y, tick) {
+    ctx.save();
+    ctx.translate(x, y);
+
+    let breath = Math.sin(tick * 0.06) * 2.5;
+    let tailWag = Math.sin(tick * 0.08) * 5;
+
+    ctx.fillStyle = '#334155';
+    ctx.beginPath();
+    ctx.moveTo(-20, 20);
+    ctx.quadraticCurveTo(-55 + tailWag, 15, -65 + tailWag, -5);
+    ctx.quadraticCurveTo(-60 + tailWag, -25, -40, -15);
+    ctx.quadraticCurveTo(-25, -5, -15, 10);
+    ctx.closePath();
+    ctx.fill();
+
+    let tailGrad = ctx.createLinearGradient(-60, -20, -15, 20);
+    tailGrad.addColorStop(0, '#475569');
+    tailGrad.addColorStop(1, '#1e293b');
+    ctx.fillStyle = tailGrad;
+    ctx.fill();
+
+    let bodyGrad = ctx.createLinearGradient(0, -60, 0, 40);
+    bodyGrad.addColorStop(0, '#334155');
+    bodyGrad.addColorStop(0.5, '#475569');
+    bodyGrad.addColorStop(1, '#94a3b8');
+
+    ctx.fillStyle = bodyGrad;
+    ctx.beginPath();
+    ctx.moveTo(-5, -45 + breath * 0.5);
+    ctx.bezierCurveTo(-30, -25, -38, 5, -30, 25);
+    ctx.bezierCurveTo(-40, 30, -35, 45, -20, 45);
+    ctx.bezierCurveTo(-5, 45, 5, 40, 15, 45);
+    ctx.bezierCurveTo(25, 25, 28, -5, 18, -35 + breath);
+    ctx.lineTo(-5, -45 + breath * 0.5);
+    ctx.closePath();
+    ctx.fill();
+
+    ctx.fillStyle = '#cbd5e1';
+    ctx.beginPath();
+    ctx.moveTo(10, -30 + breath);
+    ctx.bezierCurveTo(22, -10, 20, 15, 10, 35);
+    ctx.bezierCurveTo(2, 20, 2, -10, 10, -30 + breath);
+    ctx.closePath();
+    ctx.fill();
+
+    ctx.save();
+    ctx.translate(8, -48 + breath);
+
+    let headGrad = ctx.createLinearGradient(-15, -25, 35, 10);
+    headGrad.addColorStop(0, '#334155');
+    headGrad.addColorStop(0.6, '#64748b');
+    headGrad.addColorStop(1, '#cbd5e1');
+
+    ctx.fillStyle = headGrad;
+    ctx.beginPath();
+    ctx.moveTo(-10, -12);
+    ctx.lineTo(-6, -34);
+    ctx.lineTo(2, -16);
+    ctx.lineTo(14, -8);
+    ctx.lineTo(34, -4);
+    ctx.lineTo(33, 4);
+    ctx.lineTo(16, 8);
+    ctx.bezierCurveTo(5, 16, -8, 12, -12, 0);
+    ctx.closePath();
+    ctx.fill();
+
+    ctx.fillStyle = '#1e293b';
+    ctx.beginPath();
+    ctx.moveTo(1, -14);
+    ctx.lineTo(9, -36);
+    ctx.lineTo(16, -14);
+    ctx.closePath();
+    ctx.fill();
+
+    ctx.fillStyle = '#0f172a';
+    ctx.beginPath();
+    ctx.arc(33, -2, 3, 0, Math.PI * 2);
+    ctx.fill();
+
+    ctx.fillStyle = '#38bdf8';
+    ctx.shadowColor = '#38bdf8';
+    ctx.shadowBlur = 8;
+    ctx.beginPath();
+    ctx.ellipse(14, -6, 3.5, 2, Math.PI / 6, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.shadowBlur = 0;
+
+    ctx.restore();
+    ctx.restore();
+}
+
+let tick = 0;
+function animate() {
+    tick++;
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    let bgGrad = ctx.createLinearGradient(0, 0, 0, canvas.height);
+    bgGrad.addColorStop(0, '#090c19');
+    bgGrad.addColorStop(1, '#1a2238');
+    ctx.fillStyle = bgGrad;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    drawSparklingMoon(120, 90, 38, tick);
+    drawForest();
+
+    ctx.fillStyle = '#7dcfff';
+    particles.forEach(p => {
+        p.y -= p.speedY;
+        if (p.y < 0) p.y = canvas.height;
+        ctx.globalAlpha = Math.sin(tick * 0.05 + p.alpha) * 0.5 + 0.5;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+        ctx.fill();
+    });
+    ctx.globalAlpha = 1.0;
+
+    ctx.fillStyle = '#0b1120';
+    ctx.fillRect(0, 360, canvas.width, 120);
+
+    drawGardenPath();
+    drawGardenBushes();
+    drawStoneWell(430, 355, tick);
+    drawStoneDoorWithWindow(tick);
+    drawWallVines(tick);
+    drawMushrooms(tick);
+    drawFlowers(tick);
+    drawRealisticWolf(230, 315, tick);
+
+    updateAndDrawFlyingItems(tick);
+    updateAndDrawKey(tick);
+
+    if (state.messageTimer > 0) {
+        state.messageTimer--;
+        ctx.fillStyle = 'rgba(15, 23, 42, 0.88)';
+        ctx.fillRect(40, 20, 720, 50);
+        ctx.strokeStyle = '#38bdf8';
+        ctx.lineWidth = 1;
+        ctx.strokeRect(40, 20, 720, 50);
+
+        ctx.fillStyle = '#f8fafc';
+        ctx.font = '16px Segoe UI';
+        ctx.textAlign = 'center';
+        ctx.fillText(state.message, 400, 51);
+    }
+
+    requestAnimationFrame(animate);
+}
+
+animate();
+</script>
+</body>
+</html>

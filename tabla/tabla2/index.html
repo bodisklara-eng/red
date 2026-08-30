@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>A legmesszebbre repülő buborék – Python tömbmaximum</title>
+<style>
+:root{
+  --ink:#24313a; --paper:#f2eee4; --teal:#188f91; --yellow:#e8b52d;
+  --orange:#e86e36; --green:#4f9b65; --red:#d94a45; --blue:#477ca8;
+}
+*{box-sizing:border-box}
+body{
+  margin:0;background:#d9d5cb;color:var(--ink);
+  font-family:Georgia,"Times New Roman",serif;
+}
+.app{max-width:1200px;margin:auto;padding:18px}
+header{
+  background:var(--teal);color:white;padding:20px 24px;
+  border:7px solid #116f72;box-shadow:0 6px 0 #116f72;
+}
+header h1{margin:0;font-size:clamp(25px,4vw,42px)}
+header p{margin:7px 0 0;font-size:18px}
+.scene{
+  margin-top:18px;background:var(--paper);border:4px solid #555;
+  min-height:480px;position:relative;overflow:hidden;
+  box-shadow:0 7px 0 #777;
+}
+.wall{height:120px;background:#ddd8cc;border-bottom:8px solid var(--teal)}
+.floor{position:absolute;left:0;right:0;bottom:0;height:75px;background:#d4b35b;
+  border-top:7px solid #555}
+.table{position:absolute;left:8%;right:8%;bottom:75px;height:35px;background:#9b633c;
+  border:4px solid #583b2a}
+.leg{position:absolute;bottom:0;width:18px;height:115px;background:#765039;border:3px solid #4c3627}
+.l1{left:10%}.l2{right:10%}
+.machine{
+  position:absolute;left:7%;bottom:105px;width:170px;height:190px;
+  background:#6b7680;border:7px solid #3f4b52;border-radius:18px 18px 8px 8px;
+  box-shadow:inset 0 0 0 8px #9aa3a7;
+}
+.machine .label{background:#eee3b5;border:3px solid #51483a;margin:14px;padding:7px;text-align:center;font-weight:bold}
+.machine .ring{position:absolute;left:50%;transform:translateX(-50%);bottom:25px;width:78px;height:78px;
+  border:8px solid #29343b;border-radius:50%;background:#232b2f}
+.machine .motor{position:absolute;right:-44px;bottom:18px;background:var(--orange);border:4px solid #733722;
+  padding:8px;font:bold 15px Arial;transform:rotate(-7deg)}
+.bubble{
+  position:absolute;border-radius:50%;border:3px solid rgba(255,255,255,.95);
+  box-shadow:inset -8px -10px 16px rgba(60,120,160,.12), inset 7px 6px 12px rgba(255,255,255,.8);
+  background:radial-gradient(circle at 30% 25%,#fff 0 8%,rgba(160,225,255,.45) 22%,rgba(85,180,215,.18) 55%,rgba(255,255,255,.08) 70%);
+}
+.b1{width:30px;height:30px}.b2{width:21px;height:21px}.b3{width:40px;height:40px}.b4{width:26px;height:26px}
+.b5{width:34px;height:34px}.b6{width:23px;height:23px}.b7{width:45px;height:45px}.b8{width:29px;height:29px}
+.board{
+  position:absolute;right:5%;top:25px;width:46%;min-width:410px;
+  background:#fbf7eb;border:5px solid #526168;padding:18px;
+}
+.board h2{margin:0 0 10px;font-size:25px}
+.question{font-size:20px;margin-bottom:14px}
+.array{display:flex;gap:5px;flex-wrap:wrap;margin:12px 0}
+.cell{
+  width:55px;height:55px;border:3px solid #46535b;background:#fff;
+  display:flex;align-items:center;justify-content:center;font:bold 22px Arial;
+  position:relative;transition:.25s;
+}
+.cell.current{background:#ffd45a;border-color:#b67d00;transform:translateY(-5px)}
+.cell.max{background:#74c68a;border-color:#2e6d40;color:#103a1c}
+.cell.done{background:#e9eceb}
+.cell small{position:absolute;top:-21px;font:12px Arial;color:#444}
+.counter{font:bold 18px Arial;margin:6px 0}
+.explain{
+  background:#263746;color:#fff;padding:13px 16px;margin-top:12px;
+  font:17px/1.35 Arial;min-height:72px
+}
+.code{
+  margin-top:16px;background:#18252e;color:#e9f2f4;border:4px solid #465963;
+  padding:15px;font:16px/1.55 Consolas,monospace;white-space:pre-wrap
+}
+.kw{color:#f3c969}.num{color:#78d6d8}.com{color:#93a89b}
+.controls{
+  margin-top:18px;background:#f7f2e7;border:4px solid #555;padding:15px;
+  display:flex;gap:10px;align-items:center;flex-wrap:wrap
+}
+button{
+  border:3px solid #3e4b51;background:var(--yellow);padding:10px 16px;
+  font:bold 16px Arial;cursor:pointer;box-shadow:0 3px 0 #765d15
+}
+button:active{transform:translateY(3px);box-shadow:none}
+input[type=text]{padding:11px;border:3px solid #555;font:16px Arial;min-width:280px}
+input[type=range]{width:150px}
+footer{padding:15px;text-align:center;font:14px Arial;color:#4d5558}
+.badge{display:inline-block;background:#e86e36;color:white;padding:5px 9px;border-radius:4px;font:bold 13px Arial}
+@media(max-width:850px){
+ .board{position:relative;right:auto;top:auto;width:92%;min-width:0;margin:18px auto}
+ .scene{padding-bottom:360px}
+ .machine{left:4%;transform:scale(.8);transform-origin:bottom left}
+}
+</style>
+</head>
+<body>
+<div class="app">
+<header>
+  <h1>🔵 Melyik buborék repült a legmesszebbre?</h1>
+  <p>Interaktív magyar magyarázat a <b>tömb maximumának megkereséséhez</b> Pythonban.</p>
+</header>
+
+<section class="scene" id="scene">
+  <div class="wall"></div>
+  <div class="machine">
+    <div class="label">BUBORÉKFÚJÓ<br>GÉP</div>
+    <div class="ring"></div>
+    <div class="motor">DC MOTOR</div>
+  </div>
+  <div class="table"></div><div class="leg l1"></div><div class="leg l2"></div>
+  <div class="board">
+    <div class="badge">TESZTELÉS</div>
+    <h2>Keressük a legnagyobb értéket!</h2>
+    <div class="question">A buborékok ennyit repültek:</div>
+    <div class="array" id="array"></div>
+    <div class="counter" id="counter">Következő elem: –</div>
+    <div class="explain" id="explain">
+      Nyomd meg az <b>Indítás</b> gombot! A program végignézi a tömböt,
+      és mindig megőrzi az eddigi legnagyobb értéket.
+    </div>
+    <div class="code"><span class="com"># A buborékok repülési távolságai</span>
+<span class="kw">tavolsag</span> = [12, 25, 18, 42, 31, 27, 56, 39]
+
+<span class="kw">max_ertek</span> = tavolsag[0]
+
+<span class="kw">for</span> x <span class="kw">in</span> tavolsag:
+    <span class="kw">if</span> x &gt; max_ertek:
+        max_ertek = x
+
+<span class="kw">print</span>(max_ertek)   <span class="com"># 56</span></div>
+  </div>
+  <div class="floor"></div>
+</section>
+
+<div class="controls">
+  <button id="start">▶ Indítás</button>
+  <button id="pause">⏸ Szünet</button>
+  <button id="reset">↺ Újrakezdés</button>
+  <label>Gyorsaság:
+    <input id="speed" type="range" min="300" max="1800" value="900" step="100">
+  </label>
+  <label> Saját tömb:
+    <input id="custom" type="text" value="12,25,18,42,31,27,56,39">
+  </label>
+  <button id="apply">Alkalmaz</button>
+  <button id="speak">🔊 Felolvasás</button>
+</div>
+
+<footer>
+  <b>Tanórai ötlet:</b> állítsd meg minden összehasonlításnál, és kérdezd meg:
+  „Vajon a mostani szám nagyobb, mint az eddigi maximum?”
+</footer>
+</div>
+
+<script>
+let values = [12,25,18,42,31,27,56,39];
+let i = 0, maxIndex = 0, timer = null, running = false;
+
+const arr = document.getElementById('array');
+const counter = document.getElementById('counter');
+const explain = document.getElementById('explain');
+const scene = document.getElementById('scene');
+
+function makeBubbles(){
+  [...scene.querySelectorAll('.bubble')].forEach(e=>e.remove());
+  const max = Math.max(...values);
+  values.forEach((v,k)=>{
+    const b=document.createElement('div');
+    b.className='bubble b'+((k%8)+1);
+    const startX=245+k*27;
+    const startY=330-(k%3)*17;
+    const distance=(v/max)*480;
+    b.style.left=startX+'px';
+    b.style.bottom=(75+distance)+'px';
+    b.style.opacity='.88';
+    b.title=`${v} egység`;
+    scene.appendChild(b);
+  });
+}
+
+function render(){
+  arr.innerHTML='';
+  values.forEach((v,k)=>{
+    const d=document.createElement('div');
+    d.className='cell';
+    if(k===i && running) d.classList.add('current');
+    if(k===maxIndex && i>0) d.classList.add('max');
+    if(k<i && k!==maxIndex) d.classList.add('done');
+    d.innerHTML=`<small>${k}. index</small>${v}`;
+    arr.appendChild(d);
+  });
+  if(i < values.length){
+    counter.textContent=`Vizsgált elem: ${i}. index → ${values[i]}`;
+  } else {
+    counter.textContent=`Kész! A maximum: ${values[maxIndex]}`;
+  }
+}
+
+function step(){
+  if(i>=values.length){
+    running=false; clearInterval(timer);
+    explain.innerHTML=`🎉 <b>Megtaláltuk!</b> A legnagyobb érték <b>${values[maxIndex]}</b>, vagyis
+    ez a buborék repült a legmesszebbre. Az algoritmus minden elemet csak egyszer vizsgált meg.`;
+    render(); return;
+  }
+  if(i===0){
+    maxIndex=0;
+    explain.innerHTML=`Kezdésként az első elemet tekintjük maximumnak: <b>${values[0]}</b>.`;
+  }else if(values[i] > values[maxIndex]){
+    explain.innerHTML=`<b>${values[i]}</b> nagyobb, mint az eddigi maximum (<b>${values[maxIndex]}</b>).
+    Ez lesz az új maximum!`;
+    maxIndex=i;
+  }else{
+    explain.innerHTML=`<b>${values[i]}</b> nem nagyobb, mint az eddigi maximum (<b>${values[maxIndex]}</b>).
+    Marad a régi maximum.`;
+  }
+  i++;
+  render();
+}
+
+function start(){
+  if(running) return;
+  running=true;
+  render();
+  step();
+  timer=setInterval(step, Number(document.getElementById('speed').value));
+}
+function pause(){running=false;clearInterval(timer);timer=null;}
+function reset(){
+  pause(); i=0; maxIndex=0;
+  explain.innerHTML=`Nyomd meg az <b>Indítás</b> gombot! A program végignézi a tömböt,
+  és mindig megőrzi az eddigi legnagyobb értéket.`;
+  render(); makeBubbles();
+}
+function apply(){
+  const a=document.getElementById('custom').value.split(',').map(x=>Number(x.trim())).filter(Number.isFinite);
+  if(a.length<1) return;
+  values=a.slice(0,12);
+  document.querySelector('.code').innerHTML =
+`<span class="com"># A buborékok repülési távolságai</span>
+<span class="kw">tavolsag</span> = [${values.join(', ')}]
+
+<span class="kw">max_ertek</span> = tavolsag[0]
+
+<span class="kw">for</span> x <span class="kw">in</span> tavolsag:
+    <span class="kw">if</span> x &gt; max_ertek:
+        max_ertek = x
+
+<span class="kw">print</span>(max_ertek)`;
+  reset();
+}
+function speak(){
+  if(!('speechSynthesis' in window)){
+    alert('A böngésző nem támogatja a felolvasást.');
+    return;
+  }
+  speechSynthesis.cancel();
+  const text=`Keressük meg, melyik buborék repült a legmesszebbre.
+  A távolságokat egy tömbben tároljuk. Először az első elemet tekintjük maximumnak.
+  Ezután sorban megvizsgáljuk a többi értéket. Ha találunk a jelenlegi maximumnál nagyobbat,
+  lecseréljük a maximumot. A végén a legnagyobb érték megmutatja, melyik buborék jutott a legmesszebbre.
+  Ebben a példában az eredmény ${Math.max(...values)}.`;
+  const u=new SpeechSynthesisUtterance(text);
+  u.lang='hu-HU'; u.rate=.92;
+  speechSynthesis.speak(u);
+}
+document.getElementById('start').onclick=start;
+document.getElementById('pause').onclick=pause;
+document.getElementById('reset').onclick=reset;
+document.getElementById('apply').onclick=apply;
+document.getElementById('speak').onclick=speak;
+document.getElementById('speed').onchange=()=>{if(running){pause();start();}};
+makeBubbles(); render();
+</script>
+</body>
+</html>
