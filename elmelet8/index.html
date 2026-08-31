@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<!-- saved from url=(0068)file:///C:/Users/Utilizator/Downloads/gemini-code-1788079237211.html -->
+<html lang="hu"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feldiktált Szövegek Gondolattérképe</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            background-color: #0f172a;
+            color: #f8fafc;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+        #canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            pointer-events: none;
+        }
+        .header {
+            text-align: center;
+            padding: 2.5rem 1rem 1rem;
+            position: relative;
+            z-index: 2;
+        }
+        .header h1 {
+            color: #38bdf8;
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+        .header p {
+            color: #94a3b8;
+            font-size: 1rem;
+        }
+        .container {
+            position: relative;
+            z-index: 2;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2.5rem;
+        }
+        .node-card {
+            background: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s ease, border-color 0.3s ease;
+            position: relative;
+        }
+        .node-card:hover {
+            transform: translateY(-5px);
+            border-color: #38bdf8;
+        }
+        .node-card h3 {
+            color: #38bdf8;
+            font-size: 1.15rem;
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .node-card p {
+            color: #cbd5e1;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            white-space: pre-line;
+        }
+        .tag {
+            display: inline-block;
+            background: #0369a1;
+            color: #e0f2fe;
+            font-size: 0.75rem;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <canvas id="canvas" width="1513" height="2051"></canvas>
+
+    <div class="header">
+        <h1>Feldiktált Szövegek Logikai Íve</h1>
+        <p>Szó szerinti átiratok és dinamikus összekötő szimuláció</p>
+    </div>
+
+    <div class="container" id="nodes-container">
+        <!-- A csomópontok dinamikusan töltődnek be -->
+    <div class="node-card" id="node-szoveg1">
+                <span class="tag">1. Képgalériák &amp; Osztályzatok</span>
+                <h3>Galériák, képek és a jegyek</h3>
+                <p>Nézd meg a projekt elején lévő kép galériát. Mindegyik kép galériában a képek hogyan helyezkednek el? Van-e összefüggés a képek között? Ismétlődnek-e a képek, méretükben különböznek-e? Láthatod, hogy egyes galériák több helyet foglalnak el, mint a mekkorák. Így pazarolván a helyet a webfelületen. Mások ugyanolyan témájú képeket tárolnak, de színükben, tartalomukban eltérnek. Vannak, amelyekben azonos méretűek a képek, de vannak, amelyekben egyáltalán nem azonos méretűek, nem azonos számosságúak. Mindegyikben más-más számosságú kép van. De lehet az is, hogy ismétlődik egy-egy kép, vagy színükben változik csak meg, de ugyanazt a képet mutatják be. Szerinted egy kép galéria esetén, ha ugyanazt a képet látod egymás után, semmi változtatás nélkül, sem effekt, sem szín, sem méret, azzáró lehet-e? De mi van akkor, hogyha a jegyednyit között sok tízest látsz a naplóban egymás után, vagy éppen szétszórva? Melyiknek örülnél jobban? Tehát mit tudsz ebből lekövetkeztetni? Hogy a jegyeknél jó, ha ismétlődnek, főleg akkor, hogyha nagy jegyek. A képeknél nem annyira jó, ha ismétlődik. Ha nincs változtatás rajtuk, monotonná válnak. Persze akadnak ellenpéldák, mivel ízlések, mások minden ember számára. De láttál három példát, a kis csibést, Annácskát és a ruháit. És láttad a színpompában csillogó-villogó szinapi karkötőket.</p>
+            </div><div class="node-card" id="node-szoveg2">
+                <span class="tag">2. Történet &amp; Rendezés</span>
+                <h3>Annácska ruhái és a válogatás</h3>
+                <p>Folytassuk az előbbi gondolatmenetet. Ám annál csak a kapott feladatok között szét kellett választanod a képeket. Egy történet leírása, kép. Szét tudtad választani őket? Hogyan tetted őket sorba? Lehetett volna-e más sorrend? Esetleg stílusosabban megegyeztek ezek a képek, amikor őket összeválogattad? Bár mondanivalójukban megegyeztek, de stílusosabban nem. Hányféleképpen lehetett volna ezt szétválogatni? Stílusok szerint is ismered ezeket a lehetőségeket? Vagy vedd figyelembe a számosságukat. A képek számosságát. Hány darabot tettél össze? Lehetett-e volna több kockából, vagy kevesebből ugyanazt a mesét összerakni? De ezeken túl, lássad, hogy ha a színeket teszed össze a ruháknál, vagy méretük szerint válogatod őket össze, vagy stílusok szerint, tudnál még ilyeneket sorolni, ami szerint össze tudnád alkotni ezeket? Persze, természetesen, mivel véletlenszerűen sorszámozhatóak ezek a ruhák az adott kupacban, meg tudnád mondani, hogy hányféleképpen lehetett volna őket sorszámozni? És mennyiben befolyásolták volna ezt Annának a döntéseiben, amikor a ruha darabokat kiválogatta és elment végül a buliba? Vagy amikor rendezte a ruhákat? Hányféleképpen tudta volna egymásra helyezni a nadrágokat, vagy éppen a pólókat a külön kupacokban? Lehetett volna több megoldás? És így tovább. És ha a színükben nézzük a ruhákat, akkor az eredeti sorban hogyan helyezkedtek el a ruhák szétválogatás előtt? Lehetett volna ez a sorrend más, ha csak a színekre nézünk? De mi van akkor, hogyha a méretet tekintjük? Gondoljuk végig ezt.</p>
+            </div><div class="node-card" id="node-szoveg3">
+                <span class="tag">3. Csibék &amp; Pozíciók</span>
+                <h3>Csibék kikelése és a színek</h3>
+                <p>Most hasonlítsd össze a csippék kikelésének sorrendjét és a színek párosítását, azaz a kombinatorikai feladatokat. Van-e hasonlóság közöttük? Főleg amikor például kettesével vettük a csippék kikelését. Hogyan vehettük? Két egymás mellett lévő pozíción vagy szétszórt pozíción? És hány ilyen megoldást találtunk? Mi van akkor, hogyha ez a két pozíció egy azonos színhez társul, és az összes többi pozíción más-más szín van? Vagy az is meglehet, hogy az összes többi pozíción azonos szín van. Mennyiben befolyásolja ezeket a döntéseket a választásunk?</p>
+            </div><div class="node-card" id="node-szoveg4">
+                <span class="tag">4. A Szárítós Feladat</span>
+                <h3>Két ruha elhelyezése a szárítón</h3>
+                <p>Most nézd a szárítós feladatot. Félek akkor, amikor Anna két ruhát akar feltenni száradni a már meglévő ruhasorba. Hová helyezheti el ezt a két ruhát? Hány lehetősége van? És hogyan tudja ezt megtenni? Próbáld ugyanezt a ruhák esetén. Ott is ennyire bonyolult a döntés, vagy ott egyszerűbb?</p>
+            </div><div class="node-card" id="node-szoveg5">
+                <span class="tag">5. Az Erdei Szivattyú</span>
+                <h3>Mosás, a kút, a pumpa és a szökőkút</h3>
+                <p>És most vegyük azt, hogy vakáció vége, iskola kezdete. De ha nem is, a mindennapi rutin megköveteli tőlünk, hogy ruháinkat tisztán tartsuk. Annácska egy csomó ruhát kiválogatott, és át kell, hogy mossa őket, elkészítve azt az új tanévre, vagy éppenséggel a következő napra, vagy hétre, vagy holnapra. De mivel nagyon sok vizet elhasznált, ezért elfogyott a víz otthonról. Ezért elment egy kerek erdőbe, mivel ugye szárazság van, úgy gondolván, hogy az erdőbe hamarabb kap vizet. És a víz megtalálása nagy örömöt okozott számára egy erdő közepén lévő kút alján. Igen ám, de elfelejtett magával eszközt hozni, és mégis vizet akart hazavinni. Mikor szétnézett, egy csomó üres flakont talált az erdőben, itt-ott elszórva, egyik nagyobb, kisebb méretű. Aztán talált csöveket, PVC-csöveket. Megörvendve, eszébe jutott, hogy mit tanult fizikaórán, és elkezdte összeszerelni a saját szivatyúját, amellyel kiszivattyúzta a vizet a kútból. Ahogy ott próbálkozott, kedve támadt, és elkészítette a saját kis szökőkútját, mert megtetszett neki az erdőben az a vízcsobbanás, amit a kutacska mellett látott. Segítsetek neki megszerkeszteni a szivattyút és a szökőkutat.</p>
+            </div></div>
+
+    <script>
+        // FELDIKTÁLT SZÖVEGEK SZÓ SZERINTI TÁROLÁSA ÉS LOGIKAI KAPCSOLATAI
+        const nodesData = [
+            {
+                id: "szoveg1",
+                category: "1. Képgalériák & Osztályzatok",
+                title: "Galériák, képek és a jegyek",
+                text: "Nézd meg a projekt elején lévő kép galériát. Mindegyik kép galériában a képek hogyan helyezkednek el? Van-e összefüggés a képek között? Ismétlődnek-e a képek, méretükben különböznek-e? Láthatod, hogy egyes galériák több helyet foglalnak el, mint a mekkorák. Így pazarolván a helyet a webfelületen. Mások ugyanolyan témájú képeket tárolnak, de színükben, tartalomukban eltérnek. Vannak, amelyekben azonos méretűek a képek, de vannak, amelyekben egyáltalán nem azonos méretűek, nem azonos számosságúak. Mindegyikben más-más számosságú kép van. De lehet az is, hogy ismétlődik egy-egy kép, vagy színükben változik csak meg, de ugyanazt a képet mutatják be. Szerinted egy kép galéria esetén, ha ugyanazt a képet látod egymás után, semmi változtatás nélkül, sem effekt, sem szín, sem méret, azzáró lehet-e? De mi van akkor, hogyha a jegyednyit között sok tízest látsz a naplóban egymás után, vagy éppen szétszórva? Melyiknek örülnél jobban? Tehát mit tudsz ebből lekövetkeztetni? Hogy a jegyeknél jó, ha ismétlődnek, főleg akkor, hogyha nagy jegyek. A képeknél nem annyira jó, ha ismétlődik. Ha nincs változtatás rajtuk, monotonná válnak. Persze akadnak ellenpéldák, mivel ízlések, mások minden ember számára. De láttál három példát, a kis csibést, Annácskát és a ruháit. És láttad a színpompában csillogó-villogó szinapi karkötőket.",
+                connectsTo: ["szoveg2"]
+            },
+            {
+                id: "szoveg2",
+                category: "2. Történet & Rendezés",
+                title: "Annácska ruhái és a válogatás",
+                text: "Folytassuk az előbbi gondolatmenetet. Ám annál csak a kapott feladatok között szét kellett választanod a képeket. Egy történet leírása, kép. Szét tudtad választani őket? Hogyan tetted őket sorba? Lehetett volna-e más sorrend? Esetleg stílusosabban megegyeztek ezek a képek, amikor őket összeválogattad? Bár mondanivalójukban megegyeztek, de stílusosabban nem. Hányféleképpen lehetett volna ezt szétválogatni? Stílusok szerint is ismered ezeket a lehetőségeket? Vagy vedd figyelembe a számosságukat. A képek számosságát. Hány darabot tettél össze? Lehetett-e volna több kockából, vagy kevesebből ugyanazt a mesét összerakni? De ezeken túl, lássad, hogy ha a színeket teszed össze a ruháknál, vagy méretük szerint válogatod őket össze, vagy stílusok szerint, tudnál még ilyeneket sorolni, ami szerint össze tudnád alkotni ezeket? Persze, természetesen, mivel véletlenszerűen sorszámozhatóak ezek a ruhák az adott kupacban, meg tudnád mondani, hogy hányféleképpen lehetett volna őket sorszámozni? És mennyiben befolyásolták volna ezt Annának a döntéseiben, amikor a ruha darabokat kiválogatta és elment végül a buliba? Vagy amikor rendezte a ruhákat? Hányféleképpen tudta volna egymásra helyezni a nadrágokat, vagy éppen a pólókat a külön kupacokban? Lehetett volna több megoldás? És így tovább. És ha a színükben nézzük a ruhákat, akkor az eredeti sorban hogyan helyezkedtek el a ruhák szétválogatás előtt? Lehetett volna ez a sorrend más, ha csak a színekre nézünk? De mi van akkor, hogyha a méretet tekintjük? Gondoljuk végig ezt.",
+                connectsTo: ["szoveg3"]
+            },
+            {
+                id: "szoveg3",
+                category: "3. Csibék & Pozíciók",
+                title: "Csibék kikelése és a színek",
+                text: "Most hasonlítsd össze a csippék kikelésének sorrendjét és a színek párosítását, azaz a kombinatorikai feladatokat. Van-e hasonlóság közöttük? Főleg amikor például kettesével vettük a csippék kikelését. Hogyan vehettük? Két egymás mellett lévő pozíción vagy szétszórt pozíción? És hány ilyen megoldást találtunk? Mi van akkor, hogyha ez a két pozíció egy azonos színhez társul, és az összes többi pozíción más-más szín van? Vagy az is meglehet, hogy az összes többi pozíción azonos szín van. Mennyiben befolyásolja ezeket a döntéseket a választásunk?",
+                connectsTo: ["szoveg4"]
+            },
+            {
+                id: "szoveg4",
+                category: "4. A Szárítós Feladat",
+                title: "Két ruha elhelyezése a szárítón",
+                text: "Most nézd a szárítós feladatot. Félek akkor, amikor Anna két ruhát akar feltenni száradni a már meglévő ruhasorba. Hová helyezheti el ezt a két ruhát? Hány lehetősége van? És hogyan tudja ezt megtenni? Próbáld ugyanezt a ruhák esetén. Ott is ennyire bonyolult a döntés, vagy ott egyszerűbb?",
+                connectsTo: ["szoveg5"]
+            },
+            {
+                id: "szoveg5",
+                category: "5. Az Erdei Szivattyú",
+                title: "Mosás, a kút, a pumpa és a szökőkút",
+                text: "És most vegyük azt, hogy vakáció vége, iskola kezdete. De ha nem is, a mindennapi rutin megköveteli tőlünk, hogy ruháinkat tisztán tartsuk. Annácska egy csomó ruhát kiválogatott, és át kell, hogy mossa őket, elkészítve azt az új tanévre, vagy éppenséggel a következő napra, vagy hétre, vagy holnapra. De mivel nagyon sok vizet elhasznált, ezért elfogyott a víz otthonról. Ezért elment egy kerek erdőbe, mivel ugye szárazság van, úgy gondolván, hogy az erdőbe hamarabb kap vizet. És a víz megtalálása nagy örömöt okozott számára egy erdő közepén lévő kút alján. Igen ám, de elfelejtett magával eszközt hozni, és mégis vizet akart hazavinni. Mikor szétnézett, egy csomó üres flakont talált az erdőben, itt-ott elszórva, egyik nagyobb, kisebb méretű. Aztán talált csöveket, PVC-csöveket. Megörvendve, eszébe jutott, hogy mit tanult fizikaórán, és elkezdte összeszerelni a saját szivatyúját, amellyel kiszivattyúzta a vizet a kútból. Ahogy ott próbálkozott, kedve támadt, és elkészítette a saját kis szökőkútját, mert megtetszett neki az erdőben az a vízcsobbanás, amit a kutacska mellett látott. Segítsetek neki megszerkeszteni a szivattyút és a szökőkutat.",
+                connectsTo: []
+            }
+        ];
+
+        const container = document.getElementById('nodes-container');
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+
+        const cardElements = {};
+        nodesData.forEach(node => {
+            const card = document.createElement('div');
+            card.className = 'node-card';
+            card.id = `node-${node.id}`;
+            card.innerHTML = `
+                <span class="tag">${node.category}</span>
+                <h3>${node.title}</h3>
+                <p>${node.text}</p>
+            `;
+            container.appendChild(card);
+            cardElements[node.id] = card;
+        });
+
+        function resizeCanvas() {
+            canvas.width = document.body.scrollWidth;
+            canvas.height = document.body.scrollHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        let offset = 0;
+
+        function drawConnections() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            nodesData.forEach(sourceNode => {
+                const sourceEl = cardElements[sourceNode.id];
+                const sourceRect = sourceEl.getBoundingClientRect();
+                
+                const startX = sourceRect.left + sourceRect.width / 2 + window.scrollX;
+                const startY = sourceRect.top + sourceRect.height / 2 + window.scrollY;
+
+                sourceNode.connectsTo.forEach(targetId => {
+                    const targetEl = cardElements[targetId];
+                    if (!targetEl) return;
+                    
+                    const targetRect = targetEl.getBoundingClientRect();
+                    const endX = targetRect.left + targetRect.width / 2 + window.scrollX;
+                    const endY = targetRect.top + targetRect.height / 2 + window.scrollY;
+
+                    ctx.beginPath();
+                    ctx.moveTo(startX, startY);
+
+                    const controlY = (startY + endY) / 2;
+                    ctx.bezierCurveTo(startX, controlY, endX, controlY, endX, endY);
+
+                    ctx.strokeStyle = 'rgba(56, 189, 248, 0.25)';
+                    ctx.lineWidth = 3;
+                    ctx.stroke();
+
+                    ctx.beginPath();
+                    ctx.moveTo(startX, startY);
+                    ctx.bezierCurveTo(startX, controlY, endX, controlY, endX, endY);
+                    
+                    ctx.strokeStyle = '#38bdf8';
+                    ctx.lineWidth = 2;
+                    ctx.setLineDash([6, 12]);
+                    ctx.lineDashOffset = -offset;
+                    ctx.stroke();
+                    ctx.setLineDash([]);
+                });
+            });
+
+            offset += 0.5;
+            requestAnimationFrame(drawConnections);
+        }
+
+        window.addEventListener('load', () => {
+            resizeCanvas();
+            drawConnections();
+        });
+        window.addEventListener('scroll', resizeCanvas);
+    </script>
+
+</body></html>
