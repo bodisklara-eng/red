@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<!-- saved from url=(0068)file:///C:/Users/Utilizator/Downloads/gemini-code-1788076420890.html -->
+<html lang="hu"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tanulási Modell - Átfedésmentes Kombinatorikus Szimuláció</title>
+    <style>
+        :root {
+            --bg-color: #070a12;
+            --panel-bg: rgba(18, 26, 43, 0.9);
+            --primary: #38bdf8;
+            --secondary: #818cf8;
+            --accent: #f43f5e;
+            --vector-color: #34d399;
+            --rope-color: #fbbf24;
+            --text: #f8fafc;
+            --text-muted: #94a3b8;
+            --border: #334155;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text);
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        header {
+            padding: 12px 20px;
+            background: var(--panel-bg);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 10;
+        }
+
+        .quote {
+            font-size: 1.05rem;
+            font-style: italic;
+            color: var(--primary);
+        }
+
+        .subtitle {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        .config-panel {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .config-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .config-item input {
+            width: 55px;
+            background: var(--bg-color);
+            border: 1px solid var(--primary);
+            color: var(--primary);
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .math-btn {
+            background: var(--accent);
+            color: white;
+            border: none;
+            padding: 6px 14px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.85rem;
+            transition: all 0.2s;
+            box-shadow: 0 0 10px rgba(244, 63, 94, 0.3);
+        }
+
+        .math-btn:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
+        }
+
+        main {
+            flex: 1;
+            position: relative;
+            width: 100%;
+            height: 100%;
+        }
+
+        canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        .status-overlay {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: var(--panel-bg);
+            border: 1px solid var(--border);
+            padding: 16px 20px;
+            border-radius: 12px;
+            max-width: 440px;
+            backdrop-filter: blur(12px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
+            z-index: 5;
+        }
+
+        .phase-indicator {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--accent);
+            font-weight: bold;
+            margin-bottom: 4px;
+        }
+
+        .status-title {
+            color: var(--primary);
+            font-size: 1.1rem;
+            font-weight: bold;
+            margin-bottom: 6px;
+        }
+
+        .status-desc {
+            font-size: 0.88rem;
+            line-height: 1.45;
+            color: var(--text-muted);
+        }
+
+        .perm-badge {
+            margin-top: 10px;
+            padding: 6px 12px;
+            background: rgba(56, 189, 248, 0.1);
+            border: 1px solid var(--primary);
+            border-radius: 8px;
+            color: var(--primary);
+            font-size: 0.85rem;
+            font-family: monospace;
+            display: inline-block;
+        }
+
+        /* Modal ablak a kombinatorikai számításokhoz */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.75);
+            backdrop-filter: blur(5px);
+            z-index: 100;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background: var(--panel-bg);
+            border: 1px solid var(--primary);
+            border-radius: 16px;
+            padding: 25px;
+            max-width: 500px;
+            width: 90%;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.8);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 10px;
+        }
+
+        .modal-title {
+            color: var(--primary);
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        .math-card {
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 10px;
+        }
+
+        .math-card h4 {
+            color: var(--secondary);
+            font-size: 0.95rem;
+            margin-bottom: 4px;
+        }
+
+        .math-card p {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .math-card .res {
+            font-family: monospace;
+            color: var(--vector-color);
+            font-weight: bold;
+            font-size: 1.05rem;
+            float: right;
+        }
+
+        .progress-bar-container {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: var(--border);
+            z-index: 10;
+        }
+
+        .progress-bar {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, var(--primary), var(--vector-color), var(--accent));
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div>
+            <div class="quote">„Az ismétlés a tudás anyja, a szorgalom a tudás apja.”</div>
+            <div class="subtitle">Precíz, átfedésmentes animációs modell kombinatorikus elemzéssel</div>
+        </div>
+        
+        <div class="config-panel">
+            <div class="config-item">
+                <label for="theoryCount">Elméletek (n):</label>
+                <input type="number" id="theoryCount" value="4" min="2" max="6" onchange="updateTheoryCount(this.value)">
+            </div>
+            <button class="math-btn" onclick="openMathModal()">🔢 Kombinatorika Számítása</button>
+        </div>
+    </header>
+
+    <main>
+        <div class="status-overlay">
+            <div class="phase-indicator" id="phase-tag">FÁZIS 3 / 5: PERMUTÁCIÓS ÖSSZEFÜGGÉSEK</div>
+            <div class="status-title" id="status-title">3. Összefüggések Tetszőleges Sorrendben</div>
+            <div class="status-desc" id="status-desc">Most tegyünk összefüggéseket az elemek közé! A kapcsolatok bármilyen sorrendben keletkezhetnek (Permutációk szimulációja).</div>
+            <div class="perm-badge" id="perm-badge">Elemet száma (n=4) | Összes permutáció (n!): 24</div>
+        </div>
+
+        <canvas id="simCanvas" width="1528" height="676"></canvas>
+
+        <div class="progress-bar-container">
+            <div class="progress-bar" id="progressBar" style="width: 49.3739%;"></div>
+        </div>
+    </main>
+
+    <!-- Kombinatorika Modal -->
+    <div class="modal" id="mathModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title">Kombinatorikai Lehetőségek Száma</div>
+                <button class="close-btn" onclick="closeMathModal()">×</button>
+            </div>
+            <div id="modal-math-body">
+                <!-- Dinamikusan töltődik fel -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('simCanvas');
+        const ctx = canvas.getContext('2d');
+        const progressBar = document.getElementById('progressBar');
+
+        let numTheories = 4;
+        const TOTAL_DURATION = 28000; // 28s ciklus
+        let startTime = null;
+
+        function updateTheoryCount(val) {
+            numTheories = Math.max(2, Math.min(6, parseInt(val) || 4));
+            startTime = null;
+        }
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight - document.querySelector('header').offsetHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        function factorial(n) {
+            return n <= 1 ? 1 : n * factorial(n - 1);
+        }
+
+        function variations(n, k) {
+            return factorial(n) / factorial(n - k);
+        }
+
+        function combinations(n, k) {
+            return factorial(n) / (factorial(k) * factorial(n - k));
+        }
+
+        const phases = [
+            {
+                start: 0,
+                end: 0.18,
+                tag: "FÁZIS 1 / 5: KÜLÖNÁLLÓ ELEMEK",
+                title: "1. Diszkrét Elméletek",
+                desc: "Az elemek egy-egy különálló komponensként jelennek meg a felső sorban."
+            },
+            {
+                start: 0.18,
+                end: 0.40,
+                tag: "FÁZIS 2 / 5: VEKTORELEMEK (ÖSSZEFÜGGÉS NÉLKÜL)",
+                title: "2. Új Sor: Vektorelemek",
+                desc: "Lefut egy új sor, amely bemutatja, hogy ezekből különálló vektorelemek lesznek – MÉG ÖSSZEFÜGGÉS NÉLKÜL."
+            },
+            {
+                start: 0.40,
+                end: 0.65,
+                tag: "FÁZIS 3 / 5: PERMUTÁCIÓS ÖSSZEFÜGGÉSEK",
+                title: "3. Összefüggések Tetszőleges Sorrendben",
+                desc: "Most tegyünk összefüggéseket az elemek közé! A kapcsolatok bármilyen sorrendben keletkezhetnek (Permutációk szimulációja)."
+            },
+            {
+                start: 0.65,
+                end: 0.85,
+                tag: "FÁZIS 4 / 5: DEKOMPOZÍCIÓ",
+                title: "4. Lecsüngő Sorok (Alfeladatok)",
+                desc: "A komponensek alfeladatokra bontódnak, és függőlegesen lecsüngő sorokat képeznek jól elkülönülve."
+            },
+            {
+                start: 0.85,
+                end: 1.0,
+                tag: "FÁZIS 5 / 5: SZÁRÍTÓKÖTÉL METAFAORA",
+                title: "5. Relációs Szárítókötél",
+                desc: "A teljes hálózat a folytonos idővonalra (szárítókötélre) kerül, bemutatva a kombinatorikus kapcsolódásokat."
+            }
+        ];
+
+        function drawSquare(x, y, size, label, isVector = false, isSub = false, opacity = 1) {
+            ctx.save();
+            ctx.globalAlpha = opacity;
+            
+            if (isVector) {
+                ctx.fillStyle = 'rgba(52, 211, 153, 0.18)';
+                ctx.strokeStyle = '#34d399';
+            } else if (isSub) {
+                ctx.fillStyle = 'rgba(129, 140, 248, 0.18)';
+                ctx.strokeStyle = '#818cf8';
+            } else {
+                ctx.fillStyle = 'rgba(56, 189, 248, 0.18)';
+                ctx.strokeStyle = '#38bdf8';
+            }
+            
+            ctx.lineWidth = isSub ? 1.5 : 2.5;
+
+            ctx.beginPath();
+            ctx.roundRect(x - size/2, y - size/2, size, size, isSub ? 4 : 8);
+            ctx.fill();
+            ctx.stroke();
+
+            ctx.fillStyle = isVector ? '#a7f3d0' : (isSub ? '#c7d2fe' : '#f8fafc');
+            ctx.font = isSub ? '10px monospace' : (isVector ? 'bold 11px monospace' : 'bold 12px sans-serif');
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText(label, x, y);
+            ctx.restore();
+        }
+
+        function drawAnimatedLine(p1, p2, progress, color = '#38bdf8', dashed = false) {
+            if (progress <= 0) return;
+            ctx.save();
+            ctx.strokeStyle = color;
+            ctx.lineWidth = 2;
+            if (dashed) ctx.setLineDash([4, 4]);
+
+            const curX = p1.x + (p2.x - p1.x) * Math.min(1, progress);
+            const curY = p1.y + (p2.y - p1.y) * Math.min(1, progress);
+
+            ctx.beginPath();
+            ctx.moveTo(p1.x, p1.y);
+            ctx.lineTo(curX, curY);
+            ctx.stroke();
+            ctx.restore();
+        }
+
+        function render(timestamp) {
+            if (!startTime) startTime = timestamp;
+            let elapsed = timestamp - startTime;
+            let globalProgress = (elapsed % TOTAL_DURATION) / TOTAL_DURATION;
+
+            progressBar.style.width = (globalProgress * 100) + '%';
+
+            // Képernyő méretein alapuló dinamikus pozícionálás (ÁTFEDÉSEK ELKERÜLÉSE)
+            const width = canvas.width;
+            const height = canvas.height;
+            const padding = width / (numTheories + 1);
+
+            const squareSize = Math.min(60, padding * 0.55);
+            const subSquareSize = Math.min(28, squareSize * 0.5);
+
+            // Sorközök úgy beállítva, hogy kényelmesen elférjenek
+            const row1Y = height * 0.18; 
+            const row2Y = height * 0.36; 
+
+            // Fázis kiírás frissítése
+            const currentPhase = phases.find(p => globalProgress >= p.start && globalProgress <= p.end) || phases[4];
+            document.getElementById('phase-tag').innerText = currentPhase.tag;
+            document.getElementById('status-title').innerText = currentPhase.title;
+            document.getElementById('status-desc').innerText = currentPhase.desc;
+            
+            const nFact = factorial(numTheories);
+            document.getElementById('perm-badge').innerText = `Elemet száma (n=${numTheories}) | Összes permutáció (n!): ${nFact}`;
+
+            ctx.clearRect(0, 0, width, height);
+
+            const theoryPositions = [];
+            for (let i = 0; i < numTheories; i++) {
+                theoryPositions.push({ x: padding * (i + 1), y: row1Y });
+            }
+
+            // --- FÁZIS 1: Független Elmélet Komponensek ---
+            theoryPositions.forEach((pos, i) => {
+                const appear = Math.min(1, Math.max(0, (globalProgress - (i * 0.02)) / 0.08));
+                if (appear > 0) {
+                    drawSquare(pos.x, pos.y, squareSize, `Elmélet ${i+1}`, false, false, appear);
+                }
+            });
+
+            // --- FÁZIS 2: Új Sor Képzése - Vektorelemek ÖSSZEFÜGGÉS NÉLKÜL ---
+            if (globalProgress > 0.18) {
+                const copyProgress = (globalProgress - 0.18) / 0.22;
+
+                // Független Vektor Sor Kerete
+                ctx.save();
+                ctx.strokeStyle = 'rgba(52, 211, 153, 0.4)';
+                ctx.lineWidth = 1.5;
+                ctx.setLineDash([6, 6]);
+                ctx.strokeRect(padding * 0.4, row2Y - squareSize * 0.7, width - padding * 0.8, squareSize * 1.4);
+                
+                ctx.fillStyle = '#34d399';
+                ctx.font = '11px monospace';
+                ctx.fillText('FÜGGETLEN VEKTORELEMEK SORA (MÉG ÖSSZEFÜGGÉS NÉLKÜL)', padding * 0.4 + 10, row2Y - squareSize * 0.7 - 6);
+                ctx.restore();
+
+                theoryPositions.forEach((pos, i) => {
+                    const itemProgress = Math.min(1, Math.max(0, (copyProgress * 2) - (i * 0.15)));
+                    if (itemProgress > 0) {
+                        const currentY = pos.y + (row2Y - pos.y) * itemProgress;
+                        
+                        // Pontozott függőleges átviteli nyíl
+                        drawAnimatedLine({ x: pos.x, y: pos.y + squareSize/2 }, { x: pos.x, y: currentY - squareSize/2 }, 1, 'rgba(52, 211, 153, 0.3)', true);
+                        
+                        // Önálló Vektorelem
+                        drawSquare(pos.x, currentY, squareSize, `V[${i+1}]`, true, false, itemProgress);
+                    }
+                });
+            }
+
+            // --- FÁZIS 3: Permutációs Összefüggések Keletkezése ---
+            if (globalProgress > 0.40) {
+                const permProgress = (globalProgress - 0.40) / 0.25;
+
+                // Animált kapcsolatok tetszőleges sorrendben (Permutációs szimuláció)
+                // Nem lineárisan, hanem változatos sorrendű ívekkel kötjük össze
+                const permSequence = [];
+                for (let i = 0; i < numTheories - 1; i++) {
+                    permSequence.push({ from: i, to: (i + 2) % numTheories });
+                }
+
+                permSequence.forEach((link, idx) => {
+                    const p = Math.min(1, Math.max(0, permProgress * 2.5 - idx * 0.3));
+                    if (p > 0) {
+                        const p1 = { x: theoryPositions[link.from].x, y: row2Y + squareSize/2 };
+                        const p2 = { x: theoryPositions[link.to].x, y: row2Y + squareSize/2 };
+                        
+                        ctx.save();
+                        ctx.strokeStyle = '#f43f5e';
+                        ctx.lineWidth = 2;
+                        ctx.setLineDash([3, 3]);
+
+                        ctx.beginPath();
+                        ctx.moveTo(p1.x, p1.y);
+                        const controlY = row2Y + squareSize + 25 + (idx * 15); // Nincs átfedés
+                        const curX = p1.x + (p2.x - p1.x) * p;
+                        const curY = p1.y + (p2.y - p1.y) * p;
+
+                        ctx.quadraticCurveTo((p1.x + p2.x)/2, controlY, curX, curY);
+                        ctx.stroke();
+                        ctx.restore();
+                    }
+                });
+            }
+
+            // --- FÁZIS 4: Lecsüngő Sorok (Alfeladatok Átfedésmentesen) ---
+            if (globalProgress > 0.65) {
+                const subProgress = (globalProgress - 0.65) / 0.20;
+
+                theoryPositions.forEach((pos, i) => {
+                    const subCount = 3;
+                    const gap = 10;
+                    const startY = row2Y + squareSize + 35; // Biztonsági távolság az ívektől
+
+                    for (let j = 0; j < subCount; j++) {
+                        const targetY = startY + j * (subSquareSize + gap);
+                        const itemProgress = Math.min(1, Math.max(0, subProgress * 3 - (j * 0.25)));
+
+                        if (itemProgress > 0) {
+                            const lineStart = j === 0 ? { x: pos.x, y: row2Y + squareSize/2 } : { x: pos.x, y: targetY - subSquareSize - gap/2 };
+                            const lineEnd = { x: pos.x, y: targetY - subSquareSize/2 };
+
+                            drawAnimatedLine(lineStart, lineEnd, 1, '#818cf8', true);
+                            drawSquare(pos.x, targetY, subSquareSize, `e${i+1}.${j+1}`, false, true, itemProgress);
+                        }
+                    }
+                });
+            }
+
+            // --- FÁZIS 5: Szárítókötél Metafora ---
+            if (globalProgress > 0.85) {
+                const ropeY = row1Y - squareSize/2 - 25;
+                ctx.save();
+                ctx.strokeStyle = '#fbbf24';
+                ctx.lineWidth = 3;
+                ctx.beginPath();
+                ctx.moveTo(20, ropeY);
+                ctx.quadraticCurveTo(width / 2, ropeY + 20, width - 20, ropeY);
+                ctx.stroke();
+
+                ctx.fillStyle = '#fbbf24';
+                ctx.font = '11px sans-serif';
+                ctx.textAlign = 'center';
+                ctx.fillText('SZÁRÍTÓKÖTÉL (FOLYTONOS IDŐVONAL MEGHATÁROZÁS)', width / 2, ropeY - 8);
+
+                theoryPositions.forEach(pos => {
+                    ctx.fillStyle = '#f43f5e';
+                    ctx.fillRect(pos.x - 3, ropeY + 4, 6, 12);
+                    drawAnimatedLine({ x: pos.x, y: ropeY + 16 }, { x: pos.x, y: pos.y - squareSize/2 }, 1, '#fbbf24');
+                });
+                ctx.restore();
+            }
+
+            requestAnimationFrame(render);
+        }
+
+        // Modal kezelő függvények
+        function openMathModal() {
+            const n = numTheories;
+            const k = Math.min(3, n);
+
+            const html = `
+                <div class="math-card">
+                    <span class="res">${factorial(n)}</span>
+                    <h4>Permutáció (P_n = n!)</h4>
+                    <p>Az n=${n} elem összes lehetséges sorrendjének száma, ahol minden elem szerepel.</p>
+                </div>
+                <div class="math-card">
+                    <span class="res">${variations(n, k)}</span>
+                    <h4>Variáció (V_${n}^${k} = n! / (n-k)!)</h4>
+                    <p>${n} elemből ${k} elem kiválasztása és sorrendbe állítása (a sorrend számít).</p>
+                </div>
+                <div class="math-card">
+                    <span class="res">${combinations(n, k)}</span>
+                    <h4>Kombináció (C_${n}^${k} = n! / (k!(n-k)!))</h4>
+                    <p>${n} elemből ${k} elem kiválasztása sorrendtől függetlenül.</p>
+                </div>
+            `;
+
+            document.getElementById('modal-math-body').innerHTML = html;
+            document.getElementById('mathModal').style.display = 'flex';
+        }
+
+        function closeMathModal() {
+            document.getElementById('mathModal').style.display = 'none';
+        }
+
+        requestAnimationFrame(render);
+    </script>
+
+</body></html>
