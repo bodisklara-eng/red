@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Anna – Elé / Után beszúrás</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;600&family=Patrick+Hand&display=swap');
+:root{--green:#1a3d2e;--amber:#ffbe76;--line:#c8a86a}
+*{box-sizing:border-box}body{margin:0;background:#f6f4ef;font-family:Outfit,sans-serif}
+.hand{font-family:'Patrick Hand',cursive}
+header{background:var(--green);color:#fef9e8;padding:18px;text-align:center}
+.wrap{max-width:1160px;margin:0 auto;padding:16px}
+.scene{background:linear-gradient(#dff0e4,#fef9e8);border:2px solid var(--green);border-radius:20px;padding:16px;position:relative}
+.trees{display:flex;justify-content:space-between;font-size:68px}
+.rope{position:absolute;left:6%;right:6%;height:3px;background:var(--line);z-index:1;border-radius:2px}
+.rope.r1{top:54%} .rope.r2{top:60%}
+.slots{display:grid;grid-template-columns:repeat(20,1fr);gap:5px;margin-top:34px;position:relative;z-index:2}
+@media(max-width:900px){.slots{grid-template-columns:repeat(10,1fr)}}
+.slot{background:rgba(255,255,255,.7);border:1.6px dashed #bbb;border-radius:12px;aspect-ratio:.75/1.1;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;transition:.25s;position:relative}
+.slot.filled{background:white;border-style:solid;border-color:var(--green);box-shadow:0 4px 12px rgba(0,0,0,.13)}
+.slot.selected{outline:3px solid var(--amber);outline-offset:2px;transform:translateY(-5px) scale(1.04);z-index:5}
+.slot.before::before{content:'◀ ELÉ';position:absolute;top:-18px;left:50%;transform:translateX(-50%);font-size:9px;font-weight:800;background:var(--amber);padding:2px 6px;border-radius:999px;white-space:nowrap}
+.slot.after::after{content:'UTÁN ▶';position:absolute;top:-18px;left:50%;transform:translateX(-50%);font-size:9px;font-weight:800;background:#7ad3ff;padding:2px 6px;border-radius:999px;white-space:nowrap}
+.slot.shift{animation:sh .35s ease}
+@keyframes sh{0%{transform:translateX(0)}35%{transform:translateX(22px)}100%{transform:translateX(0)}}
+.controls{display:grid;grid-template-columns:1.1fr .9fr;gap:14px;margin-top:16px}
+@media(max-width:850px){.controls{grid-template-columns:1fr}}
+.panel{background:white;border:1px solid #e5e5e5;border-radius:16px;padding:14px}
+.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:8px 0}
+input[type=number]{width:86px;padding:8px 10px;border:1px solid #ddd;border-radius:10px;font-weight:700}
+select{padding:8px 10px;border:1px solid #ddd;border-radius:10px;font-weight:600}
+button{border:0;padding:9px 13px;border-radius:999px;font-weight:700;cursor:pointer}
+.btn-p{background:var(--green);color:#fef9e8} .btn-a{background:var(--amber)} .btn-b{background:#7ad3ff} .btn-g{background:#f1f1f1;border:1px solid #ddd} .btn-r{background:#ff7a7a;color:white}
+.badge{font-size:10px;padding:2px 8px;border-radius:999px;background:#e8f5e9;border:1px solid #c8e6c9;font-weight:700}
+.log{height:260px;overflow:auto;background:#0f2018;color:#d6f5d6;font-family:monospace;font-size:11px;padding:10px;border-radius:12px}
+.cases{display:grid;gap:8px}
+.case{border:1px solid #eee;border-radius:12px;padding:10px;background:#fff} .case.active{border-color:var(--green);box-shadow:0 0 0 2px #1a3d2e15}
+#anna{position:absolute;right:14px;top:12px;background:white;border:1px solid #ddd;border-radius:12px;padding:6px 10px;font-size:12px;display:flex;gap:6px;align-items:center}
+</style>
+</head>
+<body>
+<header><h1 class="hand" style="margin:0">👩‍🌾 Anna: „Elé vagy mögé tegyem?” – kibővített beszúrás</h1><p style="margin:6px 0 0;opacity:.85">Kattints egy ruhára, majd válaszd: Elé / Pontosan ide / Után. Így működik a valóságban is a teregetés.</p></header>
+<div class="wrap">
+<div class="scene">
+<div id="anna">👩 Anna → <span id="annaMsg">válassz helyet</span></div>
+<div class="trees"><span>🌳</span><span>🌳</span></div>
+<div class="rope r1"></div><div class="rope r2"></div>
+<div class="slots" id="slots"></div>
+<div style="margin-top:10px;font-size:12px;display:flex;gap:14px;flex-wrap:wrap"><span>Foglalt: <b id="occ"></b></span><span>Kiválasztott: <b id="sel">-</b></span><span>Mód: <b id="modeLbl">ELÉ</b></span></div>
+</div>
+
+<div class="controls">
+<div class="panel">
+<h3>🧺 Beszúrás – elé / után</h3>
+<div class="row">
+<label>Index:</label><input id="inIdx" type="number" min="0" max="19" value="5">
+<label>Pozíció:</label>
+<select id="posMode">
+<option value="before">⬅️ ELÉ (before)</option>
+<option value="exact" selected>📍 PONTOSAN IDE (replace/insert)</option>
+<option value="after">UTÁN ➡️ (after)</option>
+</select>
+</div>
+<div class="row">
+<label>Darab:</label><input id="inCnt" type="number" min="1" max="10" value="1">
+<button class="btn-p" onclick="doInsert()">Beszúrás Anna módjára</button>
+</div>
+<div class="row">
+<button class="btn-a" onclick="setMode('before')">◀ Elé</button>
+<button class="btn-g" onclick="setMode('exact')">📍 Pontosan ide</button>
+<button class="btn-b" onclick="setMode('after')">Után ▶</button>
+</div>
+<div class="row" style="font-size:11px;color:#666">Tipp: Kattints egy kék nadrágra és nyomd „ELÉ” – a nadrág és minden utána jobbra tolódik. „UTÁN” esetén a nadrág marad, utána tolódik minden.</div>
+<div class="row" style="margin-top:10px">
+<button class="btn-g" onclick="insertExample()">Példa: 2 ruha a [5] ELÉ</button>
+<button class="btn-g" onclick="insertExampleAfter()">Példa: 2 ruha a [5] UTÁN</button>
+</div>
+</div>
+
+<div class="panel">
+<h3>👋 Levétel + egyéb</h3>
+<div class="row"><input id="outIdx" type="number" min="0" max="19" value="2"><input id="outCnt" type="number" min="1" max="10" value="1"><button class="btn-r" onclick="removeAtInput()">Levenni</button><button class="btn-g" onclick="compress()">📦 Tömörít</button><button class="btn-g" onclick="undo()">↩️ Undo</button><button class="btn-g" onclick="reset()">🔄 Reset</button></div>
+<div class="row"><button class="btn-g" onclick="demo()">🎬 Demo: bal tele, jobb üres – Anna 1 elé + 1 után</button></div>
+<pre id="code" style="font-size:11px;background:#fafaf7;border:1px solid #eee;border-radius:10px;padding:10px;margin-top:10px;overflow:auto;max-height:180px"></pre>
+</div>
+</div>
+
+<div class="controls" style="margin-top:14px">
+<div class="panel"><h3>📖 Esetek – elé / után logika</h3><div class="cases" id="cases"></div></div>
+<div class="panel"><div style="display:flex;justify-content:space-between"><b class="hand">Napló</b><button class="btn-g" style="padding:4px 8px;font-size:11px" onclick="logEl.innerHTML=''">törlés</button></div><div class="log" id="log"></div></div>
+</div>
+</div>
+
+<script>
+const N=20; const icons={polo:'👕',nadrag:'👖',torolkozo:'🧣',zokni:'🧦',ruha:'👗'};
+let rope=Array(N).fill(null); let history=[]; let sel=5; let mode='exact'; let idC=1;
+const slotsEl=document.getElementById('slots'); const logEl=document.getElementById('log');
+function randCloth(){ const ks=Object.keys(icons); const t=ks[Math.floor(Math.random()*ks.length)]; return {id:idC++,type:t,icon:icons[t],color:`hsl(${180+Math.random()*60},60%,88%)`};}
+function snap(){ history.push(JSON.parse(JSON.stringify(rope))); if(history.length>40) history.shift();}
+function log(m){ const t=new Date().toLocaleTimeString('hu-HU'); logEl.innerHTML=`<div><span style="color:#8bbd8b">${t}</span> ${m}</div>`+logEl.innerHTML; const mm=m.match(/ESET ([\dA-Z]+)/); if(mm) hl(mm[1]);}
+function hl(n){ document.querySelectorAll('.case').forEach(c=>c.classList.remove('active')); const el=document.getElementById('case-'+n); if(el) el.classList.add('active');}
+function sleep(ms){return new Promise(r=>setTimeout(r,ms));}
+function findEmptyRight(from){ for(let j=from;j<N;j++) if(!rope[j]) return j; return -1; }
+function render(){
+  slotsEl.innerHTML='';
+  rope.forEach((c,i)=>{
+    const d=document.createElement('div'); d.className='slot '+(c?'filled':'')+(i===sel?' selected':''); 
+    if(i===sel){ if(mode==='before') d.classList.add('before'); if(mode==='after') d.classList.add('after'); }
+    d.onclick=()=>{ sel=i; document.getElementById('inIdx').value=i; document.getElementById('outIdx').value=i; document.getElementById('sel').textContent=i; document.getElementById('annaMsg').textContent=`[${i}] ${mode==='before'?'elé':mode==='after'?'után':'ide'}`; render(); };
+    d.innerHTML=c?`<span style="font-size:20px">${c.icon}</span><span style="font-size:9px;font-weight:700">${i}</span>`:`<span style="font-size:10px;color:#aaa">${i}:üres</span>`;
+    if(c) d.style.background=c.color;
+    slotsEl.appendChild(d);
+  });
+  document.getElementById('occ').textContent=`${rope.filter(Boolean).length}/${N}`;
+  document.getElementById('sel').textContent=sel;
+}
+function setMode(m){ mode=m; document.getElementById('posMode').value=m; document.getElementById('modeLbl').textContent=m.toUpperCase(); document.getElementById('annaMsg').textContent=`[${sel}] ${m==='before'?'elé':m==='after'?'után':'ide'}`; render(); }
+document.getElementById('posMode').addEventListener('change', e=>setMode(e.target.value));
+
+async function insertWithMode(baseIdx, posMode, count){
+  for(let it=0; it<count; it++){
+    if(rope.every(Boolean)){ log('ESET 4 – Teli, overflow'); break; }
+    snap(); const item=randCloth();
+    let target;
+    if(posMode==='before') target=baseIdx; // elé: ide szúrunk, ami itt volt jobbra megy
+    else if(posMode==='after') target=baseIdx+1+it; // után: eggyel arrébb, és ha több ruha, láncban utánuk
+    else target=baseIdx; // exact
+
+    if(target>=N){ log('ESET 4 – target >= N, nem fér el'); break; }
+
+    if(target<0) target=0;
+
+    if(!rope[target]){
+      rope[target]=item;
+      log(`ESET 3 / ESET ${posMode==='before'?'1A':posMode==='after'?'1B':'3'} – [${target}] üres volt → ${item.icon} ${posMode} beszúrás O(1)`);
+      render(); await sleep(180);
+    } else {
+      const empty=findEmptyRight(target);
+      if(empty===-1){ log(`ESET 4 – [${target}]-től jobbra nincs üres`); break; }
+      if(posMode==='before') log(`ESET 1A – ELÉ beszúrás: [${baseIdx}] ELÉ → [${target}] foglalt, ${empty-target} elem jobbra tol`);
+      else if(posMode==='after') log(`ESET 1B – UTÁN beszúrás: [${baseIdx}] UTÁN → [${target}] foglalt, ${empty-target} elem jobbra tol`);
+      else log(`ESET 1 – PONTOSAN IDE [${target}] foglalt → ${empty-target} tolás`);
+      for(let k=empty;k>target;k--){ rope[k]=rope[k-1]; render(); const el=slotsEl.children[k-1]; if(el){ el.classList.add('shift'); setTimeout(()=>el.classList.remove('shift'),350);} await sleep(110); }
+      rope[target]=item;
+      log(`✓ [${target}] ← ${item.icon} behelyezve`);
+      render(); await sleep(200);
+    }
+    if(posMode==='before'){
+      // következő ruha ugyanoda elé kerül, így fordított sorrend elkerülésére növeljük? valóságban ha 2 ruhát teszel elé, első elé, második még elé → balra bővül
+      // itt hagyjuk target-et, hogy egymás elé kerüljenek
+    } else if(posMode==='after'){
+      // már léptettük target+it miatt, nem kell
+    }
+  }
+}
+
+function doInsert(){
+  const idx=parseInt(document.getElementById('inIdx').value)||0;
+  const cnt=parseInt(document.getElementById('inCnt').value)||1;
+  const pm=document.getElementById('posMode').value;
+  sel=idx; render();
+  insertWithMode(idx, pm, cnt);
+}
+function insertExample(){ setMode('before'); insertWithMode(5,'before',2); }
+function insertExampleAfter(){ setMode('after'); insertWithMode(5,'after',2); }
+
+function removeAtInput(){ const idx=parseInt(document.getElementById('outIdx').value)||0; const cnt=parseInt(document.getElementById('outCnt').value)||1; snap(); for(let i=0;i<cnt;i++){ const at=idx+i; if(at<N && rope[at]){ const c=rope[at]; rope[at]=null; log(`ESET 5 – Levétel [${at}] ${c.icon} → lyuk`);} } render(); }
+function compress(){ snap(); const packed=rope.filter(Boolean); rope=[...packed,...Array(N-packed.length).fill(null)]; log(`ESET 8 – Tömörítés ${packed.length} balra`); render(); }
+function undo(){ if(!history.length){log('Nincs undo');return;} rope=history.pop(); log('↩️ Undo'); render(); }
+function reset(){ rope=Array(N).fill(null); [0,1,2,3,4,5,6,8,9,10].forEach(p=>rope[p]=randCloth()); history=[]; log('🔄 Reset – bal tele, jobb üres'); render(); }
+async function demo(){
+  reset(); await sleep(400);
+  setMode('before'); log('🎬 Demo: 1 ruha a [5] ELÉ'); await insertWithMode(5,'before',1); await sleep(500);
+  setMode('after'); log('🎬 Demo: 1 ruha a [5] UTÁN'); await insertWithMode(5,'after',1);
+}
+
+function renderCases(){
+  const cs=[
+    {id:'1A',t:'ELÉ beszúrás (before)',d:'target = index. Ha foglalt, target-től jobbra tolunk. Pl. Anna: „a nadrág ELÉ tedd”. A nadrág és minden utána jobbra csúszik.',b:'O(k) – k=empty-target'},
+    {id:'1B',t:'UTÁN beszúrás (after)',d:'target = index+1. Ha foglalt, onnan tolunk. „a nadrág UTÁN tedd” – a nadrág marad, utána lévő tolódik.',b:'O(k)'},
+    {id:'1',t:'PONTOSAN IDE',d:'Klasszikus insert – felülírja a pozíciót tolásal.',b:'O(k)'},
+    {id:'3',t:'Üresre beszúrás elé/után',d:'Ha a kiszámolt target üres, nincs tolás – O(1).',b:'O(1)'},
+    {id:'4',t:'Overflow elé/után',d:'Ha nincs üres jobbra a target-től, nem fér el – Anna leejti a kosarat.',b:'ERROR'},
+    {id:'5',t:'Levételek',d:'Lyuk marad – később elé/után beszúrás kitöltheti.',b:'O(m)'},
+  ];
+  document.getElementById('cases').innerHTML=cs.map(c=>`<div class="case" id="case-${c.id}"><b>ESET ${c.id}</b> <span class="badge">${c.b}</span><div style="font-weight:700;margin:2px 0">${c.t}</div><div style="font-size:12px;color:#555">${c.d}</div></div>`).join('');
+}
+document.getElementById('code').textContent=`# Kibővített logika – elé / után
+def insert_at(rope, base_idx, position, count, items):
+    # position: 'before' | 'exact' | 'after'
+    for it in range(count):
+        if all(rope): raise OverflowError('ESET4')
+        if position == 'before':
+            target = base_idx  # elé
+        elif position == 'after':
+            target = base_idx + 1 + it  # után, láncban
+        else:
+            target = base_idx
+
+        if rope[target] is None:
+            rope[target]=items[it] # ESET3
+        else:
+            empty = next((j for j in range(target,len(rope)) if rope[j] is None), -1)
+            if empty==-1: raise OverflowError()
+            for k in range(empty, target, -1):
+                rope[k]=rope[k-1]  # ESET1A / 1B jobbra tolás
+            rope[target]=items[it]
+
+# Példa:
+# insert_at(rope, 5, 'before', 2, [ruha1, ruha2])
+# -> [5] elé 2 ruha, a régi [5] és utána 2-vel jobbra tolódik
+# insert_at(rope, 5, 'after', 2, [ruha1, ruha2])
+# -> [5] után 2 ruha, [5] marad, [6],[7] új, régi [6].. jobbra tolódik
+`;
+renderCases(); reset();
+</script>
+</body>
+</html>
