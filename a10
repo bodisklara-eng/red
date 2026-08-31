@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<!-- saved from url=(0068)file:///C:/Users/Utilizator/Downloads/gemini-code-1787821893409.html -->
+<html lang="hu"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Informatikai és Algoritmus Oktató Platformok</title>
+    <style>
+        :root {
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --primary-color: #7e22ce;
+            --secondary-color: #0284c7;
+            --text-color: #1e293b;
+            --text-muted: #64748b;
+            --border-color: #cbd5e1;
+            --success-color: #16a34a;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 24px;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        header h1 {
+            color: var(--primary-color);
+            font-size: 1.8rem;
+            margin-bottom: 8px;
+        }
+
+        header p {
+            color: var(--text-muted);
+            font-size: 1rem;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.08);
+        }
+
+        .card-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: var(--secondary-color);
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .badge {
+            background-color: #dcfce7;
+            color: var(--success-color);
+            font-size: 0.75rem;
+            padding: 4px 8px;
+            border-radius: 20px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .card p {
+            font-size: 0.95rem;
+            margin-bottom: 12px;
+        }
+
+        .btn-link {
+            display: inline-block;
+            background-color: var(--primary-color);
+            color: white;
+            text-decoration: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            font-weight: bold;
+            transition: background-color 0.2s;
+        }
+
+        .btn-link:hover {
+            background-color: #6b21a8;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>Egydimenziós Tömbök és Algoritmusok</h1>
+        <p>Ingyenes, interaktív vizuális és kódolási platformok gyűjteménye</p>
+    </header>
+
+    <!-- 1. VisuAlgo -->
+    <div class="card">
+        <div class="card-title">
+            <span>VisuAlgo</span>
+            <span class="badge">Teljesen Ingyenes</span>
+        </div>
+        <p>A Szingapúri Nemzeti Egyetem által fejlesztett platform az egydimenziós tömbök, rendezési és keresési tételek vizualizálására. Lépésről lépésre, animált formában mutatja meg, hogyan változnak az értékek a memóriában.</p>
+        <a href="https://visualgo.net/" target="_blank" class="btn-link">Megnyitás: VisuAlgo ↗</a>
+    </div>
+
+    <!-- 2. js-parsons -->
+    <div class="card">
+        <div class="card-title">
+            <span>js-parsons (Parsons Puzzle)</span>
+            <span class="badge">Nyílt Forráskódú / Ingyenes</span>
+        </div>
+        <p>Interaktív kódkirakó motor, amely nemcsak a sorrendet, hanem a Python esetében kritikus behúzásokat is vizsgálja. Kiváló eszköz iterációs és tömbkezelési algoritmusok gyakorlására.</p>
+        <a href="https://js-parsons.github.io/" target="_blank" class="btn-link">Megnyitás: js-parsons ↗</a>
+    </div>
+
+    <!-- 3. Saját AI Generátor -->
+    <div class="card">
+        <div class="card-title">
+            <span>AI Alapú Egyedi Generátor</span>
+            <span class="badge">Helyi / Ingyenes</span>
+        </div>
+        <p>A korábban létrehozott, böngészőben futtatható egyfájlos alkalmazás (HTML/JS), amely fázisokra bontva, animált segítséggel tanítja az egydimenziós tömbök tételeit külső függőségek nélkül.</p>
+        <span style="font-size: 0.85rem; color: var(--text-muted); font-style: italic;">Helyi fájlként korlátlanul használható.</span>
+    </div>
+
+    <footer>
+        <p>Összeállítva az interaktív programozás-oktatási módszertanok alapján.</p>
+    </footer>
+</div>
+
+
+</body></html>
