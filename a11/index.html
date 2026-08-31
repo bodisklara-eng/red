@@ -1,0 +1,920 @@
+<!DOCTYPE html>
+<!-- saved from url=(0068)file:///C:/Users/Utilizator/Downloads/gemini-code-1787817836900.html -->
+<html lang="hu"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Python Algoritmus Gyakorló – Pro + Animált Segédek</title>
+    <style>
+        :root {
+            --bg-color: #f1f5f9;
+            --card-bg: #ffffff;
+            --accent-color: #9333ea;
+            --accent-hover: #7e22ce;
+            --text-color: #0f172a;
+            --border-color: #cbd5e1;
+            --success-color: #16a34a;
+            --error-color: #dc2626;
+        }
+
+        * { box-sizing: border-box; touch-action: manipulation; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: var(--bg-color); color: var(--text-color); margin: 0; padding: 12px; }
+        .container { max-width: 680px; margin: 0 auto; }
+
+        .dashboard {
+            background: linear-gradient(135deg, #7e22ce, #3b82f6);
+            color: white;
+            padding: 16px;
+            border-radius: 12px;
+            margin-bottom: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+        }
+        .stat-box { text-align: center; }
+        .stat-value { font-size: 1.4rem; font-weight: bold; }
+        .stat-label { font-size: 0.75rem; opacity: 0.9; text-transform: uppercase; }
+
+        .control-panel {
+            background: #ffffff;
+            border: 2px solid var(--accent-color);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+        }
+
+        .control-panel label { font-weight: bold; font-size: 0.95rem; }
+        .select-algo { padding: 10px; font-size: 1rem; border-radius: 8px; border: 1px solid var(--border-color); background: #f8fafc; font-weight: bold; }
+        
+        .btn-row { display: flex; gap: 8px; flex-wrap: wrap; }
+        .btn-refresh {
+            flex: 1;
+            background-color: #0284c7;
+            color: white;
+            border: none;
+            padding: 12px 15px;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .btn-word-help {
+            flex: 1;
+            background-color: #0d9488;
+            color: white;
+            border: none;
+            padding: 12px 15px;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .section-card { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 12px; padding: 16px; margin-bottom: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+        .section-title { font-size: 1.05rem; font-weight: bold; padding-bottom: 8px; margin-bottom: 12px; border-bottom: 2px solid var(--accent-color); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; }
+        
+        .code-display { background: #1e1e2e; color: #cdd6f4; padding: 12px; border-radius: 8px; font-family: 'Courier New', Courier, monospace; font-size: 0.9rem; line-height: 1.6; margin: 10px 0; overflow-x: auto; }
+        .blank-select { background: #313244; color: #f9e2af; border: 1px dashed #f9e2af; border-radius: 4px; padding: 4px; font-family: inherit; font-weight: bold; }
+
+        .btn { width: 100%; background-color: var(--accent-color); color: white; border: none; padding: 12px; border-radius: 8px; font-weight: 600; font-size: 0.95rem; cursor: pointer; margin-top: 8px; }
+        .btn-small { background: #0284c7; border: none; color: white; padding: 5px 10px; border-radius: 6px; font-size: 0.8rem; cursor: pointer; font-weight: bold; }
+        .btn-hint { background: #fef08a; border: 1px solid #eab308; color: #854d0e; padding: 4px 10px; border-radius: 6px; font-size: 0.75rem; cursor: pointer; font-weight: bold; }
+        
+        .explanation-box { padding: 12px; border-radius: 8px; font-size: 0.85rem; line-height: 1.4; margin-top: 10px; display: none; }
+        .explanation-box.show-error { display: block !important; background-color: #fef2f2 !important; border: 1px solid #fca5a5 !important; color: #991b1b !important; }
+        .explanation-box.show-success { display: block !important; background-color: #f0fdf4 !important; border: 1px solid #86efac !important; color: #166534 !important; }
+        .explanation-box.show-hint { display: block !important; background-color: #fefce8 !important; border: 1px solid #fde047 !important; color: #713f12 !important; }
+
+        .panel { border: 2px dashed var(--border-color); border-radius: 8px; padding: 10px; background: #f8fafc; min-height: 80px; margin-bottom: 12px; }
+        .panel-title { font-size: 0.8rem; font-weight: bold; color: #64748b; text-transform: uppercase; margin-bottom: 8px; }
+        .code-block { background: #27272a; color: #f4f4f5; padding: 10px; border-radius: 6px; font-family: 'Courier New', Courier, monospace; font-size: 0.85rem; margin-bottom: 8px; display: flex; align-items: center; justify-content: space-between; user-select: none; touch-action: none; cursor: grab; transition: background 0.3s; }
+        .code-block.dragging { opacity: 0.7; z-index: 1000; }
+        
+        .drop-target-area {
+            display: inline-block;
+            min-width: 150px;
+            padding: 6px 12px;
+            border: 2px dashed #f9e2af;
+            border-radius: 6px;
+            background: #313244;
+            color: #f9e2af;
+            vertical-align: middle;
+            text-align: center;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+        .drag-option-card {
+            display: inline-block;
+            background: #3f3f46;
+            color: #f4f4f5;
+            padding: 8px 14px;
+            border-radius: 6px;
+            font-family: monospace;
+            font-size: 0.85rem;
+            margin: 4px;
+            cursor: grab;
+            border: 1px solid #52525b;
+            user-select: none;
+        }
+
+        .indent-controls { display: flex; gap: 4px; margin-left: 8px; flex-shrink: 0; }
+        .indent-btn { background: #3f3f46; color: white; border: none; border-radius: 4px; width: 32px; height: 32px; font-weight: bold; font-size: 1rem; cursor: pointer; }
+        .correct { border: 2px solid var(--success-color) !important; background-color: #15803d !important; color: white; }
+        .incorrect { border: 2px solid var(--error-color) !important; background-color: #b91c1c !important; color: white; }
+        
+        /* Animációs villogó kiemelés */
+        @keyframes pulse-anim {
+            0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(234, 179, 8, 0.7); }
+            50% { transform: scale(1.02); box-shadow: 0 0 0 10px rgba(234, 179, 8, 0); }
+            100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(234, 179, 8, 0); }
+        .animating-highlight { animation: pulse-anim 0.8s ease infinite; border: 2px solid #eab308 !important; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <!-- DASHBOARD -->
+    <div class="dashboard">
+        <div class="stat-box">
+            <div class="stat-value" id="scoreVal">1</div>
+            <div class="stat-label">Sikeres válaszok</div>
+        </div>
+        <div class="stat-box">
+            <div class="stat-value" id="totalVal">5</div>
+            <div class="stat-label">Összes próbálkozás</div>
+        </div>
+        <div class="stat-box">
+            <div class="stat-value" id="rateVal">20%</div>
+            <div class="stat-label">Pontosság</div>
+        </div>
+    </div>
+
+    <!-- VEZÉRLŐPANEL -->
+    <div class="control-panel">
+        <label for="algoSelect">🎯 Válassz Algoritmus Típust:</label>
+        <select id="algoSelect" class="select-algo" onchange="generateAllPhases()">
+            <option value="max">Maximumkeresés</option>
+            <option value="min">Minimumkeresés</option>
+            <option value="sum">Összegzés tétele</option>
+            <option value="count">Megszámlálás tétele</option>
+        </select>
+        <div class="btn-row">
+            <button class="btn-refresh" onclick="generateAllPhases()">🔄 Összes fázis újraindítása</button>
+            <button class="btn-word-help" onclick="openWordHelpWindow()">📖 Segédlet / AI Prompt</button>
+        </div>
+    </div>
+
+    <!-- 1. FÁZIS -->
+    <div class="section-card" id="cardPhase1">
+        <div class="section-title">
+            <span>1. FÁZIS: Műveletsor kiválasztása</span>
+            <div>
+                <button class="btn-small" onclick="generatePhase1Only()">🎲 Új kérdés</button>
+                <button class="btn-hint" onclick="runPhase1AnimationHelp()">💡 Segítség &amp; Animáció</button>
+            </div>
+        </div>
+        
+        <div style="margin-bottom: 12px;">
+            <label style="font-size: 0.85rem; font-weight: bold;">Megoldás módja:</label>
+            <select id="phase1Mode" onchange="renderPhase1()" style="padding: 6px; border-radius: 6px; border: 1px solid var(--border-color); font-size: 0.85rem;">
+                <option value="drag">Húzd a helyére (Drag &amp; Drop / Klikk)</option>
+                <option value="select">Legördülő lista (Select)</option>
+                <option value="input">Begépelés (Input)</option>
+            </select>
+        </div>
+
+        <p style="font-size: 0.9rem;" id="phase1Question">Melyik értékadással frissítjük az új maximumot?</p>
+        <div class="code-display" id="phase1Code">ertekek = [5, 38, 31, 43, 46]<br>max_ert = ertekek[0]<br>for x in ertekek:<br>&nbsp;&nbsp;&nbsp;&nbsp;if x &gt; max_ert:<br>&nbsp;&nbsp;&nbsp;&nbsp;<select id="phase1Select" class="blank-select"><option value="">-- Válassz műveletet --</option><option value="max_ert == x">max_ert == x</option><option value="max_ert = x">max_ert = x</option><option value="x = max_ert">x = max_ert</option></select></div>
+        
+        <div id="phase1DragContainer" style="display: none; margin-top: 10px;">
+            <div style="font-size: 0.8rem; color: #64748b; margin-bottom: 4px;">Kattints a kártyára vagy húzd a helyére:</div>
+            <div id="phase1OptionsPool"><div class="drag-option-card" data-val="m = csucs" draggable="true">m = csucs</div><div class="drag-option-card" data-val="csucs = m" draggable="true">csucs = m</div><div class="drag-option-card" data-val="csucs == m" draggable="true">csucs == m</div></div>
+        </div>
+
+        <button class="btn" onclick="checkPhase1()">1. Fázis Ellenőrzése</button>
+        <div class="explanation-box" id="phase1Exp"></div>
+    </div>
+
+    <!-- 2. FÁZIS -->
+    <div class="section-card" id="cardPhase2">
+        <div class="section-title">
+            <span>2. FÁZIS: Parsons Puzzle (Kód kirakó)</span>
+            <button class="btn-hint" onclick="runPhase2AnimationHelp()">💡 Segítség &amp; Animáció</button>
+        </div>
+        <p style="font-size: 0.85rem; color: #475569;" id="phase2TaskTitle">Állítsd össze a kód sorrendjét és behúzásait!</p>
+        <div class="panel" id="sourcePanel"><div class="panel-title">Összekevert sorok</div><div class="code-block" data-indent="0" data-text="ertekek = [10, 22, 42, 48, 34]"><span class="block-text">ertekek = [10, 22, 42, 48, 34]</span>
+                <div class="indent-controls">
+                    <button class="indent-btn" onclick="event.stopPropagation(); changeIndent(this.parentNode.parentNode, -1)">-</button>
+                    <button class="indent-btn" onclick="event.stopPropagation(); changeIndent(this.parentNode.parentNode, 1)">+</button>
+                    <button class="indent-btn" style="background:#0284c7;" onclick="event.stopPropagation(); togglePanel(this.parentNode.parentNode)">⇄</button>
+                </div></div><div class="code-block" data-indent="0" data-text="for elem in ertekek:"><span class="block-text">for elem in ertekek:</span>
+                <div class="indent-controls">
+                    <button class="indent-btn" onclick="event.stopPropagation(); changeIndent(this.parentNode.parentNode, -1)">-</button>
+                    <button class="indent-btn" onclick="event.stopPropagation(); changeIndent(this.parentNode.parentNode, 1)">+</button>
+                    <button class="indent-btn" style="background:#0284c7;" onclick="event.stopPropagation(); togglePanel(this.parentNode.parentNode)">⇄</button>
+                </div></div><div class="code-block" data-indent="0" data-text="rekord = elem"><span class="block-text">rekord = elem</span>
+                <div class="indent-controls">
+                    <button class="indent-btn" onclick="event.stopPropagation(); changeIndent(this.parentNode.parentNode, -1)">-</button>
+                    <button class="indent-btn" onclick="event.stopPropagation(); changeIndent(this.parentNode.parentNode, 1)">+</button>
+                    <button class="indent-btn" style="background:#0284c7;" onclick="event.stopPropagation(); togglePanel(this.parentNode.parentNode)">⇄</button>
+                </div></div><div class="code-block" data-indent="0" data-text="print(rekord)"><span class="block-text">print(rekord)</span>
+                <div class="indent-controls">
+                    <button class="indent-btn" onclick="event.stopPropagation(); changeIndent(this.parentNode.parentNode, -1)">-</button>
+                    <button class="indent-btn" onclick="event.stopPropagation(); changeIndent(this.parentNode.parentNode, 1)">+</button>
+                    <button class="indent-btn" style="background:#0284c7;" onclick="event.stopPropagation(); togglePanel(this.parentNode.parentNode)">⇄</button>
+                </div></div><div class="code-block" data-indent="0" data-text="if elem &gt; rekord:"><span class="block-text">if elem &gt; rekord:</span>
+                <div class="indent-controls">
+                    <button class="indent-btn" onclick="event.stopPropagation(); changeIndent(this.parentNode.parentNode, -1)">-</button>
+                    <button class="indent-btn" onclick="event.stopPropagation(); changeIndent(this.parentNode.parentNode, 1)">+</button>
+                    <button class="indent-btn" style="background:#0284c7;" onclick="event.stopPropagation(); togglePanel(this.parentNode.parentNode)">⇄</button>
+                </div></div><div class="code-block" data-indent="0" data-text="rekord = ertekek[0]"><span class="block-text">rekord = ertekek[0]</span>
+                <div class="indent-controls">
+                    <button class="indent-btn" onclick="event.stopPropagation(); changeIndent(this.parentNode.parentNode, -1)">-</button>
+                    <button class="indent-btn" onclick="event.stopPropagation(); changeIndent(this.parentNode.parentNode, 1)">+</button>
+                    <button class="indent-btn" style="background:#0284c7;" onclick="event.stopPropagation(); togglePanel(this.parentNode.parentNode)">⇄</button>
+                </div></div></div>
+        <div class="panel" id="targetPanel"><div class="panel-title">Cél: Megoldási terület</div></div>
+        <button class="btn" style="background-color: #059669;" onclick="checkPhase2()">2. Fázis Ellenőrzése</button>
+        <div class="explanation-box" id="phase2Exp"></div>
+    </div>
+
+    <!-- 3. FÁZIS -->
+    <div class="section-card" id="cardPhase3">
+        <div class="section-title">
+            <span>3. FÁZIS: Kódkövetés</span>
+            <button class="btn-hint" onclick="runPhase3AnimationHelp()">💡 Segítség &amp; Animáció</button>
+        </div>
+        <p style="font-size: 0.9rem;" id="phase3Question">Hányszor hajtódik végre az <code>rekord = elem</code> frissítés?</p>
+        <div class="code-display" id="phase3Code">ertekek = [10, 22, 42, 48, 34]<br>rekord = ertekek[0]<br>for elem in ertekek:<br>&nbsp;&nbsp;&nbsp;&nbsp;if elem &gt; rekord:<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;rekord = elem</div>
+        <input type="number" id="phase3Input" placeholder="Írd ide a végeredményt..." style="width: 100%; padding: 10px; border: 1px solid rgb(22, 163, 74); border-radius: 6px; margin-top: 5px; background-color: rgb(240, 253, 244);" class="">
+        <button class="btn" style="background-color: #d97706;" onclick="checkPhase3()">3. Fázis Ellenőrzése</button>
+        <div class="explanation-box" id="phase3Exp"></div>
+    </div>
+
+    <!-- 4. FÁZIS -->
+    <div class="section-card" id="cardPhase4">
+        <div class="section-title">
+            <span>4. FÁZIS: Hibakeresés</span>
+            <button class="btn-hint" onclick="runPhase4AnimationHelp()">💡 Segítség &amp; Animáció</button>
+        </div>
+        <p style="font-size: 0.9rem;" id="phase4Question">Melyik sorban van a logikai hiba?</p>
+        <div class="code-display" id="phase4Code">1. sor: ertekek = [10, 22, 42, 48, 34]<br>2. sor: rekord = ertekek[0]<br>3. sor: for elem in ertekek:<br>4. sor: &nbsp;&nbsp;&nbsp;&nbsp;if elem &gt; rekord:<br>5. sor: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;elem = rekord</div>
+        <select id="phase4LineSelect" style="width: 100%; padding: 10px; border-radius: 6px; border: 1px solid #cbd5e1; margin-bottom: 8px;" class="">
+            <option value="1">1. sor hibás</option>
+            <option value="2">2. sor hibás</option>
+            <option value="3">3. sor hibás</option>
+            <option value="4">4. sor hibás</option>
+            <option value="5">5. sor hibás</option>
+        </select>
+        <input type="text" id="phase4FixInput" placeholder="Javított sor kódja..." style="width: 100%; padding: 10px; border-radius: 6px; border: 1px solid #cbd5e1;" class="">
+        <button class="btn" style="background-color: #7c3aed;" onclick="checkPhase4()">4. Fázis Ellenőrzése</button>
+        <div class="explanation-box" id="phase4Exp"></div>
+    </div>
+</div>
+
+<script>
+    const varNames = {
+        lists: ["adatok", "szamok", "mérések", "ertekek", "pontok", "lista"],
+        itemVars: ["x", "elem", "p", "m", "érték", "i"],
+        accumulators: {
+            max: ["max_ert", "rekord", "csucs", "legnagyobb"],
+            min: ["min_ert", "legalacsonyabb", "legkisebb"],
+            sum: ["osszeg", "total", "osszesen"],
+            count: ["db", "szamlalo", "darab"]
+        }
+    };
+
+    let stats = { correct: 0, total: 0 };
+    let p1Data = {};
+    let p2Solution = [];
+    let p3Correct = 0, p3ExpText = "";
+    let p4CorrectLine = "5", p4CorrectFix = "", p4ExpText = "";
+    let hints = { p1: "", p2: "", p3: "", p4: "" };
+
+    function updateDashboard(isSuccess) {
+        stats.total++;
+        if (isSuccess) stats.correct++;
+        document.getElementById('scoreVal').innerText = stats.correct;
+        document.getElementById('totalVal').innerText = stats.total;
+        document.getElementById('rateVal').innerText = Math.round((stats.correct / stats.total) * 100) + "%";
+    }
+
+    function getRandomItem(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+    function generateRandomList(length, min, max) {
+        const res = [];
+        for (let i = 0; i < length; i++) res.push(Math.floor(Math.random() * (max - min + 1)) + min);
+        return res;
+    }
+
+    /* WORD SEGÉDLET ÉS PROMPT ABLAK */
+    function openWordHelpWindow() {
+        const helpWindow = window.open('', '_blank', 'width=850,height=800,scrollbars=yes,resizable=yes');
+        if (!helpWindow) {
+            alert('A böngésző blokkolta a felugró ablakot. Kérlek engedélyezd!');
+            return;
+        }
+
+        helpWindow.document.write(`
+            <!DOCTYPE html>
+            <html lang="hu">
+            <head>
+                <meta charset="UTF-8">
+                <title>Hivatalos Segédlet & AI Prompt</title>
+                <style>
+                    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; line-height: 1.6; color: #1e293b; padding: 24px; background: #f8fafc; }
+                    .card { background: #ffffff; border: 1px solid #cbd5e1; border-radius: 12px; padding: 24px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); max-width: 760px; margin: 0 auto; }
+                    h1 { color: #7e22ce; font-size: 1.5rem; border-bottom: 2px solid #e2e8f0; padding-bottom: 10px; margin-top: 0; }
+                    h2 { color: #0284c7; font-size: 1.1rem; margin-top: 20px; }
+                    .code-box { background: #1e1e2e; color: #cdd6f4; padding: 16px; border-radius: 8px; font-family: 'Courier New', Courier, monospace; font-size: 0.85rem; white-space: pre-wrap; word-wrap: break-word; margin: 15px 0; border: 1px solid #45475a; }
+                    .close-btn { display: block; width: 100%; background: #7e22ce; color: white; border: none; padding: 12px; border-radius: 8px; font-weight: bold; font-size: 1rem; cursor: pointer; margin-top: 25px; text-align: center; }
+                </style>
+            </head>
+            <body>
+                <div class="card">
+                    <h1>📖 AI Prompt és Animált Megoldás-bemutató Rendszer</h1>
+                    <p>Ez az alkalmazás a mesterséges intelligencia által generált interaktív Python oktatóprogram, amely most már lépésenkénti animált vizuális bemutatóval is támogatja a tanulást.</p>
+                    <h2>A teljes AI Prompt:</h2>
+                    <div class="code-box">[SZEREPKÖR] SENIOR FRONTEND ÉS EDTECH FEJLESZTŐ... (Lásd a generált kódot korábbról).</div>
+                    <button class="close-btn" onclick="window.close()">Ablak bezárása</button>
+                </div>
+            </body>
+            </html>
+        `);
+        helpWindow.document.close();
+    }
+
+    /* --- ANIMÁLT SEGÉDLET FUNKCIÓk (PIP / VIZUÁLIS BEMUTATÓ FÁZISONKÉNT) --- */
+
+    function runPhase1AnimationHelp() {
+        const exp = document.getElementById('phase1Exp');
+        exp.className = 'explanation-box show-hint';
+        exp.innerHTML = `<b>💡 Animált Segítség (1. Fázis):</b> A rendszer most bemutatja a helyes megoldást...`;
+        
+        const mode = document.getElementById('phase1Mode').value;
+        
+        // Vizuális kiemelés animáció
+        const codeDisplay = document.getElementById('phase1Code');
+        codeDisplay.classList.add('animating-highlight');
+
+        setTimeout(() => {
+            if (mode === 'select') {
+                const selectEl = document.getElementById('phase1Select');
+                if (selectEl) {
+                    selectEl.value = p1Data.correct;
+                    selectEl.style.backgroundColor = '#16a34a';
+                    selectEl.style.color = '#ffffff';
+                }
+            } else if (mode === 'input') {
+                const inputEl = document.getElementById('phase1Input');
+                if (inputEl) {
+                    inputEl.value = p1Data.correct;
+                    inputEl.style.borderColor = '#16a34a';
+                    inputEl.style.backgroundColor = '#f0fdf4';
+                }
+            } else if (mode === 'drag') {
+                setPhase1TargetValue(p1Data.correct);
+            }
+            codeDisplay.classList.remove('animating-highlight');
+            exp.innerHTML = `<b>💡 Animáció vége:</b> A helyes kiegészítés: <code>${p1Data.correct}</code>. Most már kattinthatsz az Ellenőrzésre!`;
+        }, 1200);
+    }
+
+    function runPhase2AnimationHelp() {
+        const exp = document.getElementById('phase2Exp');
+        exp.className = 'explanation-box show-hint';
+        exp.innerHTML = `<b>💡 Animált Segítség (2. Fázis):</b> A kódblokkok automatikusan a helyükre rendeződnek...`;
+        
+        const targetPanel = document.getElementById('targetPanel');
+        const sourcePanel = document.getElementById('sourcePanel');
+        targetPanel.classList.add('animating-highlight');
+
+        setTimeout(() => {
+            // Minden blokkot visszapakolunk alapba, majd sorrendbe rendezzük
+            const allBlocks = Array.from(document.querySelectorAll('#cardPhase2 .code-block'));
+            
+            // Keresgélés és áthelyezés a megoldási területre a p1Data / p2Solution alapján
+            p2Solution.forEach(sol => {
+                const matched = allBlocks.find(b => b.dataset.text === sol.text);
+                if (matched) {
+                    targetPanel.appendChild(matched);
+                    matched.dataset.indent = sol.indent;
+                    matched.querySelector('.block-text').style.paddingLeft = (sol.indent * 15) + "px";
+                    matched.classList.add('correct');
+                }
+            });
+
+            targetPanel.classList.remove('animating-highlight');
+            exp.innerHTML = `<b>💡 Animáció vége:</b> A Parsons Puzzle blokkok sorrendje és behúzása helyesre lett igazítva!`;
+        }, 1500);
+    }
+
+    function runPhase3AnimationHelp() {
+        const exp = document.getElementById('phase3Exp');
+        exp.className = 'explanation-box show-hint';
+        exp.innerHTML = `<b>💡 Animált Segítség (3. Fázis):</b> A kódkövetés kiszámolja a helyes értéket...`;
+        
+        const inputField = document.getElementById('phase3Input');
+        inputField.classList.add('animating-highlight');
+
+        setTimeout(() => {
+            inputField.value = p3Correct;
+            inputField.style.backgroundColor = '#f0fdf4';
+            inputField.style.borderColor = '#16a34a';
+            inputField.classList.remove('animating-highlight');
+            exp.innerHTML = `<b>💡 Animáció vége:</b> A kódkövetés eredménye: <b>${p3Correct}</b> be lett írva automatikusan!`;
+        }, 1200);
+    }
+
+    function runPhase4AnimationHelp() {
+        const exp = document.getElementById('phase4Exp');
+        exp.className = 'explanation-box show-hint';
+        exp.innerHTML = `<b>💡 Animált Segítség (4. Fázis):</b> A hibás sor és a javítás beállítása...`;
+        
+        const lineSelect = document.getElementById('phase4LineSelect');
+        const fixInput = document.getElementById('phase4FixInput');
+        lineSelect.classList.add('animating-highlight');
+        fixInput.classList.add('animating-highlight');
+
+        setTimeout(() => {
+            lineSelect.value = p4CorrectLine;
+            fixInput.value = p4CorrectFix;
+            lineSelect.classList.remove('animating-highlight');
+            fixInput.classList.remove('animating-highlight');
+            exp.innerHTML = `<b>💡 Animáció vége:</b> A hibás sor (${p4CorrectLine}. sor) és a helyes kód (<code>${p4CorrectFix}</code>) beállítva!`;
+        }, 1200);
+    }
+
+    /* --- GENERÁLÁSI LOGIKA --- */
+
+    function generatePhase1Only() {
+        const type = document.getElementById('algoSelect').value;
+        const listName = getRandomItem(varNames.lists);
+        const itemName = getRandomItem(varNames.itemVars);
+        const accName = getRandomItem(varNames.accumulators[type]);
+        const dataList = generateRandomList(5, 5, 50);
+
+        const questionKinds = ["init", "loop", "condition", "operation"];
+        const selectedKind = getRandomItem(questionKinds);
+
+        let p1Header = "", p1Correct = "", p1Options = [], p1QuestionText = "";
+
+        if (type === "max") {
+            if (selectedKind === "init") {
+                p1QuestionText = "Mivel kell inicializálni a maximumváltozót a ciklus előtt?";
+                p1Header = `${listName} = [${dataList.join(', ')}]\n`;
+                p1Correct = `${accName} = ${listName}[0]`;
+                p1Options = [`${accName} = ${listName}[0]`, `${accName} = 0`, `${accName} = len(${listName})`];
+            } else if (selectedKind === "loop") {
+                p1QuestionText = "Melyik a helyes ciklusfej a tömb bejárásához?";
+                p1Header = `${listName} = [${dataList.join(', ')}]\n${accName} = ${listName}[0]\n`;
+                p1Correct = `for ${itemName} in ${listName}:`;
+                p1Options = [`for ${itemName} in ${listName}:`, `while ${itemName} < len(${listName}):`, `for ${itemName} in range(${accName}):`];
+            } else if (selectedKind === "condition") {
+                p1QuestionText = "Melyik a helyes feltétel a maximum vizsgálatához?";
+                p1Header = `${listName} = [${dataList.join(', ')}]\n${accName} = ${listName}[0]\nfor ${itemName} in ${listName}:\n    if `;
+                p1Correct = `${itemName} > ${accName}:`;
+                p1Options = [`${itemName} > ${accName}:`, `${itemName} < ${accName}:`, `${itemName} == ${accName}:`];
+            } else {
+                p1QuestionText = "Melyik értékadással frissítjük az új maximumot?";
+                p1Header = `${listName} = [${dataList.join(', ')}]\n${accName} = ${listName}[0]\nfor ${itemName} in ${listName}:\n    if ${itemName} > ${accName}:`;
+                p1Correct = `${accName} = ${itemName}`;
+                p1Options = [`${accName} = ${itemName}`, `${itemName} = ${accName}`, `${accName} == ${itemName}`];
+            }
+            hints.p1 = "Maximumkeresésnél a tömb első elemét tesszük meg kezdeti csúcsértéknek.";
+        } else if (type === "min") {
+            if (selectedKind === "init") {
+                p1QuestionText = "Mivel kell inicializálni a minimumváltozót a ciklus előtt?";
+                p1Header = `${listName} = [${dataList.join(', ')}]\n`;
+                p1Correct = `${accName} = ${listName}[0]`;
+                p1Options = [`${accName} = ${listName}[0]`, `${accName} = 0`, `${accName} = 999`];
+            } else if (selectedKind === "loop") {
+                p1QuestionText = "Melyik ciklussor felel meg a lista bejárásának?";
+                p1Header = `${listName} = [${dataList.join(', ')}]\n${accName} = ${listName}[0]\n`;
+                p1Correct = `for ${itemName} in ${listName}:`;
+                p1Options = [`for ${itemName} in ${listName}:`, `for ${itemName} in ${accName}:`, `if ${itemName} in ${listName}:`];
+            } else if (selectedKind === "condition") {
+                p1QuestionText = "Melyik a helyes feltétel a minimum vizsgálatához?";
+                p1Header = `${listName} = [${dataList.join(', ')}]\n${accName} = ${listName}[0]\nfor ${itemName} in ${listName}:\n    if `;
+                p1Correct = `${itemName} < ${accName}:`;
+                p1Options = [`${itemName} < ${accName}:`, `${itemName} > ${accName}:`, `${itemName} == ${accName}:`];
+            } else {
+                p1QuestionText = "Melyik értékadással mentjük el az új minimumot?";
+                p1Header = `${listName} = [${dataList.join(', ')}]\n${accName} = ${listName}[0]\nfor ${itemName} in ${listName}:\n    if ${itemName} < ${accName}:`;
+                p1Correct = `${accName} = ${itemName}`;
+                p1Options = [`${accName} = ${itemName}`, `${itemName} = ${accName}`, `${itemName} < ${itemName}`];
+            }
+            hints.p1 = "Minimum keresésekor a soron következő elemet hasonlítjuk össze az eddigivel.";
+        } else if (type === "sum") {
+            if (selectedKind === "init") {
+                p1QuestionText = "Milyen kezdőértékkel kell indítani az összegezőt?";
+                p1Header = `${listName} = [${dataList.join(', ')}]\n`;
+                p1Correct = `${accName} = 0`;
+                p1Options = [`${accName} = 0`, `${accName} = ${listName}[0]`, `${accName} = 1`];
+            } else if (selectedKind === "loop") {
+                p1QuestionText = "Melyik utasítással lépkedünk végig az elemeken?";
+                p1Header = `${listName} = [${dataList.join(', ')}]\n${accName} = 0\n`;
+                p1Correct = `for ${itemName} in ${listName}:`;
+                p1Options = [`for ${itemName} in ${listName}:`, `while ${itemName} in ${listName}:`, `for ${accName} in ${listName}:`];
+            } else {
+                p1QuestionText = "Melyik művelettel adjuk hozzá a következő elemet az összeghez?";
+                p1Header = `${listName} = [${dataList.join(', ')}]\n${accName} = 0\nfor ${itemName} in ${listName}:`;
+                p1Correct = `${accName} = ${accName} + ${itemName}`;
+                p1Options = [`${accName} = ${accName} + ${itemName}`, `${itemName} = ${accName} + ${itemName}`, `${accName} = ${itemName}`];
+            }
+            hints.p1 = "Összegzésnél 0-ról indulunk.";
+        } else if (type === "count") {
+            if (selectedKind === "init") {
+                p1QuestionText = "Milyen kezdőértéket kap a darabszámot számláló változó?";
+                p1Header = `${listName} = [${dataList.join(', ')}]\n`;
+                p1Correct = `${accName} = 0`;
+                p1Options = [`${accName} = 0`, `${accName} = 1`, `${accName} = len(${listName})`];
+            } else if (selectedKind === "condition") {
+                p1QuestionText = "Melyik a helyes szűrési feltétel páros számok megszámolásához?";
+                p1Header = `${listName} = [${dataList.join(', ')}]\n${accName} = 0\nfor ${itemName} in ${listName}:\n    if `;
+                p1Correct = `${itemName} % 2 == 0:`;
+                p1Options = [`${itemName} % 2 == 0:`, `${itemName} % 2 != 0:`, `${itemName} / 2 == 0:`];
+            } else {
+                p1QuestionText = "Melyik művelettel növeljük a számláló értékét a feltétel teljesülésekor?";
+                p1Header = `${listName} = [${dataList.join(', ')}]\n${accName} = 0\nfor ${itemName} in ${listName}:\n    if ${itemName} > 20:`;
+                p1Correct = `${accName} = ${accName} + 1`;
+                p1Options = [`${accName} = ${accName} + 1`, `${accName} = ${itemName}`, `${itemName} = ${accName} + 1`];
+            }
+            hints.p1 = "Megszámláláskor a darabszámot egyesével növeljük.";
+        }
+
+        p1Data = {
+            question: p1QuestionText,
+            header: p1Header,
+            correct: p1Correct,
+            options: p1Options.sort(() => Math.random() - 0.5),
+            exp: `<b>Helyes válasz! 🎉</b><br>A helyes kódkiegészítés: <code>${p1Correct}</code>.`
+        };
+
+        renderPhase1();
+    }
+
+    function generateAllPhases() {
+        const type = document.getElementById('algoSelect').value;
+        
+        document.querySelectorAll('.explanation-box').forEach(el => { el.className = 'explanation-box'; el.innerHTML = ''; });
+        document.getElementById('phase3Input').value = '';
+        document.getElementById('phase4FixInput').value = '';
+
+        const listName = getRandomItem(varNames.lists);
+        const itemName = getRandomItem(varNames.itemVars);
+        const accName = getRandomItem(varNames.accumulators[type]);
+        const dataList = generateRandomList(5, 5, 50);
+
+        generatePhase1Only();
+
+        /* 2. FÁZIS */
+        document.getElementById('phase2TaskTitle').innerHTML = `Állítsd össze a kód sorrendjét és behúzásait!`;
+        
+        if (type === "max") {
+            p2Solution = [
+                { text: `${listName} = [${dataList.join(', ')}]`, indent: 0 },
+                { text: `${accName} = ${listName}[0]`, indent: 0 },
+                { text: `for ${itemName} in ${listName}:`, indent: 0 },
+                { text: `if ${itemName} > ${accName}:`, indent: 1 },
+                { text: `${accName} = ${itemName}`, indent: 2 },
+                { text: `print(${accName})`, indent: 0 }
+            ];
+        } else if (type === "min") {
+            p2Solution = [
+                { text: `${listName} = [${dataList.join(', ')}]`, indent: 0 },
+                { text: `${accName} = ${listName}[0]`, indent: 0 },
+                { text: `for ${itemName} in ${listName}:`, indent: 0 },
+                { text: `if ${itemName} < ${accName}:`, indent: 1 },
+                { text: `${accName} = ${itemName}`, indent: 2 },
+                { text: `print(${accName})`, indent: 0 }
+            ];
+        } else if (type === "sum") {
+            p2Solution = [
+                { text: `${listName} = [${dataList.join(', ')}]`, indent: 0 },
+                { text: `${accName} = 0`, indent: 0 },
+                { text: `for ${itemName} in ${listName}:`, indent: 0 },
+                { text: `${accName} = ${accName} + ${itemName}`, indent: 1 },
+                { text: `print(${accName})`, indent: 0 }
+            ];
+        } else if (type === "count") {
+            p2Solution = [
+                { text: `${listName} = [${dataList.join(', ')}]`, indent: 0 },
+                { text: `${accName} = 0`, indent: 0 },
+                { text: `for ${itemName} in ${listName}:`, indent: 0 },
+                { text: `if ${itemName} % 2 == 0:`, indent: 1 },
+                { text: `${accName} = ${accName} + 1`, indent: 2 },
+                { text: `print(${accName})`, indent: 0 }
+            ];
+        }
+
+        const sourcePanel = document.getElementById('sourcePanel');
+        sourcePanel.innerHTML = '<div class="panel-title">Összekevert sorok</div>';
+        document.getElementById('targetPanel').innerHTML = '<div class="panel-title">Cél: Megoldási terület</div>';
+
+        [...p2Solution].sort(() => Math.random() - 0.5).forEach((item) => {
+            const div = document.createElement('div');
+            div.className = 'code-block';
+            div.dataset.indent = "0";
+            div.dataset.text = item.text;
+            div.innerHTML = `<span class="block-text">${item.text}</span>
+                <div class="indent-controls">
+                    <button class="indent-btn" onclick="event.stopPropagation(); changeIndent(this.parentNode.parentNode, -1)">-</button>
+                    <button class="indent-btn" onclick="event.stopPropagation(); changeIndent(this.parentNode.parentNode, 1)">+</button>
+                    <button class="indent-btn" style="background:#0284c7;" onclick="event.stopPropagation(); togglePanel(this.parentNode.parentNode)">⇄</button>
+                </div>`;
+            makeElementDraggable(div);
+            sourcePanel.appendChild(div);
+        });
+
+        /* 3. FÁZIS */
+        if (type === "max") {
+            let curMax = dataList[0]; p3Correct = 0;
+            for (let v of dataList) { if (v > curMax) { curMax = v; p3Correct++; } }
+            document.getElementById('phase3Question').innerHTML = `Hányszor hajtódik végre az <code>${accName} = ${itemName}</code> frissítés?`;
+            document.getElementById('phase3Code').innerHTML = `${listName} = [${dataList.join(', ')}]<br>${accName} = ${listName}[0]<br>for ${itemName} in ${listName}:<br>&nbsp;&nbsp;&nbsp;&nbsp;if ${itemName} > ${accName}:<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;${accName} = ${itemName}`;
+            p3ExpText = `<b>Helyes! 🎉</b><br>A maximum frissítése <b>${p3Correct}</b> alkalommal történt meg.`;
+        } else if (type === "min") {
+            let curMin = dataList[0]; p3Correct = 0;
+            for (let v of dataList) { if (v < curMin) { curMin = v; p3Correct++; } }
+            document.getElementById('phase3Question').innerHTML = `Hányszor hajtódik végre az <code>${accName} = ${itemName}</code> frissítés?`;
+            document.getElementById('phase3Code').innerHTML = `${listName} = [${dataList.join(', ')}]<br>${accName} = ${listName}[0]<br>for ${itemName} in ${listName}:<br>&nbsp;&nbsp;&nbsp;&nbsp;if ${itemName} < ${accName}:<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;${accName} = ${itemName}`;
+            p3ExpText = `<b>Helyes! 🎉</b><br>A minimum frissítése <b>${p3Correct}</b> alkalommal történt meg.`;
+        } else if (type === "sum") {
+            p3Correct = dataList.reduce((a, b) => a + b, 0);
+            document.getElementById('phase3Question').innerHTML = `Mi lesz a <code>${accName}</code> végértéke a ciklus után?`;
+            document.getElementById('phase3Code').innerHTML = `${listName} = [${dataList.join(', ')}]<br>${accName} = 0<br>for ${itemName} in ${listName}:<br>&nbsp;&nbsp;&nbsp;&nbsp;${accName} = ${accName} + ${itemName}`;
+            p3ExpText = `<b>Helyes! 🎉</b><br>A tömb elemeinek összege: <b>${p3Correct}</b>.`;
+        } else if (type === "count") {
+            const limit = 20;
+            p3Correct = dataList.filter(x => x > limit).length;
+            document.getElementById('phase3Question').innerHTML = `Mi lesz a <code>${accName}</code> végértéke (hány szám nagyobb, mint ${limit})?`;
+            document.getElementById('phase3Code').innerHTML = `${listName} = [${dataList.join(', ')}]<br>${accName} = 0<br>for ${itemName} in ${listName}:<br>&nbsp;&nbsp;&nbsp;&nbsp;if ${itemName} > ${limit}:<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;${accName} = ${accName} + 1`;
+            p3ExpText = `<b>Helyes! 🎉</b><br>Pontosan <b>${p3Correct}</b> darab szám volt nagyobb, mint ${limit}.`;
+        }
+
+        /* 4. FÁZIS */
+        if (type === "max") {
+            document.getElementById('phase4Code').innerHTML = `1. sor: ${listName} = [${dataList.join(', ')}]<br>2. sor: ${accName} = ${listName}[0]<br>3. sor: for ${itemName} in ${listName}:<br>4. sor: &nbsp;&nbsp;&nbsp;&nbsp;if ${itemName} > ${accName}:<br>5. sor: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;${itemName} = ${accName}`;
+            p4CorrectLine = "5";
+            p4CorrectFix = `${accName}=${itemName}`;
+            p4ExpText = `<b>Helyes javítás! 🎉</b><br>Az értékadás helyesen: <code>${accName} = ${itemName}</code>.`;
+        } else if (type === "min") {
+            document.getElementById('phase4Code').innerHTML = `1. sor: ${listName} = [${dataList.join(', ')}]<br>2. sor: ${accName} = ${listName}[0]<br>3. sor: for ${itemName} in ${listName}:<br>4. sor: &nbsp;&nbsp;&nbsp;&nbsp;if ${itemName} > ${accName}:<br>5. sor: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;${accName} = ${itemName}`;
+            p4CorrectLine = "4";
+            p4CorrectFix = `if${itemName}<${accName}:`;
+            p4ExpText = `<b>Tökéletes! 🎉</b><br>A relációs jelnek fordítva kell állnia: <code>if ${itemName} < ${accName}:</code>.`;
+        } else if (type === "sum") {
+            document.getElementById('phase4Code').innerHTML = `1. sor: ${listName} = [${dataList.join(', ')}]<br>2. sor: ${accName} = 0<br>3. sor: for ${itemName} in ${listName}:<br>4. sor: &nbsp;&nbsp;&nbsp;&nbsp;${itemName} = ${accName} + ${itemName}<br>5. sor: print(${accName})`;
+            p4CorrectLine = "4";
+            p4CorrectFix = `${accName}=${accName}+${itemName}`;
+            p4ExpText = `<b>Tökéletes! 🎉</b><br>Az összegző változónak kell kapnia az értéket: <code>${accName} = ${accName} + ${itemName}</code>.`;
+        } else if (type === "count") {
+            document.getElementById('phase4Code').innerHTML = `1. sor: ${listName} = [${dataList.join(', ')}]<br>2. sor: ${accName} = 0<br>3. sor: for ${itemName} in ${listName}:<br>4. sor: &nbsp;&nbsp;&nbsp;&nbsp;if ${itemName} > 20:<br>5. sor: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;${accName} = ${itemName}`;
+            p4CorrectLine = "5";
+            p4CorrectFix = `${accName}=${accName}+1`;
+            p4ExpText = `<b>Szép munka! 🎉</b><br>Darabszámláláskor 1-gyel növeljük az értéket: <code>${accName} = ${accName} + 1</code>.`;
+        }
+    }
+
+    function renderPhase1() {
+        const mode = document.getElementById('phase1Mode').value;
+        const exp = document.getElementById('phase1Exp');
+        exp.className = 'explanation-box'; exp.innerHTML = '';
+        
+        document.getElementById('phase1Question').innerHTML = p1Data.question;
+        document.getElementById('phase1DragContainer').style.display = (mode === 'drag') ? 'block' : 'none';
+
+        let formattedCode = "";
+        p1Data.header.split('\n').forEach(l => {
+            let indent = l.search(/\S/);
+            formattedCode += '&nbsp;'.repeat(indent >= 0 ? indent : 0) + l.trim() + '<br>';
+        });
+
+        if (mode === 'select') {
+            let optionsHTML = '<option value="">-- Válassz műveletet --</option>';
+            p1Data.options.forEach(opt => { optionsHTML += `<option value="${opt}">${opt}</option>`; });
+            formattedCode += '&nbsp;&nbsp;&nbsp;&nbsp;<select id="phase1Select" class="blank-select">' + optionsHTML + '</select>';
+        } else if (mode === 'input') {
+            formattedCode += '&nbsp;&nbsp;&nbsp;&nbsp;<input type="text" id="phase1Input" placeholder="Írd ide..." style="padding: 4px 8px; font-family: monospace; border-radius: 4px; border: 1px solid #cbd5e1; width: 60%;">';
+        } else if (mode === 'drag') {
+            formattedCode += '&nbsp;&nbsp;&nbsp;&nbsp;<div id="phase1DropTarget" class="drop-target-area">Húzd ide a kártyát</div>';
+            
+            setTimeout(() => {
+                const pool = document.getElementById('phase1OptionsPool');
+                if (!pool) return;
+                pool.innerHTML = '';
+                p1Data.options.forEach(opt => {
+                    const card = document.createElement('div');
+                    card.className = 'drag-option-card';
+                    card.innerText = opt;
+                    card.dataset.val = opt;
+                    card.onclick = function() { setPhase1TargetValue(opt); };
+                    makePhase1CardDraggable(card);
+                    pool.appendChild(card);
+                });
+                setupPhase1DropZone();
+            }, 20);
+        }
+
+        document.getElementById('phase1Code').innerHTML = formattedCode;
+    }
+
+    function setPhase1TargetValue(val) {
+        const target = document.getElementById('phase1DropTarget');
+        if (target) {
+            target.innerText = val;
+            target.dataset.val = val;
+            target.style.borderColor = '#16a34a';
+            target.style.background = '#15803d';
+            target.style.color = '#ffffff';
+        }
+    }
+
+    function makePhase1CardDraggable(card) {
+        card.setAttribute('draggable', 'true');
+        card.addEventListener('dragstart', (e) => { e.dataTransfer.setData('text/plain', card.dataset.val); });
+        let active = false, initialX, initialY, xOffset = 0, yOffset = 0;
+        
+        card.addEventListener("touchstart", (e) => {
+            const touch = e.touches[0];
+            initialX = touch.clientX - xOffset; initialY = touch.clientY - yOffset;
+            active = true;
+        }, {passive: false});
+
+        card.addEventListener("touchmove", (e) => {
+            if (!active) return;
+            e.preventDefault();
+            const touch = e.touches[0];
+            let currentX = touch.clientX - initialX;
+            let currentY = touch.clientY - initialY;
+            xOffset = currentX; yOffset = currentY;
+            card.style.transform = `translate3d(${currentX}px, ${currentY}px, 0)`;
+            card.style.zIndex = "1000";
+        }, {passive: false});
+
+        card.addEventListener("touchend", (e) => {
+            if (!active) return;
+            active = false; card.style.transform = "none"; card.style.zIndex = "auto";
+            xOffset = 0; yOffset = 0;
+            const touch = e.changedTouches[0];
+            card.style.visibility = 'hidden';
+            const dropTarget = document.elementFromPoint(touch.clientX, touch.clientY);
+            card.style.visibility = 'visible';
+            if (dropTarget && (dropTarget.id === 'phase1DropTarget' || dropTarget.closest('#phase1DropTarget'))) {
+                setPhase1TargetValue(card.dataset.val);
+            }
+        });
+    }
+
+    function setupPhase1DropZone() {
+        const target = document.getElementById('phase1DropTarget');
+        if (!target) return;
+        target.addEventListener('dragover', (e) => { e.preventDefault(); target.style.background = '#45475a'; });
+        target.addEventListener('dragleave', () => { target.style.background = '#313244'; });
+        target.addEventListener('drop', (e) => {
+            e.preventDefault();
+            const val = e.dataTransfer.getData('text/plain');
+            if (val) setPhase1TargetValue(val);
+        });
+    }
+
+    function checkPhase1() {
+        const mode = document.getElementById('phase1Mode').value;
+        const exp = document.getElementById('phase1Exp');
+        let userVal = "";
+
+        if (mode === 'select') {
+            const el = document.getElementById('phase1Select'); userVal = el ? el.value : "";
+        } else if (mode === 'input') {
+            const el = document.getElementById('phase1Input'); userVal = el ? el.value.trim() : "";
+        } else if (mode === 'drag') {
+            const el = document.getElementById('phase1DropTarget'); userVal = el ? (el.dataset.val || "") : "";
+        }
+
+        if (!userVal || userVal === "Húzd ide a kártyát") {
+            exp.className = 'explanation-box show-error';
+            exp.innerHTML = '<b>Kérlek add meg a választ az ellenőrzés előtt! ⚠️</b>';
+            return;
+        }
+
+        const normUser = userVal.replace(/\s+/g, '');
+        const normCorrect = p1Data.correct.replace(/\s+/g, '');
+        let isOk = (normUser === normCorrect);
+        if (!isOk && normCorrect.includes("+1")) {
+            const varName = normCorrect.split("=")[0];
+            if (normUser === `${varName}+=1`) isOk = true;
+        }
+
+        updateDashboard(isOk);
+        exp.className = 'explanation-box ' + (isOk ? 'show-success' : 'show-error');
+        exp.innerHTML = isOk ? p1Data.exp : `<b>Hibás válasz! ❌</b> Próbáld újra vagy kérj animációs segítséget!`;
+    }
+
+    function changeIndent(el, delta) {
+        let cur = Math.max(0, (parseInt(el.dataset.indent) || 0) + delta);
+        if (cur > 3) cur = 3;
+        el.dataset.indent = cur;
+        el.querySelector('.block-text').style.paddingLeft = (cur * 15) + "px";
+    }
+
+    function togglePanel(el) {
+        const source = document.getElementById('sourcePanel');
+        const target = document.getElementById('targetPanel');
+        if (el.parentNode === source) target.appendChild(el); else source.appendChild(el);
+    }
+
+    function makeElementDraggable(el) {
+        let active = false, currentX, currentY, initialX, initialY, xOffset = 0, yOffset = 0;
+        el.addEventListener("touchstart", dragStart, {passive: false});
+        el.addEventListener("touchend", dragEnd, {passive: false});
+        el.addEventListener("touchmove", drag, {passive: false});
+        el.addEventListener("mousedown", dragStart);
+        document.addEventListener("mouseup", dragEnd);
+        document.addEventListener("mousemove", drag);
+
+        function dragStart(e) {
+            if (e.target.classList.contains('indent-btn')) return;
+            const clientX = e.type === "touchstart" ? e.touches[0].clientX : e.clientX;
+            const clientY = e.type === "touchstart" ? e.touches[0].clientY : e.clientY;
+            initialX = clientX - xOffset; initialY = clientY - yOffset;
+            active = true; el.classList.add('dragging');
+        }
+
+        function drag(e) {
+            if (!active) return;
+            e.preventDefault();
+            const clientX = e.type === "touchmove" ? e.touches[0].clientX : e.clientX;
+            const clientY = e.type === "touchmove" ? e.touches[0].clientY : e.clientY;
+            currentX = clientX - initialX; currentY = clientY - initialY;
+            xOffset = currentX; yOffset = currentY;
+            el.style.transform = "translate3d(" + currentX + "px, " + currentY + "px, 0)";
+        }
+
+        function dragEnd(e) {
+            if (!active) return;
+            active = false; el.classList.remove('dragging');
+            el.style.transform = "none"; xOffset = 0; yOffset = 0;
+            const clientX = e.type === "touchend" ? (e.changedTouches[0]?.clientX || 0) : e.clientX;
+            const clientY = e.type === "touchend" ? (e.changedTouches[0]?.clientY || 0) : e.clientY;
+            el.style.visibility = 'hidden';
+            const dropTarget = document.elementFromPoint(clientX, clientY);
+            el.style.visibility = 'visible';
+            const panel = dropTarget ? dropTarget.closest('.panel') : null;
+            if (panel) panel.appendChild(el);
+        }
+    }
+
+    function checkPhase2() {
+        const blocks = Array.from(document.getElementById('targetPanel').querySelectorAll('.code-block'));
+        const exp = document.getElementById('phase2Exp');
+        if (blocks.length !== p2Solution.length) {
+            exp.className = 'explanation-box show-error'; exp.innerHTML = 'Helyezd át az összes kódblokkot a megoldási területre!'; return;
+        }
+        let isCorrect = true;
+        blocks.forEach((block, idx) => {
+            const expected = p2Solution[idx];
+            if (block.dataset.text === expected.text && parseInt(block.dataset.indent) === expected.indent) {
+                block.classList.add('correct'); block.classList.remove('incorrect');
+            } else {
+                block.classList.add('incorrect'); block.classList.remove('correct'); isCorrect = false;
+            }
+        });
+
+        updateDashboard(isCorrect);
+        exp.className = 'explanation-box ' + (isCorrect ? 'show-success' : 'show-error');
+        exp.innerHTML = isCorrect ? '<b>Tökéletes sorrend és behúzás! 🎉</b>' : '<b>Hiba van a sorrendben vagy a behúzásban! ❌</b>';
+    }
+
+    function checkPhase3() {
+        const val = parseInt(document.getElementById('phase3Input').value.trim());
+        const exp = document.getElementById('phase3Exp');
+        const isOk = (val === p3Correct);
+        
+        updateDashboard(isOk);
+        exp.className = 'explanation-box ' + (isOk ? 'show-success' : 'show-error');
+        exp.innerHTML = isOk ? p3ExpText : '<b>Hibás válasz! ❌</b> Kövesd végig a ciklus lépéseit!';
+    }
+
+    function checkPhase4() {
+        const line = document.getElementById('phase4LineSelect').value;
+        const fix = document.getElementById('phase4FixInput').value.replace(/\s+/g, '');
+        const exp = document.getElementById('phase4Exp');
+        const isFixOk = (fix === p4CorrectFix) || (p4CorrectFix === "db=db+1" && fix === "db+=1");
+        const isOk = (line === p4CorrectLine && isFixOk);
+
+        updateDashboard(isOk);
+        exp.className = 'explanation-box ' + (isOk ? 'show-success' : 'show-error');
+        exp.innerHTML = isOk ? p4ExpText : `<b>Még nem jó! ❌</b> A hibás sor a(z) <b>${p4CorrectLine}. sor</b>.`;
+    }
+
+    window.onload = generateAllPhases;
+</script>
+
+
+</body></html>
