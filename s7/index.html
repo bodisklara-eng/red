@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<!-- saved from url=(0068)file:///C:/Users/Utilizator/Downloads/gemini-code-1787745167413.html -->
+<html lang="hu"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Emoji Tervező - Egyedi Méretek &amp; Fizika</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #fdf2f8; margin: 0; padding: 20px; color: #333; }
+        .container { max-width: 1000px; margin: 0 auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); }
+        h2 { margin-top: 0; color: #be185d; display: flex; justify-content: space-between; align-items: center; }
+        
+        .dashboard { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; background: #fce7f3; padding: 15px; border-radius: 8px; margin-bottom: 20px; font-weight: bold; font-size: 13px; text-align: center; }
+        .budget-ok { color: #059669; }
+        .budget-over { color: #dc2626; }
+        .score-box { color: #7c3aed; font-size: 15px; }
+
+        .main-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        @media(max-width: 768px) { .main-layout { grid-template-columns: 1fr; } }
+
+        .canvas-box { background: #fff1f2; border: 2px dashed #fda4af; border-radius: 8px; height: 350px; position: relative; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+        .canvas-shape { position: absolute; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 12px; border-radius: 50%; box-shadow: 0 4px 12px rgba(0,0,0,0.25); transition: all 0.4s ease; border: 2px solid rgba(255,255,255,0.6); }
+
+        ul { list-style: none; padding: 0; margin: 0; }
+        li { background: #fff; border: 1px solid #fbcfe8; padding: 10px 12px; margin-bottom: 8px; border-radius: 6px; display: flex; justify-content: space-between; align-items: center; cursor: grab; user-select: none; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
+        li.dragging { opacity: 0.4; background: #fbcfe8; }
+        .controls-btn { display: flex; gap: 4px; }
+        
+        button { background: #db2777; color: white; border: none; padding: 6px 10px; border-radius: 4px; cursor: pointer; font-size: 13px; font-weight: bold; }
+        button:hover { background: #be185d; }
+        button.danger { background: #ef4444; }
+        button.danger:hover { background: #dc2626; }
+        button.success { background: #10b981; }
+        button.success:hover { background: #059669; }
+        button.mic-btn { background: #f59e0b; }
+        button.mic-btn.listening { background: #dc2626; animation: pulse 1.5s infinite; }
+        button.info-btn { background: #7c3aed; width: 100%; margin-bottom: 15px; padding: 10px; font-size: 14px; }
+        button.info-btn:hover { background: #6d28d9; }
+
+        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
+
+        .form-group, .action-group { margin-top: 15px; background: #fff5f7; padding: 12px; border-radius: 8px; border: 1px solid #fbcfe8; }
+        .form-group input, .form-group select { padding: 8px; width: calc(50% - 10px); margin-right: 5px; margin-bottom: 8px; border: 1px solid #f472b6; border-radius: 4px; }
+        .add-btn { background: #10b981; width: 100%; padding: 10px; font-weight: bold; color: white; border: none; border-radius: 4px; cursor: pointer; margin-top: 5px; }
+
+        .question-box { background: #fef3c7; border: 2px solid #f59e0b; padding: 15px; border-radius: 8px; margin-top: 15px; }
+        .question-box h4 { margin: 0 0 8px 0; color: #b45309; font-size: 15px; }
+        .input-methods { display: flex; gap: 6px; margin-top: 10px; }
+        .input-methods input[type="text"] { flex: 1; padding: 6px; border: 1px solid #fcd34d; border-radius: 4px; }
+        
+        #drawCanvas { background: white; border: 1px solid #fcd34d; border-radius: 4px; cursor: crosshair; display: none; margin-top: 8px; width: 100%; }
+
+        .alert-box { background: #fee2e2; color: #991b1b; padding: 10px; border-radius: 6px; margin-top: 15px; font-weight: bold; display: none; border-left: 5px solid #dc2626; font-size: 14px; }
+        .success-box { background: #d1fae5; color: #065f46; padding: 10px; border-radius: 6px; margin-top: 15px; font-weight: bold; border-left: 5px solid #10b981; font-size: 14px; }
+        .level-badge { background: #db2777; color: white; padding: 3px 8px; border-radius: 12px; font-size: 12px; }
+
+        .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); align-items: center; justify-content: center; }
+        .modal-content { background: white; padding: 25px; border-radius: 10px; max-width: 650px; width: 90%; box-shadow: 0 5px 25px rgba(0,0,0,0.3); max-height: 85vh; overflow-y: auto; }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee; padding-bottom: 10px; margin-bottom: 15px; }
+        .modal-header h3 { margin: 0; color: #be185d; }
+        .close-btn { background: #ef4444; padding: 4px 8px; font-size: 12px; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>
+        <span>🎨 Emoji Kompozíció Tervező</span>
+        <span id="szintCimke" class="level-badge">1. Alapozó Szint</span>
+    </h2>
+    
+    <div class="dashboard">
+        <div>Keret: <span id="keret">3.000</span> XP</div>
+        <div>Részösszeg: <span id="reszosszeg" class="budget-ok">1.800</span> XP</div>
+        <div>Pontszám: <span id="pontszam" class="score-box">420</span> pont</div>
+        <div>Állapot: <span id="statuszTxt" class="budget-ok">Kiváló</span></div>
+    </div>
+
+    <button class="info-btn" onclick="fizikaModalMegnyitas()">⚛️ Fizikai Alapok: Tömeg vs. Súly, Gravitáció és Tehetetlenség</button>
+
+    <div class="main-layout">
+        <div>
+            <p><strong>Vizuális Emoji Vászon:</strong></p>
+            <div class="canvas-box" id="vaszon"><div class="canvas-shape" style="z-index: 1; background-color: rgb(59, 130, 246); width: 120px; height: 120px; left: 20px; top: 20px;">🌍</div><div class="canvas-shape" style="z-index: 2; background-color: rgb(234, 179, 8); width: 80px; height: 80px; left: 75px; top: 52px;">⭐</div><div class="canvas-shape" style="z-index: 3; background-color: rgb(239, 68, 68); width: 60px; height: 60px; left: 130px; top: 94px;">❤️</div></div>
+            <div id="figyelmeztetes" class="alert-box" style="display: none;"></div>
+            
+            <div id="pedagogiaiKerdes" class="question-box">
+                <h4 id="kerdesSzoveg">🎨 Kreatív Kompozíció: Mi volt az üzeneted?</h4>
+                <div class="input-methods">
+                    <input type="text" id="diakValaszInput" placeholder="Írd ide a válaszod...">
+                    <button class="mic-btn" id="hangGomb" onclick="hangAlapuBevitel()">🎤 Hang</button>
+                    <button onclick="rajzModToggle()">✏️ Kéz</button>
+                    <button class="success" onclick="valaszElkuldve()">Mentés</button>
+                </div>
+                <canvas id="drawCanvas" width="380" height="120"></canvas>
+            </div>
+
+            <div id="sikeruzenet" class="success-box" style="display: block;">🏆 Tökéletes kompozíció! <br><small>Alap: 300p | Spórolás (+120p)</small></div>
+
+            <div class="action-group">
+                <p style="margin: 0 0 8px 0; font-size: 13px; font-weight: bold;">Projekt Kezelés:</p>
+                <div style="display: flex; gap: 8px;">
+                    <button class="success" onclick="projektMentese()" style="flex: 1;">💾 Mentés</button>
+                    <button onclick="projektBetolteseDialog()" style="flex: 1;">📂 Betöltés</button>
+                </div>
+            </div>
+        </div>
+
+        <div>
+            <p><strong>1D Tömb &amp; Méret-súly adatok:</strong></p>
+            <ul id="butor-lista"><li draggable="true" data-index="0"><span><strong>1.</strong> 🌍 Földgömb (Alap) (400 XP) <strong style="color: #db2777;">[Súly: 1]</strong> </span>
+                <div class="controls-btn">
+                    <button onclick="event.stopPropagation(); elemMozgat(0, -1)">⬆️</button>
+                    <button onclick="event.stopPropagation(); elemMozgat(0, 1)">⬇️</button>
+                    <button class="danger" onclick="event.stopPropagation(); elemTörlése(0)">🗑️</button>
+                </div></li><li draggable="true" data-index="1"><span><strong>2.</strong> ⭐ Csillag (800 XP) <strong style="color: #db2777;">[Súly: 2]</strong> </span>
+                <div class="controls-btn">
+                    <button onclick="event.stopPropagation(); elemMozgat(1, -1)">⬆️</button>
+                    <button onclick="event.stopPropagation(); elemMozgat(1, 1)">⬇️</button>
+                    <button class="danger" onclick="event.stopPropagation(); elemTörlése(1)">🗑️</button>
+                </div></li><li draggable="true" data-index="2"><span><strong>3.</strong> ❤️ Szív (600 XP) <strong style="color: #db2777;">[Súly: 3]</strong> </span>
+                <div class="controls-btn">
+                    <button onclick="event.stopPropagation(); elemMozgat(2, -1)">⬆️</button>
+                    <button onclick="event.stopPropagation(); elemMozgat(2, 1)">⬇️</button>
+                    <button class="danger" onclick="event.stopPropagation(); elemTörlése(2)">🗑️</button>
+                </div></li></ul>
+
+            <div class="form-group">
+                <p style="margin: 0 0 8px 0; font-size: 13px; font-weight: bold;">Nehézségi szint:</p>
+                <select id="szintValaszto" onchange="szintetValt()" style="width: 100%; padding: 8px; margin-bottom: 10px; border-radius: 4px; border: 1px solid #f472b6;">
+                    <option value="konnyu">1. Alapozó Szint (3 elem)</option>
+                    <option value="kozepes">2. Haladó Szint (4 elem)</option>
+                    <option value="nehez">3. Mester Szint (3 elem)</option>
+                </select>
+
+                <p style="margin: 0 0 8px 0; font-size: 13px; font-weight: bold;">Saját Emoji hozzáadása (+50 pont):</p>
+                <input type="text" id="ujNev" placeholder="Emoji / Név">
+                <input type="number" id="ujAr" placeholder="Ár (XP)">
+                <input type="number" id="ujMeret" placeholder="Méret-súly (1-5)" min="1" max="5">
+                <button class="add-btn" onclick="ujElemHozzaadasa()">➕ Hozzáadás</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="fizikaModal" class="modal" style="display: none;">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3>⚛️ Fizikai Alapok a Tervező Mögött</h3>
+            <button class="close-btn" onclick="fizikaModalBezaras()">Bezárás ✕</button>
+        </div>
+        <div style="font-size: 14px; line-height: 1.6; color: #475569;">
+            <p><strong>1. Tömeg és Súly fizikai különbsége:</strong></p>
+            <ul>
+                <li><strong>Tömeg ($m$):</strong> Az anyagmennyiség mértéke ($kg$), amely mindenhol univerzálisan állandó.</li>
+                <li><strong>Súly ($G$):</strong> A gravitációs mező által kifejtett erő ($G = m \cdot g$, mértékegysége Newton). A tervezőben a méret-súly metafora a vizuális terhelést jelöli.</li>
+            </ul>
+            <p><strong>2. Gravitáció és Rétegrend:</strong> Az alapnak tekintett elemeknek mindig alul kell elhelyezkedniük a stabil egyensúly érdekében.</p>
+            <p><strong>3. Tehetetlenség:</strong> A nagyobb méret-súlyú elemek nehezebben mozdíthatók el.</p>
+        </div>
+    </div>
+</div>
+
+<script>
+    const szintek = {
+        konnyu: {
+            nev: "1. Alapozó Szint",
+            keret: 3000,
+            elemek: [
+                { id: 1, nev: "🌍 Földgömb (Alap)", kotelezoAlul: true, meretSuly: 1, ar: 400, w: "120px", h: "120px", offsetX: 20, offsetY: 20, szin: "#3b82f6", sajat: false },
+                { id: 2, nev: "⭐ Csillag", kotelezoAlul: false, meretSuly: 2, ar: 800, w: "80px", h: "80px", offsetX: 60, offsetY: 40, szin: "#eab308", sajat: false },
+                { id: 3, nev: "❤️ Szív", kotelezoAlul: false, meretSuly: 3, ar: 600, w: "60px", h: "60px", offsetX: 100, offsetY: 70, szin: "#ef4444", sajat: false }
+            ]
+        },
+        kozepes: {
+            nev: "2. Haladó Szint",
+            keret: 3500,
+            elemek: [
+                { id: 1, nev: "🎨 Paletta (Alap)", kotelezoAlul: true, meretSuly: 1, ar: 500, w: "120px", h: "120px", offsetX: 20, offsetY: 20, szin: "#8b5cf6", sajat: false },
+                { id: 2, nev: "🔥 Tűz", kotelezoAlul: false, meretSuly: 2, ar: 900, w: "80px", h: "80px", offsetX: 60, offsetY: 40, szin: "#f97316", sajat: false },
+                { id: 3, nev: "⚡ Villám", kotelezoAlul: false, meretSuly: 3, ar: 700, w: "70px", h: "70px", offsetX: 90, offsetY: 60, szin: "#eab308", sajat: false },
+                { id: 4, nev: "💧 Víz", kotelezoAlul: false, meretSuly: 4, ar: 400, w: "50px", h: "50px", offsetX: 120, offsetY: 80, szin: "#06b6d4", sajat: false }
+            ]
+        },
+        nehez: {
+            nev: "3. Mester Szint",
+            keret: 2500,
+            elemek: [
+                { id: 1, nev: "🪐 Szaturnusz (Alap)", kotelezoAlul: true, meretSuly: 1, ar: 800, w: "130px", h: "130px", offsetX: 20, offsetY: 20, szin: "#d97706", sajat: false },
+                { id: 2, nev: "🚀 Rakéta", kotelezoAlul: false, meretSuly: 4, ar: 1000, w: "90px", h: "90px", offsetX: 50, offsetY: 30, szin: "#64748b", sajat: false },
+                { id: 3, nev: "👽 Idegen", kotelezoAlul: false, meretSuly: 2, ar: 600, w: "70px", h: "70px", offsetX: 90, offsetY: 70, szin: "#10b981", sajat: false }
+            ]
+        }
+    };
+
+    let aktivSzint = 'konnyu';
+    let butorTomb = JSON.parse(JSON.stringify(szintek.konnyu.elemek));
+    let keretOsszeg = szintek.konnyu.keret;
+    let dragStartIndex = null;
+    let pontszam = 0;
+
+    function fizikaModalMegnyitas() { document.getElementById('fizikaModal').style.display = 'flex'; }
+    function fizikaModalBezaras() { document.getElementById('fizikaModal').style.display = 'none'; }
+
+    const canvas = document.getElementById('drawCanvas');
+    const ctx = canvas.getContext('2d');
+    let rajzol = false;
+    canvas.addEventListener('mousedown', e => { rajzol = true; ctx.beginPath(); ctx.moveTo(e.offsetX, e.offsetY); });
+    canvas.addEventListener('mousemove', e => { if (!rajzol) return; ctx.lineTo(e.offsetX, e.offsetY); ctx.stroke(); });
+    canvas.addEventListener('mouseup', () => rajzol = false);
+
+    function renderUI() {
+        const listaEl = document.getElementById('butor-lista');
+        const vaszonEl = document.getElementById('vaszon');
+        const reszosszegEl = document.getElementById('reszosszeg');
+        const keretEl = document.getElementById('keret');
+        const figyelmeztetesEl = document.getElementById('figyelmeztetes');
+        const sikerEl = document.getElementById('sikeruzenet');
+        const pontszamEl = document.getElementById('pontszam');
+        const statuszTxt = document.getElementById('statuszTxt');
+
+        listaEl.innerHTML = '';
+        vaszonEl.innerHTML = '';
+        let osszAr = 0;
+        let alapHelyenVan = (butorTomb.length > 0 && butorTomb[0].kotelezoAlul);
+
+        butorTomb.forEach((elem, index) => {
+            osszAr += elem.ar;
+            let li = document.createElement('li');
+            li.setAttribute('draggable', 'true');
+            li.dataset.index = index;
+            // Itt látszódik a méret-súly adat
+            li.innerHTML = `<span><strong>${index + 1}.</strong> ${elem.nev} (${elem.ar} XP) <strong style="color: #db2777;">[Súly: ${elem.meretSuly}]</strong> ${elem.sajat ? '⭐' : ''}</span>
+                <div class="controls-btn">
+                    <button onclick="event.stopPropagation(); elemMozgat(${index}, -1)">⬆️</button>
+                    <button onclick="event.stopPropagation(); elemMozgat(${index}, 1)">⬇️</button>
+                    <button class="danger" onclick="event.stopPropagation(); elemTörlése(${index})">🗑️</button>
+                </div>`;
+            
+            li.addEventListener('dragstart', () => { dragStartIndex = index; li.classList.add('dragging'); });
+            li.addEventListener('dragover', e => e.preventDefault());
+            li.addEventListener('drop', function() {
+                const temp = butorTomb[dragStartIndex];
+                butorTomb.splice(dragStartIndex, 1);
+                butorTomb.splice(index, 0, temp);
+                renderUI();
+            });
+            li.addEventListener('dragend', () => li.classList.remove('dragging'));
+            listaEl.appendChild(li);
+
+            let div = document.createElement('div');
+            div.className = 'canvas-shape';
+            div.style.zIndex = index + 1;
+            div.style.backgroundColor = elem.szin;
+            div.style.width = elem.w;
+            div.style.height = elem.h;
+            div.style.left = (elem.offsetX + (index * 15)) + 'px';
+            div.style.top = (elem.offsetY + (index * 12)) + 'px';
+            div.innerText = elem.nev.split(' ')[0];
+            vaszonEl.appendChild(div);
+        });
+
+        reszosszegEl.innerText = osszAr.toLocaleString();
+        keretEl.innerText = keretOsszeg.toLocaleString();
+        let tulkoltseg = osszAr > keretOsszeg;
+        reszosszegEl.className = tulkoltseg ? "budget-over" : "budget-ok";
+
+        if (!tulkoltseg && alapHelyenVan) {
+            let alappont = butorTomb.length * 100;
+            let sporalasiBonusz = Math.floor((keretOsszeg - osszAr) / 100) * 10;
+            pontszam = alappont + sporalasiBonusz;
+            figyelmeztetesEl.style.display = 'none';
+            sikerEl.style.display = 'block';
+            sikerEl.innerHTML = `🏆 Tökéletes kompozíció! <br><small>Alap: ${alappont}p | Spórolás (+${sporalasiBonusz}p)</small>`;
+            statuszTxt.innerText = "Kiváló";
+            statuszTxt.className = "budget-ok";
+        } else {
+            pontszam = 0;
+            if (tulkoltseg) {
+                figyelmeztetesEl.style.display = 'block';
+                figyelmeztetesEl.innerText = "🛑 Keretösszeg túllépés!";
+                statuszTxt.innerText = "Túllépés";
+                statuszTxt.className = "budget-over";
+            } else if (!alapHelyenVan) {
+                figyelmeztetesEl.style.display = 'block';
+                figyelmeztetesEl.innerText = "🛑 Figyelem: Az alapozó elemnek kell a legalsó rétegben lennie!";
+                statuszTxt.innerText = "Hibás réteg";
+                statuszTxt.className = "budget-over";
+            }
+            sikerEl.style.display = 'none';
+        }
+        pontszamEl.innerText = pontszam;
+    }
+
+    function szintetValt() {
+        let valasztott = document.getElementById('szintValaszto').value;
+        aktivSzint = valasztott;
+        keretOsszeg = szintek[valasztott].keret;
+        butorTomb = JSON.parse(JSON.stringify(szintek[valasztott].elemek));
+        document.getElementById('szintCimke').innerText = szintek[valasztott].nev;
+        renderUI();
+    }
+
+    function elemMozgat(i, dir) {
+        let ni = i + dir;
+        if (ni >= 0 && ni < butorTomb.length) {
+            let t = butorTomb[i]; butorTomb[i] = butorTomb[ni]; butorTomb[ni] = t;
+            renderUI();
+        }
+    }
+
+    function elemTörlése(i) { butorTomb.splice(i, 1); renderUI(); }
+
+    function ujElemHozzaadasa() {
+        let nev = document.getElementById('ujNev').value.trim();
+        let ar = parseInt(document.getElementById('ujAr').value);
+        let meret = parseInt(document.getElementById('ujMeret').value);
+        if (!nev || isNaN(ar) || isNaN(meret)) { alert("Tölts ki minden mezőt!"); return; }
+        butorTomb.push({ id: butorTomb.length + 1, nev, kotelezoAlul: false, meretSuly: meret, ar, szin: "#ec4899", w: "70px", h: "70px", offsetX: 60, offsetY: 50, sajat: true });
+        document.getElementById('ujNev').value = ''; document.getElementById('ujAr').value = ''; document.getElementById('ujMeret').value = '';
+        renderUI();
+    }
+
+    function hangAlapuBevitel() {
+        const gomb = document.getElementById('hangGomb');
+        const input = document.getElementById('diakValaszInput');
+        if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) { alert("Nem támogatott hangbevitel."); return; }
+        const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+        recognition.lang = 'hu-HU';
+        gomb.classList.add('listening');
+        gomb.innerText = "🎙️ Hallgatom...";
+        recognition.onresult = e => { input.value = e.results[0][0].transcript; gomb.classList.remove('listening'); gomb.innerText = "🎤 Hang"; };
+        recognition.onerror = recognition.onend = () => { gomb.classList.remove('listening'); gomb.innerText = "🎤 Hang"; };
+        recognition.start();
+    }
+
+    function rajzModToggle() { let cv = document.getElementById('drawCanvas'); cv.style.display = cv.style.display === 'block' ? 'none' : 'block'; }
+    function valaszElkuldve() { alert("Válasz rögzítve!"); }
+    function projektMentese() {
+        const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify({ szint: aktivSzint, keret: keretOsszeg, pontszam, elemek: butorTomb }, null, 2));
+        const a = document.createElement('a'); a.href = dataStr; a.download = "emoji_projekt.json"; a.click(); a.remove();
+    }
+    function projektBetolteseDialog() {
+        const input = document.createElement('input'); input.type = 'file'; input.accept = '.json';
+        input.onchange = e => {
+            const reader = new FileReader();
+            reader.readAsText(e.target.files[0], 'UTF-8');
+            reader.onload = ev => {
+                const t = JSON.parse(ev.target.result);
+                butorTomb = t.elemek; keretOsszeg = t.keret; aktivSzint = t.szint || 'konnyu';
+                document.getElementById('szintValaszto').value = aktivSzint;
+                renderUI(); alert("Sikeres betöltés!");
+            };
+        };
+        input.click();
+    }
+    renderUI();
+</script>
+
+</body></html>
