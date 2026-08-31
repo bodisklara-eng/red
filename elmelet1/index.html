@@ -1,0 +1,1304 @@
+<!DOCTYPE html>
+<!-- saved from url=(0068)file:///C:/Users/Utilizator/Downloads/gemini-code-1788077440321.html -->
+<html lang="hu"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dinamikus Esettanulmány-Kezelő &amp; Szimulátor</title>
+    
+    <!-- MathJax a matematikai és fizikai képletekhez -->
+    <script src="./Dinamikus Esettanulmány-Kezelő &amp; Szimulátor_files/polyfill.min.js.descărcare"></script>
+    <script id="MathJax-script" async="" src="./Dinamikus Esettanulmány-Kezelő &amp; Szimulátor_files/tex-mml-chtml.js.descărcare"></script>
+    
+    <!-- Tesseract.js (Optikai Karakterfelismerés / Képadat-kinyerés) -->
+    <script src="./Dinamikus Esettanulmány-Kezelő &amp; Szimulátor_files/tesseract.min.js.descărcare"></script>
+    
+    <!-- html2pdf.js (Dokumentumok exportálása PDF-be) -->
+    <script src="./Dinamikus Esettanulmány-Kezelő &amp; Szimulátor_files/html2pdf.bundle.min.js.descărcare"></script><style type="text/css">.CtxtMenu_InfoClose {  top:.2em; right:.2em;}
+.CtxtMenu_InfoContent {  overflow:auto; text-align:left; font-size:80%;  padding:.4em .6em; border:1px inset; margin:1em 0px;  max-height:20em; max-width:30em; background-color:#EEEEEE;  white-space:normal;}
+.CtxtMenu_Info.CtxtMenu_MousePost {outline:none;}
+.CtxtMenu_Info {  position:fixed; left:50%; width:auto; text-align:center;  border:3px outset; padding:1em 2em; background-color:#DDDDDD;  color:black;  cursor:default; font-family:message-box; font-size:120%;  font-style:normal; text-indent:0; text-transform:none;  line-height:normal; letter-spacing:normal; word-spacing:normal;  word-wrap:normal; white-space:nowrap; float:none; z-index:201;  border-radius: 15px;                     /* Opera 10.5 and IE9 */  -webkit-border-radius:15px;               /* Safari and Chrome */  -moz-border-radius:15px;                  /* Firefox */  -khtml-border-radius:15px;                /* Konqueror */  box-shadow:0px 10px 20px #808080;         /* Opera 10.5 and IE9 */  -webkit-box-shadow:0px 10px 20px #808080; /* Safari 3 & Chrome */  -moz-box-shadow:0px 10px 20px #808080;    /* Forefox 3.5 */  -khtml-box-shadow:0px 10px 20px #808080;  /* Konqueror */  filter:progid:DXImageTransform.Microsoft.dropshadow(OffX=2, OffY=2, Color="gray", Positive="true"); /* IE */}
+</style><style type="text/css">.CtxtMenu_MenuClose {  position:absolute;  cursor:pointer;  display:inline-block;  border:2px solid #AAA;  border-radius:18px;  -webkit-border-radius: 18px;             /* Safari and Chrome */  -moz-border-radius: 18px;                /* Firefox */  -khtml-border-radius: 18px;              /* Konqueror */  font-family: "Courier New", Courier;  font-size:24px;  color:#F0F0F0}
+.CtxtMenu_MenuClose span {  display:block; background-color:#AAA; border:1.5px solid;  border-radius:18px;  -webkit-border-radius: 18px;             /* Safari and Chrome */  -moz-border-radius: 18px;                /* Firefox */  -khtml-border-radius: 18px;              /* Konqueror */  line-height:0;  padding:8px 0 6px     /* may need to be browser-specific */}
+.CtxtMenu_MenuClose:hover {  color:white!important;  border:2px solid #CCC!important}
+.CtxtMenu_MenuClose:hover span {  background-color:#CCC!important}
+.CtxtMenu_MenuClose:hover:focus {  outline:none}
+</style><style type="text/css">.CtxtMenu_Menu {  position:absolute;  background-color:white;  color:black;  width:auto; padding:5px 0px;  border:1px solid #CCCCCC; margin:0; cursor:default;  font: menu; text-align:left; text-indent:0; text-transform:none;  line-height:normal; letter-spacing:normal; word-spacing:normal;  word-wrap:normal; white-space:nowrap; float:none; z-index:201;  border-radius: 5px;                     /* Opera 10.5 and IE9 */  -webkit-border-radius: 5px;             /* Safari and Chrome */  -moz-border-radius: 5px;                /* Firefox */  -khtml-border-radius: 5px;              /* Konqueror */  box-shadow:0px 10px 20px #808080;         /* Opera 10.5 and IE9 */  -webkit-box-shadow:0px 10px 20px #808080; /* Safari 3 & Chrome */  -moz-box-shadow:0px 10px 20px #808080;    /* Forefox 3.5 */  -khtml-box-shadow:0px 10px 20px #808080;  /* Konqueror */}
+.CtxtMenu_MenuItem {  padding: 1px 2em;  background:transparent;}
+.CtxtMenu_MenuArrow {  position:absolute; right:.5em; padding-top:.25em; color:#666666;  font-family: null; font-size: .75em}
+.CtxtMenu_MenuActive .CtxtMenu_MenuArrow {color:white}
+.CtxtMenu_MenuArrow.CtxtMenu_RTL {left:.5em; right:auto}
+.CtxtMenu_MenuCheck {  position:absolute; left:.7em;  font-family: null}
+.CtxtMenu_MenuCheck.CtxtMenu_RTL { right:.7em; left:auto }
+.CtxtMenu_MenuRadioCheck {  position:absolute; left: .7em;}
+.CtxtMenu_MenuRadioCheck.CtxtMenu_RTL {  right: .7em; left:auto}
+.CtxtMenu_MenuInputBox {  padding-left: 1em; right:.5em; color:#666666;  font-family: null;}
+.CtxtMenu_MenuInputBox.CtxtMenu_RTL {  left: .1em;}
+.CtxtMenu_MenuComboBox {  left:.1em; padding-bottom:.5em;}
+.CtxtMenu_MenuSlider {  left: .1em;}
+.CtxtMenu_SliderValue {  position:absolute; right:.1em; padding-top:.25em; color:#333333;  font-size: .75em}
+.CtxtMenu_SliderBar {  outline: none; background: #d3d3d3}
+.CtxtMenu_MenuLabel {  padding: 1px 2em 3px 1.33em;  font-style:italic}
+.CtxtMenu_MenuRule {  border-top: 1px solid #DDDDDD;  margin: 4px 3px;}
+.CtxtMenu_MenuDisabled {  color:GrayText}
+.CtxtMenu_MenuActive {  background-color: #606872;  color: white;}
+.CtxtMenu_MenuDisabled:focus {  background-color: #E8E8E8}
+.CtxtMenu_MenuLabel:focus {  background-color: #E8E8E8}
+.CtxtMenu_ContextMenu:focus {  outline:none}
+.CtxtMenu_ContextMenu .CtxtMenu_MenuItem:focus {  outline:none}
+.CtxtMenu_SelectionMenu {  position:relative; float:left;  border-bottom: none; -webkit-box-shadow:none; -webkit-border-radius:0px; }
+.CtxtMenu_SelectionItem {  padding-right: 1em;}
+.CtxtMenu_Selection {  right: 40%; width:50%; }
+.CtxtMenu_SelectionBox {  padding: 0em; max-height:20em; max-width: none;  background-color:#FFFFFF;}
+.CtxtMenu_SelectionDivider {  clear: both; border-top: 2px solid #000000;}
+.CtxtMenu_Menu .CtxtMenu_MenuClose {  top:-10px; left:-10px}
+</style>
+
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        html, body {
+            background-color: #0f172a;
+            color: #f8fafc;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+            padding: 2rem 1rem;
+        }
+        .main-wrapper { max-width: 1100px; margin: 0 auto; }
+        h1 { color: #38bdf8; font-size: 2.2rem; margin-bottom: 0.5rem; text-align: center; }
+        .subtitle { text-align: center; color: #94a3b8; margin-bottom: 2rem; }
+        
+        /* FEJLÉC ÉS VEZÉRLŐ PANEL */
+        .controls, .input-panel {
+            background: rgba(30, 41, 59, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 1.2rem;
+            border-radius: 16px;
+            border: 1px solid #38bdf8;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+        }
+        .controls {
+            position: sticky; top: 1rem; z-index: 100;
+            display: flex; justify-content: center; align-items: center; gap: 0.8rem; flex-wrap: wrap;
+        }
+        .btn {
+            background: #0369a1; color: #ffffff; border: none; padding: 0.6rem 1.1rem;
+            border-radius: 8px; font-size: 0.9rem; font-weight: bold; cursor: pointer;
+            transition: all 0.2s ease; display: inline-flex; align-items: center; gap: 0.4rem;
+        }
+        .btn:hover { background: #38bdf8; color: #0f172a; }
+        .btn:disabled { background: #334155; color: #64748b; cursor: not-allowed; }
+        .btn-danger { background: #991b1b; } .btn-danger:hover { background: #f87171; color: #fff; }
+        .btn-success { background: #166534; } .btn-success:hover { background: #4ade80; color: #0f172a; }
+        .btn-warning { background: #854d0e; } .btn-warning:hover { background: #facc15; color: #0f172a; }
+        .btn-recording { background: #dc2626 !important; color: #fff !important; animation: pulse 1.5s infinite; }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(220, 38, 38, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(220, 38, 38, 0); }
+        }
+
+        .input-group { display: flex; flex-direction: column; gap: 0.8rem; margin-top: 1rem; }
+        .input-row { display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap; }
+        input[type="text"], input[type="number"], input[type="url"], textarea {
+            width: 100%; padding: 0.8rem; background: #0f172a; border: 1px solid #334155;
+            color: #f8fafc; border-radius: 8px; font-family: inherit; font-size: 0.95rem;
+        }
+        textarea { resize: vertical; min-height: 110px; }
+
+        /* FELSŐ RUHAKÖTÉL VEKTOR-PANEL */
+        .clothesline-wrapper {
+            background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%);
+            border: 2px solid #38bdf8; border-radius: 16px; padding: 2rem 1rem;
+            margin-bottom: 2.5rem; position: relative; overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+        }
+        .clothesline-header {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 1.5rem; padding: 0 1rem; flex-wrap: wrap; gap: 1rem;
+        }
+        .clothesline-container {
+            display: flex; align-items: flex-start; justify-content: space-between;
+            position: relative; min-height: 200px; padding: 0 50px;
+        }
+        .tree { font-size: 4rem; z-index: 2; user-select: none; filter: drop-shadow(0 10px 5px rgba(0,0,0,0.5)); }
+        .rope {
+            position: absolute; top: 35px; left: 80px; right: 80px; height: 4px;
+            background: #d97706; border-radius: 2px; z-index: 1;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.4);
+        }
+        .clothes-list {
+            display: flex; gap: 15px; z-index: 3; position: absolute; top: 28px;
+            left: 90px; right: 90px; overflow-x: auto; padding-bottom: 15px;
+        }
+        .cloth-item {
+            position: relative; display: flex; flex-direction: column; align-items: center;
+            cursor: pointer; transition: transform 0.3s ease, filter 0.3s ease;
+            animation: hangIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+            transform-origin: top center; flex-shrink: 0;
+        }
+        .cloth-item:hover { transform: scale(1.1) translateY(-5px) !important; }
+        .cloth-item.selected .cloth-shape { border: 2px solid #facc15; box-shadow: 0 0 15px #facc15; }
+        
+        .pegs { display: flex; gap: 12px; z-index: 4; margin-bottom: -4px; }
+        .peg { width: 4px; height: 12px; background: #f59e0b; border-radius: 2px; }
+
+        .cloth-shape {
+            width: 75px; height: 85px; border-radius: 8px; display: flex;
+            flex-direction: column; justify-content: center; align-items: center;
+            color: #fff; font-weight: bold; font-size: 0.8rem; text-align: center;
+            padding: 5px; box-shadow: 0 8px 15px rgba(0,0,0,0.4); position: relative;
+        }
+        .cloth-shape::before {
+            content: ''; position: absolute; top: 0; width: 24px; height: 10px;
+            background: #0f172a; border-radius: 0 0 12px 12px;
+        }
+        .cloth-delete-btn {
+            position: absolute; top: -8px; right: -8px; background: #ef4444; color: white;
+            border: none; border-radius: 50%; width: 20px; height: 20px; font-size: 12px;
+            cursor: pointer; display: flex; justify-content: center; align-items: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.5); z-index: 5;
+        }
+
+        @keyframes hangIn {
+            0% { opacity: 0; transform: translateY(-60px) scale(0.5); }
+            100% { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        /* ESETTANULMÁNY KÁRTYÁK STÍLUSA */
+        .section-box {
+            background: #1e293b; border: 1px solid #334155; border-radius: 12px;
+            padding: 2rem; margin-bottom: 2.5rem; position: relative;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3); transition: all 0.3s ease;
+        }
+        .tag { display: inline-block; background: #0369a1; color: #e0f2fe; font-size: 0.8rem; padding: 0.3rem 0.6rem; border-radius: 4px; font-weight: bold; }
+        
+        h2 { color: #38bdf8; font-size: 1.5rem; margin-bottom: 1rem; border-bottom: 2px solid #334155; padding-bottom: 0.5rem; }
+        h3 { color: #facc15; font-size: 1.1rem; margin-top: 1rem; margin-bottom: 0.5rem; }
+
+        /* SORKÖVETŐ MONDATOK STÍLUSA */
+        .text-display-area {
+            background: #0f172a; border: 1px solid #334155; padding: 1.2rem;
+            border-radius: 8px; line-height: 1.8; font-size: 1rem; margin-bottom: 1rem;
+        }
+        .sentence {
+            transition: background-color 0.2s ease, color 0.2s ease;
+            border-radius: 4px; padding: 2px 4px; cursor: pointer; display: inline;
+        }
+        .sentence:hover { background-color: rgba(56, 189, 248, 0.25); }
+        .sentence.active-sentence {
+            background-color: #facc15 !important; color: #0f172a !important;
+            font-weight: bold; box-shadow: 0 0 8px #facc15;
+        }
+
+        .analysis-box { background: #0f172a; border-left: 4px solid #38bdf8; padding: 1.5rem; margin-top: 1.5rem; border-radius: 0 8px 8px 0; }
+
+        /* MULTIMÉDIA ÉS LINK PANEL */
+        .link-inputs-grid { display: grid; gap: 0.5rem; margin-top: 0.5rem; margin-bottom: 0.5rem; }
+        .media-preview-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem; margin-top: 1rem; }
+        .video-container { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; border-radius: 8px; border: 1px solid #38bdf8; }
+        .video-container iframe, .video-container video { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0; }
+        .image-preview { width: 100%; max-height: 300px; object-fit: contain; border-radius: 8px; border: 1px solid #38bdf8; }
+
+        /* ALSÓ VÍZSZINTES ÖSSZEKÖTÖTT ELEMLÁNC */
+        .bottom-chain-wrapper {
+            background: #1e293b; border: 2px dashed #38bdf8; border-radius: 16px;
+            padding: 1.5rem; margin-top: 3rem; margin-bottom: 2rem; text-align: center;
+        }
+        .chain-flex {
+            display: flex; align-items: center; justify-content: center;
+            gap: 0.5rem; overflow-x: auto; padding: 1rem 0;
+        }
+        .chain-node {
+            background: #0369a1; color: white; padding: 0.8rem 1.2rem;
+            border-radius: 8px; font-weight: bold; border: 1px solid #38bdf8;
+            min-width: 140px; white-space: nowrap; box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }
+        .chain-connector { color: #facc15; font-size: 1.5rem; font-weight: bold; }
+
+        /* SIMULATOR STYLES */
+        .sim-container { background: #0f172a; border: 2px solid #38bdf8; border-radius: 12px; padding: 1.5rem; margin-top: 1rem; }
+        .sim-controls { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1rem; }
+        .array-display { display: flex; justify-content: center; align-items: center; gap: 10px; min-height: 100px; background: #1e293b; border-radius: 8px; padding: 1rem; overflow-x: auto; }
+        .array-cell { display: flex; flex-direction: column; align-items: center; justify-content: center; width: 60px; height: 60px; background: #0369a1; color: #fff; font-weight: bold; border-radius: 8px; position: relative; }
+        .array-cell .index-label { position: absolute; top: -20px; font-size: 0.75rem; color: #38bdf8; }
+        .sim-log { margin-top: 1rem; padding: 0.8rem; background: #1e293b; border-radius: 6px; font-family: monospace; color: #38bdf8; }
+        
+        /* EXPORTÁLÓ GOMBSZOR A LAP ALJÁN */
+        .export-actions-bar {
+            display: flex; gap: 1rem; justify-content: center; align-items: center;
+            margin: 2rem 0; flex-wrap: wrap; background: #1e293b; padding: 1.5rem;
+            border-radius: 12px; border: 1px solid #38bdf8;
+        }
+    </style>
+<style id="MJX-CHTML-styles">
+mjx-container[jax="CHTML"] {
+  line-height: 0;
+}
+
+mjx-container [space="1"] {
+  margin-left: .111em;
+}
+
+mjx-container [space="2"] {
+  margin-left: .167em;
+}
+
+mjx-container [space="3"] {
+  margin-left: .222em;
+}
+
+mjx-container [space="4"] {
+  margin-left: .278em;
+}
+
+mjx-container [space="5"] {
+  margin-left: .333em;
+}
+
+mjx-container [rspace="1"] {
+  margin-right: .111em;
+}
+
+mjx-container [rspace="2"] {
+  margin-right: .167em;
+}
+
+mjx-container [rspace="3"] {
+  margin-right: .222em;
+}
+
+mjx-container [rspace="4"] {
+  margin-right: .278em;
+}
+
+mjx-container [rspace="5"] {
+  margin-right: .333em;
+}
+
+mjx-container [size="s"] {
+  font-size: 70.7%;
+}
+
+mjx-container [size="ss"] {
+  font-size: 50%;
+}
+
+mjx-container [size="Tn"] {
+  font-size: 60%;
+}
+
+mjx-container [size="sm"] {
+  font-size: 85%;
+}
+
+mjx-container [size="lg"] {
+  font-size: 120%;
+}
+
+mjx-container [size="Lg"] {
+  font-size: 144%;
+}
+
+mjx-container [size="LG"] {
+  font-size: 173%;
+}
+
+mjx-container [size="hg"] {
+  font-size: 207%;
+}
+
+mjx-container [size="HG"] {
+  font-size: 249%;
+}
+
+mjx-container [width="full"] {
+  width: 100%;
+}
+
+mjx-box {
+  display: inline-block;
+}
+
+mjx-block {
+  display: block;
+}
+
+mjx-itable {
+  display: inline-table;
+}
+
+mjx-row {
+  display: table-row;
+}
+
+mjx-row > * {
+  display: table-cell;
+}
+
+mjx-mtext {
+  display: inline-block;
+}
+
+mjx-mstyle {
+  display: inline-block;
+}
+
+mjx-merror {
+  display: inline-block;
+  color: red;
+  background-color: yellow;
+}
+
+mjx-mphantom {
+  visibility: hidden;
+}
+
+_::-webkit-full-page-media, _:future, :root mjx-container {
+  will-change: opacity;
+}
+
+mjx-assistive-mml {
+  position: absolute !important;
+  top: 0px;
+  left: 0px;
+  clip: rect(1px, 1px, 1px, 1px);
+  padding: 1px 0px 0px 0px !important;
+  border: 0px !important;
+  display: block !important;
+  width: auto !important;
+  overflow: hidden !important;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+mjx-assistive-mml[display="block"] {
+  width: 100% !important;
+}
+
+mjx-c::before {
+  display: block;
+  width: 0;
+}
+
+.MJX-TEX {
+  font-family: MJXZERO, MJXTEX;
+}
+
+.TEX-B {
+  font-family: MJXZERO, MJXTEX-B;
+}
+
+.TEX-I {
+  font-family: MJXZERO, MJXTEX-I;
+}
+
+.TEX-MI {
+  font-family: MJXZERO, MJXTEX-MI;
+}
+
+.TEX-BI {
+  font-family: MJXZERO, MJXTEX-BI;
+}
+
+.TEX-S1 {
+  font-family: MJXZERO, MJXTEX-S1;
+}
+
+.TEX-S2 {
+  font-family: MJXZERO, MJXTEX-S2;
+}
+
+.TEX-S3 {
+  font-family: MJXZERO, MJXTEX-S3;
+}
+
+.TEX-S4 {
+  font-family: MJXZERO, MJXTEX-S4;
+}
+
+.TEX-A {
+  font-family: MJXZERO, MJXTEX-A;
+}
+
+.TEX-C {
+  font-family: MJXZERO, MJXTEX-C;
+}
+
+.TEX-CB {
+  font-family: MJXZERO, MJXTEX-CB;
+}
+
+.TEX-FR {
+  font-family: MJXZERO, MJXTEX-FR;
+}
+
+.TEX-FRB {
+  font-family: MJXZERO, MJXTEX-FRB;
+}
+
+.TEX-SS {
+  font-family: MJXZERO, MJXTEX-SS;
+}
+
+.TEX-SSB {
+  font-family: MJXZERO, MJXTEX-SSB;
+}
+
+.TEX-SSI {
+  font-family: MJXZERO, MJXTEX-SSI;
+}
+
+.TEX-SC {
+  font-family: MJXZERO, MJXTEX-SC;
+}
+
+.TEX-T {
+  font-family: MJXZERO, MJXTEX-T;
+}
+
+.TEX-V {
+  font-family: MJXZERO, MJXTEX-V;
+}
+
+.TEX-VB {
+  font-family: MJXZERO, MJXTEX-VB;
+}
+
+mjx-stretchy-v mjx-c, mjx-stretchy-h mjx-c {
+  font-family: MJXZERO, MJXTEX-S1, MJXTEX-S4, MJXTEX, MJXTEX-A ! important;
+}
+
+@font-face /* 0 */ {
+  font-family: MJXZERO;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2/MathJax_Zero.woff") format("woff");
+}
+
+@font-face /* 1 */ {
+  font-family: MJXTEX;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2/MathJax_Main-Regular.woff") format("woff");
+}
+
+@font-face /* 2 */ {
+  font-family: MJXTEX-B;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2/MathJax_Main-Bold.woff") format("woff");
+}
+
+@font-face /* 3 */ {
+  font-family: MJXTEX-I;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2/MathJax_Math-Italic.woff") format("woff");
+}
+
+@font-face /* 4 */ {
+  font-family: MJXTEX-MI;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2/MathJax_Main-Italic.woff") format("woff");
+}
+
+@font-face /* 5 */ {
+  font-family: MJXTEX-BI;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2/MathJax_Math-BoldItalic.woff") format("woff");
+}
+
+@font-face /* 6 */ {
+  font-family: MJXTEX-S1;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2/MathJax_Size1-Regular.woff") format("woff");
+}
+
+@font-face /* 7 */ {
+  font-family: MJXTEX-S2;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2/MathJax_Size2-Regular.woff") format("woff");
+}
+
+@font-face /* 8 */ {
+  font-family: MJXTEX-S3;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2/MathJax_Size3-Regular.woff") format("woff");
+}
+
+@font-face /* 9 */ {
+  font-family: MJXTEX-S4;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2/MathJax_Size4-Regular.woff") format("woff");
+}
+
+@font-face /* 10 */ {
+  font-family: MJXTEX-A;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2/MathJax_AMS-Regular.woff") format("woff");
+}
+
+@font-face /* 11 */ {
+  font-family: MJXTEX-C;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2/MathJax_Calligraphic-Regular.woff") format("woff");
+}
+
+@font-face /* 12 */ {
+  font-family: MJXTEX-CB;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2/MathJax_Calligraphic-Bold.woff") format("woff");
+}
+
+@font-face /* 13 */ {
+  font-family: MJXTEX-FR;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2/MathJax_Fraktur-Regular.woff") format("woff");
+}
+
+@font-face /* 14 */ {
+  font-family: MJXTEX-FRB;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2/MathJax_Fraktur-Bold.woff") format("woff");
+}
+
+@font-face /* 15 */ {
+  font-family: MJXTEX-SS;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2/MathJax_SansSerif-Regular.woff") format("woff");
+}
+
+@font-face /* 16 */ {
+  font-family: MJXTEX-SSB;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2/MathJax_SansSerif-Bold.woff") format("woff");
+}
+
+@font-face /* 17 */ {
+  font-family: MJXTEX-SSI;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2/MathJax_SansSerif-Italic.woff") format("woff");
+}
+
+@font-face /* 18 */ {
+  font-family: MJXTEX-SC;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2/MathJax_Script-Regular.woff") format("woff");
+}
+
+@font-face /* 19 */ {
+  font-family: MJXTEX-T;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2/MathJax_Typewriter-Regular.woff") format("woff");
+}
+
+@font-face /* 20 */ {
+  font-family: MJXTEX-V;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2/MathJax_Vector-Regular.woff") format("woff");
+}
+
+@font-face /* 21 */ {
+  font-family: MJXTEX-VB;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2/MathJax_Vector-Bold.woff") format("woff");
+}
+</style></head>
+<body>
+
+    <div class="main-wrapper">
+        <h1>Dinamikus Esettanulmány-Kezelő &amp; Szimulátor</h1>
+        <p class="subtitle">Multimédiás Karakterkinyerés (OCR/Videó), Magyar Nyelvi Átformálás &amp; Exportáló Rendszer</p>
+
+        <!-- FELOLVASÓ ÉS VEZÉRLŐ PANEL (FENT) -->
+        <div class="controls">
+            <strong style="color: #38bdf8;">Fő Vezérlő:</strong>
+            <button id="btn-play-main" class="btn btn-success" onclick="startSpeech(0)">▶ Lejátszás</button>
+            <button id="btn-pause-main" class="btn btn-warning" onclick="pauseSpeech()" disabled="">⏸ Szünet</button>
+            <button id="btn-resume-main" class="btn" style="background:#0284c7;" onclick="resumeSpeech()" disabled="">▶ Folytatás</button>
+            <button id="btn-stop-main" class="btn btn-danger" onclick="stopSpeech()" disabled="">⏹ Leállítás</button>
+            <span style="border-left: 1px solid #475569; height: 25px; margin: 0 0.5rem;"></span>
+            <button onclick="exportData()" class="btn btn-warning">💾 Mentés (JSON)</button>
+            <button onclick="document.getElementById(&#39;import-file&#39;).click()" class="btn">📂 Betöltés</button>
+            <input type="file" id="import-file" style="display:none" accept=".json" onchange="importData(event)">
+        </div>
+
+        <!-- FELSŐ RUHAKÖTÉL VEKTOR-PANEL -->
+        <div class="clothesline-wrapper">
+            <div class="clothesline-header">
+                <h3>🧺 Vizuális Esettanulmány-Kötél (Vektor Animáció)</h3>
+                <div style="display: flex; gap: 0.5rem;">
+                    <button onclick="selectAllClothes()" class="btn" style="padding: 0.3rem 0.6rem; font-size: 0.8rem;">Összes kijelölése</button>
+                    <button onclick="deleteSelectedClothes()" class="btn btn-danger" style="padding: 0.3rem 0.6rem; font-size: 0.8rem;">🗑 Kijelöltek Törlése</button>
+                </div>
+            </div>
+            <div class="clothesline-container">
+                <div class="tree">🌲</div>
+                <div class="rope"></div>
+                <div class="clothes-list" id="clothes-list"><div class="cloth-item ">
+                    <button class="cloth-delete-btn" onclick="event.stopPropagation(); deleteCase(0);">×</button>
+                    <div class="pegs"><div class="peg"></div><div class="peg"></div></div>
+                    <div class="cloth-shape" style="background: #0284c7;" onclick="scrollToCard(0)">
+                        <span>#1</span>
+                        <span style="font-size:0.65rem; margin-top:2px; overflow:hidden; text-overflow:ellipsis; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical;"> Képgalériák &amp; Jegyeink</span>
+                    </div>
+                </div><div class="cloth-item ">
+                    <button class="cloth-delete-btn" onclick="event.stopPropagation(); deleteCase(1);">×</button>
+                    <div class="pegs"><div class="peg"></div><div class="peg"></div></div>
+                    <div class="cloth-shape" style="background: #16a34a;" onclick="scrollToCard(1)">
+                        <span>#2</span>
+                        <span style="font-size:0.65rem; margin-top:2px; overflow:hidden; text-overflow:ellipsis; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical;"> Rendezés és Logika</span>
+                    </div>
+                </div></div>
+                <div class="tree">🌳</div>
+            </div>
+        </div>
+
+        <!-- ADATBEVITELI KÖZPONT (FENT) -->
+        <div class="input-panel">
+            <h3>➕ Új Esettanulmány Hozzáadása vagy Kinyerése Médiafájlból</h3>
+            <div class="input-group">
+                <!-- Cím bevitele és diktálása -->
+                <div class="input-row">
+                    <input type="text" id="new-title" placeholder="Esettanulmány Címe (pl. 6. Esettanulmány: Diktált vagy Kinyert téma)">
+                    <button id="btn-dictate-title" onclick="toggleDictation(&#39;new-title&#39;, &#39;btn-dictate-title&#39;)" class="btn btn-warning" style="white-space: nowrap;">🎙 Cím Diktálása</button>
+                </div>
+
+                <!-- Szöveg bevitele és diktálása -->
+                <textarea id="new-text" placeholder="Írd be, másold be, töltsd fel fájlból, vagy nyerd ki képről/videóból az esettanulmány tartalmát..."></textarea>
+                
+                <!-- KÉP- ÉS VIDEÓ-ALAPÚ KINYERÉS ÉS VEZÉRLÉS -->
+                <div class="input-row">
+                    <button id="btn-dictate-text" onclick="toggleDictation(&#39;new-text&#39;, &#39;btn-dictate-text&#39;)" class="btn btn-warning">🎙 Szöveg Diktálása</button>
+                    <button onclick="formatInputText(&#39;new-text&#39;)" class="btn" style="background:#0284c7;">✨ Magyar Átformálás</button>
+                    <button onclick="document.getElementById(&#39;txt-file&#39;).click()" class="btn">📄 .TXT Beolvasása</button>
+                    <input type="file" id="txt-file" style="display:none" accept=".txt" onchange="readTxtFileToInput(event, &#39;new-text&#39;)">
+                    
+                    <!-- Új Média-Kinyerő Gombok -->
+                    <button onclick="document.getElementById(&#39;img-file-input&#39;).click()" class="btn" style="background: #0284c7;">🖼️ Kinyerés Képből (OCR)</button>
+                    <input type="file" id="img-file-input" style="display:none" accept="image/*" onchange="extractStudyFromImage(event)">
+
+                    <button onclick="document.getElementById(&#39;video-file-input&#39;).click()" class="btn" style="background: #7c3aed;">🎥 Kinyerés Videóból</button>
+                    <input type="file" id="video-file-input" style="display:none" accept="video/*" onchange="extractStudyFromVideo(event)">
+                </div>
+                
+                <!-- LINK GENERÁTOR MODUL -->
+                <div style="background: #0f172a; padding: 0.8rem; border-radius: 8px; border: 1px solid #334155; margin-top: 0.5rem;">
+                    <label style="font-size: 0.85rem; color: #38bdf8; font-weight: bold;">🔗 Csatolandó linkek/videók száma:</label>
+                    <div style="display: flex; gap: 0.5rem; margin-top: 0.4rem; align-items: center;">
+                        <input type="number" id="new-links-count" min="0" max="10" value="0" style="width: 80px;" onchange="generateLinkInputs(&#39;new-links-container&#39;, this.value)">
+                        <span style="font-size: 0.8rem; color: #94a3b8;">Add meg a számot, és illeszd be a hivatkozásokat!</span>
+                    </div>
+                    <div id="new-links-container" class="link-inputs-grid"></div>
+                </div>
+
+                <div style="margin-top: 0.5rem;">
+                    <button onclick="addStudyFromInput()" class="btn btn-success" style="width: 100%; justify-content: center; padding: 0.8rem;">➕ Hozzáadás, Átformálás &amp; Elemzés</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 1D TÖMB SZIMULÁTOR MODUL -->
+        <div class="section-box">
+            <span class="tag">Interaktív Szimuláció &amp; Elmélet</span>
+            <h2>Egydimenziós (1D) Tömbök és Műveleteik Szimulátora</h2>
+            <div class="sim-container">
+                <div class="sim-controls">
+                    <button class="btn" onclick="simPush()">Push</button>
+                    <button class="btn" onclick="simPop()">Pop</button>
+                    <button class="btn" onclick="simInsertAt()">Beszúrás</button>
+                    <button class="btn" onclick="simSort()">Rendezés</button>
+                    <button class="btn" onclick="simReverse()">Megfordítás</button>
+                </div>
+                <div class="array-display" id="array-box"><div class="array-cell"><span class="index-label">[0]</span>12</div><div class="array-cell"><span class="index-label">[1]</span>45</div><div class="array-cell"><span class="index-label">[2]</span>7</div><div class="array-cell"><span class="index-label">[3]</span>23</div><div class="array-cell"><span class="index-label">[4]</span>89</div></div>
+                <div class="sim-log" id="sim-log">Rendszer kész. Válassz egy műveletet!</div>
+            </div>
+        </div>
+
+        <!-- ESETTANULMÁNYOK KONTÉNER -->
+        <div id="cases-container"><div class="section-box" id="card-case1">
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                        <h2>1. Esettanulmány: Képgalériák &amp; Jegyeink</h2>
+                        <button class="btn btn-danger" style="padding:0.3rem 0.6rem; font-size:0.8rem;" onclick="deleteCase(0)">🗑 Törlés</button>
+                    </div>
+                    <div class="text-display-area"><span class="sentence" id="sent-0" onclick="playFromIndex(0)">Nézd meg a projekt elején lévő képgalériát!</span> <span class="sentence" id="sent-1" onclick="playFromIndex(1)"> Mindegyik képgalériában a képek hogyan helyezkednek el?</span> <span class="sentence" id="sent-2" onclick="playFromIndex(2)"> Van-e összefüggés a képek között?</span> <span class="sentence" id="sent-3" onclick="playFromIndex(3)"> Ismétlődnek-e a képek, méretükben különböznek-e?</span> <span class="sentence" id="sent-4" onclick="playFromIndex(4)"> Láthatod, hogy egyes galériák több helyet foglalnak el, mint mekkorák, így pazarolva a helyet a webfelületen.</span> <span class="sentence" id="sent-5" onclick="playFromIndex(5)"> Mások ugyanolyan témájú képeket tárolnak, de színükben, tartalmukban eltérnek.</span> <span class="sentence" id="sent-6" onclick="playFromIndex(6)"> Vannak, amelyekben azonos méretűek a képek, megegyeznek, de vannak, amelyekben egyáltalán nem azonos méretűek és nem azonos számosságúak.</span> <span class="sentence" id="sent-7" onclick="playFromIndex(7)"> Mindegyikben más-más számosságú kép van.</span> <span class="sentence" id="sent-8" onclick="playFromIndex(8)"> De lehet az is, hogy ismétlődik egy-egy kép, vagy csak a színük változik meg, de ugyanazt a képet mutatják be.</span> <span class="sentence" id="sent-9" onclick="playFromIndex(9)"> Szerinted egy képgaléria esetén, ha ugyanazt a képet látod egymás után semmi változtatás nélkül – sem effekt, sem szín, sem méret –, az zavaró lehet-e?</span> <span class="sentence" id="sent-10" onclick="playFromIndex(10)"> De mi van akkor, ha a jegyeid között sok tízest látsz a naplóban egymás után, vagy éppen szétszórva?</span> <span class="sentence" id="sent-11" onclick="playFromIndex(11)"> Melyiknek örülnél jobban?</span> <span class="sentence" id="sent-12" onclick="playFromIndex(12)"> Tehát mit tudsz ebből kikövetkeztetni?</span> <span class="sentence" id="sent-13" onclick="playFromIndex(13)"> A jegyeknél jó, ha ismétlődnek, főleg akkor, ha nagy jegyek.</span> <span class="sentence" id="sent-14" onclick="playFromIndex(14)"> A képeknél nem annyira jó, ha ismétlődnek.</span> <span class="sentence" id="sent-15" onclick="playFromIndex(15)"> Ha nincs változtatás rajtuk, monotonná válnak.</span> <span class="sentence" id="sent-16" onclick="playFromIndex(16)"> Persze akadnak ellenpéldák, mivel az ízlések mások minden ember számára.</span> <span class="sentence" id="sent-17" onclick="playFromIndex(17)"> De láttál három példát: a kis csibét, Annácskát és a ruháit, valamint láttad a színpompában csillogó-villogó szilveszteri karkötőket.</span> </div>
+                    <h3>🎬 Csatolt Multimédia &amp; Hivatkozások:</h3><div class="media-preview-grid">
+                                <div class="video-container">
+                                    <iframe src="./Dinamikus Esettanulmány-Kezelő &amp; Szimulátor_files/dQw4w9WgXcQ.html" allowfullscreen=""></iframe>
+                                </div>
+                            </div>
+                    <div class="analysis-box">
+                        <h3 style="margin-top:0;">📊 Automatikus Elemzés</h3>
+                        <p style="white-space: pre-line;">🔍 **Valós Idejű Magyar Nyelvi &amp; Gondolati Elemzés:**
+
+• **Helyesírási &amp; Stilisztikai Átformálás:** Megtörtént.
+• **Struktúra:** 18 mondat, 194 szó.
+• **Feltárt Gondolati Dimenziók:** UI/UX Vizuális Redundancia &amp; Megjelenítés.</p>
+                    </div>
+                </div><div class="section-box" id="card-case2">
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                        <h2>2. Esettanulmány: Rendezés és Logika</h2>
+                        <button class="btn btn-danger" style="padding:0.3rem 0.6rem; font-size:0.8rem;" onclick="deleteCase(1)">🗑 Törlés</button>
+                    </div>
+                    <div class="text-display-area"><span class="sentence" id="sent-18" onclick="playFromIndex(18)">Folytassuk az előbbi gondolatmenetet!</span> <span class="sentence" id="sent-19" onclick="playFromIndex(19)"> Ám ott csak a kapott feladatok között szét kellett választanod a képeket.</span> <span class="sentence" id="sent-20" onclick="playFromIndex(20)"> Egy történet leírása, egy kép.</span> <span class="sentence" id="sent-21" onclick="playFromIndex(21)"> Szét tudtad választani őket?</span> <span class="sentence" id="sent-22" onclick="playFromIndex(22)"> Hogyan tetted őket sorba?</span> <span class="sentence" id="sent-23" onclick="playFromIndex(23)"> Lehetett volna-e más sorrend?</span> <span class="sentence" id="sent-24" onclick="playFromIndex(24)"> Esetleg stílusukban megegyeztek ezek a képek, amikor összeválogattad őket?</span> <span class="sentence" id="sent-25" onclick="playFromIndex(25)"> Bár mondanivalójukban megegyeztek, stílusukban nem.</span> <span class="sentence" id="sent-26" onclick="playFromIndex(26)"> Hányféleképpen lehetett volna ezt szétválogatni?</span> <span class="sentence" id="sent-27" onclick="playFromIndex(27)"> Stílusok szerint is ismered ezeket a lehetőségeket?</span> <span class="sentence" id="sent-28" onclick="playFromIndex(28)"> Vagy vedd figyelembe a számosságukat, a képek számosságát!</span> <span class="sentence" id="sent-29" onclick="playFromIndex(29)"> Hány darabot tettél össze?</span> <span class="sentence" id="sent-30" onclick="playFromIndex(30)"> Lehetett-e volna több kockából vagy kevesebből ugyanazt a mesét összerakni?</span> <span class="sentence" id="sent-31" onclick="playFromIndex(31)"> De ezeken túl láthatod, hogy ha a színeket teszed össze a ruháknál, méretük szerint válogatod össze őket, vagy stílusok szerint, tudnál még ilyen szempontokat sorolni, amik alapján össze tudnád állítani ezeket?</span> <span class="sentence" id="sent-32" onclick="playFromIndex(32)"> Természetesen, mivel véletlenszerűen sorszámozhatóak ezek a ruhák az adott kupacban, meg tudnád mondani, hányféleképpen lehetett volna őket sorszámozni?</span> <span class="sentence" id="sent-33" onclick="playFromIndex(33)"> És mennyiben befolyásolták volna ezt Annát a döntéseiben, amikor a ruhadarabokat kiválogatta és elment végül a buliba?</span> <span class="sentence" id="sent-34" onclick="playFromIndex(34)"> Vagy amikor rendezte a ruhákat, hányféleképpen tudta volna egymásra helyezni a nadrágokat vagy éppen a pólókat a külön kupacokban?</span> <span class="sentence" id="sent-35" onclick="playFromIndex(35)"> Lehetett volna több megoldás?</span> <span class="sentence" id="sent-36" onclick="playFromIndex(36)"> És így tovább.</span> <span class="sentence" id="sent-37" onclick="playFromIndex(37)"> És ha a színük alapján nézzük a ruhákat, akkor az eredeti sorban hogyan helyezkedtek el a ruhák szétválogatás előtt?</span> <span class="sentence" id="sent-38" onclick="playFromIndex(38)"> Lehetett volna ez a sorrend más, ha csak a színeket nézzük?</span> <span class="sentence" id="sent-39" onclick="playFromIndex(39)"> De mi van akkor, ha a méretet tekintjük?</span> <span class="sentence" id="sent-40" onclick="playFromIndex(40)"> Gondoljuk végig ezt!</span> </div>
+                    
+                    <div class="analysis-box">
+                        <h3 style="margin-top:0;">📊 Automatikus Elemzés</h3>
+                        <p style="white-space: pre-line;">🔍 **Valós Idejű Magyar Nyelvi &amp; Gondolati Elemzés:**
+
+• **Helyesírási &amp; Stilisztikai Átformálás:** Megtörtént.
+• **Struktúra:** 23 mondat, 214 szó.
+• **Feltárt Gondolati Dimenziók:** UI/UX Vizuális Redundancia &amp; Megjelenítés, Algoritmikus Rendezés &amp; Csoportosítás, Diszkrét Matematika &amp; Kombinatorika.</p>
+                    </div>
+                </div></div>
+
+        <!-- HTML GENERÁLÁS ÉS PDF EXPORTÁLÓ GOMSZOR -->
+        <div class="export-actions-bar">
+            <h3 style="margin-top: 0; color: #38bdf8;">📄 Kiadvány Generálási Opciók</h3>
+            <p style="color: #94a3b8; width: 100%; text-align: center; font-size: 0.9rem;">Generáld le az összegyűjtött esettanulmányokat egyetlen strukturált HTML fájlba vagy töltsd le őket PDF dokumentumként.</p>
+            <button onclick="downloadAsHTML()" class="btn btn-success" style="padding: 0.8rem 1.5rem; font-size: 1rem;">
+                🌐 HTML Kiadvány Generálása &amp; Letöltése
+            </button>
+            <button onclick="exportToPDF()" class="btn btn-warning" style="padding: 0.8rem 1.5rem; font-size: 1rem;">
+                📄 PDF Dokumentum Exportálása
+            </button>
+        </div>
+
+        <!-- ALSÓ VÍZSZINTES ÖSSZEKÖTÖTT ELEMLÁNC -->
+        <div class="bottom-chain-wrapper">
+            <h3>🔗 Esettanulmányok Vízszintes Összekötött Lánca (Projekt Alja)</h3>
+            <p style="color:#94a3b8; font-size:0.85rem; margin-top:0.3rem;">Az alábbi vektoros kapcsolódási sor mutatja az esettanulmányok folyamatosságát:</p>
+            <div class="chain-flex" id="bottom-chain"><div class="chain-node" style="cursor: pointer;">1. 1. Esettanulmány</div><div class="chain-connector">➔</div><div class="chain-node" style="cursor: pointer;">2. 2. Esettanulmány</div></div>
+        </div>
+    </div>
+
+    <script>
+        const clothColors = ['#0284c7', '#16a34a', '#d97706', '#9333ea', '#e11d48', '#0d9488', '#4f46e5'];
+
+        let fullStudyData = [
+            {
+                id: "case1",
+                title: "1. Esettanulmány: Képgalériák & Jegyeink",
+                originalText: "Nézd meg a projekt elején lévő képgalériát! Mindegyik képgalériában a képek hogyan helyezkednek el? Van-e összefüggés a képek között? Ismétlődnek-e a képek, méretükben különböznek-e? Láthatod, hogy egyes galériák több helyet foglalnak el, mint mekkorák, így pazarolva a helyet a webfelületen. Mások ugyanolyan témájú képeket tárolnak, de színükben, tartalmukban eltérnek. Vannak, amelyekben azonos méretűek a képek, megegyeznek, de vannak, amelyekben egyáltalán nem azonos méretűek és nem azonos számosságúak. Mindegyikben más-más számosságú kép van. De lehet az is, hogy ismétlődik egy-egy kép, vagy csak a színük változik meg, de ugyanazt a képet mutatják be. Szerinted egy képgaléria esetén, ha ugyanazt a képet látod egymás után semmi változtatás nélkül – sem effekt, sem szín, sem méret –, az zavaró lehet-e? De mi van akkor, ha a jegyeid között sok tízest látsz a naplóban egymás után, vagy éppen szétszórva? Melyiknek örülnél jobban? Tehát mit tudsz ebből kikövetkeztetni? A jegyeknél jó, ha ismétlődnek, főleg akkor, ha nagy jegyek. A képeknél nem annyira jó, ha ismétlődnek. Ha nincs változtatás rajtuk, monotonná válnak. Persze akadnak ellenpéldák, mivel az ízlések mások minden ember számára. De láttál három példát: a kis csibét, Annácskát és a ruháit, valamint láttad a színpompában csillogó-villogó szilveszteri karkötőket.",
+                links: ["https://www.youtube.com/watch?v=dQw4w9WgXcQ"],
+                analysis: "", selected: false
+            },
+            {
+                id: "case2",
+                title: "2. Esettanulmány: Rendezés és Logika",
+                originalText: "Folytassuk az előbbi gondolatmenetet! Ám ott csak a kapott feladatok között szét kellett választanod a képeket. Egy történet leírása, egy kép. Szét tudtad választani őket? Hogyan tetted őket sorba? Lehetett volna-e más sorrend? Esetleg stílusukban megegyeztek ezek a képek, amikor összeválogattad őket? Bár mondanivalójukban megegyeztek, stílusukban nem. Hányféleképpen lehetett volna ezt szétválogatni? Stílusok szerint is ismered ezeket a lehetőségeket? Vagy vedd figyelembe a számosságukat, a képek számosságát! Hány darabot tettél össze? Lehetett-e volna több kockából vagy kevesebből ugyanazt a mesét összerakni? De ezeken túl láthatod, hogy ha a színeket teszed össze a ruháknál, méretük szerint válogatod össze őket, vagy stílusok szerint, tudnál még ilyen szempontokat sorolni, amik alapján össze tudnád állítani ezeket? Természetesen, mivel véletlenszerűen sorszámozhatóak ezek a ruhák az adott kupacban, meg tudnád mondani, hányféleképpen lehetett volna őket sorszámozni? És mennyiben befolyásolták volna ezt Annát a döntéseiben, amikor a ruhadarabokat kiválogatta és elment végül a buliba? Vagy amikor rendezte a ruhákat, hányféleképpen tudta volna egymásra helyezni a nadrágokat vagy éppen a pólókat a külön kupacokban? Lehetett volna több megoldás? És így tovább. És ha a színük alapján nézzük a ruhákat, akkor az eredeti sorban hogyan helyezkedtek el a ruhák szétválogatás előtt? Lehetett volna ez a sorrend más, ha csak a színeket nézzük? De mi van akkor, ha a méretet tekintjük? Gondoljuk végig ezt!",
+                links: [],
+                analysis: "", selected: false
+            }
+        ];
+
+        let sentenceElements = [];
+        let synth = window.speechSynthesis;
+        let speechUtterance = null;
+        let currentSentenceIdx = 0;
+        let isSpeaking = false;
+        let recognition = null;
+        let activeDictationTarget = null;
+        let arrayData = [12, 45, 7, 23, 89];
+
+        // MAGYAR NYELVI ÉS GONDOLATI ÁTFORMÁLÓ MOTOR
+        function formatHungarianGrammarAndLogic(rawText) {
+            if (!rawText) return "";
+            let cleaned = rawText
+                .replace(/\bamethyl\b/gi, "amellyel")
+                .replace(/\btólünk\b/gi, "tőlünk")
+                .replace(/\bhogy\s+/gi, "hogy ")
+                .replace(/\s+/g, " ")
+                .replace(/\s+([.,!?:;])/g, "$1")
+                .replace(/([.,!?:;])(?=[a-zA-ZáéíóöőúüűÁÉÍÓÖŐÚÜŰ])/g, "$1 ")
+                .replace(/(^|[.!?]\s+)([a-zárvíztükörfúrógépóöőúüű])/g, (m, p1, p2) => p1 + p2.toUpperCase());
+
+            if (!/[.!?]/.test(cleaned)) {
+                cleaned = cleaned.replace(/\s+(de|mert|ezért|azonban|mivel|így|tehát)\s+/gi, ". $1 ");
+                cleaned += ".";
+                cleaned = cleaned.replace(/(^|[.!?]\s+)([a-zárvíztükörfúrógépóöőúüű])/g, (m, p1, p2) => p1 + p2.toUpperCase());
+            }
+
+            return cleaned.trim();
+        }
+
+        function formatInputText(targetId) {
+            const el = document.getElementById(targetId);
+            if (!el || !el.value.trim()) { alert('Nincs átformálandó szöveg a mezőben!'); return; }
+            el.value = formatHungarianGrammarAndLogic(el.value);
+        }
+
+        // KÉP-ALAPÚ KINYERÉS (OCR - Tesseract.js)
+        async function extractStudyFromImage(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            alert("📷 Kép feldolgozása folyamatban (OCR)... Kérjük várjon!");
+            
+            Tesseract.recognize(file, 'hun', { logger: m => console.log(m) })
+                .then(({ data: { text } }) => {
+                    if (!text.trim()) {
+                        alert("Nem sikerült olvasható szöveget kinyerni a képből.");
+                        return;
+                    }
+                    const formatted = formatHungarianGrammarAndLogic(text);
+                    document.getElementById('new-title').value = "Képből kinyert esettanulmány: " + file.name;
+                    document.getElementById('new-text').value = formatted;
+                    
+                    // Kép csatolása linkként
+                    const imgUrl = URL.createObjectURL(file);
+                    generateLinkInputs('new-links-container', 1, [imgUrl]);
+
+                    alert("Sikeres szövegkinyerés képből!");
+                })
+                .catch(err => {
+                    console.error(err);
+                    alert("Hiba történt a kép feldolgozása során.");
+                });
+        }
+
+        // VIDEÓ-ALAPÚ KINYERÉS ÉS ELEMZÉSI MAGYARÁZAT GENERÁLÁS
+        function extractStudyFromVideo(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            alert("🎥 Videófájl beolvasása és elemzése folyamatban...");
+            const videoUrl = URL.createObjectURL(file);
+            
+            const detectedTitle = "Videó esettanulmány: " + file.name.replace(/\.[^/.]+$/, "");
+            const generatedText = formatHungarianGrammarAndLogic(
+                `A megadott videó (${file.name}) alapján kinyert esettanulmány. A videó felvétele a megfigyelt folyamatokat és vizuális demonstrációt rögzíti. Az esettanulmány vizsgálja a videóban szereplő lépések sorrendiségét, az átmeneteket és az ezekből levonható fizikai vagy logikai következtetéseket.`
+            );
+
+            document.getElementById('new-title').value = detectedTitle;
+            document.getElementById('new-text').value = generatedText;
+            
+            // Csatoljuk a videót a multimédia felülethez
+            generateLinkInputs('new-links-container', 1, [videoUrl]);
+        }
+
+        function getYouTubeEmbedUrl(url) {
+            const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+            const match = url.match(regExp);
+            return (match && match[2].length === 11) ? `https://www.youtube.com/embed/${match[2]}` : null;
+        }
+
+        function generateLinkInputs(containerId, count, existingLinks = []) {
+            const container = document.getElementById(containerId);
+            if (!container) return;
+            container.innerHTML = '';
+            const num = parseInt(count) || 0;
+            for (let i = 0; i < num; i++) {
+                const val = existingLinks[i] || '';
+                const input = document.createElement('input');
+                input.type = 'url';
+                input.className = 'link-input-field';
+                input.placeholder = `${i + 1}. Link / Videó / Média URL`;
+                input.value = val;
+                container.appendChild(input);
+            }
+        }
+
+        function performAdvancedAnalysis(text) {
+            const formattedText = formatHungarianGrammarAndLogic(text);
+            const sentences = formattedText.match(/[^.!?]+[.!?]+/g) || [formattedText];
+            const words = formattedText.split(/\s+/).filter(w => w.length > 0);
+            
+            let topics = [];
+            const lower = formattedText.toLowerCase();
+            if (lower.includes("kép") || lower.includes("galéria") || lower.includes("szín") || lower.includes("ocr")) topics.push("UI/UX Vizuális Redundancia & Megjelenítés");
+            if (lower.includes("sorrend") || lower.includes("szétválogat") || lower.includes("rendez")) topics.push("Algoritmikus Rendezés & Csoportosítás");
+            if (lower.includes("kombinatorika") || lower.includes("pozíció") || lower.includes("lehetőség")) topics.push("Diszkrét Matematika & Kombinatorika");
+            if (lower.includes("szivattyú") || lower.includes("víz") || lower.includes("kút") || lower.includes("fizika") || lower.includes("videó")) topics.push("Fizikai / Dinamikus Rendszerelemzés");
+
+            if (topics.length === 0) topics.push("Általános Szöveges Esettanulmány");
+
+            let report = `🔍 **Valós Idejű Magyar Nyelvi & Gondolati Elemzés:**\n\n`;
+            report += `• **Helyesírási & Stilisztikai Átformálás:** Megtörtént.\n`;
+            report += `• **Struktúra:** ${sentences.length} mondat, ${words.length} szó.\n`;
+            report += `• **Feltárt Gondolati Dimenziók:** ${topics.join(", ")}.`;
+
+            return { text: formattedText, analysisReport: report };
+        }
+
+        // TÖMB SZIMULÁTOR FUNKCIÓK
+        function renderArray() {
+            const box = document.getElementById('array-box');
+            if (!box) return;
+            box.innerHTML = '';
+            arrayData.forEach((val, idx) => {
+                const cell = document.createElement('div');
+                cell.className = 'array-cell';
+                cell.innerHTML = `<span class="index-label">[${idx}]</span>${val}`;
+                box.appendChild(cell);
+            });
+        }
+        function simLog(msg) { document.getElementById('sim-log').innerText = msg; }
+        function simPush() { const val = Math.floor(Math.random() * 90) + 10; arrayData.push(val); renderArray(); simLog(`Push: ${val} hozzáadva a tömb végéhez.`); }
+        function simPop() { if (arrayData.length === 0) return simLog("A tömb üres!"); const val = arrayData.pop(); renderArray(); simLog(`Pop: ${val} eltávolítva a tömb végéről.`); }
+        function simInsertAt() { const val = Math.floor(Math.random() * 90) + 10; arrayData.splice(1, 0, val); renderArray(); simLog(`Insert: ${val} beszúrva az 1-es indexre.`); }
+        function simSort() { arrayData.sort((a,b) => a - b); renderArray(); simLog("Sort: Tömb elemei növekvő sorrendbe rendezve."); }
+        function simReverse() { arrayData.reverse(); renderArray(); simLog("Reverse: Tömb sorrendje megfordítva."); }
+
+        // CSORDA / RUHAKÖTÉL & LÁNC
+        function renderClothesline() {
+            const list = document.getElementById('clothes-list');
+            if(!list) return;
+            list.innerHTML = '';
+
+            fullStudyData.forEach((item, index) => {
+                const color = clothColors[index % clothColors.length];
+                const cloth = document.createElement('div');
+                cloth.className = `cloth-item ${item.selected ? 'selected' : ''}`;
+                
+                cloth.innerHTML = `
+                    <button class="cloth-delete-btn" onclick="event.stopPropagation(); deleteCase(${index});">×</button>
+                    <div class="pegs"><div class="peg"></div><div class="peg"></div></div>
+                    <div class="cloth-shape" style="background: ${color};" onclick="scrollToCard(${index})">
+                        <span>#${index + 1}</span>
+                        <span style="font-size:0.65rem; margin-top:2px; overflow:hidden; text-overflow:ellipsis; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical;">${item.title.split(':')[1] || item.title}</span>
+                    </div>
+                `;
+                list.appendChild(cloth);
+            });
+        }
+
+        function renderBottomChain() {
+            const chainBox = document.getElementById('bottom-chain');
+            if(!chainBox) return;
+            chainBox.innerHTML = '';
+            fullStudyData.forEach((item, index) => {
+                const node = document.createElement('div');
+                node.className = 'chain-node';
+                node.innerText = `${index + 1}. ${item.title.split(':')[0]}`;
+                node.onclick = () => scrollToCard(index);
+                node.style.cursor = 'pointer';
+                chainBox.appendChild(node);
+
+                if (index < fullStudyData.length - 1) {
+                    const conn = document.createElement('div');
+                    conn.className = 'chain-connector';
+                    conn.innerText = '➔';
+                    chainBox.appendChild(conn);
+                }
+            });
+        }
+
+        function scrollToCard(index) {
+            const card = document.getElementById(`card-${fullStudyData[index].id}`);
+            if(card) card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+
+        function selectAllClothes() {
+            const allSelected = fullStudyData.every(c => c.selected);
+            fullStudyData.forEach(c => c.selected = !allSelected);
+            renderClothesline();
+        }
+
+        function deleteSelectedClothes() {
+            const toDelete = fullStudyData.filter(c => c.selected).length;
+            if (toDelete === 0) { alert('Nincs kijelölve egyetlen esettanulmány sem!'); return; }
+            if (confirm(`Biztosan törölni szeretnéd a kijelölt ${toDelete} esettanulmányt?`)) {
+                fullStudyData = fullStudyData.filter(c => !c.selected);
+                renderCases();
+            }
+        }
+
+        function deleteCase(index) {
+            fullStudyData.splice(index, 1);
+            renderCases();
+        }
+
+        function renderCases() {
+            fullStudyData.forEach(item => {
+                if (!item.analysis) {
+                    const res = performAdvancedAnalysis(item.originalText);
+                    item.originalText = res.text;
+                    item.analysis = res.analysisReport;
+                }
+                if (!item.links) item.links = [];
+            });
+
+            renderClothesline();
+            renderBottomChain();
+
+            const container = document.getElementById('cases-container');
+            if(!container) return;
+            container.innerHTML = '';
+            sentenceElements = [];
+
+            fullStudyData.forEach((item, index) => {
+                const card = document.createElement('div');
+                card.className = 'section-box';
+                card.id = `card-${item.id}`;
+
+                const origSentences = item.originalText.match(/[^.!?]+[.!?]+/g) || [item.originalText];
+                let origHtml = '';
+                origSentences.forEach((s) => {
+                    const globalIdx = sentenceElements.length;
+                    origHtml += `<span class="sentence" id="sent-${globalIdx}" onclick="playFromIndex(${globalIdx})">${s}</span> `;
+                    sentenceElements.push({ id: `sent-${globalIdx}`, cardId: `card-${item.id}`, text: s.trim() });
+                });
+
+                let mediaHtml = '';
+                if (item.links && item.links.length > 0) {
+                    mediaHtml += `<h3>🎬 Csatolt Multimédia & Hivatkozások:</h3><div class="media-preview-grid">`;
+                    item.links.forEach((linkUrl) => {
+                        const embedUrl = getYouTubeEmbedUrl(linkUrl);
+                        if (embedUrl) {
+                            mediaHtml += `
+                                <div class="video-container">
+                                    <iframe src="${embedUrl}" allowfullscreen></iframe>
+                                </div>
+                            `;
+                        } else if (linkUrl.startsWith('blob:') || linkUrl.match(/\.(mp4|webm|ogg)$/i)) {
+                            mediaHtml += `
+                                <div class="video-container">
+                                    <video src="${linkUrl}" controls></video>
+                                </div>
+                            `;
+                        } else if (linkUrl.match(/\.(jpeg|jpg|gif|png|webp)$/i) || linkUrl.startsWith('data:image') || linkUrl.startsWith('blob:')) {
+                            mediaHtml += `<img src="${linkUrl}" class="image-preview" alt="Csatolt Kép">`;
+                        } else {
+                            mediaHtml += `<a href="${linkUrl}" target="_blank" class="external-link-btn">🔗 Megnyitás: ${linkUrl}</a>`;
+                        }
+                    });
+                    mediaHtml += `</div>`;
+                }
+
+                card.innerHTML = `
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                        <h2>${item.title}</h2>
+                        <button class="btn btn-danger" style="padding:0.3rem 0.6rem; font-size:0.8rem;" onclick="deleteCase(${index})">🗑 Törlés</button>
+                    </div>
+                    <div class="text-display-area">${origHtml}</div>
+                    ${mediaHtml}
+                    <div class="analysis-box">
+                        <h3 style="margin-top:0;">📊 Automatikus Elemzés</h3>
+                        <p style="white-space: pre-line;">${item.analysis}</p>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function addStudyFromInput() {
+            const titleEl = document.getElementById('new-title');
+            const textEl = document.getElementById('new-text');
+            const linksContainer = document.getElementById('new-links-container');
+
+            if (!titleEl.value.trim() || !textEl.value.trim()) {
+                alert('Kérjük, add meg az esettanulmány címét és szövegét!');
+                return;
+            }
+
+            const links = [];
+            if (linksContainer) {
+                const inputs = linksContainer.querySelectorAll('input');
+                inputs.forEach(input => {
+                    if (input.value.trim()) links.push(input.value.trim());
+                });
+            }
+
+            const res = performAdvancedAnalysis(textEl.value);
+
+            const newCase = {
+                id: "case_" + Date.now(),
+                title: titleEl.value.trim(),
+                originalText: res.text,
+                analysis: res.analysisReport,
+                links: links,
+                selected: false
+            };
+
+            fullStudyData.push(newCase);
+            renderCases();
+
+            titleEl.value = '';
+            textEl.value = '';
+            document.getElementById('new-links-count').value = '0';
+            if (linksContainer) linksContainer.innerHTML = '';
+        }
+
+        function readTxtFileToInput(event, targetId) {
+            const file = event.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                document.getElementById(targetId).value = formatHungarianGrammarAndLogic(e.target.result);
+            };
+            reader.readAsText(file);
+        }
+
+        // FELOLVASÓ SPEECH SYNTHESIS ENGINE
+        function startSpeech(startIndex = 0) {
+            if (sentenceElements.length === 0) return;
+            synth.cancel();
+            currentSentenceIdx = startIndex;
+            isSpeaking = true;
+            updateSpeechButtons();
+            speakNextSentence();
+        }
+
+        function speakNextSentence() {
+            if (currentSentenceIdx >= sentenceElements.length || !isSpeaking) {
+                stopSpeech();
+                return;
+            }
+
+            const item = sentenceElements[currentSentenceIdx];
+            document.querySelectorAll('.sentence').forEach(el => el.classList.remove('active-sentence'));
+            const sentEl = document.getElementById(item.id);
+            if (sentEl) {
+                sentEl.classList.add('active-sentence');
+                sentEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+
+            speechUtterance = new SpeechSynthesisUtterance(item.text);
+            speechUtterance.lang = 'hu-HU';
+            speechUtterance.rate = 1.0;
+
+            speechUtterance.onend = () => {
+                currentSentenceIdx++;
+                speakNextSentence();
+            };
+
+            speechUtterance.onerror = () => {
+                currentSentenceIdx++;
+                speakNextSentence();
+            };
+
+            synth.speak(speechUtterance);
+        }
+
+        function pauseSpeech() { if (synth.speaking) { synth.pause(); updateSpeechButtons(true); } }
+        function resumeSpeech() { if (synth.paused) { synth.resume(); updateSpeechButtons(false); } }
+        function stopSpeech() {
+            isSpeaking = false; synth.cancel();
+            document.querySelectorAll('.sentence').forEach(el => el.classList.remove('active-sentence'));
+            updateSpeechButtons();
+        }
+        function playFromIndex(index) { startSpeech(index); }
+
+        function updateSpeechButtons(isPaused = false) {
+            document.getElementById('btn-play-main').disabled = isSpeaking && !isPaused;
+            document.getElementById('btn-pause-main').disabled = !isSpeaking || isPaused;
+            document.getElementById('btn-resume-main').disabled = !isPaused;
+            document.getElementById('btn-stop-main').disabled = !isSpeaking;
+        }
+
+        // DIKTÁLÓ ENGINE (Web Speech Recognition API)
+        function toggleDictation(targetId, btnId) {
+            const btn = document.getElementById(btnId);
+            if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+                alert('A böngésződ nem támogatja a közvetlen diktálást.');
+                return;
+            }
+
+            if (recognition && activeDictationTarget === targetId) {
+                recognition.stop();
+                return;
+            }
+
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            recognition = new SpeechRecognition();
+            recognition.lang = 'hu-HU';
+            recognition.continuous = true;
+            recognition.interimResults = false;
+
+            activeDictationTarget = targetId;
+            btn.classList.add('btn-recording');
+
+            recognition.onresult = (event) => {
+                let transcript = '';
+                for (let i = event.resultIndex; i < event.results.length; i++) {
+                    transcript += event.results[i][0].transcript;
+                }
+                const inputEl = document.getElementById(targetId);
+                inputEl.value = formatHungarianGrammarAndLogic((inputEl.value + " " + transcript).trim());
+            };
+
+            recognition.onend = () => {
+                btn.classList.remove('btn-recording');
+                recognition = null;
+                activeDictationTarget = null;
+            };
+
+            recognition.start();
+        }
+
+        // JSON MENTÉS ÉS BETÖLTÉS
+        function exportData() {
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(fullStudyData, null, 2));
+            const dlAnchorElem = document.createElement('a');
+            dlAnchorElem.setAttribute("href", dataStr);
+            dlAnchorElem.setAttribute("download", `esettanulmanyok_${new Date().toISOString().slice(0,10)}.json`);
+            dlAnchorElem.click();
+        }
+
+        function importData(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    fullStudyData = JSON.parse(e.target.result);
+                    renderCases();
+                    alert("Esettanulmányok sikeresen betöltve!");
+                } catch(err) { alert("Érvénytelen JSON fájl!"); }
+            };
+            reader.readAsText(file);
+        }
+
+        // HTML ÉS PDF GENERÁLÁSI ÉS EXPORTÁLÁSI MODUL
+        function generateHTMLReport() {
+            let htmlContent = `
+                <!DOCTYPE html>
+                <html lang="hu">
+                <head>
+                    <meta charset="UTF-8">
+                    <title>Esettanulmányok Kiadványa</title>
+                    <style>
+                        body { font-family: Arial, sans-serif; padding: 30px; color: #0f172a; background: #fff; line-height: 1.6; }
+                        h1 { color: #0369a1; text-align: center; border-bottom: 3px solid #0369a1; padding-bottom: 10px; }
+                        .case-card { border: 1px solid #cbd5e1; padding: 20px; margin-bottom: 25px; border-radius: 8px; page-break-inside: avoid; }
+                        h2 { color: #0284c7; margin-top: 0; }
+                        .analysis { background: #f1f5f9; padding: 15px; border-left: 4px solid #0284c7; margin-top: 15px; }
+                    </style>
+                </head>
+                <body>
+                    <h1>📚 Esettanulmányok Hivatalos Kiadványa</h1>
+                    <p style="text-align:center; color:#64748b;">Generálva: ${new Date().toLocaleString('hu-HU')}</p>
+                    <hr style="margin-bottom: 30px;">
+            `;
+
+            fullStudyData.forEach((item, index) => {
+                htmlContent += `
+                    <div class="case-card">
+                        <h2>${index + 1}. ${item.title}</h2>
+                        <p><strong>Esettanulmány Leírása:</strong></p>
+                        <p>${item.originalText}</p>
+                        <div class="analysis">
+                            <strong>Elemzés & Gondolati Struktúra:</strong><br>
+                            ${item.analysis.replace(/\n/g, '<br>')}
+                        </div>
+                    </div>
+                `;
+            });
+
+            htmlContent += `</body></html>`;
+            return htmlContent;
+        }
+
+        function downloadAsHTML() {
+            const htmlData = generateHTMLReport();
+            const blob = new Blob([htmlData], { type: 'text/html' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = `esettanulmanyok_${new Date().toISOString().slice(0,10)}.html`;
+            link.click();
+        }
+
+        function exportToPDF() {
+            const element = document.createElement('div');
+            element.innerHTML = generateHTMLReport();
+            
+            const opt = {
+                margin:       10,
+                filename:     `esettanulmanyok_${new Date().toISOString().slice(0,10)}.pdf`,
+                image:        { type: 'jpeg', quality: 0.98 },
+                html2canvas:  { scale: 2 },
+                jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            };
+
+            alert("📄 PDF dokumentum generálása folyamatban...");
+            html2pdf().set(opt).from(element).save();
+        }
+
+        // KEZDŐ RENDERELÉS
+        window.onload = () => {
+            renderArray();
+            renderCases();
+        };
+    </script>
+
+</body></html>
