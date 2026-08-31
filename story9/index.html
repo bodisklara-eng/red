@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<!-- saved from url=(0068)file:///C:/Users/Utilizator/Downloads/gemini-code-1788038780348.html -->
+<html lang="hu"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kombinatorika Vizuális Szimulátor — Permutáció, Variáció, Kombináció</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com/">
+    <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin="">
+    <link href="./Kombinatorika Vizuális Szimulátor — Permutáció, Variáció, Kombináció_files/css2" rel="stylesheet">
+
+    <style>
+        :root {
+            --bg-color: #0a0e17;
+            --panel-bg: #121824;
+            --card-bg: #1a2332;
+            --accent-red: #ff5252;
+            --accent-blue: #448aff;
+            --accent-green: #69f0ae;
+            --accent-purple: #e040fb;
+            --accent-yellow: #ffd740;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --border-color: #1e293b;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            font-family: 'Outfit', sans-serif;
+            padding: 25px 15px;
+            max-width: 1300px;
+            margin: 0 auto;
+            line-height: 1.5;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 25px;
+            background: radial-gradient(circle at top, rgba(68, 138, 255, 0.15) 0%, transparent 70%);
+            border-radius: 20px;
+            border: 1px solid rgba(68, 138, 255, 0.2);
+        }
+
+        h1 {
+            font-size: 2.2rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple), var(--accent-green));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            color: var(--text-muted);
+            font-size: 1rem;
+        }
+
+        /* TAB NAVIGÁCIÓ */
+        .tab-nav {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+            background-color: var(--panel-bg);
+            color: var(--text-muted);
+            border: 2px solid var(--border-color);
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-family: inherit;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .tab-btn:hover {
+            border-color: var(--accent-blue);
+            color: var(--text-main);
+        }
+
+        .tab-btn.active {
+            background-color: var(--card-bg);
+            color: #ffffff;
+            box-shadow: 0 0 15px rgba(68, 138, 255, 0.4);
+        }
+
+        .tab-btn[data-type="permutacio"].active { border-color: var(--accent-purple); box-shadow: 0 0 15px rgba(224, 64, 251, 0.4); }
+        .tab-btn[data-type="variacio"].active { border-color: var(--accent-blue); box-shadow: 0 0 15px rgba(68, 138, 255, 0.4); }
+        .tab-btn[data-type="kombinacio"].active { border-color: var(--accent-green); box-shadow: 0 0 15px rgba(105, 240, 174, 0.4); }
+
+        /* MAGYARÁZÓ KÁRTYA (INUÍTÍV ÉS FORMÁLIS) */
+        .info-card {
+            background-color: var(--panel-bg);
+            border: 2px solid var(--border-color);
+            border-radius: 16px;
+            padding: 22px;
+            margin-bottom: 25px;
+            transition: border-color 0.3s ease;
+        }
+
+        .info-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .info-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+        }
+
+        .formula-badge {
+            font-family: 'Fira Code', monospace;
+            background-color: var(--card-bg);
+            padding: 6px 14px;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border: 1px solid var(--border-color);
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .info-grid { grid-template-columns: 1fr; }
+        }
+
+        .info-box {
+            background-color: var(--card-bg);
+            padding: 15px;
+            border-radius: 10px;
+            border-left: 4px solid var(--accent-yellow);
+        }
+
+        .info-box h4 {
+            margin-bottom: 6px;
+            color: var(--accent-yellow);
+            font-size: 0.95rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* INTERAKTÍV CANVAS / ANIMÁCIÓS TERÜLET */
+        .interactive-container {
+            background-color: var(--panel-bg);
+            border: 2px solid var(--border-color);
+            border-radius: 16px;
+            padding: 25px;
+            margin-bottom: 25px;
+        }
+
+        .controls-bar {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+            background-color: var(--card-bg);
+            padding: 15px;
+            border-radius: 12px;
+        }
+
+        .control-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        label {
+            font-weight: 600;
+            font-size: 0.95rem;
+            color: var(--text-muted);
+        }
+
+        input[type="range"] {
+            cursor: pointer;
+            accent-color: var(--accent-blue);
+        }
+
+        .val-display {
+            font-family: 'Fira Code', monospace;
+            font-weight: 600;
+            color: var(--accent-yellow);
+            min-width: 20px;
+        }
+
+        .action-btn {
+            background: linear-gradient(135deg, var(--accent-blue), #2979ff);
+            color: #ffffff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-family: inherit;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.1s ease, filter 0.2s ease;
+        }
+
+        .action-btn:hover { filter: brightness(1.2); }
+        .action-btn:active { transform: scale(0.96); }
+
+        /* ELEMEK VIZUÁLIS MEGJELENÍTÉSE (FÉNYRUDAK / GOMBÓCOK) */
+        .visual-stage {
+            min-height: 220px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            background-color: #080b11;
+            border-radius: 12px;
+            padding: 20px;
+            border: 1px inset var(--border-color);
+            overflow-x: auto;
+        }
+
+        .element-pool {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .sphere {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: #ffffff;
+            box-shadow: 0 0 12px rgba(255, 255, 255, 0.2);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            user-select: none;
+        }
+
+        /* Fény effektek és színek */
+        .color-0 { background: radial-gradient(circle at 30% 30%, #ff7675, #d63031); box-shadow: 0 0 15px #ff7675; }
+        .color-1 { background: radial-gradient(circle at 30% 30%, #74b9ff, #0984e3); box-shadow: 0 0 15px #74b9ff; }
+        .color-2 { background: radial-gradient(circle at 30% 30%, #55efc4, #00b894); box-shadow: 0 0 15px #55efc4; }
+        .color-3 { background: radial-gradient(circle at 30% 30%, #ffeaa7, #fdcb6e); box-shadow: 0 0 15px #ffeaa7; color: #2d3436; }
+        .color-4 { background: radial-gradient(circle at 30% 30%, #a29bfe, #6c5ce7); box-shadow: 0 0 15px #a29bfe; }
+
+        .sphere.pulse {
+            animation: glowPulse 0.6s ease-in-out infinite alternate;
+        }
+
+        @keyframes glowPulse {
+            0% { transform: scale(1); filter: brightness(1); }
+            100% { transform: scale(1.15); filter: brightness(1.4); }
+        }
+
+        .results-matrix {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            max-height: 180px;
+            overflow-y: auto;
+            width: 100%;
+            justify-content: center;
+            padding: 10px;
+        }
+
+        .combination-group {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            padding: 6px 12px;
+            border-radius: 8px;
+            display: flex;
+            gap: 6px;
+            align-items: center;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.85rem;
+            animation: fadeIn 0.3s ease forwards;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .mini-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+
+        /* BUKTATÓK ÉS ÖNELLENŐRZŐ */
+        .bottom-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        @media (max-width: 850px) {
+            .bottom-grid { grid-template-columns: 1fr; }
+        }
+
+        .pitfalls-card {
+            background-color: var(--panel-bg);
+            border: 2px solid var(--accent-red);
+            border-radius: 16px;
+            padding: 20px;
+        }
+
+        .pitfalls-title {
+            color: var(--accent-red);
+            font-weight: 700;
+            font-size: 1.1rem;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .quiz-card {
+            background-color: var(--panel-bg);
+            border: 2px solid var(--accent-purple);
+            border-radius: 16px;
+            padding: 20px;
+        }
+
+        .quiz-title {
+            color: var(--accent-purple);
+            font-weight: 700;
+            font-size: 1.1rem;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .quiz-option {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            font-size: 0.9rem;
+        }
+
+        .quiz-option:hover {
+            background-color: rgba(224, 64, 251, 0.1);
+            border-color: var(--accent-purple);
+        }
+
+        .quiz-feedback {
+            margin-top: 10px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            min-height: 24px;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>✨ Kombinatorika Szimulátor</h1>
+        <div class="subtitle">Permutáció, Variáció és Kombináció Interaktív Vizuális Modellje</div>
+    </header>
+
+    <!-- MÓD VÁLASZTÓ TABS -->
+    <div class="tab-nav">
+        <button class="tab-btn active" data-type="permutacio" onclick="setMode(&#39;permutacio&#39;)">🔄 Permutáció (Sorrend)</button>
+        <button class="tab-btn" data-type="variacio" onclick="setMode(&#39;variacio&#39;)">🥇 Variáció (Kiválasztás + Sorrend)</button>
+        <button class="tab-btn" data-type="kombinacio" onclick="setMode(&#39;kombinacio&#39;)">🧺 Kombináció (Kiválasztás)</button>
+    </div>
+
+    <!-- ELMÉLETI ÉS ANALÓGIAI KÁRTYA -->
+    <div class="info-card" id="infoCard">
+        <div class="info-header">
+            <div class="info-title" id="modeTitle">Permutáció (Ismétlés nélküli)</div>
+            <div class="formula-badge" id="modeFormula">P(n) = n!</div>
+        </div>
+        <div class="info-grid">
+            <div class="info-box">
+                <h4>💡 Intuitív Analógia (Fényrudak / Sorrend)</h4>
+                <p id="modeAnalogy">Képzeld el, hogy színes világító golyókat rendezel sorba egy szűk csőben. Mivel **MINDEN** golyót felhasználunk, csak az a kérdés, hányféleképpen változtathatjuk meg a sorrendjüket.</p>
+            </div>
+            <div class="info-box" style="border-left-color: var(--accent-blue);">
+                <h4>📖 Formális Definíció</h4>
+                <p id="modeDefinition">n elem összes lehetséges sorrendjeinek száma, ahol minden elemet pontosan egyszer használunk fel. A sorrend számít!</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- INTERAKTÍV ANIMÁCIÓS CANVA -->
+    <div class="interactive-container">
+        <div class="controls-bar">
+            <div class="control-group">
+                <label for="rangeN">Összes elem (n):</label>
+                <input type="range" id="rangeN" min="2" max="5" value="4" oninput="updateParams()">
+                <span class="val-display" id="valN">5</span>
+            </div>
+            
+            <div class="control-group" id="kControlGroup" style="display: none;">
+                <label for="rangeK">Kiválasztott elem (k):</label>
+                <input type="range" id="rangeK" min="1" max="5" value="2" oninput="updateParams()">
+                <span class="val-display" id="valK">3</span>
+            </div>
+
+            <button class="action-btn" onclick="generateAll()">⚡ Generálás &amp; Vizuális Generálás</button>
+        </div>
+
+        <div class="visual-stage">
+            <div class="element-pool" id="elementPool"><div class="sphere color-0 pulse">A</div><div class="sphere color-1 pulse">B</div><div class="sphere color-2 pulse">C</div><div class="sphere color-3 pulse">D</div><div class="sphere color-4 pulse">E</div></div>
+            <div style="font-size: 0.9rem; color: var(--text-muted); text-align: center;">
+                Összes lehetséges eset száma: <strong id="totalCount" style="color: var(--accent-yellow); font-size: 1.2rem;">120</strong>
+            </div>
+            <div class="results-matrix" id="resultsMatrix"><div class="combination-group" style="animation-delay: 0s;"><span class="mini-dot color-0"></span><span class="mini-dot color-1"></span><span class="mini-dot color-2"></span><span class="mini-dot color-3"></span><span class="mini-dot color-4"></span><span>ABCDE</span></div><div class="combination-group" style="animation-delay: 0.02s;"><span class="mini-dot color-0"></span><span class="mini-dot color-1"></span><span class="mini-dot color-2"></span><span class="mini-dot color-4"></span><span class="mini-dot color-3"></span><span>ABCED</span></div><div class="combination-group" style="animation-delay: 0.04s;"><span class="mini-dot color-0"></span><span class="mini-dot color-1"></span><span class="mini-dot color-3"></span><span class="mini-dot color-2"></span><span class="mini-dot color-4"></span><span>ABDCE</span></div><div class="combination-group" style="animation-delay: 0.06s;"><span class="mini-dot color-0"></span><span class="mini-dot color-1"></span><span class="mini-dot color-3"></span><span class="mini-dot color-4"></span><span class="mini-dot color-2"></span><span>ABDEC</span></div><div class="combination-group" style="animation-delay: 0.08s;"><span class="mini-dot color-0"></span><span class="mini-dot color-1"></span><span class="mini-dot color-4"></span><span class="mini-dot color-2"></span><span class="mini-dot color-3"></span><span>ABECD</span></div><div class="combination-group" style="animation-delay: 0.1s;"><span class="mini-dot color-0"></span><span class="mini-dot color-1"></span><span class="mini-dot color-4"></span><span class="mini-dot color-3"></span><span class="mini-dot color-2"></span><span>ABEDC</span></div><div class="combination-group" style="animation-delay: 0.12s;"><span class="mini-dot color-0"></span><span class="mini-dot color-2"></span><span class="mini-dot color-1"></span><span class="mini-dot color-3"></span><span class="mini-dot color-4"></span><span>ACBDE</span></div><div class="combination-group" style="animation-delay: 0.14s;"><span class="mini-dot color-0"></span><span class="mini-dot color-2"></span><span class="mini-dot color-1"></span><span class="mini-dot color-4"></span><span class="mini-dot color-3"></span><span>ACBED</span></div><div class="combination-group" style="animation-delay: 0.16s;"><span class="mini-dot color-0"></span><span class="mini-dot color-2"></span><span class="mini-dot color-3"></span><span class="mini-dot color-1"></span><span class="mini-dot color-4"></span><span>ACDBE</span></div><div class="combination-group" style="animation-delay: 0.18s;"><span class="mini-dot color-0"></span><span class="mini-dot color-2"></span><span class="mini-dot color-3"></span><span class="mini-dot color-4"></span><span class="mini-dot color-1"></span><span>ACDEB</span></div><div class="combination-group" style="animation-delay: 0.2s;"><span class="mini-dot color-0"></span><span class="mini-dot color-2"></span><span class="mini-dot color-4"></span><span class="mini-dot color-1"></span><span class="mini-dot color-3"></span><span>ACEBD</span></div><div class="combination-group" style="animation-delay: 0.22s;"><span class="mini-dot color-0"></span><span class="mini-dot color-2"></span><span class="mini-dot color-4"></span><span class="mini-dot color-3"></span><span class="mini-dot color-1"></span><span>ACEDB</span></div><div class="combination-group" style="animation-delay: 0.24s;"><span class="mini-dot color-0"></span><span class="mini-dot color-3"></span><span class="mini-dot color-1"></span><span class="mini-dot color-2"></span><span class="mini-dot color-4"></span><span>ADBCE</span></div><div class="combination-group" style="animation-delay: 0.26s;"><span class="mini-dot color-0"></span><span class="mini-dot color-3"></span><span class="mini-dot color-1"></span><span class="mini-dot color-4"></span><span class="mini-dot color-2"></span><span>ADBEC</span></div><div class="combination-group" style="animation-delay: 0.28s;"><span class="mini-dot color-0"></span><span class="mini-dot color-3"></span><span class="mini-dot color-2"></span><span class="mini-dot color-1"></span><span class="mini-dot color-4"></span><span>ADCBE</span></div><div class="combination-group" style="animation-delay: 0.3s;"><span class="mini-dot color-0"></span><span class="mini-dot color-3"></span><span class="mini-dot color-2"></span><span class="mini-dot color-4"></span><span class="mini-dot color-1"></span><span>ADCEB</span></div><div class="combination-group" style="animation-delay: 0.32s;"><span class="mini-dot color-0"></span><span class="mini-dot color-3"></span><span class="mini-dot color-4"></span><span class="mini-dot color-1"></span><span class="mini-dot color-2"></span><span>ADEBC</span></div><div class="combination-group" style="animation-delay: 0.34s;"><span class="mini-dot color-0"></span><span class="mini-dot color-3"></span><span class="mini-dot color-4"></span><span class="mini-dot color-2"></span><span class="mini-dot color-1"></span><span>ADECB</span></div><div class="combination-group" style="animation-delay: 0.36s;"><span class="mini-dot color-0"></span><span class="mini-dot color-4"></span><span class="mini-dot color-1"></span><span class="mini-dot color-2"></span><span class="mini-dot color-3"></span><span>AEBCD</span></div><div class="combination-group" style="animation-delay: 0.38s;"><span class="mini-dot color-0"></span><span class="mini-dot color-4"></span><span class="mini-dot color-1"></span><span class="mini-dot color-3"></span><span class="mini-dot color-2"></span><span>AEBDC</span></div><div class="combination-group" style="animation-delay: 0.4s;"><span class="mini-dot color-0"></span><span class="mini-dot color-4"></span><span class="mini-dot color-2"></span><span class="mini-dot color-1"></span><span class="mini-dot color-3"></span><span>AECBD</span></div><div class="combination-group" style="animation-delay: 0.42s;"><span class="mini-dot color-0"></span><span class="mini-dot color-4"></span><span class="mini-dot color-2"></span><span class="mini-dot color-3"></span><span class="mini-dot color-1"></span><span>AECDB</span></div><div class="combination-group" style="animation-delay: 0.44s;"><span class="mini-dot color-0"></span><span class="mini-dot color-4"></span><span class="mini-dot color-3"></span><span class="mini-dot color-1"></span><span class="mini-dot color-2"></span><span>AEDBC</span></div><div class="combination-group" style="animation-delay: 0.46s;"><span class="mini-dot color-0"></span><span class="mini-dot color-4"></span><span class="mini-dot color-3"></span><span class="mini-dot color-2"></span><span class="mini-dot color-1"></span><span>AEDCB</span></div><div class="combination-group" style="animation-delay: 0.48s;"><span class="mini-dot color-1"></span><span class="mini-dot color-0"></span><span class="mini-dot color-2"></span><span class="mini-dot color-3"></span><span class="mini-dot color-4"></span><span>BACDE</span></div><div class="combination-group" style="animation-delay: 0.5s;"><span class="mini-dot color-1"></span><span class="mini-dot color-0"></span><span class="mini-dot color-2"></span><span class="mini-dot color-4"></span><span class="mini-dot color-3"></span><span>BACED</span></div><div class="combination-group" style="animation-delay: 0.52s;"><span class="mini-dot color-1"></span><span class="mini-dot color-0"></span><span class="mini-dot color-3"></span><span class="mini-dot color-2"></span><span class="mini-dot color-4"></span><span>BADCE</span></div><div class="combination-group" style="animation-delay: 0.54s;"><span class="mini-dot color-1"></span><span class="mini-dot color-0"></span><span class="mini-dot color-3"></span><span class="mini-dot color-4"></span><span class="mini-dot color-2"></span><span>BADEC</span></div><div class="combination-group" style="animation-delay: 0.56s;"><span class="mini-dot color-1"></span><span class="mini-dot color-0"></span><span class="mini-dot color-4"></span><span class="mini-dot color-2"></span><span class="mini-dot color-3"></span><span>BAECD</span></div><div class="combination-group" style="animation-delay: 0.58s;"><span class="mini-dot color-1"></span><span class="mini-dot color-0"></span><span class="mini-dot color-4"></span><span class="mini-dot color-3"></span><span class="mini-dot color-2"></span><span>BAEDC</span></div><div class="combination-group" style="animation-delay: 0.6s;"><span class="mini-dot color-1"></span><span class="mini-dot color-2"></span><span class="mini-dot color-0"></span><span class="mini-dot color-3"></span><span class="mini-dot color-4"></span><span>BCADE</span></div><div class="combination-group" style="animation-delay: 0.62s;"><span class="mini-dot color-1"></span><span class="mini-dot color-2"></span><span class="mini-dot color-0"></span><span class="mini-dot color-4"></span><span class="mini-dot color-3"></span><span>BCAED</span></div><div class="combination-group" style="animation-delay: 0.64s;"><span class="mini-dot color-1"></span><span class="mini-dot color-2"></span><span class="mini-dot color-3"></span><span class="mini-dot color-0"></span><span class="mini-dot color-4"></span><span>BCDAE</span></div><div class="combination-group" style="animation-delay: 0.66s;"><span class="mini-dot color-1"></span><span class="mini-dot color-2"></span><span class="mini-dot color-3"></span><span class="mini-dot color-4"></span><span class="mini-dot color-0"></span><span>BCDEA</span></div><div class="combination-group" style="animation-delay: 0.68s;"><span class="mini-dot color-1"></span><span class="mini-dot color-2"></span><span class="mini-dot color-4"></span><span class="mini-dot color-0"></span><span class="mini-dot color-3"></span><span>BCEAD</span></div><div class="combination-group" style="animation-delay: 0.7s;"><span class="mini-dot color-1"></span><span class="mini-dot color-2"></span><span class="mini-dot color-4"></span><span class="mini-dot color-3"></span><span class="mini-dot color-0"></span><span>BCEDA</span></div><div class="combination-group" style="animation-delay: 0.72s;"><span class="mini-dot color-1"></span><span class="mini-dot color-3"></span><span class="mini-dot color-0"></span><span class="mini-dot color-2"></span><span class="mini-dot color-4"></span><span>BDACE</span></div><div class="combination-group" style="animation-delay: 0.74s;"><span class="mini-dot color-1"></span><span class="mini-dot color-3"></span><span class="mini-dot color-0"></span><span class="mini-dot color-4"></span><span class="mini-dot color-2"></span><span>BDAEC</span></div><div class="combination-group" style="animation-delay: 0.76s;"><span class="mini-dot color-1"></span><span class="mini-dot color-3"></span><span class="mini-dot color-2"></span><span class="mini-dot color-0"></span><span class="mini-dot color-4"></span><span>BDCAE</span></div><div class="combination-group" style="animation-delay: 0.78s;"><span class="mini-dot color-1"></span><span class="mini-dot color-3"></span><span class="mini-dot color-2"></span><span class="mini-dot color-4"></span><span class="mini-dot color-0"></span><span>BDCEA</span></div><div class="combination-group" style="animation-delay: 0.8s;"><span class="mini-dot color-1"></span><span class="mini-dot color-3"></span><span class="mini-dot color-4"></span><span class="mini-dot color-0"></span><span class="mini-dot color-2"></span><span>BDEAC</span></div><div class="combination-group" style="animation-delay: 0.82s;"><span class="mini-dot color-1"></span><span class="mini-dot color-3"></span><span class="mini-dot color-4"></span><span class="mini-dot color-2"></span><span class="mini-dot color-0"></span><span>BDECA</span></div><div class="combination-group" style="animation-delay: 0.84s;"><span class="mini-dot color-1"></span><span class="mini-dot color-4"></span><span class="mini-dot color-0"></span><span class="mini-dot color-2"></span><span class="mini-dot color-3"></span><span>BEACD</span></div><div class="combination-group" style="animation-delay: 0.86s;"><span class="mini-dot color-1"></span><span class="mini-dot color-4"></span><span class="mini-dot color-0"></span><span class="mini-dot color-3"></span><span class="mini-dot color-2"></span><span>BEADC</span></div><div class="combination-group" style="animation-delay: 0.88s;"><span class="mini-dot color-1"></span><span class="mini-dot color-4"></span><span class="mini-dot color-2"></span><span class="mini-dot color-0"></span><span class="mini-dot color-3"></span><span>BECAD</span></div><div class="combination-group" style="animation-delay: 0.9s;"><span class="mini-dot color-1"></span><span class="mini-dot color-4"></span><span class="mini-dot color-2"></span><span class="mini-dot color-3"></span><span class="mini-dot color-0"></span><span>BECDA</span></div><div class="combination-group" style="animation-delay: 0.92s;"><span class="mini-dot color-1"></span><span class="mini-dot color-4"></span><span class="mini-dot color-3"></span><span class="mini-dot color-0"></span><span class="mini-dot color-2"></span><span>BEDAC</span></div><div class="combination-group" style="animation-delay: 0.94s;"><span class="mini-dot color-1"></span><span class="mini-dot color-4"></span><span class="mini-dot color-3"></span><span class="mini-dot color-2"></span><span class="mini-dot color-0"></span><span>BEDCA</span></div><div class="combination-group" style="animation-delay: 0.96s;"><span class="mini-dot color-2"></span><span class="mini-dot color-0"></span><span class="mini-dot color-1"></span><span class="mini-dot color-3"></span><span class="mini-dot color-4"></span><span>CABDE</span></div><div class="combination-group" style="animation-delay: 0.98s;"><span class="mini-dot color-2"></span><span class="mini-dot color-0"></span><span class="mini-dot color-1"></span><span class="mini-dot color-4"></span><span class="mini-dot color-3"></span><span>CABED</span></div><div class="combination-group" style="animation-delay: 1s;"><span class="mini-dot color-2"></span><span class="mini-dot color-0"></span><span class="mini-dot color-3"></span><span class="mini-dot color-1"></span><span class="mini-dot color-4"></span><span>CADBE</span></div><div class="combination-group" style="animation-delay: 1s;"><span class="mini-dot color-2"></span><span class="mini-dot color-0"></span><span class="mini-dot color-3"></span><span class="mini-dot color-4"></span><span class="mini-dot color-1"></span><span>CADEB</span></div><div class="combination-group" style="animation-delay: 1s;"><span class="mini-dot color-2"></span><span class="mini-dot color-0"></span><span class="mini-dot color-4"></span><span class="mini-dot color-1"></span><span class="mini-dot color-3"></span><span>CAEBD</span></div><div class="combination-group" style="animation-delay: 1s;"><span class="mini-dot color-2"></span><span class="mini-dot color-0"></span><span class="mini-dot color-4"></span><span class="mini-dot color-3"></span><span class="mini-dot color-1"></span><span>CAEDB</span></div><div class="combination-group" style="animation-delay: 1s;"><span class="mini-dot color-2"></span><span class="mini-dot color-1"></span><span class="mini-dot color-0"></span><span class="mini-dot color-3"></span><span class="mini-dot color-4"></span><span>CBADE</span></div><div class="combination-group" style="animation-delay: 1s;"><span class="mini-dot color-2"></span><span class="mini-dot color-1"></span><span class="mini-dot color-0"></span><span class="mini-dot color-4"></span><span class="mini-dot color-3"></span><span>CBAED</span></div><div class="combination-group" style="animation-delay: 1s;"><span class="mini-dot color-2"></span><span class="mini-dot color-1"></span><span class="mini-dot color-3"></span><span class="mini-dot color-0"></span><span class="mini-dot color-4"></span><span>CBDAE</span></div><div class="combination-group" style="animation-delay: 1s;"><span class="mini-dot color-2"></span><span class="mini-dot color-1"></span><span class="mini-dot color-3"></span><span class="mini-dot color-4"></span><span class="mini-dot color-0"></span><span>CBDEA</span></div><div class="combination-group" style="animation-delay: 1s;"><span class="mini-dot color-2"></span><span class="mini-dot color-1"></span><span class="mini-dot color-4"></span><span class="mini-dot color-0"></span><span class="mini-dot color-3"></span><span>CBEAD</span></div><div class="combination-group" style="animation-delay: 1s;"><span class="mini-dot color-2"></span><span class="mini-dot color-1"></span><span class="mini-dot color-4"></span><span class="mini-dot color-3"></span><span class="mini-dot color-0"></span><span>CBEDA</span></div><div class="combination-group" style="animation-delay: 1s;"><span class="mini-dot color-2"></span><span class="mini-dot color-3"></span><span class="mini-dot color-0"></span><span class="mini-dot color-1"></span><span class="mini-dot color-4"></span><span>CDABE</span></div><div class="combination-group" style="animation-delay: 1s;"><span class="mini-dot color-2"></span><span class="mini-dot color-3"></span><span class="mini-dot color-0"></span><span class="mini-dot color-4"></span><span class="mini-dot color-1"></span><span>CDAEB</span></div><div class="combination-group" style="animation-delay: 1s;"><span class="mini-dot color-2"></span><span class="mini-dot color-3"></span><span class="mini-dot color-1"></span><span class="mini-dot color-0"></span><span class="mini-dot color-4"></span><span>CDBAE</span></div><div class="combination-group" style="animation-delay: 1s;"><span class="mini-dot color-2"></span><span class="mini-dot color-3"></span><span class="mini-dot color-1"></span><span class="mini-dot color-4"></span><span class="mini-dot color-0"></span><span>CDBEA</span></div><div class="combination-group" style="animation-delay: 1s;"><span class="mini-dot color-2"></span><span class="mini-dot color-3"></span><span class="mini-dot color-4"></span><span class="mini-dot color-0"></span><span class="mini-dot color-1"></span><span>CDEAB</span></div><div class="combination-group" style="animation-delay: 1s;"><span class="mini-dot color-2"></span><span class="mini-dot color-3"></span><span class="mini-dot color-4"></span><span class="mini-dot color-1"></span><span class="mini-dot color-0"></span><span>CDEBA</span></div><div class="combination-group" style="animation-delay: 1s;"><span class="mini-dot color-2"></span><span class="mini-dot color-4"></span><span class="mini-dot color-0"></span><span class="mini-dot color-1"></span><span class="mini-dot color-3"></span><span>CEABD</span></div><div class="combination-group" style="animation-delay: 1s;"><span class="mini-dot color-2"></span><span class="mini-dot color-4"></span><span class="mini-dot color-0"></span><span class="mini-dot color-3"></span><span class="mini-dot color-1"></span><span>CEADB</span></div><div class="combination-group" style="animation-delay: 1s;"><span class="mini-dot color-2"></span><span class="mini-dot color-4"></span><span class="mini-dot color-1"></span><span class="mini-dot color-0"></span><span class="mini-dot color-3"></span><span>CEBAD</span></div><div class="combination-group" style="animation-delay: 1s;"><span class="mini-dot color-2"></span><span class="mini-dot color-4"></span><span class="mini-dot color-1"></span><span class="mini-dot color-3"></span><span class="mini-dot color-0"></span><span>CEBDA</span></div><div class="combination-group" style="animation-delay: 1s;"><span class="mini-dot color-2"></span><span class="mini-dot color-4"></span><span class="mini-dot color-3"></span><span class="mini-dot color-0"></span><span class="mini-dot color-1"></span><span>CEDAB</span></div><div class="combination-group" style="animation-delay: 1s;"><span class="mini-dot color-2"></span><span class="mini-dot color-4"></span><span class="mini-dot color-3"></span><span class="mini-dot color-1"></span><span class="mini-dot color-0"></span><span>CEDBA</span></div><div class="combination-group" style="animation-delay: 1s;"><span class="mini-dot color-3"></span><span class="mini-dot color-0"></span><span class="mini-dot color-1"></span><span class="mini-dot color-2"></span><span class="mini-dot color-4"></span><span>DABCE</span></div><div class="combination-group" style="animation-delay: 1s;"><span class="mini-dot color-3"></span><span class="mini-dot color-0"></span><span class="mini-dot color-1"></span><span class="mini-dot color-4"></span><span class="mini-dot color-2"></span><span>DABEC</span></div><div class="combination-group" style="animation-delay: 1s;"><span class="mini-dot color-3"></span><span class="mini-dot color-0"></span><span class="mini-dot color-2"></span><span class="mini-dot color-1"></span><span class="mini-dot color-4"></span><span>DACBE</span></div><div class="combination-group" style="animation-delay: 1s;"><span class="mini-dot color-3"></span><span class="mini-dot color-0"></span><span class="mini-dot color-2"></span><span class="mini-dot color-4"></span><span class="mini-dot color-1"></span><span>DACEB</span></div><div class="combination-group" style="animation-delay: 1s;"><span class="mini-dot color-3"></span><span class="mini-dot color-0"></span><span class="mini-dot color-4"></span><span class="mini-dot color-1"></span><span class="mini-dot color-2"></span><span>DAEBC</span></div><div class="combination-group" style="animation-delay: 1s;"><span class="mini-dot color-3"></span><span class="mini-dot color-0"></span><span class="mini-dot color-4"></span><span class="mini-dot color-2"></span><span class="mini-dot color-1"></span><span>DAECB</span></div><div class="combination-group" style="animation-delay: 1s;"><span class="mini-dot color-3"></span><span class="mini-dot color-1"></span><span class="mini-dot color-0"></span><span class="mini-dot color-2"></span><span class="mini-dot color-4"></span><span>DBACE</span></div><div class="combination-group" style="animation-delay: 1s;"><span class="mini-dot color-3"></span><span class="mini-dot color-1"></span><span class="mini-dot color-0"></span><span class="mini-dot color-4"></span><span class="mini-dot color-2"></span><span>DBAEC</span></div><div class="combination-group" style="animation-delay: 1s;"><span class="mini-dot color-3"></span><span class="mini-dot color-1"></span><span class="mini-dot color-2"></span><span class="mini-dot color-0"></span><span class="mini-dot color-4"></span><span>DBCAE</span></div><div class="combination-group" style="animation-delay: 1s;"><span class="mini-dot color-3"></span><span class="mini-dot color-1"></span><span class="mini-dot color-2"></span><span class="mini-dot color-4"></span><span class="mini-dot color-0"></span><span>DBCEA</span></div><div class="combination-group" style="animation-delay: 1s;"><span class="mini-dot color-3"></span><span class="mini-dot color-1"></span><span class="mini-dot color-4"></span><span class="mini-dot color-0"></span><span class="mini-dot color-2"></span><span>DBEAC</span></div><div class="combination-group" style="animation-delay: 1s;"><span class="mini-dot color-3"></span><span class="mini-dot color-1"></span><span class="mini-dot color-4"></span><span class="mini-dot color-2"></span><span class="mini-dot color-0"></span><span>DBECA</span></div><div class="combination-group" style="animation-delay: 1s;"><span class="mini-dot color-3"></span><span class="mini-dot color-2"></span><span class="mini-dot color-0"></span><span class="mini-dot color-1"></span><span class="mini-dot color-4"></span><span>DCABE</span></div><div class="combination-group" style="animation-delay: 1s;"><span class="mini-dot color-3"></span><span class="mini-dot color-2"></span><span class="mini-dot color-0"></span><span class="mini-dot color-4"></span><span class="mini-dot color-1"></span><span>DCAEB</span></div><div class="combination-group" style="animation-delay: 1s;"><span class="mini-dot color-3"></span><span class="mini-dot color-2"></span><span class="mini-dot color-1"></span><span class="mini-dot color-0"></span><span class="mini-dot color-4"></span><span>DCBAE</span></div><div class="combination-group" style="animation-delay: 1s;"><span class="mini-dot color-3"></span><span class="mini-dot color-2"></span><span class="mini-dot color-1"></span><span class="mini-dot color-4"></span><span class="mini-dot color-0"></span><span>DCBEA</span></div><div class="combination-group" style="animation-delay: 1s;"><span class="mini-dot color-3"></span><span class="mini-dot color-2"></span><span class="mini-dot color-4"></span><span class="mini-dot color-0"></span><span class="mini-dot color-1"></span><span>DCEAB</span></div><div class="combination-group" style="animation-delay: 1s;"><span class="mini-dot color-3"></span><span class="mini-dot color-2"></span><span class="mini-dot color-4"></span><span class="mini-dot color-1"></span><span class="mini-dot color-0"></span><span>DCEBA</span></div><div class="combination-group" style="animation-delay: 1s;"><span class="mini-dot color-3"></span><span class="mini-dot color-4"></span><span class="mini-dot color-0"></span><span class="mini-dot color-1"></span><span class="mini-dot color-2"></span><span>DEABC</span></div><div class="combination-group" style="animation-delay: 1s;"><span class="mini-dot color-3"></span><span class="mini-dot color-4"></span><span class="mini-dot color-0"></span><span class="mini-dot color-2"></span><span class="mini-dot color-1"></span><span>DEACB</span></div><div class="combination-group" style="animation-delay: 1s;"><span class="mini-dot color-3"></span><span class="mini-dot color-4"></span><span class="mini-dot color-1"></span><span class="mini-dot color-0"></span><span class="mini-dot color-2"></span><span>DEBAC</span></div><div class="combination-group" style="animation-delay: 1s;"><span class="mini-dot color-3"></span><span class="mini-dot color-4"></span><span class="mini-dot color-1"></span><span class="mini-dot color-2"></span><span class="mini-dot color-0"></span><span>DEBCA</span></div><div class="combination-group" style="animation-delay: 1s;"><span class="mini-dot color-3"></span><span class="mini-dot color-4"></span><span class="mini-dot color-2"></span><span class="mini-dot color-0"></span><span class="mini-dot color-1"></span><span>DECAB</span></div><div class="combination-group" style="animation-delay: 1s;"><span class="mini-dot color-3"></span><span class="mini-dot color-4"></span><span class="mini-dot color-2"></span><span class="mini-dot color-1"></span><span class="mini-dot color-0"></span><span>DECBA</span></div><div class="combination-group" style="animation-delay: 1s;"><span class="mini-dot color-4"></span><span class="mini-dot color-0"></span><span class="mini-dot color-1"></span><span class="mini-dot color-2"></span><span class="mini-dot color-3"></span><span>EABCD</span></div><div class="combination-group" style="animation-delay: 1s;"><span class="mini-dot color-4"></span><span class="mini-dot color-0"></span><span class="mini-dot color-1"></span><span class="mini-dot color-3"></span><span class="mini-dot color-2"></span><span>EABDC</span></div><div class="combination-group" style="animation-delay: 1s;"><span class="mini-dot color-4"></span><span class="mini-dot color-0"></span><span class="mini-dot color-2"></span><span class="mini-dot color-1"></span><span class="mini-dot color-3"></span><span>EACBD</span></div><div class="combination-group" style="animation-delay: 1s;"><span class="mini-dot color-4"></span><span class="mini-dot color-0"></span><span class="mini-dot color-2"></span><span class="mini-dot color-3"></span><span class="mini-dot color-1"></span><span>EACDB</span></div><div class="combination-group" style="animation-delay: 1s;"><span class="mini-dot color-4"></span><span class="mini-dot color-0"></span><span class="mini-dot color-3"></span><span class="mini-dot color-1"></span><span class="mini-dot color-2"></span><span>EADBC</span></div><div class="combination-group" style="animation-delay: 1s;"><span class="mini-dot color-4"></span><span class="mini-dot color-0"></span><span class="mini-dot color-3"></span><span class="mini-dot color-2"></span><span class="mini-dot color-1"></span><span>EADCB</span></div><div class="combination-group" style="animation-delay: 1s;"><span class="mini-dot color-4"></span><span class="mini-dot color-1"></span><span class="mini-dot color-0"></span><span class="mini-dot color-2"></span><span class="mini-dot color-3"></span><span>EBACD</span></div><div class="combination-group" style="animation-delay: 1s;"><span class="mini-dot color-4"></span><span class="mini-dot color-1"></span><span class="mini-dot color-0"></span><span class="mini-dot color-3"></span><span class="mini-dot color-2"></span><span>EBADC</span></div><div class="combination-group" style="animation-delay: 1s;"><span class="mini-dot color-4"></span><span class="mini-dot color-1"></span><span class="mini-dot color-2"></span><span class="mini-dot color-0"></span><span class="mini-dot color-3"></span><span>EBCAD</span></div><div class="combination-group" style="animation-delay: 1s;"><span class="mini-dot color-4"></span><span class="mini-dot color-1"></span><span class="mini-dot color-2"></span><span class="mini-dot color-3"></span><span class="mini-dot color-0"></span><span>EBCDA</span></div><div class="combination-group" style="animation-delay: 1s;"><span class="mini-dot color-4"></span><span class="mini-dot color-1"></span><span class="mini-dot color-3"></span><span class="mini-dot color-0"></span><span class="mini-dot color-2"></span><span>EBDAC</span></div><div class="combination-group" style="animation-delay: 1s;"><span class="mini-dot color-4"></span><span class="mini-dot color-1"></span><span class="mini-dot color-3"></span><span class="mini-dot color-2"></span><span class="mini-dot color-0"></span><span>EBDCA</span></div><div class="combination-group" style="animation-delay: 1s;"><span class="mini-dot color-4"></span><span class="mini-dot color-2"></span><span class="mini-dot color-0"></span><span class="mini-dot color-1"></span><span class="mini-dot color-3"></span><span>ECABD</span></div><div class="combination-group" style="animation-delay: 1s;"><span class="mini-dot color-4"></span><span class="mini-dot color-2"></span><span class="mini-dot color-0"></span><span class="mini-dot color-3"></span><span class="mini-dot color-1"></span><span>ECADB</span></div><div class="combination-group" style="animation-delay: 1s;"><span class="mini-dot color-4"></span><span class="mini-dot color-2"></span><span class="mini-dot color-1"></span><span class="mini-dot color-0"></span><span class="mini-dot color-3"></span><span>ECBAD</span></div><div class="combination-group" style="animation-delay: 1s;"><span class="mini-dot color-4"></span><span class="mini-dot color-2"></span><span class="mini-dot color-1"></span><span class="mini-dot color-3"></span><span class="mini-dot color-0"></span><span>ECBDA</span></div><div class="combination-group" style="animation-delay: 1s;"><span class="mini-dot color-4"></span><span class="mini-dot color-2"></span><span class="mini-dot color-3"></span><span class="mini-dot color-0"></span><span class="mini-dot color-1"></span><span>ECDAB</span></div><div class="combination-group" style="animation-delay: 1s;"><span class="mini-dot color-4"></span><span class="mini-dot color-2"></span><span class="mini-dot color-3"></span><span class="mini-dot color-1"></span><span class="mini-dot color-0"></span><span>ECDBA</span></div><div class="combination-group" style="animation-delay: 1s;"><span class="mini-dot color-4"></span><span class="mini-dot color-3"></span><span class="mini-dot color-0"></span><span class="mini-dot color-1"></span><span class="mini-dot color-2"></span><span>EDABC</span></div><div class="combination-group" style="animation-delay: 1s;"><span class="mini-dot color-4"></span><span class="mini-dot color-3"></span><span class="mini-dot color-0"></span><span class="mini-dot color-2"></span><span class="mini-dot color-1"></span><span>EDACB</span></div><div class="combination-group" style="animation-delay: 1s;"><span class="mini-dot color-4"></span><span class="mini-dot color-3"></span><span class="mini-dot color-1"></span><span class="mini-dot color-0"></span><span class="mini-dot color-2"></span><span>EDBAC</span></div><div class="combination-group" style="animation-delay: 1s;"><span class="mini-dot color-4"></span><span class="mini-dot color-3"></span><span class="mini-dot color-1"></span><span class="mini-dot color-2"></span><span class="mini-dot color-0"></span><span>EDBCA</span></div><div class="combination-group" style="animation-delay: 1s;"><span class="mini-dot color-4"></span><span class="mini-dot color-3"></span><span class="mini-dot color-2"></span><span class="mini-dot color-0"></span><span class="mini-dot color-1"></span><span>EDCAB</span></div><div class="combination-group" style="animation-delay: 1s;"><span class="mini-dot color-4"></span><span class="mini-dot color-3"></span><span class="mini-dot color-2"></span><span class="mini-dot color-1"></span><span class="mini-dot color-0"></span><span>EDCBA</span></div></div>
+        </div>
+    </div>
+
+    <!-- LOWER SECTION: TÉVHITEK ÉS MINI QUIZ -->
+    <div class="bottom-grid">
+        <!-- BUKTATÓK -->
+        <div class="pitfalls-card">
+            <div class="pitfalls-title">⚠️ Gyakori Tévedések (Misconceptions)</div>
+            <ul style="list-style: none; font-size: 0.9rem; color: var(--text-muted);" id="pitfallsList"><li style="margin-bottom: 8px;">❌ <strong>Hiba:</strong> Azt hinni, hogy a permutációban lehet elemeket kihagyni.</li><li style="margin-bottom: 8px;">✔️ <strong>Helyesen:</strong> A permutáció mindig az ÖSSZES elem együttes sorbarendezését jelenti (n elemből mind az n-et).</li></ul>
+        </div>
+
+        <!-- ÖNELLENŐRZŐ QUIZ -->
+        <div class="quiz-card">
+            <div class="quiz-title">🧪 1-Perc Gyors Teszt</div>
+            <div id="quizQuestion" style="font-size: 0.95rem; margin-bottom: 12px; font-weight: 600;">
+                Egy 5 fős futóversenyen hányféleképpen alakulhat a Dobogó (1., 2., 3. helyezett)?
+            </div>
+            <div class="quiz-option" onclick="checkQuiz(this, false)">A) Kombináció C(5,3) — mert nem számít a sorrend.</div>
+            <div class="quiz-option" onclick="checkQuiz(this, true)">B) Variáció V(5,3) — mert 5-ből 3-at választunk ÉS számít a sorrend!</div>
+            <div class="quiz-option" onclick="checkQuiz(this, false)">C) Permutáció P(5) — mert mindenkit sorba rendezünk.</div>
+            <div class="quiz-feedback" id="quizFeedback"></div>
+        </div>
+    </div>
+
+    <script>
+        // GLOBÁLIS ÁLLAPOTOK
+        let currentMode = 'permutacio';
+        let n = 4;
+        let k = 2;
+
+        const CONFIG = {
+            permutacio: {
+                title: 'Permutáció (Ismétlés nélküli)',
+                formula: 'P(n) = n!',
+                analogy: 'Képzeld el, hogy színes világító golyókat rendezel sorba egy szűk csőben. Mivel **MINDEN** golyót felhasználunk, csak az a kérdés, hányféleképpen változtathatjuk meg a sorrendjüket.',
+                definition: 'n elem összes lehetséges sorrendjeinek száma, ahol minden elemet pontosan egyszer használunk fel. A sorrend számít!',
+                pitfalls: [
+                    '❌ <strong>Hiba:</strong> Azt hinni, hogy a permutációban lehet elemeket kihagyni.',
+                    '✔️ <strong>Helyesen:</strong> A permutáció mindig az ÖSSZES elem együttes sorbarendezését jelenti (n elemből mind az n-et).'
+                ]
+            },
+            variacio: {
+                title: 'Variáció (Ismétlés nélküli)',
+                formula: 'V(n, k) = n! / (n - k)!',
+                analogy: 'Gondolj egy futóverseny dobogójára! n futóból csak k darab kerül a dobogóra, és NAGYON NEM MINDEGY, hogy ki lett az 1. és ki a 3. helyezett!',
+                definition: 'n elem közül k elem kiválasztása úgy, hogy a kiválasztott elemek sorrendje is számít.',
+                pitfalls: [
+                    '❌ <strong>Hiba:</strong> Összekeverni a Kombinációval.',
+                    '✔️ <strong>Helyesen:</strong> Ha az elemek sorrendjének megváltoztatása ÚJ esetet eredményez (pl. 1-2 vs 2-1), akkor az VARIÁCIÓ.'
+                ]
+            },
+            kombinacio: {
+                title: 'Kombináció (Ismétlés nélküli)',
+                formula: 'C(n, k) = n! / (k! · (n - k)!)',
+                analogy: 'Lottóhúzás vagy gyümölcssaláta! 90 számból kihúzunk 5-öt. Teljesen mindegy, milyen sorrendben golyózták ki őket, a szelvényen a számok halmaza a lényeg.',
+                definition: 'n elem közül k elem kiválasztása a sorrend figyelembe vétele NÉLKÜL. Csak a kiválasztott csoport összetétele számít.',
+                pitfalls: [
+                    '❌ <strong>Hiba:</strong> Duplán számolni a felcserélt sorrendű elemeket.',
+                    '✔️ <strong>Helyesen:</strong> Az {A, B} és {B, A} csoport a kombinációnál PONTOSAN UGYANAZ az 1 eset.'
+                ]
+            }
+        };
+
+        const LABELS = ['A', 'B', 'C', 'D', 'E'];
+
+        function setMode(mode) {
+            currentMode = mode;
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelector(`.tab-btn[data-type="${mode}"]`).classList.add('active');
+
+            const conf = CONFIG[mode];
+            document.getElementById('modeTitle').innerText = conf.title;
+            document.getElementById('modeFormula').innerText = conf.formula;
+            document.getElementById('modeAnalogy').innerHTML = conf.analogy;
+            document.getElementById('modeDefinition').innerHTML = conf.definition;
+
+            // Pitfalls frissítése
+            const pitList = document.getElementById('pitfallsList');
+            pitList.innerHTML = conf.pitfalls.map(p => `<li style="margin-bottom: 8px;">${p}</li>`).join('');
+
+            // UI kontrollerek elrejtése/megjelenítése
+            const kGroup = document.getElementById('kControlGroup');
+            if (mode === 'permutacio') {
+                kGroup.style.display = 'none';
+            } else {
+                kGroup.style.display = 'flex';
+            }
+
+            updateParams();
+        }
+
+        function updateParams() {
+            n = parseInt(document.getElementById('rangeN').value);
+            document.getElementById('valN').innerText = n;
+
+            const rangeK = document.getElementById('rangeK');
+            rangeK.max = n;
+            if (parseInt(rangeK.value) > n) rangeK.value = n;
+            k = parseInt(rangeK.value);
+            document.getElementById('valK').innerText = k;
+
+            renderPool();
+            generateAll();
+        }
+
+        function renderPool() {
+            const pool = document.getElementById('elementPool');
+            pool.innerHTML = '';
+            for (let i = 0; i < n; i++) {
+                const s = document.createElement('div');
+                s.className = `sphere color-${i} pulse`;
+                s.innerText = LABELS[i];
+                pool.appendChild(s);
+            }
+        }
+
+        // MATEMATIKAI GENERÁTOROK
+        function factorial(num) {
+            if (num <= 1) return 1;
+            return num * factorial(num - 1);
+        }
+
+        function generateAll() {
+            const matrix = document.getElementById('resultsMatrix');
+            matrix.innerHTML = '';
+            let results = [];
+            const indices = Array.from({length: n}, (_, i) => i);
+
+            if (currentMode === 'permutacio') {
+                results = getPermutations(indices);
+            } else if (currentMode === 'variacio') {
+                results = getVariations(indices, k);
+            } else if (currentMode === 'kombinacio') {
+                results = getCombinations(indices, k);
+            }
+
+            document.getElementById('totalCount').innerText = results.length;
+
+            // Vizuális eredmények renderelése kis golyókkal
+            results.forEach((res, idx) => {
+                const group = document.createElement('div');
+                group.className = 'combination-group';
+                group.style.animationDelay = `${Math.min(idx * 0.02, 1)}s`;
+
+                res.forEach(itemIdx => {
+                    const dot = document.createElement('span');
+                    dot.className = `mini-dot color-${itemIdx}`;
+                    group.appendChild(dot);
+                });
+
+                const text = document.createElement('span');
+                text.innerText = res.map(i => LABELS[i]).join(currentMode === 'kombinacio' ? ',' : '');
+                group.appendChild(text);
+
+                matrix.appendChild(group);
+            });
+        }
+
+        // ALGORITMUSOK
+        function getPermutations(arr) {
+            if (arr.length === 0) return [[]];
+            let res = [];
+            for (let i = 0; i < arr.length; i++) {
+                let rest = [...arr.slice(0, i), ...arr.slice(i + 1)];
+                let innerPerms = getPermutations(rest);
+                for (let p of innerPerms) {
+                    res.push([arr[i], ...p]);
+                }
+            }
+            return res;
+        }
+
+        function getVariations(arr, k) {
+            if (k === 0) return [[]];
+            let res = [];
+            for (let i = 0; i < arr.length; i++) {
+                let rest = [...arr.slice(0, i), ...arr.slice(i + 1)];
+                let innerVars = getVariations(rest, k - 1);
+                for (let v of innerVars) {
+                    res.push([arr[i], ...v]);
+                }
+            }
+            return res;
+        }
+
+        function getCombinations(arr, k) {
+            if (k === 0) return [[]];
+            if (arr.length === 0) return [];
+            let head = arr[0];
+            let tail = arr.slice(1);
+
+            let withHead = getCombinations(tail, k - 1).map(c => [head, ...c]);
+            let withoutHead = getCombinations(tail, k);
+
+            return [...withHead, ...withoutHead];
+        }
+
+        function checkQuiz(el, isCorrect) {
+            const feedback = document.getElementById('quizFeedback');
+            if (isCorrect) {
+                feedback.style.color = 'var(--accent-green)';
+                feedback.innerHTML = '🎉 Helyes válasz! Mivel 5-ből 3-at választunk ÉS számít a sorrend (1., 2., 3. hely), ez Variáció.';
+            } else {
+                feedback.style.color = 'var(--accent-red)';
+                feedback.innerHTML = '❌ Nem jó. Gondold át: számít a sorrend a dobogón? Igen! Így nem lehet kombináció.';
+            }
+        }
+
+        // INIC
+        window.onload = () => {
+            setMode('permutacio');
+        };
+    </script>
+
+</body></html>
