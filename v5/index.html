@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<!-- saved from url=(0068)file:///C:/Users/Utilizator/Downloads/gemini-code-1787308110527.html -->
+<html lang="hu"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>STEAM Neuromatematikai &amp; Neuroplaszticitási Szimuláció</title>
+    <style>
+        :root {
+            --primary: #1e3a8a;
+            --primary-light: #2563eb;
+            --accent: #0284c7;
+            --bg-light: #f8fafc;
+            --text-dark: #0f172a;
+            --card-bg: #ffffff;
+            --success: #10b981;
+            --danger: #ef4444;
+            --border: #e2e8f0;
+            --neuro-purple: #7c3aed;
+        }
+
+        body { font-family: 'Segoe UI', Roboto, sans-serif; line-height: 1.6; color: var(--text-dark); background-color: var(--bg-light); margin: 0; padding: 20px; }
+        .container { max-width: 1350px; margin: 0 auto; background: var(--card-bg); padding: 25px; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); }
+        h1 { color: var(--primary); border-bottom: 4px solid var(--primary-light); padding-bottom: 10px; margin-top: 0; }
+        
+        .badge-container { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 15px; }
+        .badge { background: #e0e7ff; color: var(--primary); padding: 4px 12px; border-radius: 15px; font-weight: 600; font-size: 0.85rem; }
+        .badge.neuro { background: #f3e8ff; color: var(--neuro-purple); border: 1px solid var(--neuro-purple); }
+
+        .neuro-timer-box {
+            background: linear-gradient(135deg, #4c1d95 0%, #1e1b4b 100%);
+            color: #fff;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .action-btn { background: var(--primary-light); color: white; border: none; padding: 8px 14px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 0.85rem; }
+        .action-btn.neuro { background: var(--neuro-purple); }
+        .action-btn.neuro:hover { background: #6d28d9; }
+
+        canvas { background: #0f172a; border-radius: 8px; width: 100%; height: auto; display: block; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>🧠 Neuromatematikai &amp; Neuroplaszticitási Tréning Rendszer</h1>
+    
+    <div class="badge-container">
+        <span class="badge neuro">⚡ Fast Flash Anzan (0.2s)</span>
+        <span class="badge neuro">🧘 Alpha-Theta Binaurális Hangok</span>
+        <span class="badge neuro">🎯 Working Memory Stroop-Teszt</span>
+        <span class="badge neuro">🧮 Mentális Abakusz Modul</span>
+    </div>
+
+    <!-- 20 PERCES INTERAKTÍV TRÉNING PANEL -->
+    <div class="neuro-timer-box">
+        <div>
+            <h2 style="margin: 0; color: #f3e8ff; border: none;">⏱️ 20 Perces Neuroplaszticitási Edzés</h2>
+            <p id="neuroPhaseText" style="margin: 5px 0 0 0; font-size: 0.9rem; color: #ddd6fe;">1. Fázis: Szenzoros Szinkron (00:00 - 03:00)</p>
+        </div>
+        <div style="text-align: right;">
+            <div id="neuroTimerDisplay" style="font-size: 1.8rem; font-family: monospace; font-weight: bold;">17:46</div>
+            <button class="action-btn neuro" onclick="start20MinSession()">▶ Edzés Indítása</button>
+        </div>
+    </div>
+
+    <div style="display: flex; gap: 20px;">
+        <div style="flex: 1;">
+            <h3>👁️ Vizuális &amp; Neuromatematikai Canvas</h3>
+            <canvas id="neuroCanvas" width="600" height="280"></canvas>
+            <div style="margin-top: 10px; display: flex; gap: 10px;">
+                <button class="action-btn neuro" onclick="runFlashAnzanTest()">⚡ Flash Anzan (300ms)</button>
+                <button class="action-btn neuro" onclick="runStroopTest()">🎯 Stroop-Teszt Indítása</button>
+            </div>
+        </div>
+        
+        <div style="flex: 1; background: #fafafa; padding: 15px; border-radius: 8px; border: 1px solid #e2e8f0;">
+            <h3>🧮 Virtuális Abakusz (Finommotoros D&amp;D)</h3>
+            <p style="font-size: 0.85rem; color: #475569;">Állítsd be a helyzetvektort a golyók eltolásával!</p>
+            <div id="abacusContainer" style="display: flex; gap: 12px; justify-content: center; background: #78350f; padding: 15px; border-radius: 8px;"><div style="width: 35px; background: rgb(254, 243, 199); height: 120px; border-radius: 4px; position: relative; display: flex; flex-direction: column; justify-content: space-between; align-items: center; padding: 4px 0px;">
+                <div style="width: 25px; height: 15px; background: #d97706; border-radius: 10px; cursor: pointer;" onclick="moveBead(0)"></div>
+                <div style="width: 2px; height: 100%; background: #78350f; position: absolute; z-index: 0;"></div>
+                <span style="z-index: 1; font-weight: bold; font-size: 0.8rem;">90</span>
+            </div><div style="width: 35px; background: rgb(254, 243, 199); height: 120px; border-radius: 4px; position: relative; display: flex; flex-direction: column; justify-content: space-between; align-items: center; padding: 4px 0px;">
+                <div style="width: 25px; height: 15px; background: #d97706; border-radius: 10px; cursor: pointer;" onclick="moveBead(1)"></div>
+                <div style="width: 2px; height: 100%; background: #78350f; position: absolute; z-index: 0;"></div>
+                <span style="z-index: 1; font-weight: bold; font-size: 0.8rem;">20</span>
+            </div><div style="width: 35px; background: rgb(254, 243, 199); height: 120px; border-radius: 4px; position: relative; display: flex; flex-direction: column; justify-content: space-between; align-items: center; padding: 4px 0px;">
+                <div style="width: 25px; height: 15px; background: #d97706; border-radius: 10px; cursor: pointer;" onclick="moveBead(2)"></div>
+                <div style="width: 2px; height: 100%; background: #78350f; position: absolute; z-index: 0;"></div>
+                <span style="z-index: 1; font-weight: bold; font-size: 0.8rem;">50</span>
+            </div><div style="width: 35px; background: rgb(254, 243, 199); height: 120px; border-radius: 4px; position: relative; display: flex; flex-direction: column; justify-content: space-between; align-items: center; padding: 4px 0px;">
+                <div style="width: 25px; height: 15px; background: #d97706; border-radius: 10px; cursor: pointer;" onclick="moveBead(3)"></div>
+                <div style="width: 2px; height: 100%; background: #78350f; position: absolute; z-index: 0;"></div>
+                <span style="z-index: 1; font-weight: bold; font-size: 0.8rem;">90</span>
+            </div><div style="width: 35px; background: rgb(254, 243, 199); height: 120px; border-radius: 4px; position: relative; display: flex; flex-direction: column; justify-content: space-between; align-items: center; padding: 4px 0px;">
+                <div style="width: 25px; height: 15px; background: #d97706; border-radius: 10px; cursor: pointer;" onclick="moveBead(4)"></div>
+                <div style="width: 2px; height: 100%; background: #78350f; position: absolute; z-index: 0;"></div>
+                <span style="z-index: 1; font-weight: bold; font-size: 0.8rem;">30</span>
+            </div><div style="width: 35px; background: rgb(254, 243, 199); height: 120px; border-radius: 4px; position: relative; display: flex; flex-direction: column; justify-content: space-between; align-items: center; padding: 4px 0px;">
+                <div style="width: 25px; height: 15px; background: #d97706; border-radius: 10px; cursor: pointer;" onclick="moveBead(5)"></div>
+                <div style="width: 2px; height: 100%; background: #78350f; position: absolute; z-index: 0;"></div>
+                <span style="z-index: 1; font-weight: bold; font-size: 0.8rem;">60</span>
+            </div></div>
+            <div id="neuroFeedback" style="margin-top: 15px; font-weight: bold; font-size: 0.9rem;">⚡ Mentsd el a képet a vizuális memóriádban!</div>
+        </div>
+    </div>
+</div>
+
+<script>
+    let neuroVector = [50, 80, 20, 90, 30, 60];
+    let sessionTimer = null;
+    let secondsLeft = 1200; // 20 perc
+
+    // Web Audio API a Neuromatematikai Ingerléshez
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+    function playBinauralTone(freq) {
+        if (audioCtx.state === 'suspended') audioCtx.resume();
+        const osc1 = audioCtx.createOscillator();
+        const osc2 = audioCtx.createOscillator();
+        const merger = audioCtx.createChannelMerger(2);
+
+        osc1.frequency.value = freq;
+        osc2.frequency.value = freq + 7; // 7Hz Alpha-Theta interferencia
+
+        osc1.connect(merger, 0, 0);
+        osc2.connect(merger, 0, 1);
+        merger.connect(audioCtx.destination);
+
+        osc1.start(); osc2.start();
+        osc1.stop(audioCtx.currentTime + 0.3);
+        osc2.stop(audioCtx.currentTime + 0.3);
+    }
+
+    function start20MinSession() {
+        if (sessionTimer) clearInterval(sessionTimer);
+        secondsLeft = 1200;
+        sessionTimer = setInterval(() => {
+            secondsLeft--;
+            let mins = Math.floor(secondsLeft / 60);
+            let secs = secondsLeft % 60;
+            document.getElementById('neuroTimerDisplay').innerText = 
+                `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+
+            // Fázisok frissítése
+            if (secondsLeft > 1020) {
+                document.getElementById('neuroPhaseText').innerText = "1. Fázis: Szenzoros Szinkron (00:00 - 03:00)";
+            } else if (secondsLeft > 720) {
+                document.getElementById('neuroPhaseText').innerText = "2. Fázis: Fast Flash Anzan Vizuális Memória (03:00 - 08:00)";
+            } else if (secondsLeft > 300) {
+                document.getElementById('neuroPhaseText').innerText = "3. Fázis: Working Memory Stroop-teszt (08:00 - 15:00)";
+            } else if (secondsLeft > 0) {
+                document.getElementById('neuroPhaseText').innerText = "4. Fázis: Finommotoros Abakusz Levezetés (15:00 - 20:00)";
+            } else {
+                clearInterval(sessionTimer);
+                alert("🎉 A 20 perces Neuromatematikai Tréning sikeresen véget ért!");
+            }
+        }, 1000);
+    }
+
+    function drawNeuroCanvas(hideValues = false, stroopMode = false) {
+        const cvs = document.getElementById('neuroCanvas');
+        const ctx = cvs.getContext('2d');
+        ctx.clearRect(0, 0, cvs.width, cvs.height);
+
+        const barW = cvs.width / neuroVector.length;
+
+        neuroVector.forEach((val, i) => {
+            const h = (val / 100) * (cvs.height - 40);
+            const x = i * barW + 10;
+            const y = cvs.height - h - 20;
+
+            // Stroop teszt esetén szándékosan félrevezető színek
+            let color = '#2563eb';
+            if (stroopMode) {
+                const colors = ['#ef4444', '#10b981', '#f59e0b', '#8b5cf6'];
+                color = colors[(i + 1) % colors.length];
+            }
+
+            ctx.fillStyle = color;
+            ctx.fillRect(x, y, barW - 20, h);
+
+            if (!hideValues) {
+                ctx.fillStyle = '#ffffff';
+                ctx.font = '12px monospace';
+                ctx.fillText(`${val}%`, x + 5, y - 5);
+                ctx.fillText(`i:${i}`, x + 5, cvs.height - 5);
+            }
+        });
+    }
+
+    function runFlashAnzanTest() {
+        drawNeuroCanvas(false);
+        playBinauralTone(440);
+        setTimeout(() => {
+            drawNeuroCanvas(true); // Elrejtjük az értékeket 300ms után
+            document.getElementById('neuroFeedback').innerText = "⚡ Mentsd el a képet a vizuális memóriádban!";
+        }, 300);
+    }
+
+    function runStroopTest() {
+        drawNeuroCanvas(false, true);
+        document.getElementById('neuroFeedback').innerText = "🎯 Stroop-Modus: Ne a színre, csak a vízsugár magasságára koncentrálj!";
+    }
+
+    function renderAbacus() {
+        const container = document.getElementById('abacusContainer');
+        container.innerHTML = '';
+        neuroVector.forEach((val, i) => {
+            const col = document.createElement('div');
+            col.style.cssText = "width: 35px; background: #fef3c7; height: 120px; border-radius: 4px; position: relative; display: flex; flex-direction: column; justify-content: space-between; align-items: center; padding: 4px 0;";
+            col.innerHTML = `
+                <div style="width: 25px; height: 15px; background: #d97706; border-radius: 10px; cursor: pointer;" onclick="moveBead(${i})"></div>
+                <div style="width: 2px; height: 100%; background: #78350f; position: absolute; z-index: 0;"></div>
+                <span style="z-index: 1; font-weight: bold; font-size: 0.8rem;">${val}</span>
+            `;
+            container.appendChild(col);
+        });
+    }
+
+    function moveBead(i) {
+        neuroVector[i] = (neuroVector[i] + 10) % 110;
+        playBinauralTone(200 + neuroVector[i] * 4);
+        renderAbacus();
+        drawNeuroCanvas();
+    }
+
+    window.onload = () => {
+        drawNeuroCanvas();
+        renderAbacus();
+    };
+</script>
+
+</body></html>
