@@ -1,0 +1,1438 @@
+<!DOCTYPE html>
+<!-- saved from url=(0068)file:///C:/Users/Utilizator/Downloads/gemini-code-1788166880571.html -->
+<html lang="hu"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kollaboratív AI Platform - Kétkepernyős Tanár-Diák Munkaterület</title>
+    <style>
+        body {
+            display: flex;
+            min-height: 100vh;
+            margin: 0;
+            font-family: sans-serif;
+            gap: 10px;
+            padding: 10px; 
+            box-sizing: border-box;
+            min-width: 1400px; 
+            margin-left: 200px; 
+            transition: margin-left 0.3s ease; 
+            padding-left: 0; 
+        }
+
+        .column {
+            flex: 1;
+            min-width: 600px; 
+            border-radius: 8px;
+            padding: 15px;
+            background-color: #f0f3f4;
+            display: flex;
+            flex-direction: column;
+            position: relative; 
+            overflow-y: auto; 
+            max-height: calc(100vh - 20px);
+        }
+
+        #sidebar-menu {
+            position: fixed; 
+            top: 0; left: 0;
+            width: 200px; height: 100vh;
+            background-color: #2c3e50; 
+            padding-top: 20px;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.5);
+            z-index: 2000; 
+            transition: left 0.3s ease; 
+        }
+        
+        .sidebar-collapsed #sidebar-menu { left: -170px; }
+        .sidebar-collapsed body { margin-left: 10px; }
+
+        #toggle-button {
+            position: absolute; 
+            top: 10px; right: 0; 
+            width: 30px; height: 30px;
+            background-color: #e67e22; color: white;
+            border: none; cursor: pointer; z-index: 2001; 
+            font-size: 18px; text-align: center; line-height: 30px;
+            border-radius: 0 4px 4px 0;
+        }
+
+        .sidebar-collapsed #toggle-button { transform: translateX(170px); }
+        
+        .main-menu { list-style: none; padding: 0; margin: 0; }
+        .menu-item { position: relative; }
+        .menu-item a { display: block; padding: 15px 20px; color: white; text-decoration: none; border-bottom: 1px solid #34495e; }
+        .menu-item a:hover { background-color: #34495e; }
+        
+        .vercel-panel, .mattermost-panel, .help-panel {
+            background: #ffffff;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            padding: 12px;
+            margin-bottom: 15px;
+        }
+        .vercel-panel input, .vercel-panel textarea, .vercel-panel button, .mattermost-panel input {
+            padding: 8px;
+            margin-top: 5px;
+            margin-bottom: 5px;
+            box-sizing: border-box;
+            width: 100%;
+        }
+        .info-box {
+            background: #eff6ff;
+            border: 1px solid #bfdbfe;
+            color: #1e40af;
+            padding: 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            margin-bottom: 8px;
+            line-height: 1.4;
+        }
+        .vercel-list {
+            list-style: none;
+            padding: 0;
+            max-height: 180px;
+            overflow-y: auto;
+            border: 1px solid #e2e8f0;
+            border-radius: 4px;
+            background: #f8fafc;
+        }
+        .vercel-list li {
+            padding: 8px 10px;
+            border-bottom: 1px solid #e2e8f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #fff;
+            cursor: grab;
+        }
+        .vercel-list li:active { cursor: grabbing; }
+        .vercel-list li.dragging { opacity: 0.4; background: #e2e8f0; }
+        .vercel-list li:hover { background: #e0f2fe; }
+
+        .vercel-item-content {
+            cursor: pointer;
+            flex: 1;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            overflow: hidden;
+            padding-right: 10px;
+        }
+
+        .vercel-item-content span:first-child {
+            font-weight: bold;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            margin-right: 15px;
+        }
+
+        .vercel-item-content small {
+            color: #0284c7;
+            text-align: right;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        #iframe-resizable-container {
+            resize: vertical;
+            overflow: auto; 
+            min-height: 200px; 
+            height: 300px; 
+            width: 100%;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            padding: 5px;
+            background-color: white;
+            margin-bottom: 15px;
+        }
+
+        #google-docs-iframe { width: 100%; height: 100%; border: none; }
+        
+        .chat-launch-container {
+            background: #f8fafc;
+            border: 1px solid #287A9F;
+            border-radius: 6px;
+            padding: 15px;
+            text-align: center;
+            margin-top: 10px;
+            margin-bottom: 10px;
+        }
+
+        .ai-output-area { min-height: 40px; padding: 8px; background-color: #ffffff; border: 1px solid #ddd; border-radius: 4px; font-family: monospace; font-size: 12px; white-space: pre-wrap; overflow: auto; }
+
+        #server-modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 3000;
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-content {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            width: 500px;
+            max-width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+        .server-option-item {
+            padding: 10px;
+            border: 1px solid #e2e8f0;
+            border-radius: 4px;
+            margin-bottom: 8px;
+            cursor: pointer;
+            background: #f8fafc;
+            transition: background 0.2s;
+        }
+        .server-option-item:hover {
+            background: #e0f2fe;
+            border-color: #38bdf8;
+        }
+    </style>
+</head>
+<body id="main-body">
+    
+    <nav id="sidebar-menu">
+        <button id="toggle-button" onclick="toggleSidebar()">«</button>
+        <ul class="main-menu">
+            <li class="menu-item"><a href="file:///C:/Users/Utilizator/Downloads/gemini-code-1788166880571.html#">🏠 Irányítópult</a></li>
+            <li class="menu-item"><a href="file:///C:/Users/Utilizator/Downloads/gemini-code-1788166880571.html#" onclick="loadSystemHelpIntoIframe(null)">📖 Teljes Súgó Dokumentáció</a></li>
+            <li class="menu-item"><a href="file:///C:/Users/Utilizator/Downloads/gemini-code-1788166880571.html#">⚙️ Rendszerbeállítások</a></li>
+        </ul>
+    </nav>
+
+    <div id="google-docs-column" class="column">
+        <h2>Vercel Lista &amp; Saját Munkaterület</h2>
+        
+        <div class="vercel-panel">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">
+                <h4 style="margin: 0;">📋 Kötegelt Linksorozat &amp; Drag &amp; Drop Rendező</h4>
+                <button onclick="openExternalSortModule()" style="background:#7c3aed; color:white; border:none; padding:4px 8px; border-radius:4px; cursor:pointer; font-size:11px; font-weight:bold;">🔗 Külső HTML Rendező Modul</button>
+            </div>
+            
+            <div class="info-box">
+                ℹ️ <b>Gyors információ:</b> Húzd át az elemeket a sorrend módosításához (Drag &amp; Drop), vagy használd a külső HTML hivatkozásos modul opciót.
+            </div>
+
+            <div style="margin-bottom: 8px; background: #f8fafc; padding: 8px; border: 1px dashed #cbd5e1; border-radius: 4px;">
+                <label style="font-size: 11px; font-weight: bold; color: #334155; display: block; margin-bottom: 3px;">📁 HTTP listafájl feltöltése (.txt):</label>
+                <input type="file" id="linkFileUploader" accept=".txt,.csv" onchange="handleFileUpload(event)" style="font-size: 11px; padding: 4px; margin: 0;">
+            </div>
+
+            <textarea id="batchLinkInput" placeholder="Másold be ide a linksort (soronként egy link)..." style="height: 40px; font-family: monospace; font-size: 11px;"></textarea>
+            
+            <div style="display: flex; gap: 5px;">
+                <input type="text" id="autoSuffixInput" placeholder="Hiányzó végződés (pl. /index.html)" style="flex:2; margin:0;">
+                <button onclick="addBatchLinks()" style="background:#2563eb; color:white; border:none; border-radius:4px; cursor:pointer; flex:1; margin:0;">Hozzáadás</button>
+            </div>
+
+            <ul id="vercel-dynamic-list" class="vercel-list" style="margin-top: 8px;"><li draggable="true" data-url="internal://official-help" style="background: rgb(224, 242, 254);">
+                <span style="cursor: grab; color: #94a3b8; margin-right: 6px; font-weight: bold;">☰</span>
+                <div class="vercel-item-content" onclick="loadSystemHelpIntoIframe(this.parentElement)">
+                    <span>📖 Teljes Hivatalos Súgórendszer</span>
+                    <small>internal://official-help</small>
+                </div>
+                <div style="display: flex; gap: 4px; align-items: center;">
+                    <button onclick="openPanelLinkDirect(&#39;internal://official-help&#39;)" style="background:#0284c7; color:white; border:none; padding:4px 6px; border-radius:4px; cursor:pointer; font-size:10px; white-space:nowrap;" title="Panel Link Megnyitása">🌐 Panel Link</button>
+                    <button onclick="sendLinkToTeacher(&#39;internal://official-help&#39;)" style="background:#059669; color:white; border:none; padding:4px 6px; border-radius:4px; cursor:pointer; font-size:10px; white-space:nowrap;" title="Küldés a tanárnak">📤 Küldés Tanárnak</button>
+                </div>
+            </li><li draggable="true" data-url="https://red-zeta-one.vercel.app/tabla/tabla1" style="background: rgb(255, 255, 255);">
+                    <span style="cursor: grab; color: #94a3b8; margin-right: 6px; font-weight: bold;">☰</span>
+                    <div class="vercel-item-content" onclick="loadLinkIntoIframe(&#39;https://red-zeta-one.vercel.app/tabla/tabla1&#39;, this.parentElement)">
+                        <span>tabla/tabla1</span>
+                        <small>https://red-zeta-one.vercel.app/tabla/tabla1</small>
+                    </div>
+                    <div style="display: flex; gap: 4px; align-items: center;">
+                        <button onclick="openPanelLinkDirect(&#39;https://red-zeta-one.vercel.app/tabla/tabla1&#39;)" style="background:#0284c7; color:white; border:none; padding:4px 6px; border-radius:4px; cursor:pointer; font-size:10px; white-space:nowrap;" title="Panel Link Megnyitása">🌐 Panel Link</button>
+                        <button onclick="sendLinkToTeacher(&#39;https://red-zeta-one.vercel.app/tabla/tabla1&#39;)" style="background:#059669; color:white; border:none; padding:4px 6px; border-radius:4px; cursor:pointer; font-size:10px; white-space:nowrap;" title="Küldés a tanárnak">📤 Küldés Tanárnak</button>
+                    </div>
+                </li><li draggable="true" data-url="https://red-zeta-one.vercel.app/tabla/tabla2" style="background: rgb(255, 255, 255);">
+                    <span style="cursor: grab; color: #94a3b8; margin-right: 6px; font-weight: bold;">☰</span>
+                    <div class="vercel-item-content" onclick="loadLinkIntoIframe(&#39;https://red-zeta-one.vercel.app/tabla/tabla2&#39;, this.parentElement)">
+                        <span>tabla/tabla2</span>
+                        <small>https://red-zeta-one.vercel.app/tabla/tabla2</small>
+                    </div>
+                    <div style="display: flex; gap: 4px; align-items: center;">
+                        <button onclick="openPanelLinkDirect(&#39;https://red-zeta-one.vercel.app/tabla/tabla2&#39;)" style="background:#0284c7; color:white; border:none; padding:4px 6px; border-radius:4px; cursor:pointer; font-size:10px; white-space:nowrap;" title="Panel Link Megnyitása">🌐 Panel Link</button>
+                        <button onclick="sendLinkToTeacher(&#39;https://red-zeta-one.vercel.app/tabla/tabla2&#39;)" style="background:#059669; color:white; border:none; padding:4px 6px; border-radius:4px; cursor:pointer; font-size:10px; white-space:nowrap;" title="Küldés a tanárnak">📤 Küldés Tanárnak</button>
+                    </div>
+                </li><li draggable="true" data-url="https://red-zeta-one.vercel.app/tabla/tabla3" style="background: rgb(255, 255, 255);">
+                    <span style="cursor: grab; color: #94a3b8; margin-right: 6px; font-weight: bold;">☰</span>
+                    <div class="vercel-item-content" onclick="loadLinkIntoIframe(&#39;https://red-zeta-one.vercel.app/tabla/tabla3&#39;, this.parentElement)">
+                        <span>tabla/tabla3</span>
+                        <small>https://red-zeta-one.vercel.app/tabla/tabla3</small>
+                    </div>
+                    <div style="display: flex; gap: 4px; align-items: center;">
+                        <button onclick="openPanelLinkDirect(&#39;https://red-zeta-one.vercel.app/tabla/tabla3&#39;)" style="background:#0284c7; color:white; border:none; padding:4px 6px; border-radius:4px; cursor:pointer; font-size:10px; white-space:nowrap;" title="Panel Link Megnyitása">🌐 Panel Link</button>
+                        <button onclick="sendLinkToTeacher(&#39;https://red-zeta-one.vercel.app/tabla/tabla3&#39;)" style="background:#059669; color:white; border:none; padding:4px 6px; border-radius:4px; cursor:pointer; font-size:10px; white-space:nowrap;" title="Küldés a tanárnak">📤 Küldés Tanárnak</button>
+                    </div>
+                </li><li draggable="true" data-url="https://red-zeta-one.vercel.app/tabla/tabla4" style="background: rgb(255, 255, 255);">
+                    <span style="cursor: grab; color: #94a3b8; margin-right: 6px; font-weight: bold;">☰</span>
+                    <div class="vercel-item-content" onclick="loadLinkIntoIframe(&#39;https://red-zeta-one.vercel.app/tabla/tabla4&#39;, this.parentElement)">
+                        <span>tabla/tabla4</span>
+                        <small>https://red-zeta-one.vercel.app/tabla/tabla4</small>
+                    </div>
+                    <div style="display: flex; gap: 4px; align-items: center;">
+                        <button onclick="openPanelLinkDirect(&#39;https://red-zeta-one.vercel.app/tabla/tabla4&#39;)" style="background:#0284c7; color:white; border:none; padding:4px 6px; border-radius:4px; cursor:pointer; font-size:10px; white-space:nowrap;" title="Panel Link Megnyitása">🌐 Panel Link</button>
+                        <button onclick="sendLinkToTeacher(&#39;https://red-zeta-one.vercel.app/tabla/tabla4&#39;)" style="background:#059669; color:white; border:none; padding:4px 6px; border-radius:4px; cursor:pointer; font-size:10px; white-space:nowrap;" title="Küldés a tanárnak">📤 Küldés Tanárnak</button>
+                    </div>
+                </li><li draggable="true" data-url="https://red-zeta-one.vercel.app/tabla/tabla5" style="background: rgb(255, 255, 255);">
+                    <span style="cursor: grab; color: #94a3b8; margin-right: 6px; font-weight: bold;">☰</span>
+                    <div class="vercel-item-content" onclick="loadLinkIntoIframe(&#39;https://red-zeta-one.vercel.app/tabla/tabla5&#39;, this.parentElement)">
+                        <span>tabla/tabla5</span>
+                        <small>https://red-zeta-one.vercel.app/tabla/tabla5</small>
+                    </div>
+                    <div style="display: flex; gap: 4px; align-items: center;">
+                        <button onclick="openPanelLinkDirect(&#39;https://red-zeta-one.vercel.app/tabla/tabla5&#39;)" style="background:#0284c7; color:white; border:none; padding:4px 6px; border-radius:4px; cursor:pointer; font-size:10px; white-space:nowrap;" title="Panel Link Megnyitása">🌐 Panel Link</button>
+                        <button onclick="sendLinkToTeacher(&#39;https://red-zeta-one.vercel.app/tabla/tabla5&#39;)" style="background:#059669; color:white; border:none; padding:4px 6px; border-radius:4px; cursor:pointer; font-size:10px; white-space:nowrap;" title="Küldés a tanárnak">📤 Küldés Tanárnak</button>
+                    </div>
+                </li><li draggable="true" data-url="https://red-zeta-one.vercel.app/tabla/tabla6" style="background: rgb(255, 255, 255);">
+                    <span style="cursor: grab; color: #94a3b8; margin-right: 6px; font-weight: bold;">☰</span>
+                    <div class="vercel-item-content" onclick="loadLinkIntoIframe(&#39;https://red-zeta-one.vercel.app/tabla/tabla6&#39;, this.parentElement)">
+                        <span>tabla/tabla6</span>
+                        <small>https://red-zeta-one.vercel.app/tabla/tabla6</small>
+                    </div>
+                    <div style="display: flex; gap: 4px; align-items: center;">
+                        <button onclick="openPanelLinkDirect(&#39;https://red-zeta-one.vercel.app/tabla/tabla6&#39;)" style="background:#0284c7; color:white; border:none; padding:4px 6px; border-radius:4px; cursor:pointer; font-size:10px; white-space:nowrap;" title="Panel Link Megnyitása">🌐 Panel Link</button>
+                        <button onclick="sendLinkToTeacher(&#39;https://red-zeta-one.vercel.app/tabla/tabla6&#39;)" style="background:#059669; color:white; border:none; padding:4px 6px; border-radius:4px; cursor:pointer; font-size:10px; white-space:nowrap;" title="Küldés a tanárnak">📤 Küldés Tanárnak</button>
+                    </div>
+                </li><li draggable="true" data-url="https://red-zeta-one.vercel.app/tabla/tabla7" style="background: rgb(255, 255, 255);">
+                    <span style="cursor: grab; color: #94a3b8; margin-right: 6px; font-weight: bold;">☰</span>
+                    <div class="vercel-item-content" onclick="loadLinkIntoIframe(&#39;https://red-zeta-one.vercel.app/tabla/tabla7&#39;, this.parentElement)">
+                        <span>tabla/tabla7</span>
+                        <small>https://red-zeta-one.vercel.app/tabla/tabla7</small>
+                    </div>
+                    <div style="display: flex; gap: 4px; align-items: center;">
+                        <button onclick="openPanelLinkDirect(&#39;https://red-zeta-one.vercel.app/tabla/tabla7&#39;)" style="background:#0284c7; color:white; border:none; padding:4px 6px; border-radius:4px; cursor:pointer; font-size:10px; white-space:nowrap;" title="Panel Link Megnyitása">🌐 Panel Link</button>
+                        <button onclick="sendLinkToTeacher(&#39;https://red-zeta-one.vercel.app/tabla/tabla7&#39;)" style="background:#059669; color:white; border:none; padding:4px 6px; border-radius:4px; cursor:pointer; font-size:10px; white-space:nowrap;" title="Küldés a tanárnak">📤 Küldés Tanárnak</button>
+                    </div>
+                </li><li draggable="true" data-url="https://red-zeta-one.vercel.app/tabla/tabla8" style="background: rgb(255, 255, 255);">
+                    <span style="cursor: grab; color: #94a3b8; margin-right: 6px; font-weight: bold;">☰</span>
+                    <div class="vercel-item-content" onclick="loadLinkIntoIframe(&#39;https://red-zeta-one.vercel.app/tabla/tabla8&#39;, this.parentElement)">
+                        <span>tabla/tabla8</span>
+                        <small>https://red-zeta-one.vercel.app/tabla/tabla8</small>
+                    </div>
+                    <div style="display: flex; gap: 4px; align-items: center;">
+                        <button onclick="openPanelLinkDirect(&#39;https://red-zeta-one.vercel.app/tabla/tabla8&#39;)" style="background:#0284c7; color:white; border:none; padding:4px 6px; border-radius:4px; cursor:pointer; font-size:10px; white-space:nowrap;" title="Panel Link Megnyitása">🌐 Panel Link</button>
+                        <button onclick="sendLinkToTeacher(&#39;https://red-zeta-one.vercel.app/tabla/tabla8&#39;)" style="background:#059669; color:white; border:none; padding:4px 6px; border-radius:4px; cursor:pointer; font-size:10px; white-space:nowrap;" title="Küldés a tanárnak">📤 Küldés Tanárnak</button>
+                    </div>
+                </li><li draggable="true" data-url="https://red-zeta-one.vercel.app/tabla/tabla9" style="background: rgb(255, 255, 255);">
+                    <span style="cursor: grab; color: #94a3b8; margin-right: 6px; font-weight: bold;">☰</span>
+                    <div class="vercel-item-content" onclick="loadLinkIntoIframe(&#39;https://red-zeta-one.vercel.app/tabla/tabla9&#39;, this.parentElement)">
+                        <span>tabla/tabla9</span>
+                        <small>https://red-zeta-one.vercel.app/tabla/tabla9</small>
+                    </div>
+                    <div style="display: flex; gap: 4px; align-items: center;">
+                        <button onclick="openPanelLinkDirect(&#39;https://red-zeta-one.vercel.app/tabla/tabla9&#39;)" style="background:#0284c7; color:white; border:none; padding:4px 6px; border-radius:4px; cursor:pointer; font-size:10px; white-space:nowrap;" title="Panel Link Megnyitása">🌐 Panel Link</button>
+                        <button onclick="sendLinkToTeacher(&#39;https://red-zeta-one.vercel.app/tabla/tabla9&#39;)" style="background:#059669; color:white; border:none; padding:4px 6px; border-radius:4px; cursor:pointer; font-size:10px; white-space:nowrap;" title="Küldés a tanárnak">📤 Küldés Tanárnak</button>
+                    </div>
+                </li><li draggable="true" data-url="https://red-zeta-one.vercel.app/tabla/tabla10" style="background: rgb(255, 255, 255);">
+                    <span style="cursor: grab; color: #94a3b8; margin-right: 6px; font-weight: bold;">☰</span>
+                    <div class="vercel-item-content" onclick="loadLinkIntoIframe(&#39;https://red-zeta-one.vercel.app/tabla/tabla10&#39;, this.parentElement)">
+                        <span>tabla/tabla10</span>
+                        <small>https://red-zeta-one.vercel.app/tabla/tabla10</small>
+                    </div>
+                    <div style="display: flex; gap: 4px; align-items: center;">
+                        <button onclick="openPanelLinkDirect(&#39;https://red-zeta-one.vercel.app/tabla/tabla10&#39;)" style="background:#0284c7; color:white; border:none; padding:4px 6px; border-radius:4px; cursor:pointer; font-size:10px; white-space:nowrap;" title="Panel Link Megnyitása">🌐 Panel Link</button>
+                        <button onclick="sendLinkToTeacher(&#39;https://red-zeta-one.vercel.app/tabla/tabla10&#39;)" style="background:#059669; color:white; border:none; padding:4px 6px; border-radius:4px; cursor:pointer; font-size:10px; white-space:nowrap;" title="Küldés a tanárnak">📤 Küldés Tanárnak</button>
+                    </div>
+                </li><li draggable="true" data-url="https://red-zeta-one.vercel.app/tabla/tabla11" style="background: rgb(255, 255, 255);">
+                    <span style="cursor: grab; color: #94a3b8; margin-right: 6px; font-weight: bold;">☰</span>
+                    <div class="vercel-item-content" onclick="loadLinkIntoIframe(&#39;https://red-zeta-one.vercel.app/tabla/tabla11&#39;, this.parentElement)">
+                        <span>tabla/tabla11</span>
+                        <small>https://red-zeta-one.vercel.app/tabla/tabla11</small>
+                    </div>
+                    <div style="display: flex; gap: 4px; align-items: center;">
+                        <button onclick="openPanelLinkDirect(&#39;https://red-zeta-one.vercel.app/tabla/tabla11&#39;)" style="background:#0284c7; color:white; border:none; padding:4px 6px; border-radius:4px; cursor:pointer; font-size:10px; white-space:nowrap;" title="Panel Link Megnyitása">🌐 Panel Link</button>
+                        <button onclick="sendLinkToTeacher(&#39;https://red-zeta-one.vercel.app/tabla/tabla11&#39;)" style="background:#059669; color:white; border:none; padding:4px 6px; border-radius:4px; cursor:pointer; font-size:10px; white-space:nowrap;" title="Küldés a tanárnak">📤 Küldés Tanárnak</button>
+                    </div>
+                </li><li draggable="true" data-url="https://red-zeta-one.vercel.app/tabla/tabla12" style="background: rgb(255, 255, 255);">
+                    <span style="cursor: grab; color: #94a3b8; margin-right: 6px; font-weight: bold;">☰</span>
+                    <div class="vercel-item-content" onclick="loadLinkIntoIframe(&#39;https://red-zeta-one.vercel.app/tabla/tabla12&#39;, this.parentElement)">
+                        <span>tabla/tabla12</span>
+                        <small>https://red-zeta-one.vercel.app/tabla/tabla12</small>
+                    </div>
+                    <div style="display: flex; gap: 4px; align-items: center;">
+                        <button onclick="openPanelLinkDirect(&#39;https://red-zeta-one.vercel.app/tabla/tabla12&#39;)" style="background:#0284c7; color:white; border:none; padding:4px 6px; border-radius:4px; cursor:pointer; font-size:10px; white-space:nowrap;" title="Panel Link Megnyitása">🌐 Panel Link</button>
+                        <button onclick="sendLinkToTeacher(&#39;https://red-zeta-one.vercel.app/tabla/tabla12&#39;)" style="background:#059669; color:white; border:none; padding:4px 6px; border-radius:4px; cursor:pointer; font-size:10px; white-space:nowrap;" title="Küldés a tanárnak">📤 Küldés Tanárnak</button>
+                    </div>
+                </li><li draggable="true" data-url="https://red-zeta-one.vercel.app/tabla/tabla13" style="background: rgb(255, 255, 255);">
+                    <span style="cursor: grab; color: #94a3b8; margin-right: 6px; font-weight: bold;">☰</span>
+                    <div class="vercel-item-content" onclick="loadLinkIntoIframe(&#39;https://red-zeta-one.vercel.app/tabla/tabla13&#39;, this.parentElement)">
+                        <span>tabla/tabla13</span>
+                        <small>https://red-zeta-one.vercel.app/tabla/tabla13</small>
+                    </div>
+                    <div style="display: flex; gap: 4px; align-items: center;">
+                        <button onclick="openPanelLinkDirect(&#39;https://red-zeta-one.vercel.app/tabla/tabla13&#39;)" style="background:#0284c7; color:white; border:none; padding:4px 6px; border-radius:4px; cursor:pointer; font-size:10px; white-space:nowrap;" title="Panel Link Megnyitása">🌐 Panel Link</button>
+                        <button onclick="sendLinkToTeacher(&#39;https://red-zeta-one.vercel.app/tabla/tabla13&#39;)" style="background:#059669; color:white; border:none; padding:4px 6px; border-radius:4px; cursor:pointer; font-size:10px; white-space:nowrap;" title="Küldés a tanárnak">📤 Küldés Tanárnak</button>
+                    </div>
+                </li><li draggable="true" data-url="https://red-zeta-one.vercel.app/tabla/tabla14" style="background: rgb(255, 255, 255);">
+                    <span style="cursor: grab; color: #94a3b8; margin-right: 6px; font-weight: bold;">☰</span>
+                    <div class="vercel-item-content" onclick="loadLinkIntoIframe(&#39;https://red-zeta-one.vercel.app/tabla/tabla14&#39;, this.parentElement)">
+                        <span>tabla/tabla14</span>
+                        <small>https://red-zeta-one.vercel.app/tabla/tabla14</small>
+                    </div>
+                    <div style="display: flex; gap: 4px; align-items: center;">
+                        <button onclick="openPanelLinkDirect(&#39;https://red-zeta-one.vercel.app/tabla/tabla14&#39;)" style="background:#0284c7; color:white; border:none; padding:4px 6px; border-radius:4px; cursor:pointer; font-size:10px; white-space:nowrap;" title="Panel Link Megnyitása">🌐 Panel Link</button>
+                        <button onclick="sendLinkToTeacher(&#39;https://red-zeta-one.vercel.app/tabla/tabla14&#39;)" style="background:#059669; color:white; border:none; padding:4px 6px; border-radius:4px; cursor:pointer; font-size:10px; white-space:nowrap;" title="Küldés a tanárnak">📤 Küldés Tanárnak</button>
+                    </div>
+                </li><li draggable="true" data-url="https://red-zeta-one.vercel.app/tabla/tabla15" style="background: rgb(255, 255, 255);">
+                    <span style="cursor: grab; color: #94a3b8; margin-right: 6px; font-weight: bold;">☰</span>
+                    <div class="vercel-item-content" onclick="loadLinkIntoIframe(&#39;https://red-zeta-one.vercel.app/tabla/tabla15&#39;, this.parentElement)">
+                        <span>tabla/tabla15</span>
+                        <small>https://red-zeta-one.vercel.app/tabla/tabla15</small>
+                    </div>
+                    <div style="display: flex; gap: 4px; align-items: center;">
+                        <button onclick="openPanelLinkDirect(&#39;https://red-zeta-one.vercel.app/tabla/tabla15&#39;)" style="background:#0284c7; color:white; border:none; padding:4px 6px; border-radius:4px; cursor:pointer; font-size:10px; white-space:nowrap;" title="Panel Link Megnyitása">🌐 Panel Link</button>
+                        <button onclick="sendLinkToTeacher(&#39;https://red-zeta-one.vercel.app/tabla/tabla15&#39;)" style="background:#059669; color:white; border:none; padding:4px 6px; border-radius:4px; cursor:pointer; font-size:10px; white-space:nowrap;" title="Küldés a tanárnak">📤 Küldés Tanárnak</button>
+                    </div>
+                </li><li draggable="true" data-url="https://red-zeta-one.vercel.app/tabla/tabla16" style="background: rgb(255, 255, 255);">
+                    <span style="cursor: grab; color: #94a3b8; margin-right: 6px; font-weight: bold;">☰</span>
+                    <div class="vercel-item-content" onclick="loadLinkIntoIframe(&#39;https://red-zeta-one.vercel.app/tabla/tabla16&#39;, this.parentElement)">
+                        <span>tabla/tabla16</span>
+                        <small>https://red-zeta-one.vercel.app/tabla/tabla16</small>
+                    </div>
+                    <div style="display: flex; gap: 4px; align-items: center;">
+                        <button onclick="openPanelLinkDirect(&#39;https://red-zeta-one.vercel.app/tabla/tabla16&#39;)" style="background:#0284c7; color:white; border:none; padding:4px 6px; border-radius:4px; cursor:pointer; font-size:10px; white-space:nowrap;" title="Panel Link Megnyitása">🌐 Panel Link</button>
+                        <button onclick="sendLinkToTeacher(&#39;https://red-zeta-one.vercel.app/tabla/tabla16&#39;)" style="background:#059669; color:white; border:none; padding:4px 6px; border-radius:4px; cursor:pointer; font-size:10px; white-space:nowrap;" title="Küldés a tanárnak">📤 Küldés Tanárnak</button>
+                    </div>
+                </li><li draggable="true" data-url="https://red-zeta-one.vercel.app/tabla/tabla17" style="background: rgb(255, 255, 255);">
+                    <span style="cursor: grab; color: #94a3b8; margin-right: 6px; font-weight: bold;">☰</span>
+                    <div class="vercel-item-content" onclick="loadLinkIntoIframe(&#39;https://red-zeta-one.vercel.app/tabla/tabla17&#39;, this.parentElement)">
+                        <span>tabla/tabla17</span>
+                        <small>https://red-zeta-one.vercel.app/tabla/tabla17</small>
+                    </div>
+                    <div style="display: flex; gap: 4px; align-items: center;">
+                        <button onclick="openPanelLinkDirect(&#39;https://red-zeta-one.vercel.app/tabla/tabla17&#39;)" style="background:#0284c7; color:white; border:none; padding:4px 6px; border-radius:4px; cursor:pointer; font-size:10px; white-space:nowrap;" title="Panel Link Megnyitása">🌐 Panel Link</button>
+                        <button onclick="sendLinkToTeacher(&#39;https://red-zeta-one.vercel.app/tabla/tabla17&#39;)" style="background:#059669; color:white; border:none; padding:4px 6px; border-radius:4px; cursor:pointer; font-size:10px; white-space:nowrap;" title="Küldés a tanárnak">📤 Küldés Tanárnak</button>
+                    </div>
+                </li><li draggable="true" data-url="https://red-zeta-one.vercel.app/tabla/tabla18" style="background: rgb(255, 255, 255);">
+                    <span style="cursor: grab; color: #94a3b8; margin-right: 6px; font-weight: bold;">☰</span>
+                    <div class="vercel-item-content" onclick="loadLinkIntoIframe(&#39;https://red-zeta-one.vercel.app/tabla/tabla18&#39;, this.parentElement)">
+                        <span>tabla/tabla18</span>
+                        <small>https://red-zeta-one.vercel.app/tabla/tabla18</small>
+                    </div>
+                    <div style="display: flex; gap: 4px; align-items: center;">
+                        <button onclick="openPanelLinkDirect(&#39;https://red-zeta-one.vercel.app/tabla/tabla18&#39;)" style="background:#0284c7; color:white; border:none; padding:4px 6px; border-radius:4px; cursor:pointer; font-size:10px; white-space:nowrap;" title="Panel Link Megnyitása">🌐 Panel Link</button>
+                        <button onclick="sendLinkToTeacher(&#39;https://red-zeta-one.vercel.app/tabla/tabla18&#39;)" style="background:#059669; color:white; border:none; padding:4px 6px; border-radius:4px; cursor:pointer; font-size:10px; white-space:nowrap;" title="Küldés a tanárnak">📤 Küldés Tanárnak</button>
+                    </div>
+                </li><li draggable="true" data-url="https://red-zeta-one.vercel.app/tabla/tabla19" style="background: rgb(255, 255, 255);">
+                    <span style="cursor: grab; color: #94a3b8; margin-right: 6px; font-weight: bold;">☰</span>
+                    <div class="vercel-item-content" onclick="loadLinkIntoIframe(&#39;https://red-zeta-one.vercel.app/tabla/tabla19&#39;, this.parentElement)">
+                        <span>tabla/tabla19</span>
+                        <small>https://red-zeta-one.vercel.app/tabla/tabla19</small>
+                    </div>
+                    <div style="display: flex; gap: 4px; align-items: center;">
+                        <button onclick="openPanelLinkDirect(&#39;https://red-zeta-one.vercel.app/tabla/tabla19&#39;)" style="background:#0284c7; color:white; border:none; padding:4px 6px; border-radius:4px; cursor:pointer; font-size:10px; white-space:nowrap;" title="Panel Link Megnyitása">🌐 Panel Link</button>
+                        <button onclick="sendLinkToTeacher(&#39;https://red-zeta-one.vercel.app/tabla/tabla19&#39;)" style="background:#059669; color:white; border:none; padding:4px 6px; border-radius:4px; cursor:pointer; font-size:10px; white-space:nowrap;" title="Küldés a tanárnak">📤 Küldés Tanárnak</button>
+                    </div>
+                </li><li draggable="true" data-url="https://red-zeta-one.vercel.app/tabla/tabla20" style="background: rgb(255, 255, 255);">
+                    <span style="cursor: grab; color: #94a3b8; margin-right: 6px; font-weight: bold;">☰</span>
+                    <div class="vercel-item-content" onclick="loadLinkIntoIframe(&#39;https://red-zeta-one.vercel.app/tabla/tabla20&#39;, this.parentElement)">
+                        <span>tabla/tabla20</span>
+                        <small>https://red-zeta-one.vercel.app/tabla/tabla20</small>
+                    </div>
+                    <div style="display: flex; gap: 4px; align-items: center;">
+                        <button onclick="openPanelLinkDirect(&#39;https://red-zeta-one.vercel.app/tabla/tabla20&#39;)" style="background:#0284c7; color:white; border:none; padding:4px 6px; border-radius:4px; cursor:pointer; font-size:10px; white-space:nowrap;" title="Panel Link Megnyitása">🌐 Panel Link</button>
+                        <button onclick="sendLinkToTeacher(&#39;https://red-zeta-one.vercel.app/tabla/tabla20&#39;)" style="background:#059669; color:white; border:none; padding:4px 6px; border-radius:4px; cursor:pointer; font-size:10px; white-space:nowrap;" title="Küldés a tanárnak">📤 Küldés Tanárnak</button>
+                    </div>
+                </li><li draggable="true" data-url="https://red-zeta-one.vercel.app/tabla/tabla21" style="background: rgb(255, 255, 255);">
+                    <span style="cursor: grab; color: #94a3b8; margin-right: 6px; font-weight: bold;">☰</span>
+                    <div class="vercel-item-content" onclick="loadLinkIntoIframe(&#39;https://red-zeta-one.vercel.app/tabla/tabla21&#39;, this.parentElement)">
+                        <span>tabla/tabla21</span>
+                        <small>https://red-zeta-one.vercel.app/tabla/tabla21</small>
+                    </div>
+                    <div style="display: flex; gap: 4px; align-items: center;">
+                        <button onclick="openPanelLinkDirect(&#39;https://red-zeta-one.vercel.app/tabla/tabla21&#39;)" style="background:#0284c7; color:white; border:none; padding:4px 6px; border-radius:4px; cursor:pointer; font-size:10px; white-space:nowrap;" title="Panel Link Megnyitása">🌐 Panel Link</button>
+                        <button onclick="sendLinkToTeacher(&#39;https://red-zeta-one.vercel.app/tabla/tabla21&#39;)" style="background:#059669; color:white; border:none; padding:4px 6px; border-radius:4px; cursor:pointer; font-size:10px; white-space:nowrap;" title="Küldés a tanárnak">📤 Küldés Tanárnak</button>
+                    </div>
+                </li><li draggable="true" data-url="https://red-zeta-one.vercel.app/tabla/tabla22" style="background: rgb(255, 255, 255);">
+                    <span style="cursor: grab; color: #94a3b8; margin-right: 6px; font-weight: bold;">☰</span>
+                    <div class="vercel-item-content" onclick="loadLinkIntoIframe(&#39;https://red-zeta-one.vercel.app/tabla/tabla22&#39;, this.parentElement)">
+                        <span>tabla/tabla22</span>
+                        <small>https://red-zeta-one.vercel.app/tabla/tabla22</small>
+                    </div>
+                    <div style="display: flex; gap: 4px; align-items: center;">
+                        <button onclick="openPanelLinkDirect(&#39;https://red-zeta-one.vercel.app/tabla/tabla22&#39;)" style="background:#0284c7; color:white; border:none; padding:4px 6px; border-radius:4px; cursor:pointer; font-size:10px; white-space:nowrap;" title="Panel Link Megnyitása">🌐 Panel Link</button>
+                        <button onclick="sendLinkToTeacher(&#39;https://red-zeta-one.vercel.app/tabla/tabla22&#39;)" style="background:#059669; color:white; border:none; padding:4px 6px; border-radius:4px; cursor:pointer; font-size:10px; white-space:nowrap;" title="Küldés a tanárnak">📤 Küldés Tanárnak</button>
+                    </div>
+                </li><li draggable="true" data-url="https://red-zeta-one.vercel.app/tabla/tabla23" style="background: rgb(255, 255, 255);">
+                    <span style="cursor: grab; color: #94a3b8; margin-right: 6px; font-weight: bold;">☰</span>
+                    <div class="vercel-item-content" onclick="loadLinkIntoIframe(&#39;https://red-zeta-one.vercel.app/tabla/tabla23&#39;, this.parentElement)">
+                        <span>tabla/tabla23</span>
+                        <small>https://red-zeta-one.vercel.app/tabla/tabla23</small>
+                    </div>
+                    <div style="display: flex; gap: 4px; align-items: center;">
+                        <button onclick="openPanelLinkDirect(&#39;https://red-zeta-one.vercel.app/tabla/tabla23&#39;)" style="background:#0284c7; color:white; border:none; padding:4px 6px; border-radius:4px; cursor:pointer; font-size:10px; white-space:nowrap;" title="Panel Link Megnyitása">🌐 Panel Link</button>
+                        <button onclick="sendLinkToTeacher(&#39;https://red-zeta-one.vercel.app/tabla/tabla23&#39;)" style="background:#059669; color:white; border:none; padding:4px 6px; border-radius:4px; cursor:pointer; font-size:10px; white-space:nowrap;" title="Küldés a tanárnak">📤 Küldés Tanárnak</button>
+                    </div>
+                </li><li draggable="true" data-url="https://red-zeta-one.vercel.app/tabla/tabla24" style="background: rgb(255, 255, 255);">
+                    <span style="cursor: grab; color: #94a3b8; margin-right: 6px; font-weight: bold;">☰</span>
+                    <div class="vercel-item-content" onclick="loadLinkIntoIframe(&#39;https://red-zeta-one.vercel.app/tabla/tabla24&#39;, this.parentElement)">
+                        <span>tabla/tabla24</span>
+                        <small>https://red-zeta-one.vercel.app/tabla/tabla24</small>
+                    </div>
+                    <div style="display: flex; gap: 4px; align-items: center;">
+                        <button onclick="openPanelLinkDirect(&#39;https://red-zeta-one.vercel.app/tabla/tabla24&#39;)" style="background:#0284c7; color:white; border:none; padding:4px 6px; border-radius:4px; cursor:pointer; font-size:10px; white-space:nowrap;" title="Panel Link Megnyitása">🌐 Panel Link</button>
+                        <button onclick="sendLinkToTeacher(&#39;https://red-zeta-one.vercel.app/tabla/tabla24&#39;)" style="background:#059669; color:white; border:none; padding:4px 6px; border-radius:4px; cursor:pointer; font-size:10px; white-space:nowrap;" title="Küldés a tanárnak">📤 Küldés Tanárnak</button>
+                    </div>
+                </li><li draggable="true" data-url="https://red-zeta-one.vercel.app/tabla/tabla25" style="background: rgb(255, 255, 255);">
+                    <span style="cursor: grab; color: #94a3b8; margin-right: 6px; font-weight: bold;">☰</span>
+                    <div class="vercel-item-content" onclick="loadLinkIntoIframe(&#39;https://red-zeta-one.vercel.app/tabla/tabla25&#39;, this.parentElement)">
+                        <span>tabla/tabla25</span>
+                        <small>https://red-zeta-one.vercel.app/tabla/tabla25</small>
+                    </div>
+                    <div style="display: flex; gap: 4px; align-items: center;">
+                        <button onclick="openPanelLinkDirect(&#39;https://red-zeta-one.vercel.app/tabla/tabla25&#39;)" style="background:#0284c7; color:white; border:none; padding:4px 6px; border-radius:4px; cursor:pointer; font-size:10px; white-space:nowrap;" title="Panel Link Megnyitása">🌐 Panel Link</button>
+                        <button onclick="sendLinkToTeacher(&#39;https://red-zeta-one.vercel.app/tabla/tabla25&#39;)" style="background:#059669; color:white; border:none; padding:4px 6px; border-radius:4px; cursor:pointer; font-size:10px; white-space:nowrap;" title="Küldés a tanárnak">📤 Küldés Tanárnak</button>
+                    </div>
+                </li><li draggable="true" data-url="https://red-zeta-one.vercel.app/tabla/tabla26" style="background: rgb(255, 255, 255);">
+                    <span style="cursor: grab; color: #94a3b8; margin-right: 6px; font-weight: bold;">☰</span>
+                    <div class="vercel-item-content" onclick="loadLinkIntoIframe(&#39;https://red-zeta-one.vercel.app/tabla/tabla26&#39;, this.parentElement)">
+                        <span>tabla/tabla26</span>
+                        <small>https://red-zeta-one.vercel.app/tabla/tabla26</small>
+                    </div>
+                    <div style="display: flex; gap: 4px; align-items: center;">
+                        <button onclick="openPanelLinkDirect(&#39;https://red-zeta-one.vercel.app/tabla/tabla26&#39;)" style="background:#0284c7; color:white; border:none; padding:4px 6px; border-radius:4px; cursor:pointer; font-size:10px; white-space:nowrap;" title="Panel Link Megnyitása">🌐 Panel Link</button>
+                        <button onclick="sendLinkToTeacher(&#39;https://red-zeta-one.vercel.app/tabla/tabla26&#39;)" style="background:#059669; color:white; border:none; padding:4px 6px; border-radius:4px; cursor:pointer; font-size:10px; white-space:nowrap;" title="Küldés a tanárnak">📤 Küldés Tanárnak</button>
+                    </div>
+                </li><li draggable="true" data-url="https://red-zeta-one.vercel.app/tabla/tabla27" style="background: rgb(255, 255, 255);">
+                    <span style="cursor: grab; color: #94a3b8; margin-right: 6px; font-weight: bold;">☰</span>
+                    <div class="vercel-item-content" onclick="loadLinkIntoIframe(&#39;https://red-zeta-one.vercel.app/tabla/tabla27&#39;, this.parentElement)">
+                        <span>tabla/tabla27</span>
+                        <small>https://red-zeta-one.vercel.app/tabla/tabla27</small>
+                    </div>
+                    <div style="display: flex; gap: 4px; align-items: center;">
+                        <button onclick="openPanelLinkDirect(&#39;https://red-zeta-one.vercel.app/tabla/tabla27&#39;)" style="background:#0284c7; color:white; border:none; padding:4px 6px; border-radius:4px; cursor:pointer; font-size:10px; white-space:nowrap;" title="Panel Link Megnyitása">🌐 Panel Link</button>
+                        <button onclick="sendLinkToTeacher(&#39;https://red-zeta-one.vercel.app/tabla/tabla27&#39;)" style="background:#059669; color:white; border:none; padding:4px 6px; border-radius:4px; cursor:pointer; font-size:10px; white-space:nowrap;" title="Küldés a tanárnak">📤 Küldés Tanárnak</button>
+                    </div>
+                </li><li draggable="true" data-url="https://red-zeta-one.vercel.app/tabla/tabla28" style="background: rgb(255, 255, 255);">
+                    <span style="cursor: grab; color: #94a3b8; margin-right: 6px; font-weight: bold;">☰</span>
+                    <div class="vercel-item-content" onclick="loadLinkIntoIframe(&#39;https://red-zeta-one.vercel.app/tabla/tabla28&#39;, this.parentElement)">
+                        <span>tabla/tabla28</span>
+                        <small>https://red-zeta-one.vercel.app/tabla/tabla28</small>
+                    </div>
+                    <div style="display: flex; gap: 4px; align-items: center;">
+                        <button onclick="openPanelLinkDirect(&#39;https://red-zeta-one.vercel.app/tabla/tabla28&#39;)" style="background:#0284c7; color:white; border:none; padding:4px 6px; border-radius:4px; cursor:pointer; font-size:10px; white-space:nowrap;" title="Panel Link Megnyitása">🌐 Panel Link</button>
+                        <button onclick="sendLinkToTeacher(&#39;https://red-zeta-one.vercel.app/tabla/tabla28&#39;)" style="background:#059669; color:white; border:none; padding:4px 6px; border-radius:4px; cursor:pointer; font-size:10px; white-space:nowrap;" title="Küldés a tanárnak">📤 Küldés Tanárnak</button>
+                    </div>
+                </li><li draggable="true" data-url="https://red-zeta-one.vercel.app/tabla/tabla29" style="background: rgb(255, 255, 255);">
+                    <span style="cursor: grab; color: #94a3b8; margin-right: 6px; font-weight: bold;">☰</span>
+                    <div class="vercel-item-content" onclick="loadLinkIntoIframe(&#39;https://red-zeta-one.vercel.app/tabla/tabla29&#39;, this.parentElement)">
+                        <span>tabla/tabla29</span>
+                        <small>https://red-zeta-one.vercel.app/tabla/tabla29</small>
+                    </div>
+                    <div style="display: flex; gap: 4px; align-items: center;">
+                        <button onclick="openPanelLinkDirect(&#39;https://red-zeta-one.vercel.app/tabla/tabla29&#39;)" style="background:#0284c7; color:white; border:none; padding:4px 6px; border-radius:4px; cursor:pointer; font-size:10px; white-space:nowrap;" title="Panel Link Megnyitása">🌐 Panel Link</button>
+                        <button onclick="sendLinkToTeacher(&#39;https://red-zeta-one.vercel.app/tabla/tabla29&#39;)" style="background:#059669; color:white; border:none; padding:4px 6px; border-radius:4px; cursor:pointer; font-size:10px; white-space:nowrap;" title="Küldés a tanárnak">📤 Küldés Tanárnak</button>
+                    </div>
+                </li><li draggable="true" data-url="https://red-zeta-one.vercel.app/tabla/tabla30" style="background: rgb(255, 255, 255);">
+                    <span style="cursor: grab; color: #94a3b8; margin-right: 6px; font-weight: bold;">☰</span>
+                    <div class="vercel-item-content" onclick="loadLinkIntoIframe(&#39;https://red-zeta-one.vercel.app/tabla/tabla30&#39;, this.parentElement)">
+                        <span>tabla/tabla30</span>
+                        <small>https://red-zeta-one.vercel.app/tabla/tabla30</small>
+                    </div>
+                    <div style="display: flex; gap: 4px; align-items: center;">
+                        <button onclick="openPanelLinkDirect(&#39;https://red-zeta-one.vercel.app/tabla/tabla30&#39;)" style="background:#0284c7; color:white; border:none; padding:4px 6px; border-radius:4px; cursor:pointer; font-size:10px; white-space:nowrap;" title="Panel Link Megnyitása">🌐 Panel Link</button>
+                        <button onclick="sendLinkToTeacher(&#39;https://red-zeta-one.vercel.app/tabla/tabla30&#39;)" style="background:#059669; color:white; border:none; padding:4px 6px; border-radius:4px; cursor:pointer; font-size:10px; white-space:nowrap;" title="Küldés a tanárnak">📤 Küldés Tanárnak</button>
+                    </div>
+                </li><li draggable="true" data-url="https://red-zeta-one.vercel.app/tabla/tabla31" style="background: rgb(255, 255, 255);">
+                    <span style="cursor: grab; color: #94a3b8; margin-right: 6px; font-weight: bold;">☰</span>
+                    <div class="vercel-item-content" onclick="loadLinkIntoIframe(&#39;https://red-zeta-one.vercel.app/tabla/tabla31&#39;, this.parentElement)">
+                        <span>tabla/tabla31</span>
+                        <small>https://red-zeta-one.vercel.app/tabla/tabla31</small>
+                    </div>
+                    <div style="display: flex; gap: 4px; align-items: center;">
+                        <button onclick="openPanelLinkDirect(&#39;https://red-zeta-one.vercel.app/tabla/tabla31&#39;)" style="background:#0284c7; color:white; border:none; padding:4px 6px; border-radius:4px; cursor:pointer; font-size:10px; white-space:nowrap;" title="Panel Link Megnyitása">🌐 Panel Link</button>
+                        <button onclick="sendLinkToTeacher(&#39;https://red-zeta-one.vercel.app/tabla/tabla31&#39;)" style="background:#059669; color:white; border:none; padding:4px 6px; border-radius:4px; cursor:pointer; font-size:10px; white-space:nowrap;" title="Küldés a tanárnak">📤 Küldés Tanárnak</button>
+                    </div>
+                </li><li draggable="true" data-url="https://red-zeta-one.vercel.app/tabla/tabla32" style="background: rgb(255, 255, 255);">
+                    <span style="cursor: grab; color: #94a3b8; margin-right: 6px; font-weight: bold;">☰</span>
+                    <div class="vercel-item-content" onclick="loadLinkIntoIframe(&#39;https://red-zeta-one.vercel.app/tabla/tabla32&#39;, this.parentElement)">
+                        <span>tabla/tabla32</span>
+                        <small>https://red-zeta-one.vercel.app/tabla/tabla32</small>
+                    </div>
+                    <div style="display: flex; gap: 4px; align-items: center;">
+                        <button onclick="openPanelLinkDirect(&#39;https://red-zeta-one.vercel.app/tabla/tabla32&#39;)" style="background:#0284c7; color:white; border:none; padding:4px 6px; border-radius:4px; cursor:pointer; font-size:10px; white-space:nowrap;" title="Panel Link Megnyitása">🌐 Panel Link</button>
+                        <button onclick="sendLinkToTeacher(&#39;https://red-zeta-one.vercel.app/tabla/tabla32&#39;)" style="background:#059669; color:white; border:none; padding:4px 6px; border-radius:4px; cursor:pointer; font-size:10px; white-space:nowrap;" title="Küldés a tanárnak">📤 Küldés Tanárnak</button>
+                    </div>
+                </li><li draggable="true" data-url="https://red-zeta-one.vercel.app/tabla/tabla33" style="background: rgb(255, 255, 255);">
+                    <span style="cursor: grab; color: #94a3b8; margin-right: 6px; font-weight: bold;">☰</span>
+                    <div class="vercel-item-content" onclick="loadLinkIntoIframe(&#39;https://red-zeta-one.vercel.app/tabla/tabla33&#39;, this.parentElement)">
+                        <span>tabla/tabla33</span>
+                        <small>https://red-zeta-one.vercel.app/tabla/tabla33</small>
+                    </div>
+                    <div style="display: flex; gap: 4px; align-items: center;">
+                        <button onclick="openPanelLinkDirect(&#39;https://red-zeta-one.vercel.app/tabla/tabla33&#39;)" style="background:#0284c7; color:white; border:none; padding:4px 6px; border-radius:4px; cursor:pointer; font-size:10px; white-space:nowrap;" title="Panel Link Megnyitása">🌐 Panel Link</button>
+                        <button onclick="sendLinkToTeacher(&#39;https://red-zeta-one.vercel.app/tabla/tabla33&#39;)" style="background:#059669; color:white; border:none; padding:4px 6px; border-radius:4px; cursor:pointer; font-size:10px; white-space:nowrap;" title="Küldés a tanárnak">📤 Küldés Tanárnak</button>
+                    </div>
+                </li><li draggable="true" data-url="https://red-zeta-one.vercel.app/tabla/tabla34" style="background: rgb(255, 255, 255);">
+                    <span style="cursor: grab; color: #94a3b8; margin-right: 6px; font-weight: bold;">☰</span>
+                    <div class="vercel-item-content" onclick="loadLinkIntoIframe(&#39;https://red-zeta-one.vercel.app/tabla/tabla34&#39;, this.parentElement)">
+                        <span>tabla/tabla34</span>
+                        <small>https://red-zeta-one.vercel.app/tabla/tabla34</small>
+                    </div>
+                    <div style="display: flex; gap: 4px; align-items: center;">
+                        <button onclick="openPanelLinkDirect(&#39;https://red-zeta-one.vercel.app/tabla/tabla34&#39;)" style="background:#0284c7; color:white; border:none; padding:4px 6px; border-radius:4px; cursor:pointer; font-size:10px; white-space:nowrap;" title="Panel Link Megnyitása">🌐 Panel Link</button>
+                        <button onclick="sendLinkToTeacher(&#39;https://red-zeta-one.vercel.app/tabla/tabla34&#39;)" style="background:#059669; color:white; border:none; padding:4px 6px; border-radius:4px; cursor:pointer; font-size:10px; white-space:nowrap;" title="Küldés a tanárnak">📤 Küldés Tanárnak</button>
+                    </div>
+                </li><li draggable="true" data-url="https://red-zeta-one.vercel.app/tabla/tabla35" style="background: rgb(255, 255, 255);">
+                    <span style="cursor: grab; color: #94a3b8; margin-right: 6px; font-weight: bold;">☰</span>
+                    <div class="vercel-item-content" onclick="loadLinkIntoIframe(&#39;https://red-zeta-one.vercel.app/tabla/tabla35&#39;, this.parentElement)">
+                        <span>tabla/tabla35</span>
+                        <small>https://red-zeta-one.vercel.app/tabla/tabla35</small>
+                    </div>
+                    <div style="display: flex; gap: 4px; align-items: center;">
+                        <button onclick="openPanelLinkDirect(&#39;https://red-zeta-one.vercel.app/tabla/tabla35&#39;)" style="background:#0284c7; color:white; border:none; padding:4px 6px; border-radius:4px; cursor:pointer; font-size:10px; white-space:nowrap;" title="Panel Link Megnyitása">🌐 Panel Link</button>
+                        <button onclick="sendLinkToTeacher(&#39;https://red-zeta-one.vercel.app/tabla/tabla35&#39;)" style="background:#059669; color:white; border:none; padding:4px 6px; border-radius:4px; cursor:pointer; font-size:10px; white-space:nowrap;" title="Küldés a tanárnak">📤 Küldés Tanárnak</button>
+                    </div>
+                </li><li draggable="true" data-url="https://red-zeta-one.vercel.app/tabla/tabla36" style="background: rgb(255, 255, 255);">
+                    <span style="cursor: grab; color: #94a3b8; margin-right: 6px; font-weight: bold;">☰</span>
+                    <div class="vercel-item-content" onclick="loadLinkIntoIframe(&#39;https://red-zeta-one.vercel.app/tabla/tabla36&#39;, this.parentElement)">
+                        <span>tabla/tabla36</span>
+                        <small>https://red-zeta-one.vercel.app/tabla/tabla36</small>
+                    </div>
+                    <div style="display: flex; gap: 4px; align-items: center;">
+                        <button onclick="openPanelLinkDirect(&#39;https://red-zeta-one.vercel.app/tabla/tabla36&#39;)" style="background:#0284c7; color:white; border:none; padding:4px 6px; border-radius:4px; cursor:pointer; font-size:10px; white-space:nowrap;" title="Panel Link Megnyitása">🌐 Panel Link</button>
+                        <button onclick="sendLinkToTeacher(&#39;https://red-zeta-one.vercel.app/tabla/tabla36&#39;)" style="background:#059669; color:white; border:none; padding:4px 6px; border-radius:4px; cursor:pointer; font-size:10px; white-space:nowrap;" title="Küldés a tanárnak">📤 Küldés Tanárnak</button>
+                    </div>
+                </li><li draggable="true" data-url="https://red-zeta-one.vercel.app/tabla/tabla37" style="background: rgb(255, 255, 255);">
+                    <span style="cursor: grab; color: #94a3b8; margin-right: 6px; font-weight: bold;">☰</span>
+                    <div class="vercel-item-content" onclick="loadLinkIntoIframe(&#39;https://red-zeta-one.vercel.app/tabla/tabla37&#39;, this.parentElement)">
+                        <span>tabla/tabla37</span>
+                        <small>https://red-zeta-one.vercel.app/tabla/tabla37</small>
+                    </div>
+                    <div style="display: flex; gap: 4px; align-items: center;">
+                        <button onclick="openPanelLinkDirect(&#39;https://red-zeta-one.vercel.app/tabla/tabla37&#39;)" style="background:#0284c7; color:white; border:none; padding:4px 6px; border-radius:4px; cursor:pointer; font-size:10px; white-space:nowrap;" title="Panel Link Megnyitása">🌐 Panel Link</button>
+                        <button onclick="sendLinkToTeacher(&#39;https://red-zeta-one.vercel.app/tabla/tabla37&#39;)" style="background:#059669; color:white; border:none; padding:4px 6px; border-radius:4px; cursor:pointer; font-size:10px; white-space:nowrap;" title="Küldés a tanárnak">📤 Küldés Tanárnak</button>
+                    </div>
+                </li><li draggable="true" data-url="https://red-zeta-one.vercel.app/tabla/tabla38" style="background: rgb(255, 255, 255);">
+                    <span style="cursor: grab; color: #94a3b8; margin-right: 6px; font-weight: bold;">☰</span>
+                    <div class="vercel-item-content" onclick="loadLinkIntoIframe(&#39;https://red-zeta-one.vercel.app/tabla/tabla38&#39;, this.parentElement)">
+                        <span>tabla/tabla38</span>
+                        <small>https://red-zeta-one.vercel.app/tabla/tabla38</small>
+                    </div>
+                    <div style="display: flex; gap: 4px; align-items: center;">
+                        <button onclick="openPanelLinkDirect(&#39;https://red-zeta-one.vercel.app/tabla/tabla38&#39;)" style="background:#0284c7; color:white; border:none; padding:4px 6px; border-radius:4px; cursor:pointer; font-size:10px; white-space:nowrap;" title="Panel Link Megnyitása">🌐 Panel Link</button>
+                        <button onclick="sendLinkToTeacher(&#39;https://red-zeta-one.vercel.app/tabla/tabla38&#39;)" style="background:#059669; color:white; border:none; padding:4px 6px; border-radius:4px; cursor:pointer; font-size:10px; white-space:nowrap;" title="Küldés a tanárnak">📤 Küldés Tanárnak</button>
+                    </div>
+                </li><li draggable="true" data-url="https://red-zeta-one.vercel.app/tabla/tabla39" style="background: rgb(255, 255, 255);">
+                    <span style="cursor: grab; color: #94a3b8; margin-right: 6px; font-weight: bold;">☰</span>
+                    <div class="vercel-item-content" onclick="loadLinkIntoIframe(&#39;https://red-zeta-one.vercel.app/tabla/tabla39&#39;, this.parentElement)">
+                        <span>tabla/tabla39</span>
+                        <small>https://red-zeta-one.vercel.app/tabla/tabla39</small>
+                    </div>
+                    <div style="display: flex; gap: 4px; align-items: center;">
+                        <button onclick="openPanelLinkDirect(&#39;https://red-zeta-one.vercel.app/tabla/tabla39&#39;)" style="background:#0284c7; color:white; border:none; padding:4px 6px; border-radius:4px; cursor:pointer; font-size:10px; white-space:nowrap;" title="Panel Link Megnyitása">🌐 Panel Link</button>
+                        <button onclick="sendLinkToTeacher(&#39;https://red-zeta-one.vercel.app/tabla/tabla39&#39;)" style="background:#059669; color:white; border:none; padding:4px 6px; border-radius:4px; cursor:pointer; font-size:10px; white-space:nowrap;" title="Küldés a tanárnak">📤 Küldés Tanárnak</button>
+                    </div>
+                </li><li draggable="true" data-url="https://red-zeta-one.vercel.app/tabla/tabla40" style="background: rgb(255, 255, 255);">
+                    <span style="cursor: grab; color: #94a3b8; margin-right: 6px; font-weight: bold;">☰</span>
+                    <div class="vercel-item-content" onclick="loadLinkIntoIframe(&#39;https://red-zeta-one.vercel.app/tabla/tabla40&#39;, this.parentElement)">
+                        <span>tabla/tabla40</span>
+                        <small>https://red-zeta-one.vercel.app/tabla/tabla40</small>
+                    </div>
+                    <div style="display: flex; gap: 4px; align-items: center;">
+                        <button onclick="openPanelLinkDirect(&#39;https://red-zeta-one.vercel.app/tabla/tabla40&#39;)" style="background:#0284c7; color:white; border:none; padding:4px 6px; border-radius:4px; cursor:pointer; font-size:10px; white-space:nowrap;" title="Panel Link Megnyitása">🌐 Panel Link</button>
+                        <button onclick="sendLinkToTeacher(&#39;https://red-zeta-one.vercel.app/tabla/tabla40&#39;)" style="background:#059669; color:white; border:none; padding:4px 6px; border-radius:4px; cursor:pointer; font-size:10px; white-space:nowrap;" title="Küldés a tanárnak">📤 Küldés Tanárnak</button>
+                    </div>
+                </li><li draggable="true" data-url="https://red-zeta-one.vercel.app/tabla/tabla41" style="background: rgb(255, 255, 255);">
+                    <span style="cursor: grab; color: #94a3b8; margin-right: 6px; font-weight: bold;">☰</span>
+                    <div class="vercel-item-content" onclick="loadLinkIntoIframe(&#39;https://red-zeta-one.vercel.app/tabla/tabla41&#39;, this.parentElement)">
+                        <span>tabla/tabla41</span>
+                        <small>https://red-zeta-one.vercel.app/tabla/tabla41</small>
+                    </div>
+                    <div style="display: flex; gap: 4px; align-items: center;">
+                        <button onclick="openPanelLinkDirect(&#39;https://red-zeta-one.vercel.app/tabla/tabla41&#39;)" style="background:#0284c7; color:white; border:none; padding:4px 6px; border-radius:4px; cursor:pointer; font-size:10px; white-space:nowrap;" title="Panel Link Megnyitása">🌐 Panel Link</button>
+                        <button onclick="sendLinkToTeacher(&#39;https://red-zeta-one.vercel.app/tabla/tabla41&#39;)" style="background:#059669; color:white; border:none; padding:4px 6px; border-radius:4px; cursor:pointer; font-size:10px; white-space:nowrap;" title="Küldés a tanárnak">📤 Küldés Tanárnak</button>
+                    </div>
+                </li><li draggable="true" data-url="https://red-zeta-one.vercel.app/tabla/tabla42" style="background: rgb(255, 255, 255);">
+                    <span style="cursor: grab; color: #94a3b8; margin-right: 6px; font-weight: bold;">☰</span>
+                    <div class="vercel-item-content" onclick="loadLinkIntoIframe(&#39;https://red-zeta-one.vercel.app/tabla/tabla42&#39;, this.parentElement)">
+                        <span>tabla/tabla42</span>
+                        <small>https://red-zeta-one.vercel.app/tabla/tabla42</small>
+                    </div>
+                    <div style="display: flex; gap: 4px; align-items: center;">
+                        <button onclick="openPanelLinkDirect(&#39;https://red-zeta-one.vercel.app/tabla/tabla42&#39;)" style="background:#0284c7; color:white; border:none; padding:4px 6px; border-radius:4px; cursor:pointer; font-size:10px; white-space:nowrap;" title="Panel Link Megnyitása">🌐 Panel Link</button>
+                        <button onclick="sendLinkToTeacher(&#39;https://red-zeta-one.vercel.app/tabla/tabla42&#39;)" style="background:#059669; color:white; border:none; padding:4px 6px; border-radius:4px; cursor:pointer; font-size:10px; white-space:nowrap;" title="Küldés a tanárnak">📤 Küldés Tanárnak</button>
+                    </div>
+                </li><li draggable="true" data-url="https://red-zeta-one.vercel.app/tabla/tabla43" style="background: rgb(255, 255, 255);">
+                    <span style="cursor: grab; color: #94a3b8; margin-right: 6px; font-weight: bold;">☰</span>
+                    <div class="vercel-item-content" onclick="loadLinkIntoIframe(&#39;https://red-zeta-one.vercel.app/tabla/tabla43&#39;, this.parentElement)">
+                        <span>tabla/tabla43</span>
+                        <small>https://red-zeta-one.vercel.app/tabla/tabla43</small>
+                    </div>
+                    <div style="display: flex; gap: 4px; align-items: center;">
+                        <button onclick="openPanelLinkDirect(&#39;https://red-zeta-one.vercel.app/tabla/tabla43&#39;)" style="background:#0284c7; color:white; border:none; padding:4px 6px; border-radius:4px; cursor:pointer; font-size:10px; white-space:nowrap;" title="Panel Link Megnyitása">🌐 Panel Link</button>
+                        <button onclick="sendLinkToTeacher(&#39;https://red-zeta-one.vercel.app/tabla/tabla43&#39;)" style="background:#059669; color:white; border:none; padding:4px 6px; border-radius:4px; cursor:pointer; font-size:10px; white-space:nowrap;" title="Küldés a tanárnak">📤 Küldés Tanárnak</button>
+                    </div>
+                </li><li draggable="true" data-url="https://red-zeta-one.vercel.app/tabla/tabla44" style="background: rgb(255, 255, 255);">
+                    <span style="cursor: grab; color: #94a3b8; margin-right: 6px; font-weight: bold;">☰</span>
+                    <div class="vercel-item-content" onclick="loadLinkIntoIframe(&#39;https://red-zeta-one.vercel.app/tabla/tabla44&#39;, this.parentElement)">
+                        <span>tabla/tabla44</span>
+                        <small>https://red-zeta-one.vercel.app/tabla/tabla44</small>
+                    </div>
+                    <div style="display: flex; gap: 4px; align-items: center;">
+                        <button onclick="openPanelLinkDirect(&#39;https://red-zeta-one.vercel.app/tabla/tabla44&#39;)" style="background:#0284c7; color:white; border:none; padding:4px 6px; border-radius:4px; cursor:pointer; font-size:10px; white-space:nowrap;" title="Panel Link Megnyitása">🌐 Panel Link</button>
+                        <button onclick="sendLinkToTeacher(&#39;https://red-zeta-one.vercel.app/tabla/tabla44&#39;)" style="background:#059669; color:white; border:none; padding:4px 6px; border-radius:4px; cursor:pointer; font-size:10px; white-space:nowrap;" title="Küldés a tanárnak">📤 Küldés Tanárnak</button>
+                    </div>
+                </li></ul>
+        </div>
+
+        <div id="iframe-resizable-container">
+            <iframe id="google-docs-iframe" title="Súgó és Előnézet" src="./jo tanar megosztas_files/saved_resource.html"></iframe>
+        </div>
+
+        <div class="mattermost-panel">
+            <h4>💬 Külső Platform, Zoom &amp; Google Classroom Hub</h4>
+            
+            <div style="margin-bottom: 8px;">
+                <button onclick="openServerModal()" style="background:#059669; color:white; border:none; border-radius:4px; padding:8px 10px; cursor:pointer; width:100%; font-size:12px; font-weight:bold;">🌐 Előre definiált platformok kiválasztása (Popup)</button>
+            </div>
+
+            <div class="info-box" style="margin-bottom: 5px;">
+                🎯 <b>Aktuális célpont linkje &amp; Zoom Passcode:</b>
+            </div>
+            
+            <div style="display: flex; gap: 5px; margin-bottom: 5px;">
+                <input type="text" id="customTargetUrlInput" placeholder="Zoom meeting link vagy más URL..." style="flex: 1; margin: 0; font-size: 11px;">
+            </div>
+            
+            <div style="display: flex; gap: 5px; margin-bottom: 8px; align-items: center;">
+                <input type="text" id="zoomPasscodeInput" placeholder="Zoom Passcode / Jelszó (opcionális)" style="flex: 1; margin: 0; font-size: 11px; background: #fffdf4;">
+                <button onclick="updateActiveChatUrlFromInput()" style="background:#0284c7; color:white; border:none; border-radius:4px; padding:8px 12px; cursor:pointer; font-size:11px;">Rögzít</button>
+            </div>
+
+            <div style="display: flex; gap: 5px; margin-bottom: 8px;">
+                <button onclick="shareLinkToMattermost()" style="background:#287A9F; color:white; border:none; border-radius:4px; padding:6px 10px; cursor:pointer; flex:1;">📢 Hivatkozás és Passcode mentése</button>
+                <button onclick="makeTeamDecision(&#39;Elfogadva&#39;)" style="background:#16a34a; color:white; border:none; border-radius:4px; padding:6px 10px; cursor:pointer;">✅ Elfogad</button>
+                <button onclick="makeTeamDecision(&#39;Elutasítva&#39;)" style="background:#dc2626; color:white; border:none; border-radius:4px; padding:6px 10px; cursor:pointer;">❌ Elutasít</button>
+            </div>
+            
+            <div class="chat-launch-container">
+                <p id="active-chat-name" style="margin: 0 0 8px 0; font-size: 13px; font-weight: bold; color: #1e293b;">Aktív elem: file:///C:/Users/Utilizator/Downloads/gemini-code-1788151301994.html</p>
+                <p id="active-passcode-display" style="margin: 0 0 8px 0; font-size: 11px; color: #d97706; font-weight: bold; display: none;"></p>
+                <p style="margin: 0 0 12px 0; font-size: 11px; color: #64748b;">Kattints az alábbi gombra az oldal új ablakban történő indításához (a tanári követő automatikusan figyeli):</p>
+                <button onclick="launchChatInNewWindow()" style="background: #2563eb; color: white; border: none; border-radius: 6px; padding: 10px 20px; font-size: 13px; font-weight: bold; cursor: pointer; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">🚀 Kiválasztott elem megnyitása új ablakban</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="teamviewer-ai-column" class="column">
+        <h2>Tanári Követő Nézet &amp; Munkaterület</h2>
+        
+        <div class="vercel-panel" id="teacher-follower-panel" style="border: 2px solid #059669; background: #f0fdf4;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">
+                <h4 style="margin: 0; color: #065f46;">👨‍🏫 Tanári Követő &amp; Megosztott Képernyő</h4>
+                <div>
+                    <button onclick="clearTeacherLiveView()" style="background:#b45309; color:white; border:none; padding:3px 8px; cursor:pointer; font-size:11px; border-radius:3px; font-weight:bold; margin-right:4px;" title="Tartalom törlése">🗑️ Törlés</button>
+                    <button onclick="toggleTeacherFollowerPanel()" id="teacher-toggle-btn" style="background:#dc2626; color:white; border:none; padding:3px 8px; cursor:pointer; font-size:11px; border-radius:3px; font-weight:bold;" title="Bezárás / Visszahozás">✖ Bezár</button>
+                    <button onclick="resizeTeacherPanel(&#39;shrink&#39;)" style="background:#cbd5e1; border:none; padding:3px 8px; cursor:pointer; font-size:11px; border-radius:3px; font-weight:bold;" title="Kicsinyítés">➖ Kicsinyít</button>
+                    <button onclick="resizeTeacherPanel(&#39;expand&#39;)" style="background:#059669; color:white; border:none; padding:3px 8px; cursor:pointer; font-size:11px; border-radius:3px; font-weight:bold;" title="Nagyítás">➕ Nagyít</button>
+                </div>
+            </div>
+            <div class="info-box" style="font-size: 10px; margin-bottom: 5px; background: #ecfdf5; border-color: #a7f3d0; color: #065f46;">
+                📡 A kiválasztott chat/Zoom/platform közvetlenül ide is iránylítható, vagy külön ablakos megosztásként is követhető.
+            </div>
+            
+            <div id="teacher-iframe-container" style="height: 180px; transition: height 0.3s ease; border: 1px solid #059669; border-radius: 4px; overflow: hidden; background: white; position: relative;">
+                <iframe id="teacher-live-iframe" title="Tanári Képernyő" src="./jo tanar megosztas_files/gemini-code-1788151301994.html" style="width: 100%; height: 100%; border: none;"></iframe>
+                
+                <div id="teacher-iframe-fallback" style="display: flex; position: absolute; top: 0px; left: 0px; width: 100%; height: 100%; background: rgb(255, 251, 235); border: 1px solid rgb(245, 158, 11); padding: 15px; box-sizing: border-box; text-align: center; z-index: 10; flex-direction: column; justify-content: center; align-items: center;">
+                    <p style="margin: 0 0 8px 0; font-size: 12px; color: #92400e; font-weight: bold;">⚠️ Ez az oldal biztonsági okokból (pl. külső chat/Zoom korlátozás) nem jeleníthető meg közvetlenül a keretben.</p>
+                    <p style="margin: 0 0 12px 0; font-size: 11px; color: #b45309;">Kérlek, nyisd meg külön ablakban, amelyet a Tanári Követő dedikált ablakfigyelője szintén követni fog:</p>
+                    <button onclick="openTeacherLinkInNewWindow()" style="background: #d97706; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 11px; font-weight: bold;">🌐 Megnyitás külön ablakban</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="help-panel">
+            <h4>📖 Gyors Súgó &amp; Útmutató</h4>
+            <div style="font-size: 11px; color: #334155; line-height: 1.5; background: #f8fafc; padding: 10px; border-radius: 4px; border: 1px solid #e2e8f0; max-height: 220px; overflow-y: auto;">
+                <p style="margin-top:0;"><b>Üdvözöllek a Kollaboratív AI Platform integrált súgórendszerében.</b> Ez a felület összefoglalja a rendszer legfontosabb funkcióit, kezelési útmutatóit és beállításait.</p>
+                
+                <p><b>1. Mattermost Csatornák Kezelése</b><br>
+                <b>Publikussá tétel:</b> Meglévő privát csatornákat biztonsági okokból kizárólag Rendszergazda (System Admin) tud publikussá tenni a System Console &gt; Channels menüpontban.</p>
+                <ul>
+                    <li><b>Publikus csatornák (~):</b> Mindenki számára nyitottak (pl. hírek, általános beszélgetések).</li>
+                    <li><b>Privát csatornák:</b> Zárt, meghívásos alapú terek a belső megbeszélésekhez.</li>
+                </ul>
+                
+                <p><b>2. Zoom Hívások és Passcode Integráció</b><br>
+                Ha a projekthez Zoom hívás kapcsolódik, a platform biztosít egy dedikált jelszó (Passcode) mezőt is. A megadott link és a jelszó együttesen rögzíthető az AI naplóban és a döntési folyamatokban.</p>
+
+                <p><b>3. Vercel Lista &amp; Kötegelt Linkkezelés</b></p>
+                <ul>
+                    <li><b>Kötegelt hozzáadás:</b> Soronként több hivatkozás is bemásolható, automatikus kiterjesztés-kiegészítéssel (pl. /index.html).</li>
+                    <li><b>Szűrés:</b> A Csak index.html gombbal azonnal kiszűrhetők a nem releváns elemek, a Visszavonás gombbal pedig bármikor visszaállítható az eredeti lista.</li>
+                </ul>
+                <p><b>Slack és Microsoft Teams Alternatíva:</b> Mattermost egy rendkívül hatékony, nyílt forráskódú (Open Source), önmagad által is hosztolható (self-hosted) üzenetküldő és kollaborációs platform, amely kiváló alternatívája lehet a Slacknek vagy a Microsoft Teamsnek – különösen akkor, ha fontos az adatbiztonság és a teljes körű kontroll.</p>
+
+                <p><b>4. Csatorna-struktúra kialakítása (Channels)</b><br>
+                A káosz elkerülése érdekében érdemes logikus hierarchiát létrehozni a csapatok és projektek között:</p>
+                <ul>
+                    <li><b>Publikus csatornák (~):</b> Mindenki számára elérhető témákhoz.
+                        <ul>
+                            <li><b>~hirek-esemenyek:</b> Céges vagy projekt szintű hivatalos bejelentések.</li>
+                            <li><b>~altalanos vagy ~general:</b> Kötetlen beszélgetések, mindennapi témák.</li>
+                            <li><b>~fejlesztes / ~ai-projekt:</b> Specifikus szakmai vagy technikai területek.</li>
+                        </ul>
+                    </li>
+                    <li><b>Privát csatornák:</b> Csak meghívás alapján látható, bizalmas információkhoz (pl. ~management, ~penzugyek).</li>
+                    <li><b>Direkt üzenetek (DM):</b> Egyéni vagy szűk körű gyors megbeszélésekhez.</li>
+                </ul>
+
+                <p><b>5. Integrációk és Zoom Passcode Kezelés</b><br>
+                A Mattermost integrálható a Vercel-lel, GitHubbal és AI eszközökkel. Zoom megbeszélések indításakor pedig rögzítheted a Passcode-ot (jelszót) a platformon.</p>
+
+                <p><b>6. Mattermost Csatornák Kezelése</b></p>
+                <ul>
+                    <li><b>Publikussá tétel:</b> Meglévő privát csatornákat biztonsági okokból kizárólag Rendszergazda (System Admin) tud publikussá tenni a System Console &gt; Channels menüpontban.</li>
+                    <li><b>Publikus csatornák (~):</b> Mindenki számára nyitottak (pl. hírek, általános beszélgetések).</li>
+                    <li><b>Privát csatornák:</b> Zárt, meghívásos alapú terek a belső megbeszélésekhez.</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="ai-tools">
+            <h4>🤖 AI Elemző &amp; Napló</h4>
+            <textarea id="ai-prompt-input" placeholder="Írd be a promptot..." style="width:100%; height:60px;"></textarea>
+            <div id="ai-output" class="ai-output-area" style="margin-top:8px;">[FIGYELŐ] A külső ablak (Megadott Külső Link) bezárásra került.</div>
+        </div>
+    </div>
+
+    <div id="server-modal" style="display: none;">
+        <div class="modal-content">
+            <h3 style="margin-top:0; color:#1e293b;">Platform, Zoom vagy Classroom Kiválasztás</h3>
+            <p style="font-size:12px; color:#64748b;">Válassz az alábbiak közül, vagy add meg a saját egyedi címed / jelszavad:</p>
+            
+            <div class="server-option-item" onclick="selectChatPlatform(&#39;https://community.mattermost.com&#39;, &#39;Mattermost Community&#39;, &#39;&#39;)">
+                <strong>🌍 Mattermost Community Szerver</strong>
+            </div>
+
+            <div class="server-option-item" onclick="selectChatPlatform(&#39;https://classroom.google.com&#39;, &#39;Google Classroom&#39;, &#39;&#39;)">
+                <strong>📚 Google Classroom Főoldal</strong>
+            </div>
+
+            <div class="server-option-item" onclick="selectChatPlatform(&#39;https://zoom.us&#39;, &#39;Zoom Web Meeting&#39;, &#39;&#39;)">
+                <strong>📹 Zoom Főoldal / Webes Indító</strong>
+            </div>
+
+            <div style="margin-top: 15px; border-top: 1px solid #e2e8f0; padding-top: 10px;">
+                <label style="font-size: 11px; font-weight: bold; color: #334155;">Egyedi URL (Zoom / Classroom / Chat):</label>
+                <input type="text" id="modalCustomUrlInput" placeholder="https://us04web.zoom.us/j/..." style="width:100%; padding: 6px; font-size: 11px; border: 1px solid #cbd5e1; border-radius: 4px; margin-top:5px;">
+                
+                <label style="font-size: 11px; font-weight: bold; color: #334155; margin-top: 5px; display:block;">Zoom Passcode (ha van):</label>
+                <div style="display: flex; gap: 5px; margin-top: 5px;">
+                    <input type="text" id="modalCustomPasscodeInput" placeholder="Pl. 123456" style="flex: 1; padding: 6px; font-size: 11px; border: 1px solid #cbd5e1; border-radius: 4px;">
+                    <button onclick="applyModalCustomServer()" style="background:#0284c7; color:white; border:none; border-radius:4px; padding:6px 12px; cursor:pointer; font-size:11px;">Rögzít</button>
+                </div>
+            </div>
+
+            <div style="margin-top: 15px; display: flex; justify-content: flex-end;">
+                <button onclick="closeServerModal()" style="background:#64748b; color:white; border:none; border-radius:4px; padding:6px 12px; cursor:pointer; font-size:12px;">Mégse</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="external-sort-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 3000; justify-content: center; align-items: center;">
+        <div class="modal-content" style="width: 600px;">
+            <h3 style="margin-top:0; color:#7c3aed;">🔗 Külső HTML Hivatkozásos Rendező Modul</h3>
+            <p style="font-size:12px; color:#64748b;">Itt külső HTML hivatkozások segítségével, soronkénti szerkesztéssel vagy tömeges rendezéssel módosíthatod a listát:</p>
+            
+            <textarea id="externalSortTextarea" style="width:100%; height:150px; font-family:monospace; font-size:11px; padding:8px; box-sizing:border-box; border:1px solid #cbd5e1; border-radius:4px;"></textarea>
+            
+            <div style="margin-top: 15px; display: flex; justify-content: space-between; align-items: center;">
+                <span style="font-size:11px; color:#059669; font-weight:bold;">💡 Soronként egy hivatkozás formátum támogatott.</span>
+                <div style="display: flex; gap: 8px;">
+                    <button onclick="closeExternalSortModule()" style="background:#64748b; color:white; border:none; border-radius:4px; padding:6px 12px; cursor:pointer; font-size:12px;">Mégse</button>
+                    <button onclick="saveExternalSortModule()" style="background:#7c3aed; color:white; border:none; border-radius:4px; padding:6px 12px; cursor:pointer; font-size:12px; font-weight:bold;">💾 Mentés &amp; Alkalmazás</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const mainBody = document.getElementById('main-body');
+        function toggleSidebar() { mainBody.classList.toggle('sidebar-collapsed'); }
+
+        let activeChatUrl = "https://community.mattermost.com";
+        let activeChatName = "Mattermost Community";
+        let activeZoomPasscode = "";
+        let currentTeacherUrl = "";
+        let externalWindowReference = null;
+        let windowPollTimer = null;
+
+        const systemHelpHtmlContent = `
+            <!DOCTYPE html>
+            <html lang="hu">
+            <head>
+                <meta charset="UTF-8">
+                <style>
+                    body { font-family: sans-serif; padding: 20px; color: #334155; line-height: 1.6; background: #fff; }
+                    h2 { color: #1e293b; border-bottom: 2px solid #cbd5e1; padding-bottom: 8px; margin-top: 0; }
+                    h3 { color: #0284c7; margin-top: 20px; }
+                    ul { margin-left: 20px; }
+                    code { background: #f1f5f9; padding: 2px 5px; border-radius: 4px; font-size: 12px; color: #d97706; }
+                    .tip-box { background: #eff6ff; border-left: 4px solid #3b82f6; padding: 10px; margin: 10px 0; }
+                </style>
+            </head>
+            <body>
+                <h2>📖 Hivatalos Súgórendszer & Dokumentáció</h2>
+                
+                <p>Üdvözöllek a Kollaboratív AI Platform integrált súgórendszerében. Ez a felület összefoglalja a rendszer legfontosabb funkcióit, kezelési útmutatóit és beállításait.</p>
+
+                <h3>1. Mattermost Csatornák Kezelése</h3>
+                <p><b>Publikussá tétel:</b> Meglévő privát csatornákat biztonsági okokból kizárólag Rendszergazda (System Admin) tud publikussá tenni a System Console > Channels menüpontban.</p>
+                <ul>
+                    <li><b>Publikus csatornák (~):</b> Mindenki számára nyitottak (pl. hírek, általános beszélgetések).</li>
+                    <li><b>Privát csatornák:</b> Zárt, meghívásos alapú terek a belső megbeszélésekhez.</li>
+                </ul>
+
+                <h3>2. Zoom Hívások és Passcode Integráció</h3>
+                <p>Ha a projekthez Zoom hívás kapcsolódik, a platform biztosít egy dedikált jelszó (Passcode) mezőt is. A megadott link és a jelszó együttesen rögzíthető az AI naplóban és a döntési folyamatokban.</p>
+
+                <h3>3. Vercel Lista & Kötegelt Linkkezelés</h3>
+                <ul>
+                    <li><b>Kötegelt hozzáadás:</b> Soronként több hivatkozás is bemásolható, automatikus kiterjesztés-kiegészítéssel (pl. /index.html).</li>
+                    <li><b>Szűrés:</b> A Csak index.html gombbal azonnal kiszűrhetők a nem releváns elemek, a Visszavonás gombbal pedig bármikor visszaállítható az eredeti lista.</li>
+                </ul>
+                <p><b>Slack és Microsoft Teams Alternatíva:</b> Mattermost egy rendkívül hatékony, nyílt forráskódú (Open Source), önmagad által is hosztolható (self-hosted) üzenetküldő és kollaborációs platform, amely kiváló alternatívája lehet a Slacknek vagy a Microsoft Teamsnek – különösen akkor, ha fontos az adatbiztonság és a teljes körű kontroll.</p>
+
+                <h3>4. Csatorna-struktúra kialakítása (Channels)</h3>
+                <p>A káosz elkerülése érdekében érdemes logikus hierarchiát létrehozni a csapatok és projektek között:</p>
+                <ul>
+                    <li><b>Publikus csatornák (~):</b> Mindenki számára elérhető témákhoz.
+                        <ul>
+                            <li><b>~hirek-esemenyek:</b> Céges vagy projekt szintű hivatalos bejelentések.</li>
+                            <li><b>~altalanos vagy ~general:</b> Kötetlen beszélgetések, mindennapi témák.</li>
+                            <li><b>~fejlesztes / ~ai-projekt:</b> Specifikus szakmai vagy technikai területek.</li>
+                        </ul>
+                    </li>
+                    <li><b>Privát csatornák:</b> Csak meghívás alapján látható, bizalmas információkhoz (pl. ~management, ~penzugyek).</li>
+                    <li><b>Direkt üzenetek (DM):</b> Egyéni vagy szűk körű gyors megbeszélésekhez.</li>
+                </ul>
+
+                <h3>5. Integrációk és Zoom Passcode Kezelés</h3>
+                <p>A Mattermost integrálható a Vercel-lel, GitHubbal és AI eszközökkel. Zoom megbeszélések indításakor pedig rögzítheted a Passcode-ot (jelszót) a platformon.</p>
+
+                <h3>6. Mattermost Csatornák Kezelése</h3>
+                <ul>
+                    <li><b>Publikussá tétel:</b> Meglévő privát csatornákat biztonsági okokból kizárólag Rendszergazda (System Admin) tud publikussá tenni a System Console > Channels menüpontban.</li>
+                    <li><b>Publikus csatornák (~):</b> Mindenki számára nyitottak (pl. hírek, általános beszélgetések).</li>
+                    <li><b>Privát csatornák:</b> Zárt, meghívásos alapú terek a belső megbeszélésekhez.</li>
+                </ul>
+            </body>
+            </html>
+        `;
+
+        const initialLinks = [
+            "https://red-zeta-one.vercel.app/tabla/tabla1",
+            "https://red-zeta-one.vercel.app/tabla/tabla2",
+            "https://red-zeta-one.vercel.app/tabla/tabla3",
+            "https://red-zeta-one.vercel.app/tabla/tabla4",
+            "https://red-zeta-one.vercel.app/tabla/tabla5",
+            "https://red-zeta-one.vercel.app/tabla/tabla6",
+            "https://red-zeta-one.vercel.app/tabla/tabla7",
+            "https://red-zeta-one.vercel.app/tabla/tabla8",
+            "https://red-zeta-one.vercel.app/tabla/tabla9",
+            "https://red-zeta-one.vercel.app/tabla/tabla10",
+            "https://red-zeta-one.vercel.app/tabla/tabla11",
+            "https://red-zeta-one.vercel.app/tabla/tabla12",
+            "https://red-zeta-one.vercel.app/tabla/tabla13",
+            "https://red-zeta-one.vercel.app/tabla/tabla14",
+            "https://red-zeta-one.vercel.app/tabla/tabla15",
+            "https://red-zeta-one.vercel.app/tabla/tabla16",
+            "https://red-zeta-one.vercel.app/tabla/tabla17",
+            "https://red-zeta-one.vercel.app/tabla/tabla18",
+            "https://red-zeta-one.vercel.app/tabla/tabla19",
+            "https://red-zeta-one.vercel.app/tabla/tabla20",
+            "https://red-zeta-one.vercel.app/tabla/tabla21",
+            "https://red-zeta-one.vercel.app/tabla/tabla22",
+            "https://red-zeta-one.vercel.app/tabla/tabla23",
+            "https://red-zeta-one.vercel.app/tabla/tabla24",
+            "https://red-zeta-one.vercel.app/tabla/tabla25",
+            "https://red-zeta-one.vercel.app/tabla/tabla26",
+            "https://red-zeta-one.vercel.app/tabla/tabla27",
+            "https://red-zeta-one.vercel.app/tabla/tabla28",
+            "https://red-zeta-one.vercel.app/tabla/tabla29",
+            "https://red-zeta-one.vercel.app/tabla/tabla30",
+            "https://red-zeta-one.vercel.app/tabla/tabla31",
+            "https://red-zeta-one.vercel.app/tabla/tabla32",
+            "https://red-zeta-one.vercel.app/tabla/tabla33",
+            "https://red-zeta-one.vercel.app/tabla/tabla34",
+            "https://red-zeta-one.vercel.app/tabla/tabla35",
+            "https://red-zeta-one.vercel.app/tabla/tabla36",
+            "https://red-zeta-one.vercel.app/tabla/tabla37",
+            "https://red-zeta-one.vercel.app/tabla/tabla38",
+            "https://red-zeta-one.vercel.app/tabla/tabla39",
+            "https://red-zeta-one.vercel.app/tabla/tabla40",
+            "https://red-zeta-one.vercel.app/tabla/tabla41",
+            "https://red-zeta-one.vercel.app/tabla/tabla42",
+            "https://red-zeta-one.vercel.app/tabla/tabla43",
+            "https://red-zeta-one.vercel.app/tabla/tabla44"
+        ];
+
+        window.onload = function() {
+            populateInitialList();
+            document.getElementById('customTargetUrlInput').value = activeChatUrl;
+            loadSystemHelpIntoIframe(null);
+            updateTeacherLiveView(activeChatUrl);
+            initDragAndDrop();
+        };
+
+        function populateInitialList() {
+            const ul = document.getElementById('vercel-dynamic-list');
+            ul.innerHTML = '';
+
+            const helpLi = document.createElement('li');
+            helpLi.setAttribute('draggable', 'true');
+            helpLi.setAttribute('data-url', 'internal://official-help');
+            helpLi.innerHTML = `
+                <span style="cursor: grab; color: #94a3b8; margin-right: 6px; font-weight: bold;">☰</span>
+                <div class="vercel-item-content" onclick="loadSystemHelpIntoIframe(this.parentElement)">
+                    <span>📖 Teljes Hivatalos Súgórendszer</span>
+                    <small>internal://official-help</small>
+                </div>
+                <div style="display: flex; gap: 4px; align-items: center;">
+                    <button onclick="openPanelLinkDirect('internal://official-help')" style="background:#0284c7; color:white; border:none; padding:4px 6px; border-radius:4px; cursor:pointer; font-size:10px; white-space:nowrap;" title="Panel Link Megnyitása">🌐 Panel Link</button>
+                    <button onclick="sendLinkToTeacher('internal://official-help')" style="background:#059669; color:white; border:none; padding:4px 6px; border-radius:4px; cursor:pointer; font-size:10px; white-space:nowrap;" title="Küldés a tanárnak">📤 Küldés Tanárnak</button>
+                </div>
+            `;
+            ul.appendChild(helpLi);
+
+            initialLinks.forEach(link => {
+                const parts = link.split('/').filter(Boolean);
+                const name = parts.length >= 2 ? `${parts[parts.length-2]}/${parts[parts.length-1]}` : (parts[parts.length-1] || 'Elem');
+
+                const li = document.createElement('li');
+                li.setAttribute('draggable', 'true');
+                li.setAttribute('data-url', link);
+                li.innerHTML = `
+                    <span style="cursor: grab; color: #94a3b8; margin-right: 6px; font-weight: bold;">☰</span>
+                    <div class="vercel-item-content" onclick="loadLinkIntoIframe('${link}', this.parentElement)">
+                        <span>${name}</span>
+                        <small>${link}</small>
+                    </div>
+                    <div style="display: flex; gap: 4px; align-items: center;">
+                        <button onclick="openPanelLinkDirect('${link}')" style="background:#0284c7; color:white; border:none; padding:4px 6px; border-radius:4px; cursor:pointer; font-size:10px; white-space:nowrap;" title="Panel Link Megnyitása">🌐 Panel Link</button>
+                        <button onclick="sendLinkToTeacher('${link}')" style="background:#059669; color:white; border:none; padding:4px 6px; border-radius:4px; cursor:pointer; font-size:10px; white-space:nowrap;" title="Küldés a tanárnak">📤 Küldés Tanárnak</button>
+                    </div>
+                `;
+                ul.appendChild(li);
+            });
+        }
+
+        function openServerModal() { document.getElementById('server-modal').style.display = 'flex'; }
+        function closeServerModal() { document.getElementById('server-modal').style.display = 'none'; }
+        
+        function openExternalSortModule() {
+            const ul = document.getElementById('vercel-dynamic-list');
+            const items = ul.querySelectorAll('li');
+            let lines = [];
+            items.forEach(li => {
+                const small = li.querySelector('small');
+                if (small) lines.push(small.textContent.trim());
+            });
+            document.getElementById('externalSortTextarea').value = lines.join('\n');
+            document.getElementById('external-sort-modal').style.display = 'flex';
+        }
+
+        function closeExternalSortModule() {
+            document.getElementById('external-sort-modal').style.display = 'none';
+        }
+
+        function saveExternalSortModule() {
+            const text = document.getElementById('externalSortTextarea').value.trim();
+            const lines = text.split('\n');
+            const ul = document.getElementById('vercel-dynamic-list');
+            ul.innerHTML = '';
+
+            lines.forEach(line => {
+                let link = line.trim();
+                if (!link) return;
+                
+                if (link === 'internal://official-help') {
+                    const helpLi = document.createElement('li');
+                    helpLi.setAttribute('draggable', 'true');
+                    helpLi.setAttribute('data-url', 'internal://official-help');
+                    helpLi.innerHTML = `
+                        <span style="cursor: grab; color: #94a3b8; margin-right: 6px; font-weight: bold;">☰</span>
+                        <div class="vercel-item-content" onclick="loadSystemHelpIntoIframe(this.parentElement)">
+                            <span>📖 Teljes Hivatalos Súgórendszer</span>
+                            <small>internal://official-help</small>
+                        </div>
+                        <div style="display: flex; gap: 4px; align-items: center;">
+                            <button onclick="openPanelLinkDirect('internal://official-help')" style="background:#0284c7; color:white; border:none; padding:4px 6px; border-radius:4px; cursor:pointer; font-size:10px; white-space:nowrap;" title="Panel Link Megnyitása">🌐 Panel Link</button>
+                            <button onclick="sendLinkToTeacher('internal://official-help')" style="background:#059669; color:white; border:none; padding:4px 6px; border-radius:4px; cursor:pointer; font-size:10px; white-space:nowrap;" title="Küldés a tanárnak">📤 Küldés Tanárnak</button>
+                        </div>
+                    `;
+                    ul.appendChild(helpLi);
+                    return;
+                }
+
+                const parts = link.split('/').filter(Boolean);
+                const name = parts.length >= 2 ? `${parts[parts.length-2]}/${parts[parts.length-1]}` : (parts[parts.length-1] || 'Elem');
+
+                const li = document.createElement('li');
+                li.setAttribute('draggable', 'true');
+                li.setAttribute('data-url', link);
+                li.innerHTML = `
+                    <span style="cursor: grab; color: #94a3b8; margin-right: 6px; font-weight: bold;">☰</span>
+                    <div class="vercel-item-content" onclick="loadLinkIntoIframe('${link}', this.parentElement)">
+                        <span>${name}</span>
+                        <small>${link}</small>
+                    </div>
+                    <div style="display: flex; gap: 4px; align-items: center;">
+                        <button onclick="openPanelLinkDirect('${link}')" style="background:#0284c7; color:white; border:none; padding:4px 6px; border-radius:4px; cursor:pointer; font-size:10px; white-space:nowrap;" title="Panel Link Megnyitása">🌐 Panel Link</button>
+                        <button onclick="sendLinkToTeacher('${link}')" style="background:#059669; color:white; border:none; padding:4px 6px; border-radius:4px; cursor:pointer; font-size:10px; white-space:nowrap;" title="Küldés a tanárnak">📤 Küldés Tanárnak</button>
+                    </div>
+                `;
+                ul.appendChild(li);
+            });
+
+            initDragAndDrop();
+            closeExternalSortModule();
+            alert('A külső modul szerinti sorrend és hivatkozások sikeresen alkalmazva!');
+        }
+
+        function selectChatPlatform(url, name, passcode = "") {
+            activeChatUrl = url;
+            activeChatName = name;
+            activeZoomPasscode = passcode;
+            document.getElementById('active-chat-name').textContent = `Aktív elem: ${name}`;
+            document.getElementById('customTargetUrlInput').value = url;
+            document.getElementById('zoomPasscodeInput').value = passcode;
+            updatePasscodeUI();
+            updateTeacherLiveView(url);
+            closeServerModal();
+            alert(`Kiválasztva és azonnal továbbítva a Tanári Követő nézetbe: ${name}`);
+        }
+
+        function applyModalCustomServer() {
+            const customUrl = document.getElementById('modalCustomUrlInput').value.trim();
+            const customPasscode = document.getElementById('modalCustomPasscodeInput').value.trim();
+            if (!customUrl) { alert('Kérlek, adj meg egy érvényes URL-t!'); return; }
+            activeChatUrl = customUrl;
+            activeZoomPasscode = customPasscode;
+            activeChatName = "Egyedi Zoom / Hívás";
+            document.getElementById('active-chat-name').textContent = `Aktív elem: ${customUrl}`;
+            document.getElementById('customTargetUrlInput').value = customUrl;
+            document.getElementById('zoomPasscodeInput').value = customPasscode;
+            updatePasscodeUI();
+            updateTeacherLiveView(customUrl);
+            closeServerModal();
+            alert(`Egyedi link rögzítve és átküldve a tanári követő nézetbe!`);
+        }
+
+        function updateActiveChatUrlFromInput() {
+            const typedUrl = document.getElementById('customTargetUrlInput').value.trim();
+            const typedPasscode = document.getElementById('zoomPasscodeInput').value.trim();
+            if (!typedUrl) { alert('Kérlek, adj meg egy érvényes hivatkozást!'); return; }
+            activeChatUrl = typedUrl;
+            activeZoomPasscode = typedPasscode;
+            activeChatName = "Megadott Külső Link";
+            document.getElementById('active-chat-name').textContent = `Aktív elem: ${typedUrl}`;
+            updatePasscodeUI();
+            updateTeacherLiveView(typedUrl);
+            alert(`Link frissítve a tanári követő nézetben is!`);
+        }
+
+        function updatePasscodeUI() {
+            const passEl = document.getElementById('active-passcode-display');
+            if (activeZoomPasscode) {
+                passEl.textContent = `🔐 Zoom Passcode: ${activeZoomPasscode}`;
+                passEl.style.display = 'block';
+            } else {
+                passEl.style.display = 'none';
+            }
+        }
+
+        function launchChatInNewWindow() {
+            if (!activeChatUrl) { alert('Nincs érvényes URL megadva!'); return; }
+            
+            // Külső ablak nyitása
+            externalWindowReference = window.open(activeChatUrl, '_blank');
+            
+            // Figyelő indítása a külső ablak státuszának követésére és a tanári nézet szinkronizálására
+            startExternalWindowMonitor();
+            
+            alert(`A chat/Zoom ablak megnyitva külön ablakban. A Tanári Követő aktívan figyeli és szinkronizálja!`);
+        }
+
+        function startExternalWindowMonitor() {
+            if (windowPollTimer) clearInterval(windowPollTimer);
+            
+            windowPollTimer = setInterval(() => {
+                if (externalWindowReference) {
+                    if (externalWindowReference.closed) {
+                        // Ha a felhasználó bezárta a külső ablakot
+                        clearInterval(windowPollTimer);
+                        externalWindowReference = null;
+                        document.getElementById('ai-output').textContent = `[FIGYELŐ] A külső ablak (${activeChatName}) bezárásra került.`;
+                    } else {
+                        // Aktívan jelzi a naplóban, hogy a Tanári Követő figyeli a futó külső ablakot
+                        document.getElementById('ai-output').textContent = `[TANÁRI KÖVETŐ - AKTÍV FIGYELÉS] Külső külön ablak fut: ${activeChatUrl}`;
+                    }
+                }
+            }, 1000);
+        }
+
+        function updateTeacherLiveView(url) {
+            currentTeacherUrl = url;
+            const teacherIframe = document.getElementById('teacher-live-iframe');
+            const fallbackEl = document.getElementById('teacher-iframe-fallback');
+            
+            fallbackEl.style.display = 'none';
+            
+            if (url === 'internal://official-help') {
+                teacherIframe.src = 'about:blank';
+                teacherIframe.srcdoc = systemHelpHtmlContent;
+            } else {
+                teacherIframe.removeAttribute('srcdoc');
+                teacherIframe.src = url;
+                
+                // Külső chatek (Mattermost, Zoom, Google Classroom) esetén iframe biztonsági korlátozás miatt fallback jelenik meg,
+                // de a Tanári Követő Panel jelzi a státuszt és gombot ad a külön ablakos megosztáshoz.
+                setTimeout(() => {
+                    if (url && url !== 'about:blank' && !url.startsWith('internal://')) {
+                        fallbackEl.style.display = 'flex';
+                    }
+                }, 1200);
+            }
+        }
+
+        function clearTeacherLiveView() {
+            currentTeacherUrl = 'about:blank';
+            const teacherIframe = document.getElementById('teacher-live-iframe');
+            const fallbackEl = document.getElementById('teacher-iframe-fallback');
+            fallbackEl.style.display = 'none';
+            teacherIframe.removeAttribute('srcdoc');
+            teacherIframe.src = 'about:blank';
+            if (windowPollTimer) clearInterval(windowPollTimer);
+            alert('A tanári követő nézet tartalma törölve lett.');
+        }
+
+        function sendLinkToTeacher(url) {
+            updateTeacherLiveView(url);
+            alert(`A kiválasztott link sikeresen átküldve a Tanári Követő Nézetbe!`);
+        }
+
+        function openPanelLinkDirect(url) {
+            if (url === 'internal://official-help') {
+                alert('Ez a beépített hivatalos súgórendszer hivatkozása.');
+            } else {
+                window.open(url, '_blank');
+            }
+        }
+
+        function openTeacherLinkInNewWindow() {
+            if (currentTeacherUrl && currentTeacherUrl !== 'internal://official-help') {
+                externalWindowReference = window.open(currentTeacherUrl, '_blank');
+                startExternalWindowMonitor();
+            } else {
+                window.open(window.location.href, '_blank');
+            }
+        }
+
+        function resizeTeacherPanel(action) {
+            const container = document.getElementById('teacher-iframe-container');
+            if (action === 'shrink') {
+                container.style.height = '70px';
+            } else if (action === 'expand') {
+                container.style.height = '350px';
+            }
+        }
+
+        function toggleTeacherFollowerPanel() {
+            const container = document.getElementById('teacher-iframe-container');
+            const btn = document.getElementById('teacher-toggle-btn');
+            
+            if (container.style.display !== 'none') {
+                container.style.display = 'none';
+                btn.textContent = "➕ Visszahoz";
+                btn.style.background = "#059669";
+            } else {
+                container.style.display = 'block';
+                btn.textContent = "✖ Bezár";
+                btn.style.background = "#dc2626";
+            }
+        }
+
+        function handleFileUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const content = e.target.result;
+                const suffix = document.getElementById('autoSuffixInput').value.trim();
+                const lines = content.split('\n');
+                const ul = document.getElementById('vercel-dynamic-list');
+                let addedCount = 0;
+
+                lines.forEach(line => {
+                    let link = line.trim();
+                    if (!link) return;
+
+                    if (suffix && !link.toLowerCase().endsWith(suffix.toLowerCase())) {
+                        link = (link.endsWith('/') && suffix.startsWith('/')) ? link.slice(0, -1) + suffix : link + suffix;
+                    }
+
+                    const parts = link.split('/').filter(Boolean);
+                    const name = parts.length >= 2 ? `${parts[parts.length-2]}/${parts[parts.length-1]}` : (parts[parts.length-1] || 'Elem');
+
+                    const li = document.createElement('li');
+                    li.setAttribute('draggable', 'true');
+                    li.setAttribute('data-url', link);
+                    li.innerHTML = `
+                        <span style="cursor: grab; color: #94a3b8; margin-right: 6px; font-weight: bold;">☰</span>
+                        <div class="vercel-item-content" onclick="loadLinkIntoIframe('${link}', this.parentElement)">
+                            <span>${name}</span>
+                            <small>${link}</small>
+                        </div>
+                        <div style="display: flex; gap: 4px; align-items: center;">
+                            <button onclick="openPanelLinkDirect('${link}')" style="background:#0284c7; color:white; border:none; padding:4px 6px; border-radius:4px; cursor:pointer; font-size:10px; white-space:nowrap;" title="Panel Link Megnyitása">🌐 Panel Link</button>
+                            <button onclick="sendLinkToTeacher('${link}')" style="background:#059669; color:white; border:none; padding:4px 6px; border-radius:4px; cursor:pointer; font-size:10px; white-space:nowrap;" title="Küldés a tanárnak">📤 Küldés Tanárnak</button>
+                        </div>
+                    `;
+                    ul.appendChild(li);
+                    addedCount++;
+                });
+
+                initDragAndDrop();
+                alert(`Sikeresen betöltve fájlból: ${addedCount} db HTTP elem generálva!`);
+                event.target.value = ''; 
+            };
+            reader.readAsText(file);
+        }
+
+        function addBatchLinks() {
+            const rawText = document.getElementById('batchLinkInput').value.trim();
+            const suffix = document.getElementById('autoSuffixInput').value.trim();
+            if (!rawText) { alert('Kérlek, másolj be legalább egy linket a szövegdobozba!'); return; }
+
+            const lines = rawText.split('\n');
+            const ul = document.getElementById('vercel-dynamic-list');
+            let addedCount = 0;
+
+            lines.forEach(line => {
+                let link = line.trim();
+                if (!link) return;
+
+                if (suffix && !link.toLowerCase().endsWith(suffix.toLowerCase())) {
+                    link = (link.endsWith('/') && suffix.startsWith('/')) ? link.slice(0, -1) + suffix : link + suffix;
+                }
+
+                const parts = link.split('/').filter(Boolean);
+                const name = parts.length >= 2 ? `${parts[parts.length-2]}/${parts[parts.length-1]}` : (parts[parts.length-1] || 'Elem');
+
+                const li = document.createElement('li');
+                li.setAttribute('draggable', 'true');
+                li.setAttribute('data-url', link);
+                li.innerHTML = `
+                    <span style="cursor: grab; color: #94a3b8; margin-right: 6px; font-weight: bold;">☰</span>
+                    <div class="vercel-item-content" onclick="loadLinkIntoIframe('${link}', this.parentElement)">
+                        <span>${name}</span>
+                        <small>${link}</small>
+                    </div>
+                    <div style="display: flex; gap: 4px; align-items: center;">
+                        <button onclick="openPanelLinkDirect('${link}')" style="background:#0284c7; color:white; border:none; padding:4px 6px; border-radius:4px; cursor:pointer; font-size:10px; white-space:nowrap;" title="Panel Link Megnyitása">🌐 Panel Link</button>
+                        <button onclick="sendLinkToTeacher('${link}')" style="background:#059669; color:white; border:none; padding:4px 6px; border-radius:4px; cursor:pointer; font-size:10px; white-space:nowrap;" title="Küldés a tanárnak">📤 Küldés Tanárnak</button>
+                    </div>
+                `;
+                ul.appendChild(li);
+                addedCount++;
+            });
+
+            document.getElementById('batchLinkInput').value = '';
+            initDragAndDrop();
+            alert(`Sikeresen hozzáadva: ${addedCount} db link!`);
+        }
+
+        function initDragAndDrop() {
+            const ul = document.getElementById('vercel-dynamic-list');
+            const items = ul.querySelectorAll('li');
+
+            items.forEach(item => {
+                item.addEventListener('dragstart', () => {
+                    item.classList.add('dragging');
+                });
+
+                item.addEventListener('dragend', () => {
+                    item.classList.remove('dragging');
+                });
+            });
+
+            ul.addEventListener('dragover', e => {
+                e.preventDefault();
+                const afterElement = getDragAfterElement(ul, e.clientY);
+                const draggable = document.querySelector('.dragging');
+                if (draggable) {
+                    if (afterElement == null) {
+                        ul.appendChild(draggable);
+                    } else {
+                        ul.insertBefore(draggable, afterElement);
+                    }
+                }
+            });
+        }
+
+        function getDragAfterElement(container, y) {
+            const draggableElements = [...container.querySelectorAll('li:not(.dragging)')];
+
+            return draggableElements.reduce((closest, child) => {
+                const box = child.getBoundingClientRect();
+                const offset = y - box.top - box.height / 2;
+                if (offset < 0 && offset > closest.offset) {
+                    return { offset: offset, element: child };
+                } else {
+                    return closest;
+                }
+            }, { offset: Number.NEGATIVE_INFINITY }).element;
+        }
+
+        function loadLinkIntoIframe(url, element) {
+            document.querySelectorAll('#vercel-dynamic-list li').forEach(el => el.style.background = '#fff');
+            if (element) element.style.background = '#e0f2fe';
+            const iframe = document.getElementById('google-docs-iframe');
+            iframe.removeAttribute('srcdoc');
+            iframe.src = url;
+        }
+
+        function loadSystemHelpIntoIframe(element) {
+            document.querySelectorAll('#vercel-dynamic-list li').forEach(el => el.style.background = '#fff');
+            if (element) {
+                element.style.background = '#e0f2fe';
+            } else {
+                const items = document.querySelectorAll('#vercel-dynamic-list li');
+                if(items.length > 0) items[0].style.background = '#e0f2fe';
+            }
+            const iframe = document.getElementById('google-docs-iframe');
+            iframe.src = 'about:blank';
+            iframe.srcdoc = systemHelpHtmlContent;
+        }
+
+        function shareLinkToMattermost() {
+            let statusMsg = `[MENTVE A NAPLÓBA] Link: ${activeChatUrl}`;
+            if (activeZoomPasscode) statusMsg += ` | Passcode: ${activeZoomPasscode}`;
+            document.getElementById('ai-output').textContent = statusMsg;
+            alert(`A hivatkozás és a jelszó sikeresen rögzítve az AI naplóban.`);
+        }
+
+        function makeTeamDecision(decisionType) {
+            let statusMsg = `[DÖNTÉS] ${decisionType} -> Link: ${activeChatUrl}`;
+            if (activeZoomPasscode) statusMsg += ` (Passcode: ${activeZoomPasscode})`;
+            document.getElementById('ai-output').textContent = statusMsg;
+            alert(`A döntés rögzítve: ${decisionType}`);
+        }
+    </script>
+
+
+</body></html>
