@@ -1,0 +1,1028 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interaktív Napelemes Vízsugár Vezérlő & ESP32 Dual-Mode</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            user-select: none;
+        }
+
+        :root {
+            --water-main: #88c0d0;
+            --water-dark: #5e81ac;
+            --water-light: #8fbcbb;
+            --glow-color: rgba(136, 192, 208, 0.6);
+            --bg-canvas: linear-gradient(180deg, #181b21 0%, #232831 100%);
+            --mode-color: #a3be8c;
+        }
+
+        body {
+            background-color: #1e222a;
+            color: #eceff4;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1150px;
+            background: #2e3440;
+            border-radius: 16px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.4);
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid #3b4252;
+            padding-bottom: 12px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .header h1 {
+            font-size: 20px;
+            color: var(--water-main);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .mode-selector {
+            display: flex;
+            background: #232831;
+            padding: 4px;
+            border-radius: 10px;
+            border: 1px solid #434c5e;
+            gap: 4px;
+        }
+
+        .mode-btn {
+            background: transparent;
+            border: none;
+            color: #d8dee9;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .mode-btn.active-sim {
+            background: #a3be8c;
+            color: #2e3440;
+            box-shadow: 0 0 10px rgba(163, 190, 140, 0.4);
+        }
+
+        .mode-btn.active-esp {
+            background: #88c0d0;
+            color: #2e3440;
+            box-shadow: 0 0 10px rgba(136, 192, 208, 0.5);
+        }
+
+        .status-badge {
+            background: #4c566a;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--mode-color);
+            border: 1px solid var(--mode-color);
+            transition: all 0.3s;
+        }
+
+        /* CANVAS CONTAINER & 3D TRANSFORM */
+        .canvas-container {
+            position: relative;
+            width: 100%;
+            height: 380px;
+            background: var(--bg-canvas);
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid #434c5e;
+            transition: all 0.6s cubic-bezier(0.25, 1, 0.5, 1);
+            perspective: 800px;
+        }
+
+        .canvas-3d-active {
+            transform: rotateX(25deg) scale(0.95);
+            box-shadow: 0 25px 50px rgba(0,0,0,0.6);
+        }
+
+        canvas {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+
+        /* PANELS */
+        .panel {
+            background: #3b4252;
+            border: 1px solid #434c5e;
+            border-radius: 10px;
+            padding: 10px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .panel-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .panel label {
+            font-size: 13px;
+            font-weight: 600;
+            color: #d8dee9;
+        }
+
+        .num-input {
+            width: 60px;
+            background: #2e3440;
+            border: 1px solid #4c566a;
+            color: var(--water-main);
+            font-size: 14px;
+            font-weight: bold;
+            padding: 4px 6px;
+            border-radius: 6px;
+            text-align: center;
+            outline: none;
+        }
+
+        /* CONTROLS SECTION */
+        .controls-grid {
+            display: grid;
+            grid-template-columns: repeat(8, 1fr);
+            gap: 10px;
+        }
+
+        .channel-card {
+            background: #3b4252;
+            border-radius: 10px;
+            padding: 10px 6px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            border: 2px solid #4c566a;
+            transition: all 0.3s ease;
+        }
+
+        /* ÜZEMMÓD SPECIFIKUS KÁRTYA STÍLUSOK */
+        .channel-card.sim-mode {
+            border-color: #a3be8c;
+        }
+
+        .channel-card.esp-mode {
+            border-color: #88c0d0;
+            box-shadow: 0 0 8px rgba(136, 192, 208, 0.3);
+        }
+
+        .channel-card:hover {
+            transform: translateY(-2px);
+        }
+
+        .channel-title {
+            font-size: 11px;
+            font-weight: bold;
+            color: #d8dee9;
+        }
+
+        .val-display {
+            font-size: 14px;
+            font-weight: bold;
+            color: var(--water-main);
+            background: #2e3440;
+            padding: 3px 6px;
+            border-radius: 6px;
+            width: 100%;
+            text-align: center;
+        }
+
+        /* Vertical Slider */
+        .slider-wrapper {
+            height: 120px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        input[type=range] {
+            -webkit-appearance: none;
+            width: 110px;
+            height: 6px;
+            background: #2e3440;
+            border-radius: 4px;
+            outline: none;
+            transform: rotate(-90deg);
+            cursor: pointer;
+        }
+
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: var(--water-main);
+            cursor: pointer;
+            box-shadow: 0 0 8px var(--glow-color);
+        }
+
+        /* BUTTONS */
+        .global-actions {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            background: #434c5e;
+            color: #eceff4;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .btn:hover {
+            background: #4c566a;
+            color: var(--water-main);
+        }
+
+        .btn-primary { background: #5e81ac; }
+        .btn-primary:hover { background: #81a1c1; color: #fff; }
+        .btn-success { background: #a3be8c; color: #2e3440; }
+        .btn-success:hover { background: #8fbcbb; color: #1e222a; }
+        .btn-danger { background: #bf616a; }
+        .btn-danger:hover { background: #d08770; color: #fff; }
+        .btn-active { background: #ebcb8b !important; color: #2e3440 !important; }
+
+        select {
+            background: #2e3440;
+            color: #eceff4;
+            border: 1px solid #4c566a;
+            padding: 5px 8px;
+            border-radius: 6px;
+            outline: none;
+            font-size: 12px;
+            cursor: pointer;
+        }
+
+        .iot-telemetry {
+            background: #181b21;
+            border: 1px solid #3b4252;
+            border-radius: 8px;
+            padding: 10px 14px;
+            font-family: 'Consolas', monospace;
+            font-size: 11px;
+            color: #a3be8c;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .ws-status {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #bf616a;
+            margin-right: 5px;
+        }
+
+        .ws-connected { background: #a3be8c; box-shadow: 0 0 8px #a3be8c; }
+
+        .traffic-indicator {
+            display: inline-block;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 10px;
+            font-weight: bold;
+            background: #2e3440;
+            color: #d8dee9;
+            transition: all 0.1s ease;
+        }
+
+        .traffic-active {
+            background: #ebcb8b;
+            color: #2e3440;
+            box-shadow: 0 0 8px #ebcb8b;
+        }
+
+        @media (max-width: 768px) {
+            .controls-grid { grid-template-columns: repeat(4, 1fr); }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <h1>💧 Napelemes Vízsugár Vezérlő</h1>
+        
+        <!-- ÜZEMMÓD VÁLASZTÓ -->
+        <div class="mode-selector">
+            <button class="mode-btn active-sim" id="btnModeSim" onclick="setSystemMode('sim')">💻 Szoftveres Szimuláció</button>
+            <button class="mode-btn" id="btnModeEsp" onclick="setSystemMode('esp')">⚡ ESP32 Hardver Mód</button>
+        </div>
+
+        <div class="status-badge" id="statusBadge">🟢 Helyi Szimuláció (Offline)</div>
+    </div>
+
+    <!-- CANVAS & VIEW MODE -->
+    <div class="canvas-container" id="canvasContainer">
+        <canvas id="fountainCanvas"></canvas>
+    </div>
+
+    <!-- EFFEKT & NÉZET PANEL -->
+    <div class="panel">
+        <div class="panel-group">
+            <label for="timeMode">🌆 Környezet / LED:</label>
+            <select id="timeMode" onchange="changeEnvironment(this.value)">
+                <option value="night">🌙 Éjszaka (RGB Chaser)</option>
+                <option value="day">☀️ Nappali Fény</option>
+                <option value="sunset">🌅 Naplemente</option>
+                <option value="cyber">🌆 Cyberpunk Neon</option>
+            </select>
+
+            <button class="btn" id="viewBtn" onclick="toggle3DView()">📐 Nézet: 2D Oldal</button>
+            <button class="btn" id="fogBtn" onclick="toggleFog()">🌫️ Köd: BE</button>
+            <button class="btn" id="soundBtn" onclick="toggleSound()">🔊 Hang: BE</button>
+            <button class="btn" id="micBtn" onclick="toggleMicrophone()">🎤 Zene Követő</button>
+        </div>
+
+        <div class="panel-group">
+            <label for="windSlider">🌪️ Szél:</label>
+            <input type="range" id="windSlider" min="-10" max="10" value="0" style="width: 80px; transform: none; height: 6px;" oninput="updateWind(this.value)">
+            <span id="windVal" style="font-size: 12px; font-weight: bold; width: 35px;">0 m/s</span>
+        </div>
+    </div>
+
+    <!-- KONSTANS & FILE PANEL -->
+    <div class="panel">
+        <div class="panel-group">
+            <label for="stepValue">⚙️ Konstans (%):</label>
+            <button class="btn" style="padding: 3px 8px;" onclick="adjustStep(-5)">-5</button>
+            <input type="number" id="stepValue" class="num-input" value="15" min="1" max="100">
+            <button class="btn" style="padding: 3px 8px;" onclick="adjustStep(5)">+5</button>
+            <button class="btn btn-success" onclick="applyConstantChange(1)">➕ Hozzáadás</button>
+            <button class="btn btn-danger" onclick="applyConstantChange(-1)">➖ Kivonás</button>
+        </div>
+
+        <div class="panel-group">
+            <button class="btn btn-primary" onclick="exportConfig()">💾 Mentés</button>
+            <button class="btn btn-primary" onclick="document.getElementById('fileInput').click()">📂 Betöltés</button>
+            <input type="file" id="fileInput" accept=".json" style="display:none" onchange="importConfig(event)">
+        </div>
+    </div>
+
+    <!-- CSÚSZKÁK -->
+    <div class="controls-grid" id="controlsGrid"></div>
+
+    <!-- GLOBÁLIS AKCIÓK / EFFEKTEK -->
+    <div class="global-actions">
+        <button class="btn btn-primary" onclick="presetWave()">🌊 Hullám</button>
+        <button class="btn btn-primary" onclick="presetSymmetry()">🪞 Szimmetria</button>
+        <button class="btn btn-primary" onclick="presetHeartbeat()">💓 Szívverés</button>
+        <button class="btn btn-primary" onclick="presetMatrix()">🪜 Lépcső</button>
+        <button class="btn btn-primary" onclick="presetRandom()">🎲 Véletlen</button>
+        <button class="btn" onclick="presetMax()">⬆️ Mind Max</button>
+        <button class="btn btn-danger" onclick="presetMin()">⬇️ Mind Stop</button>
+    </div>
+
+    <!-- ESP32 HARDVER / WEBSOCKET TELEMETRIA -->
+    <div class="iot-telemetry">
+        <div>
+            <span class="ws-status" id="wsStatusDot"></span>
+            <strong>ESP32 WebSocket:</strong> <span id="wsStatusText" style="color:#bf616a;">Kikapcsolva</span> 
+            <button class="btn" style="padding: 2px 8px; font-size: 10px; margin-left: 8px;" onclick="connectESP32()">🔌 Csatlakozás</button>
+        </div>
+        <div>
+            <span class="traffic-indicator" id="txInd">TX ⬆️</span>
+            <span class="traffic-indicator" id="rxInd">RX ⬇️</span>
+            Feszültség: <span id="telemetryV" style="color:#ebcb8b;">12.4 V</span> | Teljesítmény: <span id="telemetryW" style="color:#88c0d0;">18.5 W</span>
+        </div>
+        <div id="telemetryJson" style="opacity: 0.8;">JSON: {"mode":"sim","pumps": [80,60,40,100,70,30,90,50]}</div>
+    </div>
+</div>
+
+<script>
+    const canvas = document.getElementById('fountainCanvas');
+    const ctx = canvas.getContext('2d');
+    const controlsGrid = document.getElementById('controlsGrid');
+
+    let sugarEro = [80, 60, 40, 100, 70, 30, 90, 50];
+    let currentHeights = [...sugarEro];
+    let particles = [];
+    let ripples = [];
+    let fogParticles = [];
+    let waveInterval = null;
+    let waveAngle = 0;
+    let windForce = 0;
+    let envMode = 'night';
+    let systemMode = 'sim'; // 'sim' vagy 'esp'
+    let is3DView = false;
+    let fogActive = true;
+    let soundEnabled = true;
+    let micActive = false;
+    let audioCtx = null, analyser = null;
+    let ws = null;
+
+    // SYSTEM MODE SWITCHING
+    function setSystemMode(mode) {
+        systemMode = mode;
+        const btnSim = document.getElementById('btnModeSim');
+        const btnEsp = document.getElementById('btnModeEsp');
+        const badge = document.getElementById('statusBadge');
+
+        if (mode === 'sim') {
+            btnSim.className = "mode-btn active-sim";
+            btnEsp.className = "mode-btn";
+            badge.innerText = "🟢 Szoftveres Szimuláció (Offline)";
+            badge.style.borderColor = "#a3be8c";
+            badge.style.color = "#a3be8c";
+        } else {
+            btnSim.className = "mode-btn";
+            btnEsp.className = "mode-btn active-esp";
+            badge.innerText = "⚡ ESP32 Élő Hardver Mód";
+            badge.style.borderColor = "#88c0d0";
+            badge.style.color = "#88c0d0";
+            if (!ws || ws.readyState !== WebSocket.OPEN) {
+                connectESP32();
+            }
+        }
+        updateCardStyles();
+        updateTelemetry();
+    }
+
+    function updateCardStyles() {
+        const cards = document.querySelectorAll('.channel-card');
+        cards.forEach(card => {
+            if (systemMode === 'sim') {
+                card.classList.add('sim-mode');
+                card.classList.remove('esp-mode');
+            } else {
+                card.classList.add('esp-mode');
+                card.classList.remove('sim-mode');
+            }
+        });
+    }
+
+    // ESP32 WEBSOCKET INTEGRÁCIÓ & TELEMETRIA
+    function connectESP32() {
+        const statusText = document.getElementById('wsStatusText');
+        const statusDot = document.getElementById('wsStatusDot');
+        statusText.innerText = "Csatlakozás...";
+        
+        try {
+            ws = new WebSocket('ws://192.168.4.1/ws');
+            
+            ws.onopen = () => {
+                statusText.innerText = "Összekapcsolva (ws://192.168.4.1)";
+                statusText.style.color = "#a3be8c";
+                statusDot.classList.add('ws-connected');
+                updateTelemetry();
+            };
+
+            ws.onmessage = (event) => {
+                // BEJÖVŐ HARDVER ADAT (RX)
+                flashIndicator('rxInd');
+                try {
+                    const data = JSON.parse(event.data);
+                    if (data.pumps && Array.isArray(data.pumps)) {
+                        sugarEro = data.pumps;
+                        syncUI(false); // Frissíti a felületet hálózati újraküldés nélkül
+                    }
+                } catch(e) {}
+            };
+
+            ws.onclose = () => {
+                statusText.innerText = "Megszakadt";
+                statusText.style.color = "#bf616a";
+                statusDot.classList.remove('ws-connected');
+            };
+
+            ws.onerror = () => {
+                statusText.innerText = "Hiba (Nem található ESP32)";
+                statusText.style.color = "#bf616a";
+            };
+        } catch (e) {
+            statusText.innerText = "Sikertelen kapcsolódás";
+        }
+    }
+
+    function flashIndicator(id) {
+        const el = document.getElementById(id);
+        el.classList.add('traffic-active');
+        setTimeout(() => el.classList.remove('traffic-active'), 150);
+    }
+
+    // AUDIO API
+    function playTone(freq = 440, type = 'sine', duration = 0.08) {
+        if (!soundEnabled) return;
+        try {
+            if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.type = type;
+            osc.frequency.value = freq;
+            gain.gain.setValueAtTime(0.04, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + duration);
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            osc.start();
+            osc.stop(audioCtx.currentTime + duration);
+        } catch (e) {}
+    }
+
+    function toggleSound() {
+        soundEnabled = !soundEnabled;
+        document.getElementById('soundBtn').innerText = soundEnabled ? "🔊 Hang: BE" : "🔇 Hang: KI";
+    }
+
+    function toggle3DView() {
+        is3DView = !is3DView;
+        const container = document.getElementById('canvasContainer');
+        const btn = document.getElementById('viewBtn');
+        if (is3DView) {
+            container.classList.add('canvas-3d-active');
+            btn.innerText = "📐 Nézet: 3D Izometrikus";
+        } else {
+            container.classList.remove('canvas-3d-active');
+            btn.innerText = "📐 Nézet: 2D Oldal";
+        }
+    }
+
+    function toggleFog() {
+        fogActive = !fogActive;
+        document.getElementById('fogBtn').innerText = fogActive ? "🌫️ Köd: BE" : "🌫️ Köd: KI";
+    }
+
+    // MIKROFON INPUT
+    async function toggleMicrophone() {
+        const btn = document.getElementById('micBtn');
+        if (micActive) {
+            micActive = false;
+            btn.classList.remove('btn-active');
+            stopWave();
+            return;
+        }
+
+        try {
+            const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+            audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            const source = audioCtx.createMediaStreamSource(stream);
+            analyser = audioCtx.createAnalyser();
+            analyser.fftSize = 32;
+            source.connect(analyser);
+            micActive = true;
+            btn.classList.add('btn-active');
+            stopWave();
+            processAudio();
+        } catch (err) {
+            alert("A mikrofon hozzáférés megtagadva vagy nem elérhető.");
+        }
+    }
+
+    function processAudio() {
+        if (!micActive) return;
+        const dataArray = new Uint8Array(analyser.frequencyBinCount);
+        analyser.getByteFrequencyData(dataArray);
+
+        for (let i = 0; i < 8; i++) {
+            let val = Math.round((dataArray[i] / 255) * 100);
+            sugarEro[i] = Math.min(100, Math.max(0, val));
+        }
+        syncUI();
+        requestAnimationFrame(processAudio);
+    }
+
+    function changeEnvironment(mode) {
+        envMode = mode;
+        const container = document.getElementById('canvasContainer');
+        if (mode === 'day') container.style.background = 'linear-gradient(180deg, #70a1ff 0%, #eccc68 100%)';
+        else if (mode === 'sunset') container.style.background = 'linear-gradient(180deg, #2f3542 0%, #ff6b81 60%, #ffa502 100%)';
+        else if (mode === 'cyber') container.style.background = 'linear-gradient(180deg, #050515 0%, #1a0826 100%)';
+        else container.style.background = 'linear-gradient(180deg, #181b21 0%, #232831 100%)';
+        playTone(550, 'triangle');
+    }
+
+    function updateWind(val) {
+        windForce = parseFloat(val);
+        document.getElementById('windVal').innerText = `${val} m/s`;
+    }
+
+    function resizeCanvas() {
+        canvas.width = canvas.parentElement.clientWidth;
+        canvas.height = canvas.parentElement.clientHeight;
+        initFog();
+    }
+    window.addEventListener('resize', resizeCanvas);
+
+    function createControls() {
+        controlsGrid.innerHTML = '';
+        sugarEro.forEach((val, i) => {
+            const card = document.createElement('div');
+            card.className = `channel-card ${systemMode === 'sim' ? 'sim-mode' : 'esp-mode'}`;
+            card.innerHTML = `
+                <div class="channel-title">Sugár ${i}</div>
+                <div class="val-display" id="val-${i}">${val}%</div>
+                <div class="slider-wrapper">
+                    <input type="range" min="0" max="100" value="${val}" id="slider-${i}" oninput="updateValue(${i}, this.value)">
+                </div>
+            `;
+            controlsGrid.appendChild(card);
+        });
+    }
+
+    function updateValue(index, val) {
+        stopWave();
+        sugarEro[index] = parseInt(val);
+        document.getElementById(`val-${index}`).innerText = `${val}%`;
+        playTone(200 + parseInt(val) * 4, 'sine', 0.03);
+        updateTelemetry();
+    }
+
+    function stopWave() {
+        if (waveInterval) {
+            clearInterval(waveInterval);
+            waveInterval = null;
+        }
+        if (!micActive) {
+            const badge = document.getElementById('statusBadge');
+            if (systemMode === 'sim') {
+                badge.innerText = "🟢 Szoftveres Szimuláció (Offline)";
+                badge.style.borderColor = "#a3be8c";
+                badge.style.color = "#a3be8c";
+            } else {
+                badge.innerText = "⚡ ESP32 Élő Hardver Mód";
+                badge.style.borderColor = "#88c0d0";
+                badge.style.color = "#88c0d0";
+            }
+        }
+    }
+
+    function adjustStep(delta) {
+        const input = document.getElementById('stepValue');
+        let val = parseInt(input.value) || 0;
+        input.value = Math.min(100, Math.max(1, val + delta));
+        playTone(500, 'square', 0.04);
+    }
+
+    function applyConstantChange(direction) {
+        stopWave();
+        const step = parseInt(document.getElementById('stepValue').value) || 0;
+        sugarEro = sugarEro.map(val => Math.min(100, Math.max(0, val + (step * direction))));
+        syncUI();
+        playTone(direction > 0 ? 523 : 330, 'triangle');
+    }
+
+    // PRESETEK / EFFEKTEK
+    function presetMax() { stopWave(); sugarEro = sugarEro.map(() => 100); syncUI(); playTone(700); }
+    function presetMin() { stopWave(); sugarEro = sugarEro.map(() => 0); syncUI(); playTone(200); }
+    function presetRandom() { stopWave(); sugarEro = sugarEro.map(() => Math.floor(Math.random() * 91) + 10); syncUI(); playTone(450); }
+
+    function startPattern(callback, name) {
+        stopWave();
+        const badge = document.getElementById('statusBadge');
+        badge.innerText = `🌊 ${name} Mód (${systemMode.toUpperCase()})`;
+        badge.style.borderColor = systemMode === 'sim' ? "#a3be8c" : "#88c0d0";
+        badge.style.color = systemMode === 'sim' ? "#a3be8c" : "#88c0d0";
+        waveInterval = setInterval(callback, 60);
+    }
+
+    function presetWave() {
+        startPattern(() => {
+            waveAngle += 0.08;
+            sugarEro = sugarEro.map((_, i) => Math.round(Math.sin(waveAngle + i * 0.5) * 45 + 50));
+            syncUI();
+        }, "Hullám");
+    }
+
+    function presetSymmetry() {
+        startPattern(() => {
+            waveAngle += 0.08;
+            const vals = [0, 1, 2, 3].map(i => Math.round(Math.sin(waveAngle + i * 0.6) * 45 + 50));
+            sugarEro = [...vals, ...vals.slice().reverse()];
+            syncUI();
+        }, "Szimmetria");
+    }
+
+    function presetHeartbeat() {
+        startPattern(() => {
+            waveAngle += 0.1;
+            const beat = Math.sin(waveAngle) > 0.3 ? 95 : 15;
+            sugarEro = sugarEro.map(() => beat);
+            syncUI();
+        }, "Szívverés");
+    }
+
+    function presetMatrix() {
+        startPattern(() => {
+            waveAngle += 0.06;
+            sugarEro = sugarEro.map((_, i) => Math.round(((waveAngle * 15 + i * 12) % 100)));
+            syncUI();
+        }, "Lépcső");
+    }
+
+    function syncUI(sendToNetwork = true) {
+        sugarEro.forEach((val, i) => {
+            const slider = document.getElementById(`slider-${i}`);
+            if (slider) slider.value = val;
+            const display = document.getElementById(`val-${i}`);
+            if (display) display.innerText = `${val}%`;
+        });
+        updateTelemetry(sendToNetwork);
+    }
+
+    function updateTelemetry(sendToNetwork = true) {
+        const sumPower = sugarEro.reduce((a, b) => a + b, 0);
+        const watts = ((sumPower / 800) * 24 + 2).toFixed(1);
+        document.getElementById('telemetryW').innerText = `${watts} W`;
+        
+        const payloadObj = { mode: systemMode, pumps: sugarEro };
+        const payload = JSON.stringify(payloadObj);
+        document.getElementById('telemetryJson').innerText = `JSON: ${payload}`;
+
+        // HÁLÓZATI KÜLDÉS CSAK ESP32 MÓDBAN!
+        if (systemMode === 'esp' && sendToNetwork && ws && ws.readyState === WebSocket.OPEN) {
+            ws.send(payload);
+            flashIndicator('txInd'); // TX jelzés felvillantása
+        }
+    }
+
+    function exportConfig() {
+        const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(sugarEro));
+        const dl = document.createElement('a');
+        dl.setAttribute("href", dataStr);
+        dl.setAttribute("download", "vizsugar_config.json");
+        dl.click();
+        dl.remove();
+    }
+
+    function importConfig(e) {
+        const file = e.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = function(evt) {
+            try {
+                const loaded = JSON.parse(evt.target.result);
+                if (Array.isArray(loaded) && loaded.length === 8) {
+                    stopWave();
+                    sugarEro = loaded;
+                    syncUI();
+                }
+            } catch (err) {}
+        };
+        reader.readAsText(file);
+    }
+
+    // KÖD EFFEKT
+    function initFog() {
+        fogParticles = [];
+        for (let i = 0; i < 25; i++) {
+            fogParticles.push({
+                x: Math.random() * canvas.width,
+                y: canvas.height - 40 + (Math.random() - 0.5) * 20,
+                radius: Math.random() * 40 + 30,
+                alpha: Math.random() * 0.15 + 0.05,
+                vx: (Math.random() - 0.5) * 0.3
+            });
+        }
+    }
+
+    // RÉSZECSKÉK & HULLÁMOK
+    class Particle {
+        constructor(x, y, channelIndex) {
+            this.x = x + (Math.random() - 0.5) * 16;
+            this.y = y;
+            this.vx = (Math.random() - 0.5) * 1.8 + windForce * 0.2;
+            this.vy = -Math.random() * 3 - 1;
+            this.gravity = 0.15;
+            this.radius = Math.random() * 2.5 + 1;
+            this.alpha = 1;
+            this.life = Math.random() * 30 + 20;
+            this.channelIndex = channelIndex;
+        }
+
+        update(baseY) {
+            this.vy += this.gravity;
+            this.vx += windForce * 0.01;
+            this.x += this.vx;
+            this.y += this.vy;
+            this.alpha -= 1 / this.life;
+
+            if (this.y >= baseY && Math.random() < 0.2) {
+                ripples.push(new Ripple(this.x, baseY));
+            }
+        }
+
+        draw(ctx) {
+            ctx.save();
+            ctx.globalAlpha = Math.max(0, this.alpha);
+            
+            if (envMode === 'night' || envMode === 'cyber') {
+                const hue = (this.channelIndex * 45 + Math.abs(this.y) * 0.8 + Date.now() * 0.05) % 360;
+                ctx.fillStyle = `hsl(${hue}, 100%, 65%)`;
+            } else if (envMode === 'sunset') {
+                ctx.fillStyle = '#ffdd59';
+            } else {
+                ctx.fillStyle = '#88c0d0';
+            }
+
+            ctx.beginPath();
+            ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.restore();
+        }
+    }
+
+    class Ripple {
+        constructor(x, y) {
+            this.x = x;
+            this.y = y;
+            this.radius = 2;
+            this.alpha = 0.8;
+        }
+
+        update() {
+            this.radius += 0.8;
+            this.alpha -= 0.03;
+        }
+
+        draw(ctx, color) {
+            ctx.save();
+            ctx.globalAlpha = Math.max(0, this.alpha);
+            ctx.strokeStyle = color;
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.ellipse(this.x, this.y, this.radius * 2, this.radius * 0.6, 0, 0, Math.PI * 2);
+            ctx.stroke();
+            ctx.restore();
+        }
+    }
+
+    // MAIN RENDER LOOP
+    function render() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        const numBars = sugarEro.length;
+        const padding = 60;
+        const availableWidth = canvas.width - (padding * 2);
+        const spacing = availableWidth / (numBars - 1);
+        const baseY = canvas.height - 40;
+        const maxHeight = canvas.height - 110;
+
+        // Háttér rácsvonalak
+        ctx.strokeStyle = 'rgba(255,255,255,0.08)';
+        ctx.lineWidth = 1;
+        for (let percent = 25; percent <= 100; percent += 25) {
+            const y = baseY - (maxHeight * (percent / 100));
+            ctx.beginPath();
+            ctx.moveTo(30, y);
+            ctx.lineTo(canvas.width - 30, y);
+            ctx.stroke();
+        }
+
+        // KÖD RAJZOLÁSA A MEDENCE ALJÁRA
+        if (fogActive) {
+            ctx.save();
+            fogParticles.forEach(p => {
+                p.x += p.vx + windForce * 0.05;
+                if (p.x < 0) p.x = canvas.width;
+                if (p.x > canvas.width) p.x = 0;
+
+                const grad = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.radius);
+                grad.addColorStop(0, `rgba(220, 235, 245, ${p.alpha})`);
+                grad.addColorStop(1, 'rgba(220, 235, 245, 0)');
+                ctx.fillStyle = grad;
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+                ctx.fill();
+            });
+            ctx.restore();
+        }
+
+        sugarEro.forEach((targetVal, i) => {
+            currentHeights[i] += (targetVal - currentHeights[i]) * 0.04;
+
+            const x = padding + i * spacing;
+            const h = (currentHeights[i] / 100) * maxHeight;
+            const topY = baseY - h;
+            const width = 22;
+
+            const topX = x + (windForce * h * 0.15);
+
+            // RGB LED Reflektor
+            if (envMode === 'night' || envMode === 'cyber') {
+                const hue = (i * 45 + Date.now() * 0.05) % 360;
+                const ledColor = `hsl(${hue}, 100%, 60%)`;
+
+                ctx.save();
+                ctx.fillStyle = ledColor;
+                ctx.shadowColor = ledColor;
+                ctx.shadowBlur = 15;
+                ctx.beginPath();
+                ctx.arc(x, baseY + 5, 8, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.restore();
+            }
+
+            // Alapzat
+            ctx.fillStyle = '#4c566a';
+            ctx.beginPath();
+            ctx.roundRect(x - 18, baseY, 36, 14, 4);
+            ctx.fill();
+
+            if (h > 5) {
+                ctx.save();
+                const gradient = ctx.createLinearGradient(x, baseY, topX, topY);
+                if (envMode === 'cyber') {
+                    gradient.addColorStop(0, 'rgba(255, 0, 128, 0.8)');
+                    gradient.addColorStop(1, 'rgba(0, 240, 255, 0.9)');
+                } else if (envMode === 'sunset') {
+                    gradient.addColorStop(0, 'rgba(255, 120, 0, 0.8)');
+                    gradient.addColorStop(1, 'rgba(255, 230, 150, 0.9)');
+                } else {
+                    gradient.addColorStop(0, 'rgba(94, 129, 172, 0.7)');
+                    gradient.addColorStop(1, 'rgba(136, 192, 208, 0.95)');
+                }
+
+                ctx.fillStyle = gradient;
+                ctx.beginPath();
+                ctx.moveTo(x - width / 2, baseY);
+                ctx.quadraticCurveTo(x - width / 2 + (windForce * h * 0.08), topY + h * 0.5, topX - width / 2, topY);
+                ctx.arc(topX, topY, width / 2, Math.PI, 0);
+                ctx.quadraticCurveTo(x + width / 2 + (windForce * h * 0.08), topY + h * 0.5, x + width / 2, baseY);
+                ctx.fill();
+                ctx.restore();
+
+                if (currentHeights[i] > 10 && Math.random() < 0.6) {
+                    particles.push(new Particle(topX, topY, i));
+                }
+            }
+        });
+
+        // Részecskék & Csobbanások
+        const defaultColor = envMode === 'cyber' ? '#00f0ff' : (envMode === 'sunset' ? '#ffdd59' : '#88c0d0');
+        for (let i = particles.length - 1; i >= 0; i--) {
+            particles[i].update(baseY);
+            particles[i].draw(ctx);
+            if (particles[i].alpha <= 0) particles.splice(i, 1);
+        }
+
+        for (let i = ripples.length - 1; i >= 0; i--) {
+            ripples[i].update();
+            ripples[i].draw(ctx, defaultColor);
+            if (ripples[i].alpha <= 0) ripples.splice(i, 1);
+        }
+
+        // Vízfelszín vonal
+        ctx.strokeStyle = 'rgba(136, 192, 208, 0.4)';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(20, baseY);
+        ctx.lineTo(canvas.width - 20, baseY);
+        ctx.stroke();
+
+        requestAnimationFrame(render);
+    }
+
+    createControls();
+    resizeCanvas();
+    updateTelemetry();
+    render();
+</script>
+</body>
+</html>
