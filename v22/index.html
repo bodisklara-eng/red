@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<!-- saved from url=(0068)file:///C:/Users/Utilizator/Downloads/gemini-code-1787496044047.html -->
+<html lang="hu"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Buborékfújó és tömbök kapcsolata - Interaktív &amp; Animált Keresés</title>
+    <style>
+        * { box-sizing: border-box; }
+        body { 
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; 
+            background: #eef7fc; 
+            margin: 0;
+            padding: 20px; 
+            color: #2c3e50; 
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .container { 
+            background: white; 
+            padding: 30px; 
+            border-radius: 16px; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1); 
+            max-width: 1100px; 
+            width: 100%;
+            margin-bottom: 30px;
+        }
+        h1 { 
+            font-size: 22px; 
+            text-align: center;
+            margin-bottom: 25px; 
+            color: #1a5276; 
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            font-weight: 700;
+        }
+        
+        /* 1. EREDETI KÉP KISZOLGÁLÁSA LÁGY OVERLAY-VEL */
+        .image-section {
+            width: 100%;
+            margin-bottom: 25px;
+            display: flex;
+            justify-content: center;
+        }
+        .image-container {
+            position: relative;
+            max-width: 700px;
+            width: 100%;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.12);
+        }
+        .image-container img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+        .header-overlay {
+            position: absolute;
+            top: 2%;
+            left: 3%;
+            width: 94%;
+            height: 9%;
+            background: linear-gradient(135deg, rgba(238, 247, 252, 0.94) 0%, rgba(220, 238, 248, 0.94) 100%);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.7);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            padding: 0 12px;
+        }
+        .header-overlay h2 {
+            margin: 0;
+            font-size: 0.9vw;
+            color: #113f67;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        @media (max-width: 850px) {
+            .header-overlay { height: 10%; }
+            .header-overlay h2 { font-size: 9px; letter-spacing: 0.2px; }
+        }
+
+        /* 2. INTERAKTÍV BEVITELI SZEKCIÓ */
+        .input-section {
+            background: #f4f9fd; 
+            border: 2px dashed #bce0fd; 
+            padding: 18px;
+            border-radius: 12px; 
+            margin-bottom: 25px; 
+            text-align: center;
+        }
+        .input-group { 
+            display: flex; 
+            justify-content: center; 
+            gap: 10px; 
+            flex-wrap: wrap; 
+            margin-top: 12px; 
+        }
+        .bubble-input {
+            width: 55px; 
+            height: 45px; 
+            text-align: center; 
+            font-size: 16px;
+            font-weight: bold; 
+            border: 2px solid #3498db; 
+            border-radius: 8px;
+            outline: none; 
+            color: #2c3e50;
+            background: white;
+            transition: border-color 0.2s;
+        }
+        .bubble-input:focus { border-color: #1a5276; }
+        .btn-run {
+            background: #27ae60; 
+            color: white; 
+            border: none; 
+            padding: 12px 28px;
+            font-size: 15px; 
+            font-weight: bold; 
+            border-radius: 8px; 
+            cursor: pointer;
+            margin-top: 15px; 
+            transition: background 0.2s, transform 0.1s;
+            box-shadow: 0 4px 10px rgba(39, 174, 96, 0.2);
+        }
+        .btn-run:hover { background: #219150; transform: scale(1.02); }
+
+        /* 3. INTERAKTÍV FŰNYÍRÓ ÉS BUBORÉK ANIMÁCIÓS TERÜLET */
+        .mower-animation-area {
+            position: relative;
+            background: linear-gradient(to bottom, #e1f5fe 0%, #c8e6c9 70%, #81c784 100%);
+            border-radius: 12px;
+            height: 180px;
+            overflow: hidden;
+            margin-bottom: 25px;
+            border: 1px solid #a5d6a7;
+        }
+
+        /* Fűnyíró figura */
+        .mower {
+            position: absolute;
+            bottom: 15px;
+            left: -80px;
+            font-size: 45px;
+            transition: left 0.8s ease-in-out;
+            z-index: 10;
+            filter: drop-shadow(2px 4px 6px rgba(0,0,0,0.2));
+        }
+
+        /* Lebegő buborék animáció CSS */
+        .floating-bubble {
+            position: absolute;
+            background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.9), rgba(52, 152, 219, 0.7));
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            border-radius: 50%;
+            pointer-events: none;
+            animation: floatUp 2s ease-out forwards;
+            z-index: 5;
+        }
+
+        @keyframes floatUp {
+            0% {
+                opacity: 1;
+                transform: translateY(0) scale(0.5);
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(-120px) scale(1.3);
+            }
+        }
+
+        /* VIZUÁLIS TÖMB (BUBORÉKOK) */
+        .array-display { 
+            display: flex; 
+            gap: 15px; 
+            justify-content: center; 
+            flex-wrap: wrap; 
+            margin: 20px 0 10px 0; 
+            min-height: 90px;
+            align-items: center;
+        }
+        .bubble-card {
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            transition: all 0.3s ease;
+        }
+        .bubble {
+            width: 60px; 
+            height: 60px; 
+            border-radius: 50%;
+            background: radial-gradient(circle at 30% 30%, #7ec8f8, #3498db);
+            color: white; 
+            font-size: 20px; 
+            font-weight: bold;
+            display: flex; 
+            align-items: center; 
+            justify-content: center;
+            box-shadow: 0 4px 10px rgba(52, 152, 219, 0.3);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            border: 2px solid #ffffff;
+        }
+        .bubble.active {
+            transform: scale(1.2); 
+            border-color: #e67e22;
+            box-shadow: 0 0 18px #f39c12;
+        }
+        .bubble.max {
+            background: radial-gradient(circle at 30% 30%, #ffe100, #f39c12);
+            color: #d35400; 
+            transform: scale(1.28);
+            box-shadow: 0 0 25px #f1c40f; 
+            border: 3px solid #d35400;
+        }
+        .index-label { 
+            font-size: 12px; 
+            color: #2c3e50; 
+            margin-top: 6px; 
+            font-weight: 600; 
+        }
+
+        /* 4. GRID LAYOUT: ÁLLAPOT ÉS PYTHON KÓD */
+        .content-grid { 
+            display: grid; 
+            grid-template-columns: 1fr 1fr; 
+            gap: 25px; 
+            align-items: stretch; 
+        }
+        @media (max-width: 850px) {
+            .content-grid { grid-template-columns: 1fr; }
+        }
+
+        .status-box {
+            background: #ebf5fb; 
+            border-left: 5px solid #3498db; 
+            padding: 20px;
+            border-radius: 8px; 
+            font-size: 14px; 
+            display: flex; 
+            flex-direction: column; 
+            justify-content: center;
+            box-shadow: inset 0 0 5px rgba(0,0,0,0.03);
+        }
+        .status-box h3 { margin: 0 0 10px 0; color: #1a5276; font-size: 16px; }
+
+        /* SORONKÉNTI KÓD FUTTATÁS STÍLUSA */
+        .code-panel { 
+            background: #1e1e1e; 
+            color: #d4d4d4; 
+            padding: 15px 10px; 
+            border-radius: 12px; 
+            font-family: 'Consolas', 'Courier New', monospace; 
+            font-size: 13.5px; 
+            line-height: 1.5;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
+            overflow-x: auto;
+        }
+        .code-line {
+            padding: 3px 8px;
+            border-radius: 4px;
+            transition: background 0.3s ease, color 0.3s ease;
+            white-space: pre;
+            display: flex;
+            align-items: center;
+        }
+        .code-line.active-line {
+            background: #3a3d00;
+            border-left: 4px solid #f1c40f;
+            color: #ffffff;
+            font-weight: bold;
+        }
+        .line-pointer {
+            display: inline-block;
+            width: 20px;
+            color: #f1c40f;
+            font-weight: bold;
+        }
+        .keyword { color: #569cd6; font-weight: bold; } 
+        .comment { color: #6a9955; font-style: italic; } 
+        .string { color: #ce9178; }
+        .function { color: #dcdcaa; }
+        .number { color: #b5cea8; }
+
+        /* 5. CANVA SZEKCIÓ */
+        .canva-section {
+            width: 100%;
+            max-width: 1100px;
+            background: #ffffff;
+            padding: 25px;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+        }
+        .canva-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-top: 15px;
+        }
+        .canva-card {
+            border: 1px solid #e1e8ed;
+            border-radius: 12px;
+            padding: 15px;
+            text-align: center;
+            background: #fafbfc;
+            transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+        .canva-card:hover {
+            transform: translateY(-3px);
+            border-color: #3498db;
+            box-shadow: 0 6px 15px rgba(0,0,0,0.05);
+        }
+        .canva-card img {
+            width: 100%;
+            height: auto;
+            border-radius: 8px;
+            margin-bottom: 12px;
+        }
+        .canva-btn {
+            display: inline-block;
+            background-color: #00c4cc;
+            color: white;
+            text-decoration: none;
+            padding: 10px 18px;
+            font-weight: 600;
+            border-radius: 6px;
+            font-size: 14px;
+            transition: background-color 0.2s;
+        }
+        .canva-btn:hover { background-color: #00a8af; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>BUBORÉKFÚJÓ ÉS TÖMBÖK KAPCSOLATA - GOOGLE GEMINI</h1>
+
+        <div class="image-section">
+            <div class="image-container">
+                <img src="./5_files/Gemini_Generated_Image_1rwfq91rwfq91rwf.png" alt="Buborékfújó fűnyíró tömbökkel">
+                <div class="header-overlay">
+                    <h2>BUBORÉKFÚJÓ ÉS TÖMBÖK KAPCSOLATA - MAXIMÁLIS KERESÉS</h2>
+                </div>
+            </div>
+        </div>
+        
+        <div class="input-section">
+            <b style="color:#1a5276;">Gépeld be a kívánt értékeket a tömb elemeibe:</b>
+            <div class="input-group" id="inputContainer">
+                <input type="number" class="bubble-input" value="3">
+                <input type="number" class="bubble-input" value="5">
+                <input type="number" class="bubble-input" value="2">
+                <input type="number" class="bubble-input" value="8">
+                <input type="number" class="bubble-input" value="1">
+                <input type="number" class="bubble-input" value="4">
+            </div>
+            <button class="btn-run" onclick="runAlgorithm()">▶ Algoritmus Indítása (Fűnyírós &amp; Soronkénti Animáció)</button>
+        </div></div></body></html>
