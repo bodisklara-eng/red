@@ -1,0 +1,888 @@
+<!DOCTYPE html>
+<!-- saved from url=(0068)file:///C:/Users/Utilizator/Downloads/gemini-code-1788084651938.html -->
+<html lang="hu"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Storyboard &amp; Interaktív Felolvasó Workshop</title>
+    <link href="./AI Storyboard &amp; Interaktív Felolvasó Workshop_files/css2" rel="stylesheet">
+    <link rel="stylesheet" href="./AI Storyboard &amp; Interaktív Felolvasó Workshop_files/all.min.css">
+    
+    <!-- JSZip Könyvtár a ZIP fájlok kibontásához és becsomagolásához -->
+    <script src="./AI Storyboard &amp; Interaktív Felolvasó Workshop_files/jszip.min.js.descărcare"></script>
+
+    <style>
+        :root {
+            --bg-color: #0f172a;
+            --card-bg: #1e293b;
+            --accent-color: #3b82f6;
+            --accent-hover: #2563eb;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --border-color: #334155;
+            --danger-color: #ef4444;
+            --success-color: #10b981;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            padding: 20px;
+            min-height: 100vh;
+            touch-action: manipulation;
+        }
+
+        header {
+            max-width: 1400px;
+            margin: 0 auto 20px auto;
+            background: var(--card-bg);
+            padding: 20px 30px;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .instruction-box {
+            background: rgba(59, 130, 246, 0.1);
+            border-left: 4px solid var(--accent-color);
+            padding: 15px;
+            border-radius: 4px 8px 8px 4px;
+            max-width: 1400px;
+            margin: 0 auto 20px auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+        }
+
+        /* Stílusútmutató & Segédlet Szekció Stílusai */
+        .guide-section {
+            max-width: 1400px;
+            margin: 0 auto 25px auto;
+            background: var(--card-bg);
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            padding: 25px;
+        }
+
+        .guide-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .guide-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        @media (max-width: 1024px) {
+            .guide-grid { grid-template-columns: 1fr; }
+        }
+
+        .guide-card {
+            background: #0f172a;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 15px;
+        }
+
+        .guide-card h3 {
+            color: var(--accent-color);
+            font-size: 1.1rem;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .guide-card ul { list-style: none; }
+        .guide-card li { font-size: 0.9rem; line-height: 1.5; color: var(--text-muted); margin-bottom: 10px; }
+        .guide-card li strong { color: var(--text-main); }
+
+        .guide-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            background: #0f172a;
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+        }
+
+        .guide-table th, .guide-table td {
+            padding: 12px 15px;
+            text-align: left;
+            font-size: 0.9rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .guide-table th { background: rgba(59, 130, 246, 0.1); color: var(--accent-color); font-weight: 600; }
+        .guide-table code { background: var(--card-bg); color: #60a5fa; padding: 2px 6px; border-radius: 4px; font-family: monospace; }
+
+        /* Storyboard Layout */
+        .main-layout {
+            max-width: 1400px;
+            margin: 0 auto 30px auto;
+            display: grid;
+            grid-template-columns: 1fr 380px;
+            gap: 20px;
+        }
+
+        @media (max-width: 1024px) {
+            .main-layout { 
+                grid-template-columns: 1fr;
+                display: flex;
+                flex-direction: column-reverse;
+            }
+        }
+
+        .sidebar {
+            background: var(--card-bg);
+            padding: 20px;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .source-pool {
+            min-height: 500px;
+            position: relative;
+            background: #0f172a;
+            border-radius: 8px;
+            padding: 15px;
+            border: 2px dashed var(--border-color);
+            overflow: hidden;
+            touch-action: none;
+        }
+
+        .board-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .board-grid { grid-template-columns: 1fr; }
+        }
+
+        .panel {
+            background: var(--card-bg);
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            min-height: 300px;
+        }
+
+        .panel-header {
+            font-weight: 600;
+            font-size: 1rem;
+            margin-bottom: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 8px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .panel-controls {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .drop-zone {
+            flex-grow: 1;
+            background: rgba(15, 23, 42, 0.5);
+            border-radius: 6px;
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            min-height: 200px;
+            border: 2px dashed transparent;
+            transition: all 0.2s ease;
+        }
+
+        .drop-zone.drag-over {
+            border-color: var(--accent-color);
+            background: rgba(59, 130, 246, 0.15);
+        }
+
+        .img-card {
+            display: flex;
+            gap: 10px;
+            background: #0f172a;
+            padding: 8px;
+            border-radius: 6px;
+            border: 1px solid var(--border-color);
+            cursor: grab;
+            touch-action: none;
+            user-select: none;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+            transition: box-shadow 0.15s ease, z-index 0.15s ease;
+        }
+
+        .img-card:active { cursor: grabbing; z-index: 9999 !important; }
+
+        .source-pool .img-card {
+            position: absolute;
+            width: 280px;
+        }
+
+        .drop-zone .img-card {
+            position: relative !important;
+            left: 0 !important;
+            top: 0 !important;
+            transform: none !important;
+            width: 100%;
+            margin-bottom: 10px;
+        }
+
+        .img-preview {
+            width: 70px;
+            height: 70px;
+            object-fit: cover;
+            border-radius: 4px;
+            flex-shrink: 0;
+            pointer-events: none;
+        }
+
+        .img-details {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .img-details input {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            width: 100%;
+        }
+
+        .delete-btn {
+            background: var(--danger-color);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 2px 6px;
+            font-size: 0.75rem;
+            cursor: pointer;
+            align-self: flex-start;
+        }
+
+        .btn {
+            background: var(--accent-color);
+            color: white;
+            border: none;
+            padding: 10px 16px;
+            border-radius: 6px;
+            font-weight: 500;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.85rem;
+        }
+
+        .btn:hover { background: var(--accent-hover); }
+        .btn-small { padding: 4px 8px; font-size: 0.75rem; }
+        .btn-secondary { background: transparent; border: 1px solid var(--border-color); color: var(--text-main); }
+        .btn-secondary:hover { background: rgba(255,255,255,0.05); }
+        .btn-danger { background: transparent; border: 1px solid var(--danger-color); color: var(--danger-color); }
+        .btn-danger:hover { background: var(--danger-color); color: white; }
+
+        @media print {
+            header, .instruction-box, .sidebar, .btn, .delete-btn { display: none !important; }
+            body { background: white; color: black; }
+            .main-layout { display: block; }
+            .board-grid { grid-template-columns: 1fr; }
+            .panel { border: 1px solid #000; color: black; background: white; }
+            .img-card { border: 1px solid #ccc; background: #fff; }
+            .img-details input { border: none; color: black; background: transparent; }
+            .guide-section { background: white; color: black; border: 1px solid #000; }
+            .guide-card { background: white; border: 1px solid #ccc; color: black; }
+            .guide-card li { color: #333; }
+            .guide-table { background: white; }
+            .guide-table th { background: #eee; color: black; }
+            .guide-table code { background: #f0f0f0; color: #000; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- FEJLÉC -->
+    <header>
+        <h1><i class="fa-solid fa-film"></i> AI Storyboard &amp; Interaktív Felolvasó Workshop</h1>
+        <div style="display:flex; gap:10px; flex-wrap: wrap;">
+            <button class="btn btn-secondary" onclick="exportPrompt()"><i class="fa-solid fa-file-export"></i> Prompt Export</button>
+            <button class="btn btn-secondary" onclick="downloadImagesZip()"><i class="fa-solid fa-download"></i> Képek letöltése ZIP-ben</button>
+            <button class="btn" onclick="window.print()"><i class="fa-solid fa-file-pdf"></i> Mentés PDF-be</button>
+            <button class="btn btn-danger" onclick="clearAll()"><i class="fa-solid fa-trash-can"></i> Törlés</button>
+        </div>
+    </header>
+
+    <!-- UTASÍTÁS DOBOZ -->
+    <div class="instruction-box">
+        <div>
+            <strong><i class="fa-solid fa-circle-info"></i> Utasítás a diákoknak:</strong>
+            <p id="main-instruction">
+                Olvasd el a lenti stílusútmutatót! Töltsd fel a képeidet vagy egy ZIP fájlt a jobb oldalon, vagy töltsd be az alapértelmezett minta csomagot! Ujjad vagy az egér segítségével tetszőlegesen széthúzhatod, rendezheted vagy kupacba rakhatod a kártyákat, majd húzd át őket az AI-panelekre a jelenetsorrend összeállításához!
+            </p>
+        </div>
+        <button class="btn btn-secondary" onclick="speakText(document.getElementById(&#39;main-instruction&#39;).innerText)">
+            <i class="fa-solid fa-volume-high"></i> Utasítás felolvasása
+        </button>
+    </div>
+
+    <!-- 1. STÍLUSÚTMUTATÓ A PROJEKT ELEJÉN (A képernyőmentés alapján) -->
+    <div class="guide-section">
+        <div class="guide-header">
+            <h2><i class="fa-solid fa-palette"></i> Stílusútmutató És Prompt Segédlet</h2>
+            <button class="btn btn-secondary" onclick="speakGuide()">
+                <i class="fa-solid fa-volume-high"></i> Segédlet felolvasása
+            </button>
+        </div>
+
+        <div class="guide-grid">
+            <div class="guide-card">
+                <h3><i class="fa-solid fa-wand-magic-sparkles"></i> 1. Mesés &amp; Animációs</h3>
+                <ul>
+                    <li><strong>3D Pixar:</strong> Puha fények, kifejező szemek.</li>
+                    <li><strong>Anime (Ghibli):</strong> Természetközeli, festői hátterek.</li>
+                    <li><strong>Gyurmaanimáció:</strong> Látható textúrák, stop-motion.</li>
+                </ul>
+            </div>
+
+            <div class="guide-card">
+                <h3><i class="fa-solid fa-paintbrush"></i> 2. Művészeti</h3>
+                <ul>
+                    <li><strong>Akvarell:</strong> Lágy, mosódó színek.</li>
+                    <li><strong>Digitális festmény:</strong> Széles ecsetvonások.</li>
+                </ul>
+            </div>
+
+            <div class="guide-card">
+                <h3><i class="fa-solid fa-camera-retro"></i> 3. Filmes</h3>
+                <ul>
+                    <li><strong>Cinematic:</strong> Valósághű beállítások, drámai fények.</li>
+                    <li><strong>Cyberpunk:</strong> Neonszínek, esős utcák.</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- MUNKATERÜLET: PANELEK ÉS KÉPPOOL -->
+    <div class="main-layout">
+        <!-- Bal oldal: AI Storyboard Panelek -->
+        <div class="board-grid">
+            
+            <div class="panel">
+                <div class="panel-header">
+                    <span>Sora (OpenAI)</span>
+                    <div class="panel-controls">
+                        <button class="btn btn-secondary btn-small" onclick="readPanelSequence(&#39;panel-sora&#39;, &#39;Sora&#39;)">
+                            <i class="fa-solid fa-play"></i> Felolvasás
+                        </button>
+                    </div>
+                </div>
+                <div class="drop-zone" id="panel-sora"></div>
+            </div>
+
+            <div class="panel">
+                <div class="panel-header">
+                    <span>Kling AI</span>
+                    <div class="panel-controls">
+                        <button class="btn btn-secondary btn-small" onclick="readPanelSequence(&#39;panel-kling&#39;, &#39;Kling&#39;)">
+                            <i class="fa-solid fa-play"></i> Felolvasás
+                        </button>
+                    </div>
+                </div>
+                <div class="drop-zone" id="panel-kling"></div>
+            </div>
+
+            <div class="panel">
+                <div class="panel-header">
+                    <span>Runway Gen-3</span>
+                    <div class="panel-controls">
+                        <button class="btn btn-secondary btn-small" onclick="readPanelSequence(&#39;panel-runway&#39;, &#39;Runway&#39;)">
+                            <i class="fa-solid fa-play"></i> Felolvasás
+                        </button>
+                    </div>
+                </div>
+                <div class="drop-zone" id="panel-runway"></div>
+            </div>
+
+            <div class="panel">
+                <div class="panel-header">
+                    <span>Pika Labs</span>
+                    <div class="panel-controls">
+                        <button class="btn btn-secondary btn-small" onclick="readPanelSequence(&#39;panel-pika&#39;, &#39;Pika&#39;)">
+                            <i class="fa-solid fa-play"></i> Felolvasás
+                        </button>
+                    </div>
+                </div>
+                <div class="drop-zone" id="panel-pika"></div>
+            </div>
+
+            <div class="panel">
+                <div class="panel-header">
+                    <span>Luma Dream Machine</span>
+                    <div class="panel-controls">
+                        <button class="btn btn-secondary btn-small" onclick="readPanelSequence(&#39;panel-luma&#39;, &#39;Luma&#39;)">
+                            <i class="fa-solid fa-play"></i> Felolvasás
+                        </button>
+                    </div>
+                </div>
+                <div class="drop-zone" id="panel-luma"></div>
+            </div>
+
+            <div class="panel">
+                <div class="panel-header">
+                    <span>MiniMax (Hailuo)</span>
+                    <div class="panel-controls">
+                        <button class="btn btn-secondary btn-small" onclick="readPanelSequence(&#39;panel-minimax&#39;, &#39;MiniMax&#39;)">
+                            <i class="fa-solid fa-play"></i> Felolvasás
+                        </button>
+                    </div>
+                </div>
+                <div class="drop-zone" id="panel-minimax"></div>
+            </div>
+
+        </div>
+
+        <!-- Jobb oldali sáv: Képfeltöltés & ZIP opciók -->
+        <div class="sidebar">
+            <h3>1. Képek feltöltése &amp; Rendszerezése</h3>
+            <div style="display:flex; flex-direction:column; gap:10px;">
+                <input type="file" id="file-input" multiple="" accept="image/*,.zip" style="display: none;">
+                
+                <button class="btn" style="justify-content: center;" onclick="document.getElementById(&#39;file-input&#39;).click()">
+                    <i class="fa-solid fa-file-zipper"></i> Képek vagy ZIP feltöltése
+                </button>
+
+                <button class="btn btn-secondary" style="justify-content: center; background: rgba(16, 185, 129, 0.1); border-color: var(--success-color); color: var(--success-color);" onclick="loadDefaultZip()">
+                    <i class="fa-solid fa-box-open"></i> Minta ZIP csomag betöltése
+                </button>
+
+                <div style="display:flex; gap:8px;">
+                    <button class="btn btn-secondary" style="flex:1; justify-content: center;" onclick="stackPoolImages()">
+                        <i class="fa-solid fa-layer-group"></i> Összekupacolás
+                    </button>
+                    <button class="btn btn-secondary" style="flex:1; justify-content: center;" onclick="spreadPoolImages()">
+                        <i class="fa-solid fa-table-cells"></i> Szétnyitás
+                    </button>
+                </div>
+            </div>
+            
+            <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 5px;">
+                Képek rendezése (Szabadon mozgatható ujj/egér segítségével):
+            </p>
+            <div id="source-pool" class="source-pool">
+                <span id="pool-placeholder" style="color: var(--text-muted); font-size: 0.85rem; position: absolute; top:50%; left:50%; transform:translate(-50%, -50%); text-align: center; pointer-events: none;">Tölts fel képeket vagy kattints a Minta ZIP betöltésére!</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- 2. RÉSZLETES SÚGÓ ÉS PROMPT TÁBLÁZAT A PROJEKT VÉGÉN -->
+    <div class="guide-section">
+        <div class="guide-header">
+            <h2><i class="fa-solid fa-book-open"></i> Részletes Prompt Segédlet &amp; Angol Szótár</h2>
+            <button class="btn btn-secondary" onclick="speakGuideDetailed()">
+                <i class="fa-solid fa-volume-high"></i> Részletes Súgó Felolvasása
+            </button>
+        </div>
+
+        <p style="color: var(--text-muted); margin-bottom: 20px;">
+            Az alábbi részletes útmutató és angol nyelvű prompt kulcsszótár segít a képleírások pontos megfogalmazásában az AI generátorokhoz.
+        </p>
+
+        <div class="guide-grid">
+            <div class="guide-card">
+                <h3><i class="fa-solid fa-wand-magic-sparkles"></i> Animációs Stílusok</h3>
+                <ul>
+                    <li><strong>3D Pixar / Disney:</strong> Puha fények, lekerekített formák, kifejező szemek és részletes textúrák.</li>
+                    <li><strong>Klasszikus 2D Rajzfilm:</strong> Tradicionális, vonalas rajzok telt háttérrel.</li>
+                    <li><strong>Anime / Ghibli:</strong> Természetközeli, festői hátterek, nosztalgikus érzet.</li>
+                    <li><strong>Stop-Motion / Gyurma:</strong> Látható textúrák, kézműves hatás.</li>
+                    <li><strong>Papírkivágás:</strong> Rétegzett papírfigurák mélységélességgel.</li>
+                </ul>
+            </div>
+
+            <div class="guide-card">
+                <h3><i class="fa-solid fa-paintbrush"></i> Művészeti Stílusok</h3>
+                <ul>
+                    <li><strong>Akvarell (Watercolour):</strong> Lágy, egymásba mosódó színek, mesés hangulat.</li>
+                    <li><strong>Digitális Festmény:</strong> Részletgazdag, széles ecsetvonások.</li>
+                    <li><strong>Mesekönyv-illusztráció:</strong> Ceruza- vagy tintarajz akvarell kitöltéssel.</li>
+                    <li><strong>Vektoros / Minimalista:</strong> Letisztult alakzatok, sík felületek.</li>
+                </ul>
+            </div>
+
+            <div class="guide-card">
+                <h3><i class="fa-solid fa-camera-retro"></i> Filmes Stílusok</h3>
+                <ul>
+                    <li><strong>Cinematic (Filmes):</strong> Valósághű beállítások, drámai fény-árnyék hatások.</li>
+                    <li><strong>Cyberpunk / Sci-Fi:</strong> Neonszínek, sötét, esős utcák, fémes felületek.</li>
+                    <li><strong>Retro / Vintage Film:</strong> 8mm/16mm filmhatás, fakó színek.</li>
+                    <li><strong>Fotórealizmus:</strong> Professzionális DSLR kamera látványvilág.</li>
+                </ul>
+            </div>
+        </div>
+
+        <table class="guide-table">
+            <thead>
+                <tr>
+                    <th>Kategória</th>
+                    <th>Ajánlott prompt kifejezések (Angolul az AI-hoz)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr><td><strong>Pixar mese</strong></td><td><code>3D animation style, Pixar character design, soft lighting, cute</code></td></tr>
+                <tr><td><strong>Ghibli mese</strong></td><td><code>Studio Ghibli style, hand-drawn anime, painterly background, nostalgic</code></td></tr>
+                <tr><td><strong>Gyurmafilmes</strong></td><td><code>Claymation style, stop-motion texture, handcrafted, Aardman inspired</code></td></tr>
+                <tr><td><strong>Filmes</strong></td><td><code>Cinematic lighting, 35mm film shot, photorealistic, dramatic mood</code></td></tr>
+                <tr><td><strong>Akvarell</strong></td><td><code>Children's book illustration, watercolor texture, soft pastel colors</code></td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        let highestZIndex = 100;
+
+        // Felolvasó funkció
+        function speakText(text) {
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel();
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.lang = 'hu-HU';
+                utterance.rate = 0.9;
+                window.speechSynthesis.speak(utterance);
+            } else {
+                alert("A böngésződ nem támogatja a felolvasást.");
+            }
+        }
+
+        function readPanelSequence(panelId, modelName) {
+            const panel = document.getElementById(panelId);
+            const cards = panel.querySelectorAll('.img-card');
+            
+            if (cards.length === 0) {
+                speakText(`A ${modelName} panel jelenleg üres.`);
+                return;
+            }
+
+            let fullStory = `${modelName} panel storyboardja. `;
+            cards.forEach((card, index) => {
+                const inputVal = card.querySelector('input').value;
+                const desc = inputVal ? inputVal : "Nincs leírás megadva.";
+                fullStory += `${index + 1}. képkocka: ${desc}. `;
+            });
+
+            speakText(fullStory);
+        }
+
+        function speakGuide() {
+            const text = `Stílusútmutató És Prompt Segédlet. Mesés animációs stílusok, művészeti és filmes stílusok áttekintése.`;
+            speakText(text);
+        }
+
+        function speakGuideDetailed() {
+            const text = `Részletes Prompt Segédlet és Angol Szótár. Használd a megadott angol kifejezéseket a pontos AI kép és videó generáláshoz.`;
+            speakText(text);
+        }
+
+        // Fájlok (Kép vagy ZIP) feldolgozása
+        document.getElementById('file-input').addEventListener('change', function(e) {
+            const files = Array.from(e.target.files);
+            files.forEach(file => {
+                if (file.name.endsWith('.zip')) {
+                    processZipFile(file);
+                } else if (file.type.startsWith('image/')) {
+                    const reader = new FileReader();
+                    reader.onload = function(event) {
+                        createCard(event.target.result, document.getElementById('source-pool'));
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+            this.value = '';
+        });
+
+        // ZIP fájl kibontása böngészőben
+        function processZipFile(zipData) {
+            JSZip.loadAsync(zipData).then(zip => {
+                const placeholder = document.getElementById('pool-placeholder');
+                if (placeholder) placeholder.style.display = 'none';
+
+                zip.forEach((relativePath, file) => {
+                    if (!file.dir && /\.(jpe?g|png|gif|webp)$/i.test(file.name)) {
+                        file.async("base64").then(base64 => {
+                            const ext = file.name.split('.').pop().toLowerCase();
+                            const mime = ext === 'png' ? 'image/png' : 'image/jpeg';
+                            createCard(`data:${mime};base64,${base64}`, document.getElementById('source-pool'), file.name.split('.')[0]);
+                        });
+                    }
+                });
+            }).catch(err => alert("Hiba a ZIP fájl beolvasásakor: " + err.message));
+        }
+
+        // Alapértelmezett ZIP betöltése a mappából
+        function loadDefaultZip() {
+            fetch('alap_kepek.zip')
+                .then(response => {
+                    if (!response.ok) throw new Error("A minta ZIP fájl (alap_kepek.zip) nem található a HTML fájl mellett.");
+                    return response.blob();
+                })
+                .then(blob => processZipFile(blob))
+                .catch(err => alert(err.message + "\n\nTipp: Töltsd fel a saját ZIP fájlodat a 'Képek vagy ZIP feltöltése' gombbal!"));
+        }
+
+        // Kártya létrehozása
+        function createCard(imageSrc, targetContainer, defaultTitle = "Jelenet képkocka") {
+            const placeholder = document.getElementById('pool-placeholder');
+            if (placeholder) placeholder.style.display = 'none';
+
+            const card = document.createElement('div');
+            card.className = 'img-card';
+            card.id = 'card-' + Date.now() + '-' + Math.random().toString(36).substr(2, 4);
+
+            card.innerHTML = `
+                <img src="${imageSrc}" class="img-preview">
+                <div class="img-details">
+                    <input type="text" placeholder="Írj leírást..." value="${defaultTitle}">
+                    <button class="delete-btn" onclick="removeCard(this)">Törlés</button>
+                </div>
+            `;
+
+            targetContainer.appendChild(card);
+
+            if (targetContainer.id === 'source-pool') {
+                positionCardInPool(card);
+            }
+
+            initDragAndTouch(card);
+        }
+
+        function removeCard(btn) {
+            const card = btn.closest('.img-card');
+            const pool = document.getElementById('source-pool');
+            card.remove();
+            
+            if (pool.querySelectorAll('.img-card').length === 0) {
+                const placeholder = document.getElementById('pool-placeholder');
+                if (placeholder) placeholder.style.display = 'block';
+            }
+        }
+
+        function positionCardInPool(card) {
+            const poolCards = document.querySelectorAll('#source-pool .img-card');
+            const index = poolCards.length - 1;
+            const offset = (index % 6) * 12;
+            const rotation = (index % 5 - 2) * 4;
+            
+            card.style.left = (30 + offset) + 'px';
+            card.style.top = (30 + offset) + 'px';
+            card.style.transform = `rotate(${rotation}deg)`;
+            card.style.zIndex = ++highestZIndex;
+        }
+
+        function stackPoolImages() {
+            const cards = document.querySelectorAll('#source-pool .img-card');
+            cards.forEach((card, index) => {
+                const offset = (index % 6) * 10;
+                const rotation = (index % 5 - 2) * 4;
+                card.style.left = (35 + offset) + 'px';
+                card.style.top = (35 + offset) + 'px';
+                card.style.transform = `rotate(${rotation}deg)`;
+                card.style.zIndex = index + 1;
+            });
+        }
+
+        function spreadPoolImages() {
+            const cards = document.querySelectorAll('#source-pool .img-card');
+            cards.forEach((card, index) => {
+                card.style.left = '20px';
+                card.style.top = (20 + (index * 90)) + 'px';
+                card.style.transform = 'none';
+                card.style.zIndex = index + 1;
+            });
+        }
+
+        function initDragAndTouch(card) {
+            let isDragging = false;
+            let startX, startY, initialLeft, initialTop;
+
+            function onStart(e) {
+                if (e.target.tagName === 'INPUT' || e.target.tagName === 'BUTTON') return;
+                
+                isDragging = true;
+                card.style.zIndex = ++highestZIndex;
+                
+                const point = e.touches ? e.touches[0] : e;
+                startX = point.clientX;
+                startY = point.clientY;
+
+                const rect = card.getBoundingClientRect();
+
+                if (card.parentElement.classList.contains('drop-zone')) {
+                    initialLeft = rect.left;
+                    initialTop = rect.top;
+                    card.style.position = 'fixed';
+                    card.style.left = initialLeft + 'px';
+                    card.style.top = initialTop + 'px';
+                    card.style.width = rect.width + 'px';
+                } else {
+                    initialLeft = card.offsetLeft;
+                    initialTop = card.offsetTop;
+                }
+            }
+
+            function onMove(e) {
+                if (!isDragging) return;
+                e.preventDefault();
+
+                const point = e.touches ? e.touches[0] : e;
+                const deltaX = point.clientX - startX;
+                const deltaY = point.clientY - startY;
+
+                card.style.left = (initialLeft + deltaX) + 'px';
+                card.style.top = (initialTop + deltaY) + 'px';
+
+                const elemBelow = document.elementFromPoint(point.clientX, point.clientY);
+                document.querySelectorAll('.drop-zone, .source-pool').forEach(dz => dz.classList.remove('drag-over'));
+                
+                if (elemBelow) {
+                    const activeDropZone = elemBelow.closest('.drop-zone') || elemBelow.closest('.source-pool');
+                    if (activeDropZone) activeDropZone.classList.add('drag-over');
+                }
+            }
+
+            function onEnd(e) {
+                if (!isDragging) return;
+                isDragging = false;
+
+                document.querySelectorAll('.drop-zone, .source-pool').forEach(dz => dz.classList.remove('drag-over'));
+
+                const point = e.changedTouches ? e.changedTouches[0] : e;
+                const elemBelow = document.elementFromPoint(point.clientX, point.clientY);
+                const targetZone = elemBelow ? (elemBelow.closest('.drop-zone') || elemBelow.closest('.source-pool')) : null;
+
+                if (targetZone) {
+                    if (targetZone.classList.contains('drop-zone')) {
+                        card.style.position = 'relative';
+                        card.style.left = '0';
+                        card.style.top = '0';
+                        card.style.transform = 'none';
+                        card.style.width = '100%';
+                        targetZone.appendChild(card);
+                    } else if (targetZone.id === 'source-pool') {
+                        const poolRect = targetZone.getBoundingClientRect();
+                        card.style.position = 'absolute';
+                        card.style.left = (point.clientX - poolRect.left - 40) + 'px';
+                        card.style.top = (point.clientY - poolRect.top - 30) + 'px';
+                        card.style.width = '280px';
+                        targetZone.appendChild(card);
+                    }
+                } else {
+                    const pool = document.getElementById('source-pool');
+                    card.style.position = 'absolute';
+                    card.style.left = '20px';
+                    card.style.top = '20px';
+                    card.style.width = '280px';
+                    pool.appendChild(card);
+                }
+            }
+
+            card.addEventListener('mousedown', onStart);
+            window.addEventListener('mousemove', onMove);
+            window.addEventListener('mouseup', onEnd);
+
+            card.addEventListener('touchstart', onStart, { passive: false });
+            window.addEventListener('touchmove', onMove, { passive: false });
+            window.addEventListener('touchend', onEnd);
+        }
+
+        // Exportálás Szövegesen
+        function exportPrompt() {
+            let promptText = "=== AI STORYBOARD PROMPTOK ===\n\n";
+            const panels = document.querySelectorAll('.panel');
+
+            panels.forEach(panel => {
+                const title = panel.querySelector('.panel-header span').innerText;
+                const cards = panel.querySelectorAll('.img-card');
+
+                if (cards.length > 0) {
+                    promptText += `[${title.toUpperCase()}]\n`;
+                    cards.forEach((card, idx) => {
+                        const txt = card.querySelector('input').value;
+                        promptText += `Frame ${idx + 1}: ${txt}\n`;
+                    });
+                    promptText += "\n";
+                }
+            });
+
+            const blob = new Blob([promptText], { type: 'text/plain;charset=utf-8' });
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = 'storyboard-promptok.txt';
+            a.click();
+        }
+
+        // Képek letöltése egyetlen ZIP-ben
+        function downloadImagesZip() {
+            const cards = document.querySelectorAll('.img-card');
+            if (cards.length === 0) {
+                alert("Nincs feltöltött kép a storyboardon!");
+                return;
+            }
+
+            const zip = new JSZip();
+            const imgFolder = zip.folder("storyboard_kepek");
+
+            cards.forEach((card, index) => {
+                const imgSrc = card.querySelector('img').src;
+                const title = card.querySelector('input').value || `kep_${index + 1}`;
+                const base64Data = imgSrc.replace(/^data:image\/(png|jpeg|jpg|webp);base64,/, "");
+                
+                imgFolder.file(`${index + 1}_${title.replace(/[^a-z0-9]/gi, '_')}.png`, base64Data, { base64: true });
+            });
+
+            zip.generateAsync({ type: "blob" }).then(content => {
+                const a = document.createElement('a');
+                a.href = URL.createObjectURL(content);
+                a.download = 'storyboard_kepek.zip';
+                a.click();
+            });
+        }
+
+        function clearAll() {
+            if (confirm("Minden képet törölni szeretnél?")) {
+                document.querySelectorAll('.img-card').forEach(c => c.remove());
+                const placeholder = document.getElementById('pool-placeholder');
+                if (placeholder) placeholder.style.display = 'block';
+            }
+        }
+    </script>
+
+</body></html>
