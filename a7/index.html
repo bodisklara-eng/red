@@ -1,0 +1,979 @@
+<!DOCTYPE html>
+<!-- saved from url=(0068)file:///C:/Users/Utilizator/Downloads/gemini-code-1787822325292.html -->
+<html lang="hu"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Egydimenziós Tömbök és Szekvenciális Listák Műveletei</title>
+    <link href="./Egydimenziós Tömbök és Szekvenciális Listák Műveletei_files/css2" rel="stylesheet">
+    <style>
+        :root {
+            --bg-main: #090d16;
+            --bg-card: #131c31;
+            --bg-code: #05080f;
+            --border-color: #223354;
+            --text-main: #f1f5f9;
+            --text-muted: #94a3b8;
+            --accent-gold: #f59e0b;
+            --accent-rose: #f43f5e;
+            --accent-cyan: #0ea5e9;
+            --accent-green: #10b981;
+            --accent-purple: #8b5cf6;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            line-height: 1.6;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        /* Fejléc és Dashboard */
+        header {
+            text-align: center;
+            margin-bottom: 24px;
+        }
+
+        header h1 {
+            font-family: 'Lora', serif;
+            color: var(--accent-gold);
+            font-size: 1.8rem;
+            margin-bottom: 8px;
+        }
+
+        header p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        .dashboard {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 12px 20px;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+            gap: 12px;
+            position: sticky;
+            top: 10px;
+            z-index: 100;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+        }
+
+        .stat-item {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+
+        .stat-item span {
+            color: var(--accent-gold);
+            font-weight: 700;
+            font-family: 'Fira Code', monospace;
+        }
+
+        /* Navigációs fülek */
+        .tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 20px;
+            overflow-x: auto;
+            padding-bottom: 4px;
+        }
+
+        .tab-btn {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            color: var(--text-muted);
+            padding: 10px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.9rem;
+            white-space: nowrap;
+            transition: all 0.2s ease;
+        }
+
+        .tab-btn:hover {
+            border-color: var(--accent-cyan);
+            color: var(--text-main);
+        }
+
+        .tab-btn.active {
+            background: var(--accent-cyan);
+            color: #fff;
+            border-color: var(--accent-cyan);
+        }
+
+        .tab-btn.completed::after {
+            content: ' ✓';
+            color: var(--accent-green);
+            font-weight: bold;
+        }
+
+        .tab-btn.active.completed::after {
+            color: #fff;
+        }
+
+        /* Tartalmi kártyák */
+        .phase-panel {
+            display: none;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 24px;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .phase-panel.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h2.phase-title {
+            font-family: 'Lora', serif;
+            font-size: 1.3rem;
+            color: var(--accent-cyan);
+            margin-bottom: 12px;
+        }
+
+        p.phase-desc {
+            color: var(--text-muted);
+            font-size: 0.92rem;
+            margin-bottom: 20px;
+        }
+
+        /* Kódblokk stílus */
+        .code-container {
+            background: var(--bg-code);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 16px;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.88rem;
+            overflow-x: auto;
+            margin-bottom: 20px;
+            line-height: 1.7;
+        }
+
+        .code-line {
+            display: flex;
+            gap: 16px;
+        }
+
+        .line-num {
+            color: #475569;
+            user-select: none;
+            text-align: right;
+            min-width: 20px;
+        }
+
+        .code-content {
+            color: #e2e8f0;
+            white-space: pre;
+        }
+
+        /* Szintaxis kiemelés elemek */
+        .kw { color: #f43f5e; font-weight: 600; }
+        .fn { color: #38bdf8; }
+        .str { color: #34d399; }
+        .num { color: #fbbf24; }
+
+        /* Interaktív elemek fázisokhoz */
+        input.code-input {
+            background: #1e293b;
+            border: 1px solid var(--border-color);
+            color: var(--accent-gold);
+            font-family: 'Fira Code', monospace;
+            font-size: 0.88rem;
+            padding: 2px 8px;
+            border-radius: 4px;
+            width: 90px;
+            text-align: center;
+        }
+        input.code-input:focus {
+            outline: none;
+            border-color: var(--accent-cyan);
+        }
+        input.code-input.correct { border-color: var(--accent-green); background: rgba(16, 185, 129, 0.1); }
+        input.code-input.incorrect { border-color: var(--accent-rose); background: rgba(244, 63, 94, 0.1); }
+
+        /* Parsons Puzzle elemek */
+        .parsons-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+
+        .parsons-item {
+            background: #1e293b;
+            border: 1px solid var(--border-color);
+            padding: 10px 14px;
+            border-radius: 6px;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.88rem;
+            cursor: grab;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            user-select: none;
+            touch-action: none;
+            transition: border-color 0.2s, background 0.2s;
+        }
+
+        .parsons-item:active { cursor: grabbing; }
+        .parsons-item.dragging { opacity: 0.5; background: #334155; }
+        .parsons-item::before {
+            content: '⠿';
+            color: var(--text-muted);
+            font-size: 1.1rem;
+        }
+
+        /* Kódkövetési táblázat */
+        .trace-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.85rem;
+        }
+
+        .trace-table th, .trace-table td {
+            border: 1px solid var(--border-color);
+            padding: 8px 12px;
+            text-align: center;
+        }
+
+        .trace-table th {
+            background: #1e293b;
+            color: var(--accent-cyan);
+        }
+
+        .trace-input {
+            background: #0f172a;
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            width: 60px;
+            padding: 4px;
+            text-align: center;
+            border-radius: 4px;
+            font-family: 'Fira Code', monospace;
+        }
+
+        /* Hibajavítás opciók */
+        .bug-line {
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .bug-line:hover {
+            background: rgba(244, 63, 94, 0.15);
+        }
+        .bug-line.selected-bug {
+            background: rgba(244, 63, 94, 0.3);
+            border-left: 3px solid var(--accent-rose);
+        }
+
+        .fix-options {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-top: 16px;
+            margin-bottom: 20px;
+        }
+
+        .fix-option-btn {
+            background: #1e293b;
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            padding: 10px 14px;
+            border-radius: 6px;
+            text-align: left;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .fix-option-btn:hover { border-color: var(--accent-cyan); }
+        .fix-option-btn.selected { border-color: var(--accent-gold); background: rgba(245, 158, 11, 0.1); }
+
+        /* Vezérlő gombok */
+        .action-bar {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-top: 16px;
+        }
+
+        .btn {
+            background: #1e293b;
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+        }
+
+        .btn-primary { background: var(--accent-cyan); color: #090d16; border-color: var(--accent-cyan); }
+        .btn-primary:hover { background: #38bdf8; }
+
+        .btn-help { background: rgba(245, 158, 11, 0.15); color: var(--accent-gold); border-color: rgba(245, 158, 11, 0.4); }
+        .btn-help:hover { background: rgba(245, 158, 11, 0.25); }
+
+        .btn-reset { background: transparent; color: var(--text-muted); }
+        .btn-reset:hover { color: var(--text-main); border-color: var(--text-muted); }
+
+        /* Összehasonlító Panel */
+        .comparison-panel {
+            display: none;
+            margin-top: 20px;
+            background: #0a0f1d;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 16px;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .comparison-panel.visible {
+            display: block;
+        }
+
+        .comparison-title {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: var(--accent-gold);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        @media(max-width: 768px) {
+            .comparison-grid { grid-template-columns: 1fr; }
+        }
+
+        .comparison-box {
+            background: var(--bg-code);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 12px;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.83rem;
+        }
+
+        .comparison-box h4 {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .chip {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 4px;
+            margin: 2px;
+            font-size: 0.8rem;
+        }
+        .chip-student-correct { border: 1px solid var(--accent-green); background: rgba(16, 185, 129, 0.15); color: var(--text-main); }
+        .chip-student-wrong { border: 1px solid var(--accent-rose); background: rgba(244, 63, 94, 0.15); color: var(--text-main); }
+        .chip-key { border: 1px solid var(--accent-gold); background: rgba(245, 158, 11, 0.2); color: var(--accent-gold); font-weight: 600; }
+
+        .feedback-msg {
+            margin-top: 12px;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+        .feedback-msg.success { color: var(--accent-green); }
+        .feedback-msg.error { color: var(--accent-rose); }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>Egydimenziós Tömbök és Algoritmusok</h1>
+        <p>Interaktív gyakorlópanel: Deklaráció, Bejárás, Keresés, Rendezés és Módosítások</p>
+    </header>
+
+    <div class="dashboard">
+        <div class="stat-item">Helyes válaszok: <span id="stat-correct">0</span> / 4</div>
+        <div class="stat-item">Összes próbálkozás: <span id="stat-attempts">0</span></div>
+        <div class="stat-item">Kész fázisok: <span id="stat-phases">0</span> / 4</div>
+    </div>
+
+    <div class="tabs">
+        <button class="tab-btn" onclick="switchTab(0)">1. Kódkiegészítés</button>
+        <button class="tab-btn active" onclick="switchTab(1)">2. Parsons Puzzle</button>
+        <button class="tab-btn" onclick="switchTab(2)">3. Kódkövetés</button>
+        <button class="tab-btn" onclick="switchTab(3)">4. Hibajavítás</button>
+    </div>
+
+    <!-- FÁZIS 1: KÓDKIEGÉSZÍTÉS -->
+    <div class="phase-panel" id="phase-0">
+        <h2 class="phase-title">1. Fázis — Kódkiegészítés: Lineáris keresés tömbben</h2>
+        <p class="phase-desc">Egészítsd ki a hiányzó kifejezéseket a lineáris keresés algoritmusában, amely megkeresi egy elem első előfordulási helyét egy tömbben!</p>
+        
+        <div class="code-container">
+            <div class="code-line"><span class="line-num">1</span><span class="code-content"><span class="kw">function</span> <span class="fn">linearSearch</span>(tomb, keresett) {</span></div>
+            <div class="code-line"><span class="line-num">2</span><span class="code-content">    <span class="kw">let</span> index = <input type="text" class="code-input" data-answer="-1" placeholder="-1">; <span style="color:#64748b">// Alapértelmezett: nincs benne</span></span></div>
+            <div class="code-line"><span class="line-num">3</span><span class="code-content">    <span class="kw">for</span> (<span class="kw">let</span> i = <span class="num">0</span>; i &lt; inputBlank(1, 'tomb.length'); i++) {</span></div>
+            <div class="code-line"><span class="line-num">4</span><span class="code-content">        <span class="kw">if</span> (tomb[i] === <input type="text" class="code-input" data-answer="keresett" placeholder="keresett">) {</span></div>
+            <div class="code-line"><span class="line-num">5</span><span class="code-content">            index = <input type="text" class="code-input" data-answer="i" placeholder="i">;</span></div>
+            <div class="code-line"><span class="line-num">6</span><span class="code-content">            <span class="kw">break</span>;</span></div>
+            <div class="code-line"><span class="line-num">7</span><span class="code-content">        }</span></div>
+            <div class="code-line"><span class="line-num">8</span><span class="code-content">    }</span></div>
+            <div class="code-line"><span class="line-num">9</span><span class="code-content">    <span class="kw">return</span> index;</span></div>
+            <div class="code-line"><span class="line-num">10</span><span class="code-content">}</span></div>
+        </div>
+
+        <div class="action-bar">
+            <button class="btn btn-primary" onclick="checkPhase1()">✓ Ellenőrzés</button>
+            <button class="btn btn-help" onclick="helpPhase1()">💡 Segítség</button>
+            <button class="btn btn-reset" onclick="resetPhase1()">↺ Újra</button>
+        </div>
+        <div id="feedback-0" class="feedback-msg"></div>
+
+        <div class="comparison-panel" id="comp-0">
+            <div class="comparison-title">🔍 A te válaszod vs. Helyes válasz</div>
+            <div class="comparison-grid">
+                <div class="comparison-box">
+                    <h4>A te válaszaid</h4>
+                    <div id="comp-student-0"></div>
+                </div>
+                <div class="comparison-box">
+                    <h4>Helyes válasz kulcs</h4>
+                    <div id="comp-key-0"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- FÁZIS 2: PARSONS PUZZLE -->
+    <div class="phase-panel active" id="phase-1">
+        <h2 class="phase-title">2. Fázis — Parsons Puzzle: Tömb elemainak megfordítása (Reverse)</h2>
+        <p class="phase-desc">Rendezd helyes sorrendbe a kódsorokat a mutatók segítségével (húzd őket a megfelelő helyre), hogy a tömb elemeit helyben megfordítsuk!</p>
+        
+        <div class="parsons-list" id="parsons-container">
+            <div class="parsons-item" draggable="true" data-id="3"><span>let segéd = tomb[i];</span></div>
+            <div class="parsons-item" draggable="true" data-id="1"><span>for (let i = 0; i &lt; Math.floor(tomb.length / 2); i++) {</span></div>
+            <div class="parsons-item" draggable="true" data-id="5"><span>tomb[tomb.length - 1 - i] = segéd;</span></div>
+            <div class="parsons-item" draggable="true" data-id="6"><span>}</span></div>
+            <div class="parsons-item" draggable="true" data-id="4"><span>tomb[i] = tomb[tomb.length - 1 - i];</span></div>
+            <div class="parsons-item" draggable="true" data-id="2"><span>let j = tomb.length - 1 - i;</span></div>
+        </div>
+
+        <div class="action-bar">
+            <button class="btn btn-primary" onclick="checkPhase2()">✓ Ellenőrzés</button>
+            <button class="btn btn-help" onclick="helpPhase2()">💡 Segítség</button>
+            <button class="btn btn-reset" onclick="resetPhase2()">↺ Újra</button>
+        </div>
+        <div id="feedback-1" class="feedback-msg"></div>
+
+        <div class="comparison-panel" id="comp-1">
+            <div class="comparison-title">🔍 A te sorrended vs. Helyes sorrend</div>
+            <div class="comparison-grid">
+                <div class="comparison-box">
+                    <h4>A te sorrended</h4>
+                    <div id="comp-student-1"></div>
+                </div>
+                <div class="comparison-box">
+                    <h4>Helyes sorrend kulcs</h4>
+                    <div id="comp-key-1"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- FÁZIS 3: KÓDKÖVETÉS -->
+    <div class="phase-panel" id="phase-2">
+        <h2 class="phase-title">3. Fázis — Kódkövetés: Összegzés és Megszámolás</h2>
+        <p class="phase-desc">Adott a tömb: <code>[3, 8, 2, 9, 5]</code>. Kövesd nyomon a páros elemek összegzését, és töltsd ki a változók értékeit az iterációk végén!</p>
+        
+        <div class="code-container">
+            <div class="code-line"><span class="line-num">1</span><span class="code-content"><span class="kw">let</span> tomb = [<span class="num">3</span>, <span class="num">8</span>, <span class="num">2</span>, <span class="num">9</span>, <span class="num">5</span>];</span></div>
+            <div class="code-line"><span class="line-num">2</span><span class="code-content"><span class="kw">let</span> osszeg = <span class="num">0</span>;</span></div>
+            <div class="code-line"><span class="line-num">3</span><span class="code-content"><span class="kw">for</span> (<span class="kw">let</span> i = <span class="num">0</span>; i &lt; tomb.length; i++) {</span></div>
+            <div class="code-line"><span class="line-num">4</span><span class="code-content">    <span class="kw">if</span> (tomb[i] % <span class="num">2</span> === <span class="num">0</span>) osszeg += tomb[i];</span></div>
+            <div class="code-line"><span class="line-num">5</span><span class="code-content">}</span></div>
+        </div>
+
+        <table class="trace-table">
+            <thead>
+                <tr>
+                    <th>Lépés (i)</th>
+                    <th>Aktuális elem (tomb[i])</th>
+                    <th>Páros-e?</th>
+                    <th>Változó: osszeg értéke</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>i = 0</td>
+                    <td>3</td>
+                    <td>Nem</td>
+                    <td><input type="text" class="trace-input" data-answer="0" placeholder="?"></td>
+                </tr>
+                <tr>
+                    <td>i = 1</td>
+                    <td>8</td>
+                    <td>Igen</td>
+                    <td><input type="text" class="trace-input" data-answer="8" placeholder="?"></td>
+                </tr>
+                <tr>
+                    <td>i = 2</td>
+                    <td>2</td>
+                    <td>Igen</td>
+                    <td><input type="text" class="trace-input" data-answer="10" placeholder="?"></td>
+                </tr>
+                <tr>
+                    <td>i = 3</td>
+                    <td>9</td>
+                    <td>Nem</td>
+                    <td><input type="text" class="trace-input" data-answer="10" placeholder="?"></td>
+                </tr>
+                <tr>
+                    <td>i = 4</td>
+                    <td>5</td>
+                    <td>Nem</td>
+                    <td><input type="text" class="trace-input" data-answer="10" placeholder="?"></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="action-bar">
+            <button class="btn btn-primary" onclick="checkPhase3()">✓ Ellenőrzés</button>
+            <button class="btn btn-help" onclick="helpPhase3()">💡 Segítség</button>
+            <button class="btn btn-reset" onclick="resetPhase3()">↺ Újra</button>
+        </div>
+        <div id="feedback-2" class="feedback-msg"></div>
+
+        <div class="comparison-panel" id="comp-2">
+            <div class="comparison-title">🔍 A te válaszaid vs. Helyes értékkulcs</div>
+            <div class="comparison-grid">
+                <div class="comparison-box">
+                    <h4>A te táblázatod</h4>
+                    <div id="comp-student-2"></div>
+                </div>
+                <div class="comparison-box">
+                    <h4>Helyes értékkulcs</h4>
+                    <div id="comp-key-2"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- FÁZIS 4: HIBAJAVÍTÁS -->
+    <div class="phase-panel" id="phase-3">
+        <h2 class="phase-title">4. Fázis — Hibajavítás: Maximum-kiválasztás</h2>
+        <p class="phase-desc">Az alábbi kód a tömb legnagyobb elemét hivatott megkeresni, de logikai hibát tartalmaz a feltételben vagy a kiinduló értékben. Kattints a hibás sorra!</p>
+        
+        <div class="code-container">
+            <div class="code-line bug-line" onclick="selectBugLine(1)"><span class="line-num">1</span><span class="code-content"><span class="kw">function</span> <span class="fn">findMax</span>(tomb) {</span></div>
+            <div class="code-line bug-line" onclick="selectBugLine(2)"><span class="line-num">2</span><span class="code-content">    <span class="kw">let</span> maxErtek = <span class="num">0</span>; <span style="color:#64748b">// Hiba: ha a tömb negatív számokat is tartalmaz, a 0 hibás kezdőérték!</span></span></div>
+            <div class="code-line bug-line" onclick="selectBugLine(3)"><span class="line-num">3</span><span class="code-content">    <span class="kw">for</span> (<span class="kw">let</span> i = <span class="num">0</span>; i &lt; tomb.length; i++) {</span></div>
+            <div class="code-line bug-line" onclick="selectBugLine(4)"><span class="line-num">4</span><span class="code-content">        <span class="kw">if</span> (tomb[i] &gt; maxErtek) {</span></div>
+            <div class="code-line bug-line" onclick="selectBugLine(5)"><span class="line-num">5</span><span class="code-content">            maxErtek = tomb[i];</span></div>
+            <div class="code-line bug-line" onclick="selectBugLine(6)"><span class="line-num">6</span><span class="code-content">        }</span></div>
+            <div class="code-line bug-line" onclick="selectBugLine(7)"><span class="line-num">7</span><span class="code-content">    }</span></div>
+            <div class="code-line bug-line" onclick="selectBugLine(8)"><span class="line-num">8</span><span class="code-content">    <span class="kw">return</span> maxErtek;</span></div>
+            <div class="code-line bug-line" onclick="selectBugLine(9)"><span class="line-num">9</span><span class="code-content">}</span></div>
+        </div>
+
+        <p style="font-size: 0.9rem; margin-bottom: 8px; color: var(--text-main);">Válaszd ki a helyes javító kódsort a kiválasztott sor helyettesítésére:</p>
+        <div class="fix-options" id="fix-options-container">
+            <button class="fix-option-btn" onclick="selectFixOption(0)">let maxErtek = tomb[0]; // A legelső elemet vesszük alapul</button>
+            <button class="fix-option-btn" onclick="selectFixOption(1)">let maxErtek = -999999; // Nagyon kicsi fix szám</button>
+            <button class="fix-option-btn" onclick="selectFixOption(2)">let maxErtek = tomb.length; // A tömb hossza</button>
+        </div>
+
+        <div class="action-bar">
+            <button class="btn btn-primary" onclick="checkPhase4()">✓ Ellenőrzés</button>
+            <button class="btn btn-help" onclick="helpPhase4()">💡 Segítség</button>
+            <button class="btn btn-reset" onclick="resetPhase4()">↺ Újra</button>
+        </div>
+        <div id="feedback-3" class="feedback-msg"></div>
+
+        <div class="comparison-panel" id="comp-3">
+            <div class="comparison-title">🔍 A te kijelölésed vs. Helyes javítás</div>
+            <div class="comparison-grid">
+                <div class="comparison-box">
+                    <h4>A te választásod</h4>
+                    <div id="comp-student-3"></div>
+                </div>
+                <div class="comparison-box">
+                    <h4>Helyes javítás kulcs</h4>
+                    <div id="comp-key-3"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script>
+(function() {
+    "use strict";
+
+    // Állapotkezelő objektum
+    const state = {
+        correctCount: 0,
+        totalAttempts: 0,
+        completedPhases: [false, false, false, false],
+        selectedBugLine: null,
+        selectedFixOption: null
+    };
+
+    function updateDashboard() {
+        document.getElementById('stat-correct').textContent = state.correctCount;
+        document.getElementById('stat-attempts').textContent = state.totalAttempts;
+        const completedCount = state.completedPhases.filter(Boolean).length;
+        document.getElementById('stat-phases').textContent = completedCount;
+        
+        for (let i = 0; i < 4; i++) {
+            const btn = document.querySelectorAll('.tab-btn')[i];
+            if (state.completedPhases[i]) {
+                btn.classList.add('completed');
+            } else {
+                btn.classList.remove('completed');
+            }
+        }
+    }
+
+    window.switchTab = function(index) {
+        document.querySelectorAll('.tab-btn').forEach((b, idx) => {
+            b.classList.toggle('active', idx === index);
+        });
+        document.querySelectorAll('.phase-panel').forEach((p, idx) => {
+            p.classList.toggle('active', idx === index);
+        });
+    };
+
+    // --- FÁZIS 1 LOGIKA ---
+    window.checkPhase1 = function() {
+        state.totalAttempts++;
+        const inputs = document.querySelectorAll('#phase-0 .code-input');
+        let allCorrect = true;
+        let studentAnswers = [];
+
+        inputs.forEach(input => {
+            const val = input.value.trim();
+            const expected = input.getAttribute('data-answer');
+            studentAnswers.push(val);
+            if (val === expected) {
+                input.classList.add('correct');
+                input.classList.remove('incorrect');
+            } else {
+                input.classList.add('incorrect');
+                input.classList.remove('correct');
+                allCorrect = false;
+            }
+        });
+
+        const fb = document.getElementById('feedback-0');
+        if (allCorrect) {
+            fb.textContent = "Gratulálok! A lineáris keresés kiegészítése helyes.";
+            fb.className = "feedback-msg success";
+            if (!state.completedPhases[0]) {
+                state.completedPhases[0] = true;
+                state.correctCount++;
+            }
+        } else {
+            fb.textContent = "Van benne hiba. Ellenőrizd a beírt kifejezéseket!";
+            fb.className = "feedback-msg error";
+        }
+        updateDashboard();
+    };
+
+    window.helpPhase1 = function() {
+        // Snapshot-before-mutate
+        const inputs = document.querySelectorAll('#phase-0 .code-input');
+        let studentHtml = "";
+        inputs.forEach((inp, idx) => {
+            const val = inp.value.trim() || "(üres)";
+            const exp = inp.getAttribute('data-answer');
+            const isCorr = val === exp;
+            studentHtml += `<span class="chip ${isCorr ? 'chip-student-correct' : 'chip-student-wrong'}">Blokk ${idx+1}: ${val}</span> `;
+        });
+        document.getElementById('comp-student-0').innerHTML = studentHtml;
+        document.getElementById('comp-key-0').innerHTML = `<span class="chip chip-key">Blokk 1: -1</span> <span class="chip chip-key">Blokk 2: keresett</span> <span class="chip chip-key">Blokk 3: i</span>`;
+        document.getElementById('comp-0').classList.add('visible');
+
+        // Animált kitöltés
+        inputs.forEach((inp, idx) => {
+            setTimeout(() => {
+                inp.value = inp.getAttribute('data-answer');
+                inp.classList.add('correct');
+            }, idx * 400);
+        });
+        document.getElementById('feedback-0').textContent = "A segítség alkalmazva. Vizsgáld meg a helyes válaszokat!";
+        document.getElementById('feedback-0').className = "feedback-msg success";
+    };
+
+    window.resetPhase1 = function() {
+        document.querySelectorAll('#phase-0 .code-input').forEach(inp => {
+            inp.value = "";
+            inp.classList.remove('correct', 'incorrect');
+        });
+        document.getElementById('feedback-0').textContent = "";
+        document.getElementById('comp-0').classList.remove('visible');
+    };
+
+
+    // --- FÁZIS 2: PARSONS PUZZLE & POINTER EVENTS DRAG-AND-DROP ---
+    const parsonsContainer = document.getElementById('parsons-container');
+    let draggedItem = null;
+
+    parsonsContainer.addEventListener('pointerdown', (e) => {
+        const item = e.target.closest('.parsons-item');
+        if (!item) return;
+        draggedItem = item;
+        item.setPointerCapture(e.pointerId);
+        item.classList.add('dragging');
+    });
+
+    parsonsContainer.addEventListener('pointermove', (e) => {
+        if (!draggedItem) return;
+        e.preventDefault();
+        const afterElement = getDragAfterElement(parsonsContainer, e.clientY);
+        if (afterElement == null) {
+            parsonsContainer.appendChild(draggedItem);
+        } else {
+            parsonsContainer.insertBefore(draggedItem, afterElement);
+        }
+    });
+
+    parsonsContainer.addEventListener('pointerup', (e) => {
+        if (!draggedItem) return;
+        draggedItem.releasePointerCapture(e.pointerId);
+        draggedItem.classList.remove('dragging');
+        draggedItem = null;
+    });
+
+    function getDragAfterElement(container, y) {
+        const draggableElements = [...container.querySelectorAll('.parsons-item:not(.dragging)')];
+        return draggableElements.reduce((closest, child) => {
+            const box = child.getBoundingClientRect();
+            const offset = y - box.top - box.height / 2;
+            if (offset < 0 && offset > closest.offset) {
+                return { offset: offset, element: child };
+            } else {
+                return closest;
+            }
+        }, { offset: Number.NEGATIVE_INFINITY }).element;
+    }
+
+    window.checkPhase2 = function() {
+        state.totalAttempts++;
+        const items = [...parsonsContainer.querySelectorAll('.parsons-item')];
+        const currentOrder = items.map(el => el.getAttribute('data-id'));
+        const correctOrder = ["1", "2", "3", "4", "5", "6"];
+
+        let isCorrect = currentOrder.every((val, idx) => val === correctOrder[idx]);
+
+        const fb = document.getElementById('feedback-1');
+        if (isCorrect) {
+            fb.textContent = "Helyes! A megfordítás algoritmus sorrendje tökéletes.";
+            fb.className = "feedback-msg success";
+            if (!state.completedPhases[1]) {
+                state.completedPhases[1] = true;
+                state.correctCount++;
+            }
+        } else {
+            fb.textContent = "A sorrend még nem teljesen helyes. Próbáld újra!";
+            fb.className = "feedback-msg error";
+        }
+        updateDashboard();
+    };
+
+    window.helpPhase2 = function() {
+        // Snapshot
+        const items = [...parsonsContainer.querySelectorAll('.parsons-item')];
+        let studentHtml = items.map((el, i) => `<div class="chip chip-student-wrong">${i+1}. ${el.textContent.trim()}</div>`).join('');
+        document.getElementById('comp-student-1').innerHTML = studentHtml;
+        
+        const correctData = [
+            "for (let i = 0; i < Math.floor(tomb.length / 2); i++) {",
+            "let j = tomb.length - 1 - i;",
+            "let segéd = tomb[i];",
+            "tomb[i] = tomb[tomb.length - 1 - i];",
+            "tomb[tomb.length - 1 - i] = segéd;",
+            "}"
+        ];
+        document.getElementById('comp-key-1').innerHTML = correctData.map((txt, i) => `<div class="chip chip-key">${i+1}. ${txt}</div>`).join('');
+        document.getElementById('comp-1').classList.add('visible');
+
+        // Automatikus rendezés animáció
+        correctData.forEach((text) => {
+            const el = items.find(item => item.textContent.trim() === text);
+            if (el) parsonsContainer.appendChild(el);
+        });
+
+        document.getElementById('feedback-1').textContent = "A helyes sorrend megjelenítve.";
+        document.getElementById('feedback-1').className = "feedback-msg success";
+    };
+
+    window.resetPhase2 = function() {
+        const items = [...parsonsContainer.querySelectorAll('.parsons-item')];
+        // Keverjük vissza véletlenszerűen
+        items.sort(() => Math.random() - 0.5).forEach(el => parsonsContainer.appendChild(el));
+        document.getElementById('feedback-1').textContent = "";
+        document.getElementById('comp-1').classList.remove('visible');
+    };
+
+
+    // --- FÁZIS 3 LOGIKA ---
+    window.checkPhase3 = function() {
+        state.totalAttempts++;
+        const inputs = document.querySelectorAll('#phase-2 .trace-input');
+        let allCorrect = true;
+        inputs.forEach(inp => {
+            const val = inp.value.trim();
+            const exp = inp.getAttribute('data-answer');
+            if (val === exp) {
+                inp.classList.add('correct');
+                inp.classList.remove('incorrect');
+            } else {
+                inp.classList.add('incorrect');
+                inp.classList.remove('correct');
+                allCorrect = false;
+            }
+        });
+
+        const fb = document.getElementById('feedback-2');
+        if (allCorrect) {
+            fb.textContent = "Kiváló! A kódkövetési táblázat minden értéke pontos.";
+            fb.className = "feedback-msg success";
+            if (!state.completedPhases[2]) {
+                state.completedPhases[2] = true;
+                state.correctCount++;
+            }
+        } else {
+            fb.textContent = "Van eltérés a számított értékekben. Ellenőrizd a feltételeket!";
+            fb.className = "feedback-msg error";
+        }
+        updateDashboard();
+    };
+
+    window.helpPhase3 = function() {
+        const inputs = document.querySelectorAll('#phase-2 .trace-input');
+        let studentHtml = "";
+        inputs.forEach((inp, i) => {
+            studentHtml += `<span class="chip chip-student-wrong">Lépés ${i+1}: ${inp.value || "?"}</span>`;
+        });
+        document.getElementById('comp-student-2').innerHTML = studentHtml;
+        document.getElementById('comp-key-2').innerHTML = `<span class="chip chip-key">0, 8, 10, 10, 10</span>`;
+        document.getElementById('comp-2').classList.add('visible');
+
+        inputs.forEach((inp, idx) => {
+            setTimeout(() => {
+                inp.value = inp.getAttribute('data-answer');
+                inp.classList.add('correct');
+            }, idx * 300);
+        });
+        document.getElementById('feedback-2').textContent = "A kódkövetés helyes értékei betöltve.";
+        document.getElementById('feedback-2').className = "feedback-msg success";
+    };
+
+    window.resetPhase3 = function() {
+        document.querySelectorAll('#phase-2 .trace-input').forEach(inp => {
+            inp.value = "";
+            inp.classList.remove('correct', 'incorrect');
+        });
+        document.getElementById('feedback-2').textContent = "";
+        document.getElementById('comp-2').classList.remove('visible');
+    };
+
+
+    // --- FÁZIS 4 LOGIKA ---
+    window.selectBugLine = function(lineNum) {
+        state.selectedBugLine = lineNum;
+        document.querySelectorAll('.bug-line').forEach(l => l.classList.remove('selected-bug'));
+        event.currentTarget.classList.add('selected-bug');
+    };
+
+    window.selectFixOption = function(optIdx) {
+        state.selectedFixOption = optIdx;
+        document.querySelectorAll('.fix-option-btn').forEach((b, i) => {
+            b.classList.toggle('selected', i === optIdx);
+        });
+    };
+
+    window.checkPhase4 = function() {
+        state.totalAttempts++;
+        const fb = document.getElementById('feedback-3');
+        // Helyes sor: 2. sor, helyes opció: 0.
+        const isLineCorrect = state.selectedBugLine === 2;
+        const isOptionCorrect = state.selectedFixOption === 0;
+
+        if (isLineCorrect && isOptionCorrect) {
+            fb.textContent = "Helyes! Felismerted a hibás kezdőértéket és a megfelelő javítást választottad.";
+            fb.className = "feedback-msg success";
+            if (!state.completedPhases[3]) {
+                state.completedPhases[3] = true;
+                state.correctCount++;
+            }
+        } else {
+            fb.textContent = "Nem talált. Gondold végig, mi történik, ha a tömb kizárólag negatív számokat tartalmaz!";
+            fb.className = "feedback-msg error";
+        }
+        updateDashboard();
+    };
+
+    window.helpPhase4 = function() {
+        document.getElementById('comp-student-3').innerHTML = `<span class="chip chip-student-wrong">Sor: ${state.selectedBugLine || 'Nincs'}, Opció: ${state.selectedFixOption !== null ? state.selectedFixOption : 'Nincs'}</span>`;
+        document.getElementById('comp-key-3').innerHTML = `<span class="chip chip-key">Sor: 2. sor, Opció: let maxErtek = tomb[0];</span>`;
+        document.getElementById('comp-3').classList.add('visible');
+
+        // Auto-select true bug and correct fix
+        state.selectedBugLine = 2;
+        state.selectedFixOption = 0;
+        document.querySelectorAll('.bug-line').forEach((l, idx) => {
+            l.classList.toggle('selected-bug', idx + 1 === 2);
+        });
+        document.querySelectorAll('.fix-option-btn').forEach((b, idx) => {
+            b.classList.toggle('selected', idx === 0);
+        });
+
+        document.getElementById('feedback-3').textContent = "Hiba magyarázat: A 0-ról induló maximum-keresés hibás negatív értékek esetén. A helyes kezdőérték a tömb első eleme.";
+        document.getElementById('feedback-3').className = "feedback-msg success";
+    };
+
+    window.resetPhase4 = function() {
+        state.selectedBugLine = null;
+        state.selectedFixOption = null;
+        document.querySelectorAll('.bug-line').forEach(l => l.classList.remove('selected-bug'));
+        document.querySelectorAll('.fix-option-btn').forEach(b => b.classList.remove('selected'));
+        document.getElementById('feedback-3').textContent = "";
+        document.getElementById('comp-3').classList.remove('visible');
+    };
+
+    updateDashboard();
+})();
+</script>
+
+
+</body></html>
