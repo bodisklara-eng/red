@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A Suttogó Erdő Titka</title>
+    <style>
+        body {
+            font-family: 'Georgia', serif;
+            background-color: #12131c;
+            color: #e0e0e0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+        .story-card {
+            background-color: #1e202e;
+            border: 1px solid #3d3f58;
+            border-radius: 12px;
+            max-width: 600px;
+            width: 100%;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+        }
+        h1 {
+            color: #7aa2f7;
+            font-size: 1.6rem;
+            margin-top: 0;
+            border-bottom: 1px solid #3d3f58;
+            padding-bottom: 12px;
+        }
+        p {
+            line-height: 1.6;
+            font-size: 1.1rem;
+            color: #c0caf5;
+        }
+        .choices {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 25px;
+        }
+        button {
+            background-color: #2ac3de;
+            color: #15161e;
+            border: none;
+            padding: 14px 18px;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-align: left;
+        }
+        button:hover {
+            background-color: #7dcfff;
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="story-card">
+        <h1>A Suttogó Erdő Titka</h1>
+        <p id="story-text">Töltés...</p>
+        <div id="choices-container" class="choices"></div>
+    </div>
+
+    <script>
+        const storyData = {
+            start: {
+                text: "Egy hűvös őszi délutánon a Suttogó Erdő mélyén rábukkansz egy ősi kőkapura. A földön három tárgy hever: egy csorba rézkulcs, egy kristálygömb és egy bőrkötésű napló. Mögötted gally roppan...",
+                choices: [
+                    { text: "A) Felveszed a csorba rézkulcsot.", next: "rezkulcs" },
+                    { text: "B) A kristálygömbért nyúlsz.", next: "kristaly" },
+                    { text: "C) Elveszed a bőrkötésű naplót.", next: "naplo" }
+                ]
+            },
+            rezkulcs: {
+                text: "A rézkulcs rúnái felizzanak. Egy ezüstszőrű erdei farkas lép ki a bokrok közül. Lassan felé nyújtod a kezed: a farkas hozzáérinti az orrát a kulcshoz, üdvözöl, majd bevezet a kitárult kőkapu mögötti föld alatti csarnokba.",
+                choices: [
+                    { text: "A) Balra mész, a kristályalagút felé.", next: "kristaly_alagut" },
+                    { text: "B) Jobbra mész, a díszes faajtóhoz.", next: "faajto" },
+                    { text: "C) Odalépsz a kőoltárhoz a terem közepén.", next: "koltar" }
+                ]
+            },
+            koltar: {
+                text: "Odalépsz a kőoltárhoz. A rajta fekvő kőtáblán ősi rúnák láthatók, amik kék fénnyel világítani kezdenek a rézkulcs közelségétől...",
+                choices: [
+                    { text: "🔄 Újrajátszás az elejétől", next: "start" }
+                ]
+            },
+            kristaly: {
+                text: "Amint megérinted a kristálygömböt, az felvillan és egy elmemenedékbe repít...",
+                choices: [
+                    { text: "🔄 Újrajátszás az elejétől", next: "start" }
+                ]
+            },
+            naplo: {
+                text: "A napló kinyílik, és egy térképrészlet tárja fel a kőkapu titkos mechanizmusát...",
+                choices: [
+                    { text: "🔄 Újrajátszás az elejétől", next: "start" }
+                ]
+            },
+            kristaly_alagut: {
+                text: "A kristályok lágy fénye mellett egy föld alatti tó partjára érsz...",
+                choices: [
+                    { text: "🔄 Újrajátszás az elejétől", next: "start" }
+                ]
+            },
+            faajto: {
+                text: "A faajtón lévő rúnák egy logikai feladványt jelenítenek meg...",
+                choices: [
+                    { text: "🔄 Újrajátszás az elejétől", next: "start" }
+                ]
+            }
+        };
+
+        function showScene(sceneKey) {
+            const scene = storyData[sceneKey];
+            document.getElementById('story-text').innerText = scene.text;
+            const container = document.getElementById('choices-container');
+            container.innerHTML = '';
+
+            scene.choices.forEach(choice => {
+                const btn = document.createElement('button');
+                btn.innerText = choice.text;
+                btn.onclick = () => showScene(choice.next);
+                container.appendChild(btn);
+            });
+        }
+
+        showScene('start');
+    </script>
+</body>
+</html>
