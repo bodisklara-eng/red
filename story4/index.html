@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<!-- saved from url=(0068)file:///C:/Users/Utilizator/Downloads/gemini-code-1788079508378.html -->
+<html lang="hu"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feldiktált Szövegek Esettanulmányai és Részletes Magyarázatai</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            background-color: #0f172a;
+            color: #f8fafc;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+            padding: 2rem 1rem;
+        }
+        .main-wrapper {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        .section-box {
+            background: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+        }
+        h1 {
+            color: #38bdf8;
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+        h2 {
+            color: #38bdf8;
+            font-size: 1.4rem;
+            margin-bottom: 1rem;
+            border-bottom: 2px solid #334155;
+            padding-bottom: 0.5rem;
+        }
+        h3 {
+            color: #facc15;
+            font-size: 1.1rem;
+            margin-top: 1.2rem;
+            margin-bottom: 0.5rem;
+        }
+        p {
+            color: #cbd5e1;
+            line-height: 1.6;
+            margin-bottom: 0.75rem;
+        }
+        ul {
+            margin-left: 1.5rem;
+            color: #cbd5e1;
+            line-height: 1.6;
+            margin-bottom: 1rem;
+        }
+        li {
+            margin-bottom: 0.5rem;
+        }
+        .controls {
+            position: sticky;
+            top: 1rem;
+            z-index: 10;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 1rem;
+            background: rgba(30, 41, 59, 0.95);
+            backdrop-filter: blur(8px);
+            padding: 0.75rem 1.5rem;
+            border-radius: 50px;
+            border: 1px solid #38bdf8;
+            width: fit-content;
+            margin: 1rem auto 2rem;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+        }
+        .btn {
+            background: #0369a1;
+            color: #ffffff;
+            border: none;
+            padding: 0.6rem 1.2rem;
+            border-radius: 20px;
+            font-size: 0.95rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .btn:hover {
+            background: #38bdf8;
+            color: #0f172a;
+        }
+        .btn:disabled {
+            background: #334155;
+            color: #64748b;
+            cursor: not-allowed;
+        }
+        .sentence {
+            transition: background-color 0.2s ease, color 0.2s ease;
+            border-radius: 3px;
+            padding: 0 2px;
+            cursor: pointer;
+        }
+        .sentence:hover {
+            background-color: rgba(56, 189, 248, 0.2);
+        }
+        .sentence.active-sentence {
+            background-color: #facc15;
+            color: #0f172a;
+            font-weight: bold;
+            box-shadow: 0 0 8px #facc15;
+        }
+        .case-card.active-card {
+            border-color: #facc15 !important;
+            box-shadow: 0 0 20px rgba(250, 204, 21, 0.4);
+        }
+        .tag {
+            display: inline-block;
+            background: #0369a1;
+            color: #e0f2fe;
+            font-size: 0.75rem;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            font-weight: bold;
+        }
+        .case-box {
+            background: #0f172a;
+            border-left: 4px solid #38bdf8;
+            padding: 1rem;
+            margin-top: 1rem;
+            border-radius: 0 8px 8px 0;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="main-wrapper">
+        <h1>Feldiktált Szövegek Esettanulmányai és Magyarázatai</h1>
+
+        <!-- FELOLVASÓ VEZÉRLŐPANEL -->
+        <div class="controls">
+            <button id="btn-play" class="btn">▶ Teljes felolvasás</button>
+            <button id="btn-pause" class="btn" disabled="">⏸ Szünet</button>
+            <button id="btn-stop" class="btn" disabled="">⏹ Leállítás</button>
+        </div>
+
+        <div id="cases-container">
+            <!-- Az esettanulmányok kártyái dinamikusan épülnek fel -->
+        <div class="section-box case-card" id="card-case1">
+                <span class="tag">1. Esettanulmány: Képgalériák &amp; Jegyeink</span>
+                <h2>Monotónia vs. Pozitív Ismétlődés a UI/UX-ben</h2>
+                <h3>Feldiktált Szöveg:</h3>
+                <p><span class="sentence" id="sent-0" onclick="playFromIndex(0)">Nézd meg a projekt elején lévő képgalériát!</span> <span class="sentence" id="sent-1" onclick="playFromIndex(1)"> Mindegyik képgalériában a képek hogyan helyezkednek el?</span> <span class="sentence" id="sent-2" onclick="playFromIndex(2)"> Van-e összefüggés a képek között?</span> <span class="sentence" id="sent-3" onclick="playFromIndex(3)"> Ismétlődnek-e a képek, méretükben különböznek-e?</span> <span class="sentence" id="sent-4" onclick="playFromIndex(4)"> Láthatod, hogy egyes galériák több helyet foglalnak el, mint mekkorák, így pazarolva a helyet a webfelületen.</span> <span class="sentence" id="sent-5" onclick="playFromIndex(5)"> Mások ugyanolyan témájú képeket tárolnak, de színükben, tartalmukban eltérnek.</span> <span class="sentence" id="sent-6" onclick="playFromIndex(6)"> Vannak, amelyekben azonos méretűek a képek, de vannak, amelyekben egyáltalán nem azonos méretűek és nem azonos számosságúak.</span> <span class="sentence" id="sent-7" onclick="playFromIndex(7)"> Mindegyikben más-más számosságú kép van.</span> <span class="sentence" id="sent-8" onclick="playFromIndex(8)"> De lehet az is, hogy ismétlődik egy-egy kép, vagy csak a színük változik meg, de ugyanazt a képet mutatják be.</span> <span class="sentence" id="sent-9" onclick="playFromIndex(9)"> Szerinted egy képgaléria esetén, ha ugyanazt a képet látod egymás után semmi változtatás nélkül – sem effekt, sem szín, sem méret –, az zavaró lehet-e?</span> <span class="sentence" id="sent-10" onclick="playFromIndex(10)"> De mi van akkor, ha a jegyeid között sok tízest látsz a naplóban egymás után, vagy éppen szétszórva?</span> <span class="sentence" id="sent-11" onclick="playFromIndex(11)"> Melyiknek örülnél jobban?</span> <span class="sentence" id="sent-12" onclick="playFromIndex(12)"> Tehát mit tudsz ebből kikövetkeztetni?</span> <span class="sentence" id="sent-13" onclick="playFromIndex(13)"> A jegyeknél jó, ha ismétlődnek, főleg akkor, ha nagy jegyek.</span> <span class="sentence" id="sent-14" onclick="playFromIndex(14)"> A képeknél nem annyira jó, ha ismétlődnek.</span> <span class="sentence" id="sent-15" onclick="playFromIndex(15)"> Ha nincs változtatás rajtuk, monotonná válnak.</span> <span class="sentence" id="sent-16" onclick="playFromIndex(16)"> Persze akadnak ellenpéldák, mivel az ízlések mások minden ember számára.</span> <span class="sentence" id="sent-17" onclick="playFromIndex(17)"> De láttál három példát: a kis csibét, Annácskát és a ruháit, valamint láttad a színpompában csillogó-villogó szilveszteri karkötőket.</span> </p>
+                <div class="case-box">
+                    <h3>Esettanulmány és Részletes Magyarázat:</h3>
+                    <p><span class="sentence" id="sent-18" onclick="playFromIndex(18)">A szöveg az ismétlődés pszichológiáját állítja párhuzamba a felhasználói élménnyel (UI/UX).</span> <span class="sentence" id="sent-19" onclick="playFromIndex(19)"> Míg az iskolai jegyeknél az ismétlődő kiváló eredmény (a tízeseik) örömet és motivációt vált ki, addig a vizuális felületeken a változatosság nélküli képmásolás unalmas és redundáns.</span> <span class="sentence" id="sent-20" onclick="playFromIndex(20)"> A jó webdesign elkerüli a helypazarlást és a monotonitást, dinamizmust visz a képek elrendezésébe és méretezésébe.</span> </p>
+                </div>
+            </div><div class="section-box case-card" id="card-case2">
+                <span class="tag">2. Esettanulmány: Rendezés és Logika</span>
+                <h2>Annácska Ruhái és a Kombinatorikai Variációk</h2>
+                <h3>Feldiktált Szöveg:</h3>
+                <p><span class="sentence" id="sent-21" onclick="playFromIndex(21)">Folytassuk az előbbi gondolatmenetet!</span> <span class="sentence" id="sent-22" onclick="playFromIndex(22)"> Ám ott csak a kapott feladatok között szét kellett választanod a képeket.</span> <span class="sentence" id="sent-23" onclick="playFromIndex(23)"> Egy történet leírása, egy kép.</span> <span class="sentence" id="sent-24" onclick="playFromIndex(24)"> Szét tudtad választani őket?</span> <span class="sentence" id="sent-25" onclick="playFromIndex(25)"> Hogyan tetted őket sorba?</span> <span class="sentence" id="sent-26" onclick="playFromIndex(26)"> Lehetett volna-e más sorrend?</span> <span class="sentence" id="sent-27" onclick="playFromIndex(27)"> Esetleg stílusukban megegyeztek ezek a képek, amikor összeválogattad őket?</span> <span class="sentence" id="sent-28" onclick="playFromIndex(28)"> Bár mondanivalójukban megegyeztek, stílusukban nem.</span> <span class="sentence" id="sent-29" onclick="playFromIndex(29)"> Hányféleképpen lehetett volna ezt szétválogatni?</span> <span class="sentence" id="sent-30" onclick="playFromIndex(30)"> Stílusok szerint is ismered ezeket a lehetőségeket?</span> <span class="sentence" id="sent-31" onclick="playFromIndex(31)"> Vagy vedd figyelembe a számosságukat, a képek számosságát!</span> <span class="sentence" id="sent-32" onclick="playFromIndex(32)"> Hány darabot tettél össze?</span> <span class="sentence" id="sent-33" onclick="playFromIndex(33)"> Lehetett-e volna több kockából vagy kevesebből ugyanazt a mesét összerakni?</span> <span class="sentence" id="sent-34" onclick="playFromIndex(34)"> De ezeken túl láthatod, hogy ha a színeket teszed össze a ruháknál, méretük szerint válogatod össze őket, vagy stílusok szerint, tudnál még ilyen szempontokat sorolni, amik alapján össze tudnád állítani ezeket?</span> <span class="sentence" id="sent-35" onclick="playFromIndex(35)"> Természetesen, mivel véletlenszerűen sorszámozhatóak ezek a ruhák az adott kupacban, meg tudnád mondani, hányféleképpen lehetett volna őket sorszámozni?</span> <span class="sentence" id="sent-36" onclick="playFromIndex(36)"> És mennyiben befolyásolták volna ezt Annát a döntéseiben, amikor a ruhadarabokat kiválogatta és elment végül a buliba?</span> <span class="sentence" id="sent-37" onclick="playFromIndex(37)"> Vagy amikor rendezte a ruhákat, hányféleképpen tudta volna egymásra helyezni a nadrágokat vagy éppen a pólókat a külön kupacokban?</span> <span class="sentence" id="sent-38" onclick="playFromIndex(38)"> Lehetett volna több megoldás?</span> <span class="sentence" id="sent-39" onclick="playFromIndex(39)"> És így tovább.</span> <span class="sentence" id="sent-40" onclick="playFromIndex(40)"> És ha a színük alapján nézzük a ruhákat, akkor az eredeti sorban hogyan helyezkedtek el a ruhák szétválogatás előtt?</span> <span class="sentence" id="sent-41" onclick="playFromIndex(41)"> Lehetett volna ez a sorrend más, ha csak a színeket nézzük?</span> <span class="sentence" id="sent-42" onclick="playFromIndex(42)"> De mi van akkor, ha a méretet tekintjük?</span> <span class="sentence" id="sent-43" onclick="playFromIndex(43)"> Gondoljuk végig ezt!</span> </p>
+                <div class="case-box">
+                    <h3>Esettanulmány és Részletes Magyarázat:</h3>
+                    <p><span class="sentence" id="sent-44" onclick="playFromIndex(44)">Ez a fejezet a csoportosítás és a sorbarendezés algoritmusait mutatja be egy mindennapi helyzeten (ruhaválogatás) keresztül.</span> <span class="sentence" id="sent-45" onclick="playFromIndex(45)"> Rávilágít, hogy a rendezési szempontok (szín, méret, stílus) megváltoztatásával hányféle permutáció és kombináció hozható létre.</span> <span class="sentence" id="sent-46" onclick="playFromIndex(46)"> Megmutatja a diákoknak a narratív építkezés és a matematikai rendszerezés közötti szoros kapcsolatot.</span> </p>
+                </div>
+            </div><div class="section-box case-card" id="card-case3">
+                <span class="tag">3. Esettanulmány: Kombinatorika</span>
+                <h2>A Csibék Kikelése és a Pozicionális Döntések</h2>
+                <h3>Feldiktált Szöveg:</h3>
+                <p><span class="sentence" id="sent-47" onclick="playFromIndex(47)">Most hasonlítsd össze a csibék kikelésének sorrendjét és a színek párosítását, azaz a kombinatorikai feladatokat!</span> <span class="sentence" id="sent-48" onclick="playFromIndex(48)"> Van-e hasonlóság közöttük?</span> <span class="sentence" id="sent-49" onclick="playFromIndex(49)"> Főleg amikor például kettesével vettük a csibék kikelését.</span> <span class="sentence" id="sent-50" onclick="playFromIndex(50)"> Hogyan vehettük őket?</span> <span class="sentence" id="sent-51" onclick="playFromIndex(51)"> Két egymás melletti pozíción vagy szétszórt pozíciókon?</span> <span class="sentence" id="sent-52" onclick="playFromIndex(52)"> És hány ilyen megoldást találtunk?</span> <span class="sentence" id="sent-53" onclick="playFromIndex(53)"> Mi van akkor, ha ez a két pozíció egy azonos színhez társul, és az összes többi pozíción más-más szín van?</span> <span class="sentence" id="sent-54" onclick="playFromIndex(54)"> Vagy az is meglehet, hogy az összes többi pozíción azonos szín van.</span> <span class="sentence" id="sent-55" onclick="playFromIndex(55)"> Mennyiben befolyásolja ezeket a döntéseket a választásunk?</span> </p>
+                <div class="case-box">
+                    <h3>Esettanulmány és Részletes Magyarázat:</h3>
+                    <p><span class="sentence" id="sent-56" onclick="playFromIndex(56)">A csibék kikelésének példája a valószínűségszámítás és a kombinatorika alapjaiba vezet be.</span> <span class="sentence" id="sent-57" onclick="playFromIndex(57)"> A szomszédos és a szétszórt pozíciók összehasonlításával a diák megtanulja értelmezni a térbeli/időbeli eloszlásokat és a mintázatok előfordulási lehetőségeit a döntési mátrixokban.</span> </p>
+                </div>
+            </div><div class="section-box case-card" id="card-case4">
+                <span class="tag">4. Esettanulmány: Pozicionálás</span>
+                <h2>Két Ruha Elhelyezése a Szárítókötélen</h2>
+                <h3>Feldiktált Szöveg:</h3>
+                <p><span class="sentence" id="sent-58" onclick="playFromIndex(58)">Most nézd a szárítós feladatot!</span> <span class="sentence" id="sent-59" onclick="playFromIndex(59)"> Képzeld el azt a helyzetet, amikor Anna két ruhát akar feltenni száradni a már meglévő ruhasorba.</span> <span class="sentence" id="sent-60" onclick="playFromIndex(60)"> Hová helyezheti el ezt a két ruhát?</span> <span class="sentence" id="sent-61" onclick="playFromIndex(61)"> Hány lehetősége van, és hogyan tudja ezt megtenni?</span> <span class="sentence" id="sent-62" onclick="playFromIndex(62)"> Próbáld ugyanezt a ruhák esetén!</span> <span class="sentence" id="sent-63" onclick="playFromIndex(63)"> Ott is ennyire bonyolult a döntés, vagy ott egyszerűbb?</span> </p>
+                <div class="case-box">
+                    <h3>Esettanulmány és Részletes Magyarázat:</h3>
+                    <p><span class="sentence" id="sent-64" onclick="playFromIndex(64)">Ez a klasszikus elembeillesztési feladat (insertion problem).</span> <span class="sentence" id="sent-65" onclick="playFromIndex(65)"> A meglévő n elemből álló sorba k új elem beszúrásának lehetőségeit modellezi.</span> <span class="sentence" id="sent-66" onclick="playFromIndex(66)"> Segít a diákoknak megérteni az indexelést, a szabad pozíciók kiszámítását és a peremfeltételek kezelését.</span> </p>
+                </div>
+            </div><div class="section-box case-card" id="card-case5">
+                <span class="tag">5. Esettanulmány: Problémamegoldás &amp; Fizika</span>
+                <h2>Erdei Szivattyú és Szökőkút Építése</h2>
+                <h3>Feldiktált Szöveg:</h3>
+                <p><span class="sentence" id="sent-67" onclick="playFromIndex(67)">És most vegyük azt, hogy itt a vakáció vége, az iskola kezdete.</span> <span class="sentence" id="sent-68" onclick="playFromIndex(68)"> De ha nem is, a mindennapi rutin megköveteli tőlünk, hogy ruháinkat tisztán tartsuk.</span> <span class="sentence" id="sent-69" onclick="playFromIndex(69)"> Annácska egy csomó ruhát kiválogatott, és át kell mossa őket, elkészítve azokat az új tanévre, vagy éppenséggel a következő napra, hétre vagy holnapra.</span> <span class="sentence" id="sent-70" onclick="playFromIndex(70)"> De mivel nagyon sok vizet elhasznált, ezért elfogyott a víz otthonról.</span> <span class="sentence" id="sent-71" onclick="playFromIndex(71)"> Ezért elment a kerek erdőbe – mivel szárazság van –, úgy gondolván, hogy az erdőben hamarabb kap vizet.</span> <span class="sentence" id="sent-72" onclick="playFromIndex(72)"> A víz megtalálása nagy örömöt okozott számára egy erdő közepén lévő kút alján.</span> <span class="sentence" id="sent-73" onclick="playFromIndex(73)"> Igen ám, de elfelejtett magával eszközt hozni, és mégis vizet akart hazavinni.</span> <span class="sentence" id="sent-74" onclick="playFromIndex(74)"> Mikor szétnézett, egy csomó üres flakont talált az erdőben itt-ott elszórva, melyek közül egyesek nagyobb, mások kisebb méretűek voltak.</span> <span class="sentence" id="sent-75" onclick="playFromIndex(75)"> Aztán talált csöveket, PVC-csöveket.</span> <span class="sentence" id="sent-76" onclick="playFromIndex(76)"> Megörvendve eszébe jutott, amit fizikaórán tanult, és elkezdte összeszerelni a saját szivattyúját, amethyl kiszivattyúzta a vizet a kútból.</span> <span class="sentence" id="sent-77" onclick="playFromIndex(77)"> Ahogy ott próbálkozott, kedve támadt, és elkészítette a saját kis szökőkútját is, mert megtetszett neki az erdőben a vízcsobbanás, amit a kutacska mellett látott.</span> <span class="sentence" id="sent-78" onclick="playFromIndex(78)"> Segítsetek neki megszerkeszteni a szivattyút és a szökőkutat!</span> </p>
+                <div class="case-box">
+                    <h3>Esettanulmány és Részletes Magyarázat:</h3>
+                    <p><span class="sentence" id="sent-79" onclick="playFromIndex(79)">A történet a gyakorlati fizikai ismeretek (hidrosztatika, közlekedőedények, nyomáskülönbség) és a kreatív problémamegoldás (recycling/upcycling) ötvözete.</span> <span class="sentence" id="sent-80" onclick="playFromIndex(80)"> Megmutatja, hogyan alakítható át a hulladék (flakonok, PVC csövek) működőképes hidraulikus rendszerré és esztétikai élményt nyújtó szökőkúttá.</span> </p>
+                </div>
+            </div></div>
+    </div>
+
+    <script>
+        const studyData = [
+            {
+                id: "case1",
+                category: "1. Esettanulmány: Képgalériák & Jegyeink",
+                title: "Monotónia vs. Pozitív Ismétlődés a UI/UX-ben",
+                originalText: "Nézd meg a projekt elején lévő képgalériát! Mindegyik képgalériában a képek hogyan helyezkednek el? Van-e összefüggés a képek között? Ismétlődnek-e a képek, méretükben különböznek-e? Láthatod, hogy egyes galériák több helyet foglalnak el, mint mekkorák, így pazarolva a helyet a webfelületen. Mások ugyanolyan témájú képeket tárolnak, de színükben, tartalmukban eltérnek. Vannak, amelyekben azonos méretűek a képek, de vannak, amelyekben egyáltalán nem azonos méretűek és nem azonos számosságúak. Mindegyikben más-más számosságú kép van. De lehet az is, hogy ismétlődik egy-egy kép, vagy csak a színük változik meg, de ugyanazt a képet mutatják be. Szerinted egy képgaléria esetén, ha ugyanazt a képet látod egymás után semmi változtatás nélkül – sem effekt, sem szín, sem méret –, az zavaró lehet-e? De mi van akkor, ha a jegyeid között sok tízest látsz a naplóban egymás után, vagy éppen szétszórva? Melyiknek örülnél jobban? Tehát mit tudsz ebből kikövetkeztetni? A jegyeknél jó, ha ismétlődnek, főleg akkor, ha nagy jegyek. A képeknél nem annyira jó, ha ismétlődnek. Ha nincs változtatás rajtuk, monotonná válnak. Persze akadnak ellenpéldák, mivel az ízlések mások minden ember számára. De láttál három példát: a kis csibét, Annácskát és a ruháit, valamint láttad a színpompában csillogó-villogó szilveszteri karkötőket.",
+                analysis: "A szöveg az ismétlődés pszichológiáját állítja párhuzamba a felhasználói élménnyel (UI/UX). Míg az iskolai jegyeknél az ismétlődő kiváló eredmény (a tízeseik) örömet és motivációt vált ki, addig a vizuális felületeken a változatosság nélküli képmásolás unalmas és redundáns. A jó webdesign elkerüli a helypazarlást és a monotonitást, dinamizmust visz a képek elrendezésébe és méretezésébe."
+            },
+            {
+                id: "case2",
+                category: "2. Esettanulmány: Rendezés és Logika",
+                title: "Annácska Ruhái és a Kombinatorikai Variációk",
+                originalText: "Folytassuk az előbbi gondolatmenetet! Ám ott csak a kapott feladatok között szét kellett választanod a képeket. Egy történet leírása, egy kép. Szét tudtad választani őket? Hogyan tetted őket sorba? Lehetett volna-e más sorrend? Esetleg stílusukban megegyeztek ezek a képek, amikor összeválogattad őket? Bár mondanivalójukban megegyeztek, stílusukban nem. Hányféleképpen lehetett volna ezt szétválogatni? Stílusok szerint is ismered ezeket a lehetőségeket? Vagy vedd figyelembe a számosságukat, a képek számosságát! Hány darabot tettél össze? Lehetett-e volna több kockából vagy kevesebből ugyanazt a mesét összerakni? De ezeken túl láthatod, hogy ha a színeket teszed össze a ruháknál, méretük szerint válogatod össze őket, vagy stílusok szerint, tudnál még ilyen szempontokat sorolni, amik alapján össze tudnád állítani ezeket? Természetesen, mivel véletlenszerűen sorszámozhatóak ezek a ruhák az adott kupacban, meg tudnád mondani, hányféleképpen lehetett volna őket sorszámozni? És mennyiben befolyásolták volna ezt Annát a döntéseiben, amikor a ruhadarabokat kiválogatta és elment végül a buliba? Vagy amikor rendezte a ruhákat, hányféleképpen tudta volna egymásra helyezni a nadrágokat vagy éppen a pólókat a külön kupacokban? Lehetett volna több megoldás? És így tovább. És ha a színük alapján nézzük a ruhákat, akkor az eredeti sorban hogyan helyezkedtek el a ruhák szétválogatás előtt? Lehetett volna ez a sorrend más, ha csak a színeket nézzük? De mi van akkor, ha a méretet tekintjük? Gondoljuk végig ezt!",
+                analysis: "Ez a fejezet a csoportosítás és a sorbarendezés algoritmusait mutatja be egy mindennapi helyzeten (ruhaválogatás) keresztül. Rávilágít, hogy a rendezési szempontok (szín, méret, stílus) megváltoztatásával hányféle permutáció és kombináció hozható létre. Megmutatja a diákoknak a narratív építkezés és a matematikai rendszerezés közötti szoros kapcsolatot."
+            },
+            {
+                id: "case3",
+                category: "3. Esettanulmány: Kombinatorika",
+                title: "A Csibék Kikelése és a Pozicionális Döntések",
+                originalText: "Most hasonlítsd össze a csibék kikelésének sorrendjét és a színek párosítását, azaz a kombinatorikai feladatokat! Van-e hasonlóság közöttük? Főleg amikor például kettesével vettük a csibék kikelését. Hogyan vehettük őket? Két egymás melletti pozíción vagy szétszórt pozíciókon? És hány ilyen megoldást találtunk? Mi van akkor, ha ez a két pozíció egy azonos színhez társul, és az összes többi pozíción más-más szín van? Vagy az is meglehet, hogy az összes többi pozíción azonos szín van. Mennyiben befolyásolja ezeket a döntéseket a választásunk?",
+                analysis: "A csibék kikelésének példája a valószínűségszámítás és a kombinatorika alapjaiba vezet be. A szomszédos és a szétszórt pozíciók összehasonlításával a diák megtanulja értelmezni a térbeli/időbeli eloszlásokat és a mintázatok előfordulási lehetőségeit a döntési mátrixokban."
+            },
+            {
+                id: "case4",
+                category: "4. Esettanulmány: Pozicionálás",
+                title: "Két Ruha Elhelyezése a Szárítókötélen",
+                originalText: "Most nézd a szárítós feladatot! Képzeld el azt a helyzetet, amikor Anna két ruhát akar feltenni száradni a már meglévő ruhasorba. Hová helyezheti el ezt a két ruhát? Hány lehetősége van, és hogyan tudja ezt megtenni? Próbáld ugyanezt a ruhák esetén! Ott is ennyire bonyolult a döntés, vagy ott egyszerűbb?",
+                analysis: "Ez a klasszikus elembeillesztési feladat (insertion problem). A meglévő n elemből álló sorba k új elem beszúrásának lehetőségeit modellezi. Segít a diákoknak megérteni az indexelést, a szabad pozíciók kiszámítását és a peremfeltételek kezelését."
+            },
+            {
+                id: "case5",
+                category: "5. Esettanulmány: Problémamegoldás & Fizika",
+                title: "Erdei Szivattyú és Szökőkút Építése",
+                originalText: "És most vegyük azt, hogy itt a vakáció vége, az iskola kezdete. De ha nem is, a mindennapi rutin megköveteli tőlünk, hogy ruháinkat tisztán tartsuk. Annácska egy csomó ruhát kiválogatott, és át kell mossa őket, elkészítve azokat az új tanévre, vagy éppenséggel a következő napra, hétre vagy holnapra. De mivel nagyon sok vizet elhasznált, ezért elfogyott a víz otthonról. Ezért elment a kerek erdőbe – mivel szárazság van –, úgy gondolván, hogy az erdőben hamarabb kap vizet. A víz megtalálása nagy örömöt okozott számára egy erdő közepén lévő kút alján. Igen ám, de elfelejtett magával eszközt hozni, és mégis vizet akart hazavinni. Mikor szétnézett, egy csomó üres flakont talált az erdőben itt-ott elszórva, melyek közül egyesek nagyobb, mások kisebb méretűek voltak. Aztán talált csöveket, PVC-csöveket. Megörvendve eszébe jutott, amit fizikaórán tanult, és elkezdte összeszerelni a saját szivattyúját, amethyl kiszivattyúzta a vizet a kútból. Ahogy ott próbálkozott, kedve támadt, és elkészítette a saját kis szökőkútját is, mert megtetszett neki az erdőben a vízcsobbanás, amit a kutacska mellett látott. Segítsetek neki megszerkeszteni a szivattyút és a szökőkutat!",
+                analysis: "A történet a gyakorlati fizikai ismeretek (hidrosztatika, közlekedőedények, nyomáskülönbség) és a kreatív problémamegoldás (recycling/upcycling) ötvözete. Megmutatja, hogyan alakítható át a hulladék (flakonok, PVC csövek) működőképes hidraulikus rendszerré és esztétikai élményt nyújtó szökőkúttá."
+            }
+        ];
+
+        const container = document.getElementById('cases-container');
+        const sentenceElements = [];
+
+        function splitIntoSentences(text) {
+            return text.match(/[^.!?]+[.!?]+/g) || [text];
+        }
+
+        studyData.forEach((item) => {
+            const card = document.createElement('div');
+            card.className = 'section-box case-card';
+            card.id = `card-${item.id}`;
+
+            // Eredeti szöveg mondatokra bontása
+            const sentences = splitIntoSentences(item.originalText);
+            let textHtml = '';
+            sentences.forEach((s) => {
+                const globalIdx = sentenceElements.length;
+                textHtml += `<span class="sentence" id="sent-${globalIdx}" onclick="playFromIndex(${globalIdx})">${s}</span> `;
+                sentenceElements.push({
+                    id: `sent-${globalIdx}`,
+                    cardId: `card-${item.id}`,
+                    text: s.trim()
+                });
+            });
+
+            // Esettanulmány / Magyarázat mondatokra bontása
+            const analysisSentences = splitIntoSentences(item.analysis);
+            let analysisHtml = '';
+            analysisSentences.forEach((s) => {
+                const globalIdx = sentenceElements.length;
+                analysisHtml += `<span class="sentence" id="sent-${globalIdx}" onclick="playFromIndex(${globalIdx})">${s}</span> `;
+                sentenceElements.push({
+                    id: `sent-${globalIdx}`,
+                    cardId: `card-${item.id}`,
+                    text: s.trim()
+                });
+            });
+
+            card.innerHTML = `
+                <span class="tag">${item.category}</span>
+                <h2>${item.title}</h2>
+                <h3>Feldiktált Szöveg:</h3>
+                <p>${textHtml}</p>
+                <div class="case-box">
+                    <h3>Esettanulmány és Részletes Magyarázat:</h3>
+                    <p>${analysisHtml}</p>
+                </div>
+            `;
+            container.appendChild(card);
+        });
+
+        // FELOLVASÓ ÉS INTERAKTÍV LOGIKA
+        const synth = window.speechSynthesis;
+        let currentIndex = 0;
+        let isPaused = false;
+        let isPlaying = false;
+        let wasPausedByTabSwitch = false;
+
+        const btnPlay = document.getElementById('btn-play');
+        const btnPause = document.getElementById('btn-pause');
+        const btnStop = document.getElementById('btn-stop');
+
+        function clearHighlights() {
+            document.querySelectorAll('.sentence').forEach(el => el.classList.remove('active-sentence'));
+            document.querySelectorAll('.case-card').forEach(el => el.classList.remove('active-card'));
+        }
+
+        function speakCurrentSentence() {
+            if (currentIndex >= sentenceElements.length || !isPlaying) {
+                stopSpeech();
+                return;
+            }
+
+            clearHighlights();
+
+            const currentObj = sentenceElements[currentIndex];
+            const sentenceEl = document.getElementById(currentObj.id);
+            const cardEl = document.getElementById(currentObj.cardId);
+
+            if (sentenceEl && cardEl) {
+                sentenceEl.classList.add('active-sentence');
+                cardEl.classList.add('active-card');
+                sentenceEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+
+            const utterance = new SpeechSynthesisUtterance(currentObj.text);
+            utterance.lang = 'hu-HU';
+            utterance.rate = 1.0;
+
+            utterance.onend = () => {
+                if (isPlaying && !isPaused) {
+                    currentIndex++;
+                    speakCurrentSentence();
+                }
+            };
+
+            utterance.onerror = () => {
+                if (isPlaying && !isPaused) {
+                    currentIndex++;
+                    speakCurrentSentence();
+                }
+            };
+
+            synth.speak(utterance);
+        }
+
+        function startSpeech(startIndex = 0) {
+            synth.cancel();
+            isPlaying = true;
+            isPaused = false;
+            wasPausedByTabSwitch = false;
+            currentIndex = startIndex;
+            
+            btnPlay.disabled = true;
+            btnPause.disabled = false;
+            btnStop.disabled = false;
+
+            speakCurrentSentence();
+        }
+
+        function playFromIndex(index) {
+            startSpeech(index);
+        }
+
+        function pauseSpeech() {
+            if (synth.speaking && !synth.paused) {
+                synth.pause();
+                isPaused = true;
+                btnPlay.disabled = false;
+                btnPause.disabled = true;
+            }
+        }
+
+        function resumeSpeech() {
+            if (isPaused) {
+                synth.resume();
+                isPaused = false;
+                btnPlay.disabled = true;
+                btnPause.disabled = false;
+            }
+        }
+
+        btnPlay.addEventListener('click', () => {
+            if (isPaused) {
+                resumeSpeech();
+            } else {
+                startSpeech(0);
+            }
+        });
+
+        btnPause.addEventListener('click', pauseSpeech);
+        btnStop.addEventListener('click', stopSpeech);
+
+        function stopSpeech() {
+            synth.cancel();
+            isPlaying = false;
+            isPaused = false;
+            wasPausedByTabSwitch = false;
+            currentIndex = 0;
+            clearHighlights();
+            btnPlay.disabled = false;
+            btnPause.disabled = true;
+            btnStop.disabled = true;
+        }
+
+        /* ABLAKVÁLTÁS ÉS AUTOMATIKUS SZÜNETELTETÉS / FOLYTATÁS */
+        document.addEventListener('visibilitychange', () => {
+            if (document.hidden) {
+                if (isPlaying && !isPaused) {
+                    pauseSpeech();
+                    wasPausedByTabSwitch = true;
+                }
+            } else {
+                if (wasPausedByTabSwitch && isPaused) {
+                    resumeSpeech();
+                    wasPausedByTabSwitch = false;
+                }
+            }
+        });
+
+        window.addEventListener('beforeunload', () => {
+            synth.cancel();
+        });
+    </script>
+
+</body></html>
