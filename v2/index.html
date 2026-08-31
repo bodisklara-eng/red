@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<!-- saved from url=(0044)http://127.0.0.1:5500/animacio/szokokut.html -->
+<html lang="hu"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <title>Napelemes vízkifolyó szimuláció</title>
+    <style>
+        body { margin: 0; background: #0a0f19; font-family: Arial, sans-serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; color: white; overflow: hidden; }
+        #canvas-container { text-align: center; position: relative; }
+        canvas { border-radius: 8px; box-shadow: 0 4px 20px rgba(0,0,0,0.5); background: #0a0f19; }
+        .controls { margin-top: 10px; font-size: 14px; color: #788ca0; }
+        button { background: #1a2a3a; color: #50f078; border: 1px solid #50f078; padding: 6px 12px; margin: 0 4px; border-radius: 4px; cursor: pointer; font-weight: bold; }
+        button:hover { background: #50f078; color: #0a0f19; }
+    </style>
+</head>
+<body>
+<div id="canvas-container">
+    <canvas id="simCanvas" width="900" height="500"></canvas>
+    <div class="controls">
+        Vezérlés: 
+        <button onclick="randomize()">[R] Véletlen</button>
+        <button onclick="changeAll(5)">[+] Növelés</button>
+        <button onclick="changeAll(-5)">[-] Csökkentés</button>
+        <button onclick="togglePulse()">[SPACE] Pulzálás</button>
+    </div>
+</div>
+
+<script>
+const canvas = document.getElementById('simCanvas');
+const ctx = canvas.getContext('2d');
+
+let sugar_ero = [80, 60, 40, 100, 70, 30, 90, 50];
+let time_counter = 0;
+let animating = true;
+
+function randomize() {
+    sugar_ero = sugar_ero.map(() => Math.floor(Math.random() * 91) + 10);
+}
+
+function changeAll(val) {
+    sugar_ero = sugar_ero.map(v => Math.min(100, Math.max(0, v + val)));
+}
+
+function togglePulse() {
+    animating = !animating;
+}
+
+window.addEventListener('keydown', (e) => {
+    if (e.key === 'r' || e.key === 'R') randomize();
+    if (e.key === '+') changeAll(5);
+    if (e.key === '-') changeAll(-5);
+    if (e.code === 'Space') { togglePulse(); e.preventDefault(); }
+});
+
+function drawFountain(x, y, value) {
+    let pulse = animating ? Math.sin(time_counter * 0.1 + x) * 3 : 0;
+    let heightFactor = Math.max(0, value + pulse) / 100.0;
+    let maxH = heightFactor * 220;
+
+    // Alapzat
+    ctx.fillStyle = "#324650";
+    ctx.fillRect(x - 20, y, 40, 16);
+    ctx.fillStyle = "#50646e";
+    ctx.fillRect(x - 12, y - 6, 24, 6);
+
+    if (maxH > 5) {
+        // Vízsugár ívek
+        let numDrops = 15;
+        for (let i = 0; i <= numDrops; i++) {
+            let t = i / numDrops;
+            let dxLeft = -30 * t;
+            let dxRight = 30 * t;
+            let dy = -maxH * (4 * t * (1 - t));
+
+            // Külső vizes fény
+            ctx.fillStyle = "rgba(60, 180, 255, 0.8)";
+            ctx.beginPath();
+            ctx.arc(x + dxLeft, y - 6 + dy, 3 + 2*(1-t), 0, Math.PI * 2);
+            ctx.arc(x + dxRight, y - 6 + dy, 3 + 2*(1-t), 0, Math.PI * 2);
+            ctx.fill();
+
+            // Belső mag
+            ctx.fillStyle = "#c8f0ff";
+            ctx.beginPath();
+            ctx.arc(x + dxLeft, y - 6 + dy, 1.5, 0, Math.PI * 2);
+            ctx.arc(x + dxRight, y - 6 + dy, 1.5, 0, Math.PI * 2);
+            ctx.fill();
+        }
+    }
+}
+
+function animate() {
+    time_counter++;
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    // Fejléc szövegek
+    ctx.fillStyle = "#ffffff";
+    ctx.font = "16px Arial";
+    ctx.fillText("Aktuális tömb (erő %):", 30, 30);
+    
+    ctx.fillStyle = "#50f078";
+    ctx.font = "bold 18px Consolas, monospace";
+    ctx.fillText(`sugar_ero = [${sugar_ero.join(', ')}]`, 30, 58);
+
+    // Statisztika
+    let avg = (sugar_ero.reduce((a, b) => a + b, 0) / sugar_ero.length).toFixed(1);
+    let maxVal = Math.max(...sugar_ero);
+    let maxIdx = sugar_ero.indexOf(maxVal);
+
+    ctx.fillStyle = "#ffffff";
+    ctx.font = "16px Arial";
+    ctx.fillText(`Átlag: ${avg} %`, canvas.width - 200, 30);
+    ctx.fillText(`Max: ${maxVal}% (index: ${maxIdx})`, canvas.width - 200, 58);
+
+    // Szökőkutak
+    let margin = 70;
+    let spacing = (canvas.width - 2 * margin) / (sugar_ero.length - 1);
+    let baseY = canvas.height - 70;
+
+    for (let i = 0; i < sugar_ero.length; i++) {
+        let fx = margin + i * spacing;
+        drawFountain(fx, baseY, sugar_ero[i]);
+
+        // Index
+        ctx.fillStyle = "#ffffff";
+        ctx.font = "bold 16px Consolas, monospace";
+        ctx.fillText(i, fx - 5, baseY + 35);
+    }
+
+    requestAnimationFrame(animate);
+}
+
+animate();
+</script>
+<!-- Code injected by live-server -->
+<script>
+	// <![CDATA[  <-- For SVG support
+	if ('WebSocket' in window) {
+		(function () {
+			function refreshCSS() {
+				var sheets = [].slice.call(document.getElementsByTagName("link"));
+				var head = document.getElementsByTagName("head")[0];
+				for (var i = 0; i < sheets.length; ++i) {
+					var elem = sheets[i];
+					var parent = elem.parentElement || head;
+					parent.removeChild(elem);
+					var rel = elem.rel;
+					if (elem.href && typeof rel != "string" || rel.length == 0 || rel.toLowerCase() == "stylesheet") {
+						var url = elem.href.replace(/(&|\?)_cacheOverride=\d+/, '');
+						elem.href = url + (url.indexOf('?') >= 0 ? '&' : '?') + '_cacheOverride=' + (new Date().valueOf());
+					}
+					parent.appendChild(elem);
+				}
+			}
+			var protocol = window.location.protocol === 'http:' ? 'ws://' : 'wss://';
+			var address = protocol + window.location.host + window.location.pathname + '/ws';
+			var socket = new WebSocket(address);
+			socket.onmessage = function (msg) {
+				if (msg.data == 'reload') window.location.reload();
+				else if (msg.data == 'refreshcss') refreshCSS();
+			};
+			if (sessionStorage && !sessionStorage.getItem('IsThisFirstTime_Log_From_LiveServer')) {
+				console.log('Live reload enabled.');
+				sessionStorage.setItem('IsThisFirstTime_Log_From_LiveServer', true);
+			}
+		})();
+	}
+	else {
+		console.error('Upgrade your browser. This Browser is NOT supported WebSocket for Live-Reloading.');
+	}
+	// ]]>
+</script>
+
+</body></html>
