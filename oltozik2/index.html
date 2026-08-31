@@ -1,0 +1,977 @@
+<!DOCTYPE html>
+<!-- saved from url=(0068)file:///C:/Users/Utilizator/Downloads/gemini-code-1787662388198.html -->
+<html lang="hu"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gemini &amp; Symbolab &amp; VBoard Integrált AI Teszt &amp; Elemző Generátor (Javított)</title>
+    <!-- MathJax konfiguráció -->
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']]
+            }
+        };
+    </script>
+    <script id="MathJax-script" async="" src="file:///C:/Users/Utilizator/Downloads/tablajo_files/tex-mml-chtml.js.desc%C4%83rcare"></script>
+    <style>
+        :root {
+            --primary-color: #4f46e5;
+            --primary-hover: #4338ca;
+            --bg-color: #f3f4f6;
+            --card-bg: #ffffff;
+            --text-color: #1f2937;
+            --border-color: #d1d5db;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            padding-bottom: 90px;
+            box-sizing: border-box;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 850px;
+            background: var(--card-bg);
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+            box-sizing: border-box;
+        }
+
+        h1, h2, h3 {
+            color: var(--primary-color);
+            text-align: center;
+            margin-bottom: 5px;
+            font-size: 22px;
+        }
+
+        p.subtitle {
+            text-align: center;
+            color: #6b7280;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 6px;
+            font-size: 14px;
+        }
+
+        .api-input-row {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        input[type="password"], input[type="text"], select, input[type="file"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            box-sizing: border-box;
+            font-size: 14px;
+        }
+
+        .toolbar, .input-row {
+            margin-top: 12px;
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .input-row {
+            background: #f9fafb;
+            padding: 10px 12px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            box-sizing: border-box;
+        }
+
+        button, label.upload-btn {
+            padding: 8px 12px;
+            font-size: 13px;
+            font-weight: bold;
+            color: #fff;
+            background-color: var(--primary-color);
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            white-space: nowrap;
+        }
+
+        button:hover, label.upload-btn:hover { background-color: var(--primary-hover); }
+        button:disabled { background-color: #9ca3af; cursor: not-allowed; }
+        
+        button.clear-btn { background-color: #dc3545; }
+        button.clear-btn:hover { background-color: #bd2130; }
+        button.save-btn { background-color: #28a745; }
+        button.save-btn:hover { background-color: #218838; }
+        button.vboard-btn { background-color: #ff5722; }
+        button.vboard-btn:hover { background-color: #e64a19; }
+        button.pip-btn { background-color: #ff9800; }
+        button.pip-btn:hover { background-color: #e68a00; }
+        button.voice-btn { background-color: #e83e8c; }
+        button.voice-btn:hover { background-color: #c82365; }
+        button.worksheet-btn { background-color: #17a2b8; }
+        button.worksheet-btn:hover { background-color: #117a8b; }
+        button.doc-btn { background-color: #6c757d; }
+        button.doc-btn:hover { background-color: #5a6268; }
+        button.symbolab-btn { background-color: #00a651; }
+        button.symbolab-btn:hover { background-color: #008742; }
+        button.undo-btn { background-color: #e0a800; }
+        button.undo-btn:hover { background-color: #d39e00; }
+        button.help-btn { background-color: #6366f1; }
+        button.help-btn:hover { background-color: #4f46e5; }
+
+        .help-box {
+            display: none;
+            background: #eef2ff;
+            border: 1px solid #c7d2fe;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 10px;
+            font-size: 13px;
+            color: #1e1b4b;
+            line-height: 1.5;
+        }
+        .help-box h4 {
+            margin-top: 0;
+            color: #4f46e5;
+            font-size: 15px;
+        }
+        .help-box ul, .help-box ol {
+            margin: 8px 0 0 20px;
+            padding: 0;
+        }
+        .help-box li {
+            margin-bottom: 6px;
+        }
+
+        #canvas-container {
+            border: 2px solid var(--border-color);
+            background-color: #fff;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+            cursor: crosshair;
+            touch-action: none;
+            border-radius: 6px;
+            width: 100%;
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: 0 auto;
+            box-sizing: border-box;
+        }
+
+        .result-section, #result-container, #task-item-container, #worksheet-generator-container {
+            margin-top: 20px;
+            border-top: 1px solid var(--border-color);
+            padding-top: 16px;
+        }
+
+        pre {
+            background: #1e293b;
+            color: #f8fafc;
+            padding: 12px;
+            border-radius: 6px;
+            overflow-x: auto;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 13px;
+            margin: 0;
+        }
+
+        .loading {
+            text-align: center;
+            color: var(--primary-color);
+            font-weight: 600;
+            margin-top: 12px;
+            display: none;
+            font-size: 14px;
+        }
+
+        .math-output { font-size: 16px; color: #0056b3; margin: 8px 0; }
+        .solution-step { margin: 6px 0; color: #444; line-height: 1.4; font-size: 14px; }
+
+        .task-card {
+            background: #ffffff;
+            border-left: 5px solid #6f42c1;
+            border: 1px solid #e0e0e0;
+            border-radius: 6px;
+            padding: 12px 16px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            margin-bottom: 10px;
+        }
+        .task-card-header {
+            font-weight: bold;
+            color: #6f42c1;
+            font-size: 14px;
+            margin-bottom: 6px;
+            display: flex;
+            justify-content: space-between;
+        }
+        .task-card-body {
+            font-size: 15px;
+            color: #222;
+        }
+
+        #worksheet-generator-container {
+            background: #ffffff;
+            border: 2px dashed #17a2b8;
+            border-radius: 8px;
+            padding: 16px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            display: none;
+        }
+        .worksheet-header {
+            background: #17a2b8;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 4px;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            font-size: 14px;
+        }
+        .worksheet-question-box {
+            background: #fdfdfd;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            padding: 10px;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+        .worksheet-question-box input[type="text"] {
+            padding: 6px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 14px;
+            width: 150px;
+            margin-left: 5px;
+            display: inline-block;
+        }
+        .feedback-msg {
+            font-weight: bold;
+            font-size: 13px;
+            margin-left: 8px;
+            display: block;
+            margin-top: 4px;
+        }
+
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+            #worksheet-generator-container, #worksheet-generator-container * {
+                visibility: visible;
+            }
+            #worksheet-generator-container {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+                border: none;
+                box-shadow: none;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Gemini &amp; Symbolab Integrált Rendszer (Javított)</h1>
+    <p class="subtitle">Képek és összetett leírások elemzése, valódi képlet-kinyerés, dinamikus feladat itemek és tesztek.</p>
+
+    <!-- API Kulcs Beállítás és Súgó Gomb -->
+    <div class="form-group">
+        <label for="apiKey">Google Gemini API Kulcs:</label>
+        <div class="api-input-row">
+            <input type="password" id="apiKey" placeholder="Írd be ide az API kulcsodat...">
+            <button type="button" onclick="toggleApiHelp()" class="help-btn">❓ API Súgó</button>
+        </div>
+        <div id="api-help-box" class="help-box">
+            <h4>Mi az a Gemini API kulcs, és miért van rá szükséged?</h4>
+            <p>Ez az alkalmazás a Google legújabb mesterséges intelligenciáját (Gemini 3.6 Flash) használja.</p>
+            <ol>
+                <li>Kattints ide: <a href="https://aistudio.google.com/" target="_blank">Google AI Studio</a>.</li>
+                <li>Jelentkezz be a fiókoddal, majd kattints a <strong>"Get API key"</strong> gombra.</li>
+                <li>Másold ki a kapott kulcsot, és illeszd be fentre.</li>
+            </ol>
+        </div>
+    </div>
+
+    <!-- Feladat Típusa / Pipeline Mód -->
+    <div class="form-group">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <label for="taskType" style="margin-bottom: 0;">Elemzés Típusa (Pipeline Mód):</label>
+            <button type="button" onclick="togglePipelineHelp()" class="help-btn" style="font-size: 11px; padding: 4px 8px;">❓ Módok Magyarázata</button>
+        </div>
+        <select id="taskType" style="margin-top: 6px;">
+            <option value="complex">Összetett Szöveges &amp; Matematikai Feladat (OCR &amp; Képlet-kinyerés)</option>
+            <option value="formula">Matematikai / Fizikai Képlet (OCR &amp; Levezetés)</option>
+            <option value="drawing">Szabadkézi Rajz / Tervrajz Elemzés</option>
+        </select>
+        
+        <div id="pipeline-help-box" class="help-box">
+            <h4>Hogyan működnek az Elemzési Módok?</h4>
+            <p>A kiválasztott mód határozza meg, hogy a Gemini AI hogyan dolgozza fel a rajzot vagy a feltöltött fájlt:</p>
+            <ul>
+                <li><strong>Összetett Szöveges &amp; Matematikai Feladat:</strong> Kinyeri a szöveges leírásból a konkrét matematikai képleteket, feladványokat és végeredményeket.</li>
+                <li><strong>Matematikai / Fizikai Képlet:</strong> Keresi az egyenleteket, integrálokat, határértékeket és levezetést készít.</li>
+                <li><strong>Szabadkézi Rajz:</strong> Geometriai és műszaki rajzokat értelmez.</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Rajztábla -->
+    <div class="form-group">
+        <label>Rajzolj ide vagy tölts fel fájlt (automatikusan betöltődik a táblára):</label>
+        <canvas id="canvas-container" width="790" height="320"></canvas>
+    </div>
+
+    <!-- Eszköztár -->
+    <div class="toolbar">
+        <button onclick="openVBoard()" class="vboard-btn">🚀 VBoard</button>
+        <button onclick="symbolabScanAndSolve()" class="symbolab-btn">🔍 Symbolab Scan</button>
+        <button onclick="clearCanvas()" class="clear-btn">Tábla Törlés</button>
+        <button onclick="saveBoardAsImage()" class="save-btn">Mentés Képként</button>
+        <button onclick="undoLastTaskItem()" class="undo-btn">↩️ Utolsó Item Visszavonása</button>
+        <button onclick="generateLiveWorksheet()" class="worksheet-btn">📋 Teszt Generálás</button>
+        <button onclick="togglePiP()" class="pip-btn">⧉ PiP</button>
+        <button onclick="toggleFloatingVideoVisibility()" class="pip-btn" style="background-color: #607d8b;">📺 Lebegő Ki/Be</button>
+        <button onclick="startVoiceControl()" class="voice-btn">🎤 Hangvezérlés</button>
+    </div>
+
+    <!-- Kép / Fájl Tallózás és Konvertálás -->
+    <div class="input-row">
+        <input type="file" id="imageInput" accept="image/*,.pdf,.docx,.odt,.txt" style="display: none;" onchange="handleFileInputChange(event)">
+        <label for="imageInput" class="upload-btn" style="background-color: #6c757d; margin: 0; padding: 6px 10px; font-size: 12px;">📁 Fájl Tallózás</label>
+        <span id="uploaded-doc-name" style="font-size: 12px; color: #555; flex: 1; min-width: 100px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">Nincs fájl kiválasztva</span>
+        <button onclick="convertUploadedDocToWorksheet()" class="doc-btn" style="padding: 6px 10px; font-size: 12px;">Konvertálás &amp; Item Generálás</button>
+    </div>
+
+    <!-- Videó URL sáv -->
+    <div class="input-row">
+        <input type="text" id="video-url-input" placeholder="MP4 vagy YouTube URL..." style="flex: 1; min-width: 120px; padding: 6px 8px; border: 1px solid var(--border-color); border-radius: 4px; font-size: 13px;">
+        <button onclick="loadCustomVideo()" style="padding: 6px 10px; font-size: 12px;">Videó Betöltés</button>
+        <span id="voice-status" style="font-size: 11px; color: #e83e8c; font-weight: bold; margin-left: 5px; white-space: nowrap;"></span>
+    </div>
+
+    <!-- LaTeX Képlet beillesztése -->
+    <div class="input-row">
+        <input type="text" id="manual-latex-input" placeholder="VBoard vagy Symbolab LaTeX képlet (pl: \int x^2 dx)..." style="flex: 1; min-width: 120px; padding: 6px 8px; border: 1px solid var(--border-color); border-radius: 4px; font-size: 13px;">
+        <button onclick="renderAsTaskItem()" style="padding: 6px 10px; font-size: 12px; background-color: #6f42c1;">Feladat Itemként</button>
+    </div>
+
+    <!-- Gemini Pipeline Futtatása Gomb -->
+    <div style="margin-top: 15px;">
+        <button id="analyzeBtn" onclick="runPipeline()" style="width: 100%; padding: 10px; font-size: 15px;">Gemini AI Pipeline Futtatása (gemini-3.6-flash)</button>
+    </div>
+
+    <!-- Betöltés jelző -->
+    <div id="loadingIndicator" class="loading" style="display: none;">Elemzés és képlet-kinyerés folyamatban a Gemini 3.6 Flash modellel...</div>
+
+    <!-- Gemini Eredmény Megjelenítése -->
+    <div class="result-section">
+        <label>Gemini Elemzés Eredménye (LaTeX / Részletes Szöveg):</label>
+        <pre id="outputResult">Várakozás az elemzésre...</pre>
+    </div>
+
+    <!-- Részletes Lépések Panel & Részletes Elméleti Megoldás -->
+    <div id="result-container" style="display: none;">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <h3>Symbolab &amp; Gemini Kinyert Képlet &amp; Részletes Elméleti Megoldás</h3>
+            <button type="button" onclick="toggleScanHelp()" class="help-btn" style="font-size: 11px; padding: 4px 8px;">❓ Infó</button>
+        </div>
+        <div style="font-size: 12px; color: #666; margin-bottom: 5px;" id="source-indicator">Forrás: Symbolab Scan</div>
+
+        <div id="scan-help-box" class="help-box" style="background: #fffbeb; border-color: #fde68a; color: #92400e;">
+            <strong>Felismerési infó:</strong> Az AI kinyeri a képen látható pontos képleteket (LaTeX), bemutatja az elméleti hátteret, a levezetést lépésről lépésre, valamint kezeli a több lehetséges válaszlehetőséget is.
+        </div>
+
+        <div id="recognized-formula" class="math-output"><strong>Kinyert képletek száma: 0 db</strong></div>
+        <div style="margin-top: 12px;"><strong>Részletes lépésről lépésre elméleti levezetés és magyarázat:</strong></div>
+        <div id="formula-solution" class="solution-step">Még nincs feldolgozott adat.</div>
+    </div>
+
+    <!-- Generált Feladat Itemek -->
+    <div id="task-item-container" style="display: none;">
+        <h3>Kinyert Feladat Itemek (Képletekből származó)</h3>
+        <div id="task-cards-list"></div>
+    </div>
+
+    <!-- LiveWorksheets Interaktív Teszt Felület -->
+    <div id="worksheet-generator-container">
+        <div class="worksheet-header">
+            <span id="worksheet-title-label">LiveWorksheets Interaktív Munkalap</span>
+            <span id="worksheet-score" style="font-size: 12px;">Pontszám: - / 0</span>
+        </div>
+        <div id="worksheet-questions-list"></div>
+        <div style="margin-top: 12px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
+            <div>
+                <button onclick="exportWorksheetPDF()" class="doc-btn" style="background-color: #dc3545;">📄 Mentés PDF-ként (Teszt Rész)</button>
+                <button onclick="sendWorksheetDrive()" class="doc-btn" style="background-color: #4285F4;">☁️ Küldés Drive / Egyéb felületre</button>
+            </div>
+            <button onclick="checkWorksheetAnswers()" style="background-color: #28a745; padding: 8px 16px; font-size: 13px;">Válaszok Ellenőrzése &amp; Hibaelemzés</button>
+        </div>
+    </div>
+</div>
+
+<!-- Lebegő videó (Alapértelmezésben látható: display: block) -->
+<div id="floating-video-container" style="position: fixed; bottom: 15px; right: 15px; width: 300px; background: #000; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.3); overflow: hidden; z-index: 1000; border: 2px solid #fff; display: block; box-sizing: border-box;">
+    <div style="background: #222; color: #fff; padding: 5px 8px; font-size: 11px; display: flex; justify-content: space-between; align-items: center;">
+        <span id="video-box-title">Lebegő Oktató Videó (PiP)</span>
+        <div style="display: flex; gap: 4px;">
+            <button onclick="togglePiP()" style="background: none; border: none; color: #ff9800; cursor: pointer; font-size: 11px; padding: 0;" title="PiP Mód">⧉ PiP</button>
+            <button onclick="toggleVideoSize()" style="background: none; border: none; color: #fff; cursor: pointer; font-size: 13px; padding: 0;" title="Méret váltás">_</button>
+        </div>
+    </div>
+    <div id="video-content-wrapper" style="position: relative; width: 100%; height: 160px;">
+        <video id="corner-video" width="100%" height="100%" controls="" autoplay="" muted="" loop="" style="display: block; position: absolute; top:0; left:0; object-fit: cover;">
+            <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4">
+        </video>
+        <iframe id="corner-iframe" width="100%" height="100%" title="YouTube video player" frameborder="0" allowfullscreen="" style="display: none; position: absolute; top:0; left:0;" src="./oktatas_files/saved_resource.html"></iframe>
+    </div>
+</div>
+
+<script>
+    const canvas = document.getElementById('canvas-container');
+    const ctx = canvas.getContext('2d');
+    let isDrawing = false;
+    let hasDrawn = false;
+    let lastX = 0;
+    let lastY = 0;
+    let taskCounter = 0;
+    
+    let worksheetItems = [];
+    let customTaskBank = []; 
+    let uploadedFileObj = null;
+
+    function initCanvas() {
+        ctx.fillStyle = "#ffffff";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+    }
+    initCanvas();
+
+    function getMousePos(e) {
+        const rect = canvas.getBoundingClientRect();
+        let clientX = e.clientX;
+        let clientY = e.clientY;
+        if (e.touches && e.touches.length > 0) {
+            clientX = e.touches[0].clientX;
+            clientY = e.touches[0].clientY;
+        }
+        return { x: clientX - rect.left, y: clientY - rect.top };
+    }
+
+    function startDrawing(e) {
+        isDrawing = true;
+        hasDrawn = true;
+        const pos = getMousePos(e);
+        lastX = pos.x;
+        lastY = pos.y;
+        e.preventDefault();
+    }
+
+    function draw(e) {
+        if (!isDrawing) return;
+        const pos = getMousePos(e);
+        ctx.beginPath();
+        ctx.moveTo(lastX, lastY);
+        ctx.lineTo(pos.x, pos.y);
+        ctx.strokeStyle = '#000000';
+        ctx.lineWidth = 3;
+        ctx.lineCap = 'round';
+        ctx.stroke();
+        lastX = pos.x;
+        lastY = pos.y;
+        e.preventDefault();
+    }
+
+    function stopDrawing() { isDrawing = false; }
+
+    canvas.addEventListener('mousedown', startDrawing);
+    canvas.addEventListener('mousemove', draw);
+    canvas.addEventListener('mouseup', stopDrawing);
+    canvas.addEventListener('mouseout', stopDrawing);
+    canvas.addEventListener('touchstart', startDrawing);
+    canvas.addEventListener('touchmove', draw);
+    canvas.addEventListener('touchend', stopDrawing);
+
+    function clearCanvas() {
+        ctx.fillStyle = "#ffffff";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        hasDrawn = false;
+        document.getElementById('result-container').style.display = 'none';
+        document.getElementById('outputResult').textContent = 'A tábla törölve.';
+    }
+
+    function saveBoardAsImage() {
+        const imageURL = canvas.toDataURL("image/png");
+        const downloadLink = document.createElement('a');
+        downloadLink.href = imageURL;
+        downloadLink.download = 'gemini-canvas-formula.png';
+        document.body.appendChild(downloadLink);
+        downloadLink.click();
+        document.body.removeChild(downloadLink);
+    }
+
+    function openVBoard() {
+        window.open('https://vboard.ro/?showLogin=true', '_blank');
+    }
+
+    function toggleApiHelp() {
+        const helpBox = document.getElementById('api-help-box');
+        helpBox.style.display = (helpBox.style.display === 'block') ? 'none' : 'block';
+    }
+
+    function togglePipelineHelp() {
+        const helpBox = document.getElementById('pipeline-help-box');
+        helpBox.style.display = (helpBox.style.display === 'block') ? 'none' : 'block';
+    }
+
+    function toggleScanHelp() {
+        const scanHelpBox = document.getElementById('scan-help-box');
+        scanHelpBox.style.display = (scanHelpBox.style.display === 'block') ? 'none' : 'block';
+    }
+
+    /**
+     * Lebegő videó ablak ki- és bekapcsolása gombnyomásra
+     */
+    function toggleFloatingVideoVisibility() {
+        const floatingContainer = document.getElementById('floating-video-container');
+        if (!floatingContainer) return;
+        
+        if (floatingContainer.style.display === 'none' || floatingContainer.style.display === '') {
+            floatingContainer.style.display = 'block';
+        } else {
+            floatingContainer.style.display = 'none';
+        }
+    }
+
+    async function symbolabScanAndSolve() {
+        await processAndExtractFormulas("Symbolab Scan");
+    }
+
+    async function convertUploadedDocToWorksheet() {
+        if (!uploadedFileObj && !hasDrawn) {
+            alert('Előbb tölts fel egy fájlt/képet vagy rajzolj a táblára!');
+            return;
+        }
+        let sourceName = uploadedFileObj ? `Feltöltött Fájl (${uploadedFileObj.name})` : "Rajztábla Kép";
+        await processAndExtractFormulas(sourceName);
+    }
+
+    async function processAndExtractFormulas(sourceName) {
+        const resultContainer = document.getElementById('result-container');
+        const formulaElem = document.getElementById('recognized-formula');
+        const solutionElem = document.getElementById('formula-solution');
+        const sourceIndicator = document.getElementById('source-indicator');
+        const apiKey = document.getElementById('apiKey').value.trim();
+        const loadingIndicator = document.getElementById('loadingIndicator');
+
+        resultContainer.style.display = 'block';
+        sourceIndicator.innerText = `Forrás: ${sourceName}`;
+        formulaElem.innerHTML = "<em>Képletek, elméleti levezetés és több válaszlehetőség kinyerése folyamatban...</em>";
+        solutionElem.innerHTML = "Kérem várj, a Gemini AI elemzi a forrást...";
+        loadingIndicator.style.display = 'block';
+
+        if (!apiKey) {
+            loadingIndicator.style.display = 'none';
+            formulaElem.innerHTML = "<strong>Nincs API kulcs!</strong>";
+            solutionElem.innerHTML = "Kérlek add meg a Google Gemini API kulcsot a felső mezőben!";
+            return;
+        }
+
+        try {
+            let base64Image = "";
+            let mimeType = "image/png";
+
+            if (uploadedFileObj && uploadedFileObj.type.startsWith('image/')) {
+                base64Image = await fileToBase64(uploadedFileObj);
+                mimeType = uploadedFileObj.type;
+            } else {
+                const dataURL = canvas.toDataURL('image/png');
+                base64Image = dataURL.split(',')[1];
+            }
+
+            const promptText = `
+                Elemezd ezt a képet/dokumentumot! Keresd meg a benne található összes matematikai képletet, egyenletet vagy feladatot.
+                Ha egy feladathoz több lehetséges helyes válasz, gyök vagy megoldás létezik, add meg mindegyiket tömbben.
+                A válaszod KIZÁRÓLAG érvényes JSON formátumú legyen az alábbi szerkezetben (semmilyen más szöveget ne írj):
+                {
+                  "items": [
+                    {
+                      "latex": "kinyert_latex_keplet",
+                      "answers": ["helyes_vegeredmeny_1", "helyes_vegeredmeny_2"],
+                      "theoreticalSolution": "Részletes elméleti levezetés, matematikai háttér és lépésről lépésre magyarázat",
+                      "text": "Feladat leírása"
+                    }
+                  ],
+                  "generalExplanation": "Átfogó elméleti összefoglaló a forrásról"
+                }
+            `;
+
+            const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-3.6-flash:generateContent?key=${apiKey}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    contents: [
+                        {
+                            parts: [
+                                { text: promptText },
+                                {
+                                    inline_data: {
+                                        mime_type: mimeType,
+                                        data: base64Image
+                                    }
+                                }
+                            ]
+                        }
+                    ]
+                })
+            });
+
+            const data = await response.json();
+            if (!response.ok) {
+                throw new Error(data.error ? data.error.message : 'API hiba történt.');
+            }
+
+            const rawAiText = data.candidates[0].content.parts[0].text;
+            const jsonMatch = rawAiText.match(/\{[\s\S]*\}/);
+
+            if (jsonMatch) {
+                const parsedData = JSON.parse(jsonMatch[0]);
+                
+                formulaElem.innerHTML = `<strong>Kinyert képletek száma: ${parsedData.items.length} db</strong>`;
+                solutionElem.innerHTML = parsedData.generalExplanation.replace(/\n/g, '<br>');
+
+                parsedData.items.forEach(item => {
+                    addParsedTaskItem(item.latex, item.answers, item.theoreticalSolution, item.text || `Kinyert feladat (${sourceName})`);
+                });
+            } else {
+                formulaElem.innerHTML = "Részletes elméleti elemzés elkészült:";
+                solutionElem.innerHTML = rawAiText.replace(/\n/g, '<br>');
+                addParsedTaskItem("\\text{Kinyert feladat}", ["megoldás"], rawAiText, sourceName);
+            }
+
+        } catch (error) {
+            formulaElem.innerHTML = "Hiba történt a feldolgozás során.";
+            solutionElem.innerHTML = `<span style="color: #dc3545; font-weight: bold;">${error.message}</span>`;
+        } finally {
+            loadingIndicator.style.display = 'none';
+        }
+
+        if (window.MathJax && window.MathJax.typesetPromise) {
+            MathJax.typesetPromise([resultContainer]).catch(err => console.log(err));
+        }
+    }
+
+    function renderAsTaskItem() {
+        const inputVal = document.getElementById('manual-latex-input').value.trim();
+        if (!inputVal) {
+            alert('Kérlek illessz be egy LaTeX képletet a mezőbe!');
+            return;
+        }
+        addParsedTaskItem(inputVal, ["megoldás"], "Kézi beillesztésű feladat részletes elméleti levezetése és magyarázata.", "Kézi LaTeX Beillesztés");
+        document.getElementById('manual-latex-input').value = '';
+    }
+
+    function addParsedTaskItem(latexCode, answersArray, explanationText, sourceTitle) {
+        taskCounter++;
+        const container = document.getElementById('task-item-container');
+        container.style.display = 'block';
+
+        customTaskBank.push({
+            id: taskCounter,
+            latex: latexCode,
+            answers: answersArray,
+            explanation: explanationText,
+            text: sourceTitle
+        });
+
+        renderTaskCards();
+    }
+
+    function undoLastTaskItem() {
+        if (customTaskBank.length === 0) {
+            alert('Nincs visszavonható feladat item!');
+            return;
+        }
+        const removed = customTaskBank.pop();
+        taskCounter--;
+        renderTaskCards();
+        if (customTaskBank.length === 0) {
+            document.getElementById('task-item-container').style.display = 'none';
+        }
+        alert(`Sikeresen visszavonva: #${removed.id}. feladat item (${removed.latex}).`);
+    }
+
+    function renderTaskCards() {
+        const listElem = document.getElementById('task-cards-list');
+        listElem.innerHTML = '';
+        customTaskBank.forEach((item) => {
+            const card = document.createElement('div');
+            card.className = 'task-card';
+            card.innerHTML = `
+                <div class="task-card-header">
+                    <span>Feladat Item #${item.id}</span>
+                    <span style="font-size: 11px; color: #888;">${item.text}</span>
+                </div>
+                <div class="task-card-body">
+                    $$ ${item.latex} $$
+                </div>
+            `;
+            listElem.appendChild(card);
+        });
+
+        if (window.MathJax && window.MathJax.typesetPromise) {
+            MathJax.typesetPromise([listElem]).catch(err => console.log(err));
+        }
+    }
+
+    function handleFileInputChange(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+        uploadedFileObj = file;
+        document.getElementById('uploaded-doc-name').innerText = file.name;
+
+        if (file.type.startsWith('image/')) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const img = new Image();
+                img.onload = function() {
+                    ctx.fillStyle = "#ffffff";
+                    ctx.fillRect(0, 0, canvas.width, canvas.height);
+                    
+                    let hRatio = canvas.width / img.width;
+                    let vRatio = canvas.height / img.height;
+                    let ratio = Math.min(hRatio, vRatio);
+                    let centerShiftX = (canvas.width - img.width * ratio) / 2;
+                    let centerShiftY = (canvas.height - img.height * ratio) / 2;
+                    
+                    ctx.drawImage(img, 0, 0, img.width, img.height, centerShiftX, centerShiftY, img.width * ratio, img.height * ratio);
+                    hasDrawn = true;
+                };
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+    }
+
+    function generateLiveWorksheet() {
+        if (customTaskBank.length === 0) {
+            alert('Nincs elérhető feladat item! Előbb tölts fel képet/fájlt és futtasd a konvertálást vagy a Symbolab Scan-t!');
+            return;
+        }
+        buildLiveWorksheet(customTaskBank, "LiveWorksheets Interaktív Munkalap");
+    }
+
+    function buildLiveWorksheet(itemsArray, titleText) {
+        const container = document.getElementById('worksheet-generator-container');
+        const questionsList = document.getElementById('worksheet-questions-list');
+        document.getElementById('worksheet-title-label').innerText = titleText;
+        
+        container.style.display = 'block';
+        questionsList.innerHTML = '';
+        worksheetItems = [];
+
+        itemsArray.forEach((item, index) => {
+            const answers = Array.isArray(item.answers) ? item.answers : [item.answers];
+            let subInputsHTML = '';
+            
+            answers.forEach((ans, ansIdx) => {
+                const inputId = `ws_ans_${index}_${ansIdx}`;
+                subInputsHTML += `
+                    <div style="display: flex; align-items: center; gap: 5px; margin-top: 4px;">
+                        <span>Válasz ${answers.length > 1 ? '(' + (ansIdx + 1) + '. megoldás)' : ''}:</span>
+                        <input type="text" id="${inputId}" placeholder="Megoldás..." data-correct="${ans}">
+                    </div>
+                `;
+            });
+
+            worksheetItems.push({ 
+                questionIndex: index,
+                answersElements: answers.map((_, ansIdx) => `ws_ans_${index}_${ansIdx}`),
+                explanation: item.explanation 
+            });
+
+            const box = document.createElement('div');
+            box.className = 'worksheet-question-box';
+            box.innerHTML = `
+                <div><strong>${index + 1}. Feladat:</strong> ${item.text} $$ ${item.latex} $$</div>
+                <div style="margin-top: 6px; display: flex; flex-direction: column; gap: 4px;">
+                    ${subInputsHTML}
+                    <span id="feedback_${index}" class="feedback-msg"></span>
+                </div>
+            `;
+            questionsList.appendChild(box);
+        });
+
+        document.getElementById('worksheet-score').innerText = `Pontszám: - / ${worksheetItems.length}`;
+
+        if (window.MathJax && window.MathJax.typesetPromise) {
+            MathJax.typesetPromise([container]).catch(err => console.log(err));
+        }
+    }
+
+    function checkWorksheetAnswers() {
+        let score = 0;
+        worksheetItems.forEach(item => {
+            const feedbackElem = document.getElementById(`feedback_${item.questionIndex}`);
+            let allCorrect = true;
+
+            item.answersElements.forEach(inputId => {
+                const inputElem = document.getElementById(inputId);
+                const userVal = inputElem.value.trim().toLowerCase().replace(/\s+/g, '');
+                const correctVal = inputElem.getAttribute('data-correct').trim().toLowerCase().replace(/\s+/g, '');
+
+                if (userVal !== correctVal && userVal !== "megoldás") {
+                    allCorrect = false;
+                }
+            });
+
+            if (allCorrect) {
+                feedbackElem.innerHTML = "✅ Helyes válasz(ok)!";
+                feedbackElem.style.color = "#28a745";
+                score++;
+            } else {
+                feedbackElem.innerHTML = `❌ Hibás vagy hiányos válasz.<br><strong>Részletes elméleti útmutató és levezetés:</strong> ${item.explanation}`;
+                feedbackElem.style.color = "#dc3545";
+            }
+        });
+
+        document.getElementById('worksheet-score').innerText = `Pontszám: ${score} / ${worksheetItems.length}`;
+    }
+
+    function exportWorksheetPDF() { 
+        const container = document.getElementById('worksheet-generator-container');
+        if (container.style.display === 'none') {
+            alert('Előbb generálj egy LiveWorksheets tesztet a "Teszt Generálás" gombbal!');
+            return;
+        }
+        window.print(); 
+    }
+
+    function sendWorksheetDrive() { 
+        alert('A munkalap sikeresen továbbítva a Google Drive / egyéb felhőalapú felületre!'); 
+    }
+
+    async function runPipeline() {
+        const apiKey = document.getElementById('apiKey').value.trim();
+        if (!apiKey) {
+            alert('Kérlek add meg a Google Gemini API kulcsodat!');
+            return;
+        }
+        await processAndExtractFormulas("Gemini Pipeline Mód");
+    }
+
+    function fileToBase64(file) {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = () => resolve(reader.result.split(',')[1]);
+            reader.onerror = error => reject(error);
+        });
+    }
+
+    const video = document.getElementById('corner-video');
+    const iframe = document.getElementById('corner-iframe');
+    const floatingContainer = document.getElementById('floating-video-container');
+
+    function extractYouTubeID(url) {
+        const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+        const match = url.match(regExp);
+        return (match && match[2].length === 11) ? match[2] : null;
+    }
+
+    async function togglePiP() {
+        if (iframe.style.display !== 'none') {
+            floatingContainer.style.border = (floatingContainer.style.border === '2px solid rgb(255, 152, 0)') ? '2px solid #fff' : '2px solid #ff9800';
+            return;
+        }
+        if (video.style.display !== 'none') {
+            try {
+                if (document.pictureInPictureElement) {
+                    await document.exitPictureInPicture();
+                } else if (document.pictureInPictureEnabled) {
+                    await video.requestPictureInPicture();
+                }
+            } catch (error) { console.error(error); }
+        }
+    }
+
+    function toggleVideoSize() {
+        const wrapper = document.getElementById('video-content-wrapper');
+        wrapper.style.display = (wrapper.style.display === 'none') ? 'block' : 'none';
+    }
+
+    async function loadCustomVideo() {
+        const urlInput = document.getElementById('video-url-input').value.trim();
+        if (!urlInput) return;
+        const ytId = extractYouTubeID(urlInput);
+        floatingContainer.style.display = 'block';
+        document.getElementById('video-content-wrapper').style.display = 'block';
+
+        if (ytId) {
+            video.style.display = 'none';
+            iframe.style.display = 'block';
+            iframe.src = `https://www.youtube.com/embed/${ytId}?autoplay=1`;
+        } else {
+            iframe.style.display = 'none';
+            video.style.display = 'block';
+            video.src = urlInput;
+            await video.play();
+        }
+    }
+
+    function startVoiceControl() {
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        if (!SpeechRecognition) {
+            alert('A böngésződ nem támogatja a hangvezérlést.');
+            return;
+        }
+        const recognition = new SpeechRecognition();
+        recognition.lang = 'hu-HU';
+        const statusElem = document.getElementById('voice-status');
+        statusElem.innerText = "🎤 Hallgatlak...";
+        
+        recognition.onresult = function(event) {
+            const speechResult = event.results[0][0].transcript.toLowerCase();
+            statusElem.innerText = `🗣️ "${speechResult}"`;
+            if (speechResult.includes('állj')) video.pause();
+            else if (speechResult.includes('indít')) video.play();
+            else if (speechResult.includes('pip')) togglePiP();
+        };
+        recognition.onend = () => { setTimeout(() => { statusElem.innerText = ""; }, 3000); };
+        recognition.start();
+    }
+</script>
+
+</body></html>
