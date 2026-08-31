@@ -1,1 +1,1597 @@
 
+<!DOCTYPE html>
+<!-- saved from url=(0068)file:///C:/Users/Utilizator/Downloads/gemini-code-1788183453457.html -->
+<html lang="hu"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tábla Kezelő PRO v7 - AI &amp; Kollaboratív Workspace (Csapatos verzió)</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="./Tábla Kezelő PRO v7 - AI &amp; Kollaboratív Workspace (Csapatos verzió)_files/saved_resource"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        bgMain: '#f8fafc',
+                        primary: '#2563eb',
+                        success: '#10b981',
+                        darkSlate: '#0f172a'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { background-color: #f8fafc; color: #0f172a; }
+        .tab-content { display: none; }
+        .tab-content.active { display: flex; }
+    </style>
+<style>*, ::before, ::after{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }::backdrop{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }/* ! tailwindcss v3.4.17 | MIT License | https://tailwindcss.com */*,::after,::before{box-sizing:border-box;border-width:0;border-style:solid;border-color:#e5e7eb}::after,::before{--tw-content:''}:host,html{line-height:1.5;-webkit-text-size-adjust:100%;-moz-tab-size:4;tab-size:4;font-family:ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";font-feature-settings:normal;font-variation-settings:normal;-webkit-tap-highlight-color:transparent}body{margin:0;line-height:inherit}hr{height:0;color:inherit;border-top-width:1px}abbr:where([title]){-webkit-text-decoration:underline dotted;text-decoration:underline dotted}h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight:inherit}a{color:inherit;text-decoration:inherit}b,strong{font-weight:bolder}code,kbd,pre,samp{font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;font-feature-settings:normal;font-variation-settings:normal;font-size:1em}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}table{text-indent:0;border-color:inherit;border-collapse:collapse}button,input,optgroup,select,textarea{font-family:inherit;font-feature-settings:inherit;font-variation-settings:inherit;font-size:100%;font-weight:inherit;line-height:inherit;letter-spacing:inherit;color:inherit;margin:0;padding:0}button,select{text-transform:none}button,input:where([type=button]),input:where([type=reset]),input:where([type=submit]){-webkit-appearance:button;background-color:transparent;background-image:none}:-moz-focusring{outline:auto}:-moz-ui-invalid{box-shadow:none}progress{vertical-align:baseline}::-webkit-inner-spin-button,::-webkit-outer-spin-button{height:auto}[type=search]{-webkit-appearance:textfield;outline-offset:-2px}::-webkit-search-decoration{-webkit-appearance:none}::-webkit-file-upload-button{-webkit-appearance:button;font:inherit}summary{display:list-item}blockquote,dd,dl,figure,h1,h2,h3,h4,h5,h6,hr,p,pre{margin:0}fieldset{margin:0;padding:0}legend{padding:0}menu,ol,ul{list-style:none;margin:0;padding:0}dialog{padding:0}textarea{resize:vertical}input::placeholder,textarea::placeholder{opacity:1;color:#9ca3af}[role=button],button{cursor:pointer}:disabled{cursor:default}audio,canvas,embed,iframe,img,object,svg,video{display:block;vertical-align:middle}img,video{max-width:100%;height:auto}[hidden]:where(:not([hidden=until-found])){display:none}.relative{position:relative}.z-10{z-index:10}.z-20{z-index:20}.mx-auto{margin-left:auto;margin-right:auto}.mb-0\.5{margin-bottom:0.125rem}.mb-1{margin-bottom:0.25rem}.mb-2{margin-bottom:0.5rem}.mb-3{margin-bottom:0.75rem}.mt-1{margin-top:0.25rem}.block{display:block}.inline-block{display:inline-block}.flex{display:flex}.grid{display:grid}.hidden{display:none}.h-2\.5{height:0.625rem}.h-\[36vh\]{height:36vh}.h-\[calc\(100vh-57px\)\]{height:calc(100vh - 57px)}.h-full{height:100%}.h-24{height:6rem}.h-\[550px\]{height:550px}.min-h-screen{min-height:100vh}.min-h-\[140px\]{min-height:140px}.min-h-\[40px\]{min-height:40px}.w-2\.5{width:0.625rem}.w-\[340px\]{width:340px}.w-full{width:100%}.max-w-4xl{max-width:56rem}.max-w-6xl{max-width:72rem}.flex-1{flex:1 1 0%}.shrink-0{flex-shrink:0}.border-collapse{border-collapse:collapse}@keyframes pulse{50%{opacity:.5}}.animate-pulse{animation:pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite}.cursor-pointer{cursor:pointer}.cursor-move{cursor:move}.grid-cols-2{grid-template-columns:repeat(2, minmax(0, 1fr))}.grid-cols-1{grid-template-columns:repeat(1, minmax(0, 1fr))}.flex-col{flex-direction:column}.flex-wrap{flex-wrap:wrap}.items-start{align-items:flex-start}.items-center{align-items:center}.justify-center{justify-content:center}.justify-between{justify-content:space-between}.gap-1{gap:0.25rem}.gap-1\.5{gap:0.375rem}.gap-2{gap:0.5rem}.gap-3{gap:0.75rem}.gap-6{gap:1.5rem}.space-y-2 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(0.5rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(0.5rem * var(--tw-space-y-reverse))}.space-y-4 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(1rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(1rem * var(--tw-space-y-reverse))}.space-y-1 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(0.25rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(0.25rem * var(--tw-space-y-reverse))}.space-y-2\.5 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(0.625rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(0.625rem * var(--tw-space-y-reverse))}.space-y-3 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(0.75rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(0.75rem * var(--tw-space-y-reverse))}.space-y-5 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(1.25rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(1.25rem * var(--tw-space-y-reverse))}.space-y-6 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(1.5rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(1.5rem * var(--tw-space-y-reverse))}.space-y-8 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(2rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(2rem * var(--tw-space-y-reverse))}.overflow-hidden{overflow:hidden}.overflow-x-auto{overflow-x:auto}.overflow-y-auto{overflow-y:auto}.rounded{border-radius:0.25rem}.rounded-full{border-radius:9999px}.rounded-lg{border-radius:0.5rem}.rounded-2xl{border-radius:1rem}.rounded-xl{border-radius:0.75rem}.border{border-width:1px}.border-0{border-width:0px}.border-b{border-bottom-width:1px}.border-r{border-right-width:1px}.border-t{border-top-width:1px}.border-b-2{border-bottom-width:2px}.border-slate-100{--tw-border-opacity:1;border-color:rgb(241 245 249 / var(--tw-border-opacity, 1))}.border-slate-200{--tw-border-opacity:1;border-color:rgb(226 232 240 / var(--tw-border-opacity, 1))}.border-\[\#10b981\]{--tw-border-opacity:1;border-color:rgb(16 185 129 / var(--tw-border-opacity, 1))}.border-blue-100{--tw-border-opacity:1;border-color:rgb(219 234 254 / var(--tw-border-opacity, 1))}.border-blue-200{--tw-border-opacity:1;border-color:rgb(191 219 254 / var(--tw-border-opacity, 1))}.border-emerald-100{--tw-border-opacity:1;border-color:rgb(209 250 229 / var(--tw-border-opacity, 1))}.border-transparent{border-color:transparent}.bg-\[\#10b981\]{--tw-bg-opacity:1;background-color:rgb(16 185 129 / var(--tw-bg-opacity, 1))}.bg-\[\#2563eb\]{--tw-bg-opacity:1;background-color:rgb(37 99 235 / var(--tw-bg-opacity, 1))}.bg-\[\#f8fafc\]{--tw-bg-opacity:1;background-color:rgb(248 250 252 / var(--tw-bg-opacity, 1))}.bg-emerald-500{--tw-bg-opacity:1;background-color:rgb(16 185 129 / var(--tw-bg-opacity, 1))}.bg-slate-100{--tw-bg-opacity:1;background-color:rgb(241 245 249 / var(--tw-bg-opacity, 1))}.bg-slate-200{--tw-bg-opacity:1;background-color:rgb(226 232 240 / var(--tw-bg-opacity, 1))}.bg-slate-50{--tw-bg-opacity:1;background-color:rgb(248 250 252 / var(--tw-bg-opacity, 1))}.bg-white{--tw-bg-opacity:1;background-color:rgb(255 255 255 / var(--tw-bg-opacity, 1))}.bg-amber-50{--tw-bg-opacity:1;background-color:rgb(255 251 235 / var(--tw-bg-opacity, 1))}.bg-blue-100{--tw-bg-opacity:1;background-color:rgb(219 234 254 / var(--tw-bg-opacity, 1))}.bg-blue-50{--tw-bg-opacity:1;background-color:rgb(239 246 255 / var(--tw-bg-opacity, 1))}.bg-blue-50\/40{background-color:rgb(239 246 255 / 0.4)}.bg-emerald-100{--tw-bg-opacity:1;background-color:rgb(209 250 229 / var(--tw-bg-opacity, 1))}.bg-emerald-50{--tw-bg-opacity:1;background-color:rgb(236 253 245 / var(--tw-bg-opacity, 1))}.bg-emerald-50\/40{background-color:rgb(236 253 245 / 0.4)}.bg-slate-800{--tw-bg-opacity:1;background-color:rgb(30 41 59 / var(--tw-bg-opacity, 1))}.bg-slate-900{--tw-bg-opacity:1;background-color:rgb(15 23 42 / var(--tw-bg-opacity, 1))}.bg-gradient-to-r{background-image:linear-gradient(to right, var(--tw-gradient-stops))}.from-blue-600{--tw-gradient-from:#2563eb var(--tw-gradient-from-position);--tw-gradient-to:rgb(37 99 235 / 0) var(--tw-gradient-to-position);--tw-gradient-stops:var(--tw-gradient-from), var(--tw-gradient-to)}.from-blue-50{--tw-gradient-from:#eff6ff var(--tw-gradient-from-position);--tw-gradient-to:rgb(239 246 255 / 0) var(--tw-gradient-to-position);--tw-gradient-stops:var(--tw-gradient-from), var(--tw-gradient-to)}.to-emerald-600{--tw-gradient-to:#059669 var(--tw-gradient-to-position)}.to-indigo-50{--tw-gradient-to:#eef2ff var(--tw-gradient-to-position)}.object-cover{object-fit:cover}.p-2{padding:0.5rem}.p-4{padding:1rem}.p-1{padding:0.25rem}.p-2\.5{padding:0.625rem}.p-3{padding:0.75rem}.p-6{padding:1.5rem}.p-8{padding:2rem}.px-2{padding-left:0.5rem;padding-right:0.5rem}.px-2\.5{padding-left:0.625rem;padding-right:0.625rem}.px-3{padding-left:0.75rem;padding-right:0.75rem}.px-3\.5{padding-left:0.875rem;padding-right:0.875rem}.px-4{padding-left:1rem;padding-right:1rem}.px-6{padding-left:1.5rem;padding-right:1.5rem}.py-1{padding-top:0.25rem;padding-bottom:0.25rem}.py-1\.5{padding-top:0.375rem;padding-bottom:0.375rem}.py-2{padding-top:0.5rem;padding-bottom:0.5rem}.py-3{padding-top:0.75rem;padding-bottom:0.75rem}.py-0\.5{padding-top:0.125rem;padding-bottom:0.125rem}.py-2\.5{padding-top:0.625rem;padding-bottom:0.625rem}.px-1{padding-left:0.25rem;padding-right:0.25rem}.px-1\.5{padding-left:0.375rem;padding-right:0.375rem}.pt-1{padding-top:0.25rem}.pt-3{padding-top:0.75rem}.pb-12{padding-bottom:3rem}.pb-2{padding-bottom:0.5rem}.pb-3{padding-bottom:0.75rem}.pt-2{padding-top:0.5rem}.pb-1{padding-bottom:0.25rem}.text-center{text-align:center}.font-mono{font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace}.font-sans{font-family:ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"}.text-\[11px\]{font-size:11px}.text-base{font-size:1rem;line-height:1.5rem}.text-xs{font-size:0.75rem;line-height:1rem}.text-\[10px\]{font-size:10px}.text-lg{font-size:1.125rem;line-height:1.75rem}.text-sm{font-size:0.875rem;line-height:1.25rem}.text-xl{font-size:1.25rem;line-height:1.75rem}.font-bold{font-weight:700}.font-medium{font-weight:500}.font-semibold{font-weight:600}.uppercase{text-transform:uppercase}.tracking-wider{letter-spacing:0.05em}.text-\[\#0f172a\]{--tw-text-opacity:1;color:rgb(15 23 42 / var(--tw-text-opacity, 1))}.text-\[\#2563eb\]{--tw-text-opacity:1;color:rgb(37 99 235 / var(--tw-text-opacity, 1))}.text-slate-400{--tw-text-opacity:1;color:rgb(148 163 184 / var(--tw-text-opacity, 1))}.text-slate-500{--tw-text-opacity:1;color:rgb(100 116 139 / var(--tw-text-opacity, 1))}.text-slate-600{--tw-text-opacity:1;color:rgb(71 85 105 / var(--tw-text-opacity, 1))}.text-slate-700{--tw-text-opacity:1;color:rgb(51 65 85 / var(--tw-text-opacity, 1))}.text-white{--tw-text-opacity:1;color:rgb(255 255 255 / var(--tw-text-opacity, 1))}.text-\[\#10b981\]{--tw-text-opacity:1;color:rgb(16 185 129 / var(--tw-text-opacity, 1))}.text-amber-600{--tw-text-opacity:1;color:rgb(217 119 6 / var(--tw-text-opacity, 1))}.text-blue-500{--tw-text-opacity:1;color:rgb(59 130 246 / var(--tw-text-opacity, 1))}.text-blue-800{--tw-text-opacity:1;color:rgb(30 64 175 / var(--tw-text-opacity, 1))}.text-blue-900{--tw-text-opacity:1;color:rgb(30 58 138 / var(--tw-text-opacity, 1))}.text-emerald-400{--tw-text-opacity:1;color:rgb(52 211 153 / var(--tw-text-opacity, 1))}.text-emerald-500{--tw-text-opacity:1;color:rgb(16 185 129 / var(--tw-text-opacity, 1))}.text-emerald-800{--tw-text-opacity:1;color:rgb(6 95 70 / var(--tw-text-opacity, 1))}.text-emerald-900{--tw-text-opacity:1;color:rgb(6 78 59 / var(--tw-text-opacity, 1))}.text-slate-800{--tw-text-opacity:1;color:rgb(30 41 59 / var(--tw-text-opacity, 1))}.text-red-400{--tw-text-opacity:1;color:rgb(248 113 113 / var(--tw-text-opacity, 1))}.antialiased{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}.shadow-sm{--tw-shadow:0 1px 2px 0 rgb(0 0 0 / 0.05);--tw-shadow-colored:0 1px 2px 0 var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)}.shadow{--tw-shadow:0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);--tw-shadow-colored:0 1px 3px 0 var(--tw-shadow-color), 0 1px 2px -1px var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)}.transition{transition-property:color, background-color, border-color, fill, stroke, opacity, box-shadow, transform, filter, -webkit-text-decoration-color, -webkit-backdrop-filter;transition-property:color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter;transition-property:color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter, -webkit-text-decoration-color, -webkit-backdrop-filter;transition-timing-function:cubic-bezier(0.4, 0, 0.2, 1);transition-duration:150ms}.file\:mr-2::file-selector-button{margin-right:0.5rem}.file\:rounded::file-selector-button{border-radius:0.25rem}.file\:border-0::file-selector-button{border-width:0px}.file\:bg-blue-50::file-selector-button{--tw-bg-opacity:1;background-color:rgb(239 246 255 / var(--tw-bg-opacity, 1))}.file\:px-2::file-selector-button{padding-left:0.5rem;padding-right:0.5rem}.file\:py-1::file-selector-button{padding-top:0.25rem;padding-bottom:0.25rem}.file\:text-\[11px\]::file-selector-button{font-size:11px}.file\:font-semibold::file-selector-button{font-weight:600}.file\:text-\[\#2563eb\]::file-selector-button{--tw-text-opacity:1;color:rgb(37 99 235 / var(--tw-text-opacity, 1))}.hover\:border-blue-200:hover{--tw-border-opacity:1;border-color:rgb(191 219 254 / var(--tw-border-opacity, 1))}.hover\:border-blue-300:hover{--tw-border-opacity:1;border-color:rgb(147 197 253 / var(--tw-border-opacity, 1))}.hover\:bg-emerald-600:hover{--tw-bg-opacity:1;background-color:rgb(5 150 105 / var(--tw-bg-opacity, 1))}.hover\:bg-slate-200:hover{--tw-bg-opacity:1;background-color:rgb(226 232 240 / var(--tw-bg-opacity, 1))}.hover\:bg-slate-300:hover{--tw-bg-opacity:1;background-color:rgb(203 213 225 / var(--tw-bg-opacity, 1))}.hover\:bg-amber-100:hover{--tw-bg-opacity:1;background-color:rgb(254 243 199 / var(--tw-bg-opacity, 1))}.hover\:bg-blue-100:hover{--tw-bg-opacity:1;background-color:rgb(219 234 254 / var(--tw-bg-opacity, 1))}.hover\:bg-blue-700:hover{--tw-bg-opacity:1;background-color:rgb(29 78 216 / var(--tw-bg-opacity, 1))}.hover\:bg-emerald-100:hover{--tw-bg-opacity:1;background-color:rgb(209 250 229 / var(--tw-bg-opacity, 1))}.hover\:bg-red-50:hover{--tw-bg-opacity:1;background-color:rgb(254 242 242 / var(--tw-bg-opacity, 1))}.hover\:bg-slate-100:hover{--tw-bg-opacity:1;background-color:rgb(241 245 249 / var(--tw-bg-opacity, 1))}.hover\:text-red-500:hover{--tw-text-opacity:1;color:rgb(239 68 68 / var(--tw-text-opacity, 1))}.hover\:text-red-600:hover{--tw-text-opacity:1;color:rgb(220 38 38 / var(--tw-text-opacity, 1))}.hover\:underline:hover{-webkit-text-decoration-line:underline;text-decoration-line:underline}.hover\:file\:bg-blue-100::file-selector-button:hover{--tw-bg-opacity:1;background-color:rgb(219 234 254 / var(--tw-bg-opacity, 1))}.focus\:border-\[\#2563eb\]:focus{--tw-border-opacity:1;border-color:rgb(37 99 235 / var(--tw-border-opacity, 1))}.focus\:bg-white:focus{--tw-bg-opacity:1;background-color:rgb(255 255 255 / var(--tw-bg-opacity, 1))}.focus\:outline-none:focus{outline:2px solid transparent;outline-offset:2px}@media (min-width: 640px){.sm\:flex-row{flex-direction:row}.sm\:items-center{align-items:center}}@media (min-width: 768px){.md\:grid-cols-3{grid-template-columns:repeat(3, minmax(0, 1fr))}.md\:grid-cols-2{grid-template-columns:repeat(2, minmax(0, 1fr))}}@media (min-width: 1024px){.lg\:w-1\/2{width:50%}.lg\:flex-row{flex-direction:row}}</style></head>
+<body class="min-h-screen flex flex-col font-sans antialiased text-[#0f172a]">
+
+    <!-- Felső Fő Navigációs Sáv -->
+    <header class="bg-white border-b border-slate-200 px-6 py-3 flex items-center justify-between shrink-0 shadow-sm z-20">
+        <div class="flex items-center gap-3">
+            <span class="bg-gradient-to-r from-blue-600 to-emerald-600 text-white font-bold text-xs px-2.5 py-1 rounded-lg">PRO v7 AI</span>
+            <h1 class="font-bold text-base text-[#0f172a]">Tábla Kezelő &amp; Kollaboratív Workspace</h1>
+        </div>
+        <nav class="flex items-center gap-2">
+            <button onclick="switchModule(&#39;manager&#39;)" id="btn-manager" class="px-3.5 py-1.5 text-xs font-semibold rounded-lg bg-[#2563eb] text-white transition">1-2. Kezelő &amp; Generáló</button>
+            <button onclick="switchModule(&#39;collab&#39;)" id="btn-collab" class="px-3.5 py-1.5 text-xs font-semibold rounded-lg bg-slate-100 text-slate-600 hover:bg-slate-200 transition">3. Kollaboratív Workspace</button>
+            <button onclick="switchModule(&#39;kanban&#39;)" id="btn-kanban" class="px-3.5 py-1.5 text-xs font-semibold rounded-lg bg-slate-100 text-slate-600 hover:bg-slate-200 transition">4. Csoportos Kanban</button>
+            <button onclick="switchModule(&#39;downloads&#39;)" id="btn-downloads" class="px-3.5 py-1.5 text-xs font-semibold rounded-lg bg-slate-100 text-slate-600 hover:bg-slate-200 transition">5. Letöltések &amp; Portfólió</button>
+        </nav>
+    </header>
+
+    <!-- ================= 1. ÉS 2. MODUL: KEZELŐ ÉS GENERÁLÓ ================= -->
+    <div id="module-manager" class="tab-content active flex-1 overflow-hidden h-[calc(100vh-57px)]">
+        
+        <!-- Bal Sidebar (340px) -->
+        <aside class="w-[340px] bg-white border-r border-slate-200 flex flex-col shrink-0 z-10 shadow-sm overflow-y-auto p-4 space-y-4">
+            <div>
+                <h2 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Projekt &amp; Struktúra</h2>
+                <div class="space-y-2">
+                    <div>
+                        <label class="block text-[11px] font-medium text-slate-500 mb-0.5">Projekt Név (Vercel)</label>
+                        <input type="text" id="projectName" value="red-zeta-one" class="w-full text-xs px-2.5 py-1.5 border border-slate-200 rounded-lg focus:outline-none focus:border-[#2563eb]">
+                    </div>
+                    <div class="grid grid-cols-2 gap-2">
+                        <div>
+                            <label class="block text-[11px] font-medium text-slate-500 mb-0.5">Base Path</label>
+                            <input type="text" id="basePathInput" value="tabla" class="w-full text-xs px-2 py-1 border border-slate-200 rounded bg-white">
+                        </div>
+                        <div>
+                            <label class="block text-[11px] font-medium text-slate-500 mb-0.5">HTML Part</label>
+                            <input type="text" id="htmlPartInput" value="index.html" class="w-full text-xs px-2 py-1 border border-slate-200 rounded bg-white">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-[11px] font-medium text-slate-500 mb-0.5">Struktúra Választó</label>
+                        <select id="structureSelect" class="w-full text-xs px-2 py-1 border border-slate-200 rounded bg-white">
+                            <option value="folder_index">folder_index (mappa/slug/index.html)</option>
+                            <option value="folder_html">folder_html (mappa/slug/htmlPart)</option>
+                            <option value="flat">flat (mappa/slug.html)</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Kereső & Kategóriák -->
+            <div class="border-t border-slate-100 pt-3 space-y-2">
+                <input type="text" id="searchInput" placeholder="Keresés cím vagy slug alapján..." class="w-full text-xs px-3 py-1.5 border border-slate-200 rounded-lg focus:outline-none focus:border-[#2563eb]">
+                <div>
+                    <div class="flex justify-between items-center mb-1">
+                        <span class="text-[11px] font-semibold text-slate-400 uppercase">Kategóriák</span>
+                    </div>
+                    <div id="categoryBadgeList" class="flex flex-wrap gap-1"><button onclick="filterCategory(&#39;all&#39;)" class="text-[11px] px-2 py-0.5 rounded font-medium transition bg-[#2563eb] text-white">Mind</button><button onclick="filterCategory(&#39;buborek&#39;)" class="text-[11px] px-2 py-0.5 rounded font-medium transition bg-slate-100 text-slate-600">buborek</button><button onclick="filterCategory(&#39;kombinatorika&#39;)" class="text-[11px] px-2 py-0.5 rounded font-medium transition bg-slate-100 text-slate-600">kombinatorika</button><button onclick="filterCategory(&#39;matematika&#39;)" class="text-[11px] px-2 py-0.5 rounded font-medium transition bg-slate-100 text-slate-600">matematika</button><button onclick="filterCategory(&#39;egyes&#39;)" class="text-[11px] px-2 py-0.5 rounded font-medium transition bg-slate-100 text-slate-600">egyes</button></div>
+                </div>
+                <div class="flex gap-1.5">
+                    <input type="text" id="newCatInput" placeholder="Új kategória..." class="flex-1 text-xs px-2 py-1 border border-slate-200 rounded">
+                    <button onclick="addNewCategory()" class="bg-[#2563eb] text-white text-xs px-2.5 py-1 rounded">Hozzáad</button>
+                </div>
+            </div>
+
+            <!-- 2. Modul: Generáló & Tananyag Feltöltés -->
+            <div class="border-t border-slate-200 pt-3 space-y-2">
+                <div class="flex justify-between items-center">
+                    <h3 class="text-xs font-bold text-slate-500 uppercase tracking-wider">2. Modul: Generáló &amp; Tananyag</h3>
+                </div>
+                <div>
+                    <label class="block text-[11px] font-medium text-slate-500 mb-1">Tananyag / Lista (tabla1 | Cím)</label>
+                    <textarea id="initList" rows="5" class="w-full text-[11px] font-mono p-2 border border-slate-200 rounded bg-slate-50 focus:outline-none focus:bg-white"></textarea>
+                </div>
+                <div>
+                    <label class="block text-[11px] font-medium text-slate-500 mb-1">Feltöltés (.txt / .html / .csv)</label>
+                    <input type="file" id="fileUploader" accept=".txt,.html,.csv" onchange="handleFileUpload(event)" class="w-full text-[11px] text-slate-500 file:mr-2 file:py-1 file:px-2 file:rounded file:border-0 file:text-[11px] file:font-semibold file:bg-blue-50 file:text-[#2563eb] hover:file:bg-blue-100 cursor-pointer">
+                </div>
+                <div class="flex gap-2 pt-1">
+                    <button onclick="runGenerator()" class="flex-1 bg-[#10b981] hover:bg-emerald-600 text-white text-xs py-2 rounded-lg font-semibold shadow-sm transition">Generálás &amp; Mentés</button>
+                    <button onclick="resetDefaultData()" class="bg-slate-200 hover:bg-slate-300 text-slate-700 text-xs px-2.5 py-2 rounded-lg font-medium transition" title="Alap 44 visszaállítása">Alap 44</button>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Jobb Fő Rész: Iframe Előnézet + Aktív kártyák -->
+        <main class="flex-1 flex flex-col h-full overflow-hidden bg-[#f8fafc]">
+            <section class="h-[36vh] border-b border-slate-200 bg-white flex flex-col shrink-0">
+                <div class="px-4 py-2 bg-slate-50 border-b border-slate-100 flex items-center justify-between text-xs">
+                    <div class="flex items-center gap-2">
+                        <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 inline-block animate-pulse"></span>
+                        <span class="font-semibold text-slate-700">Aktív Oldal Előnézet</span>
+                        <span id="currentPreviewUrlText" class="text-slate-400 font-mono text-[11px]">(Nincs kiválasztva)</span>
+                    </div>
+                    <a id="openNewTabBtn" href="file:///C:/Users/Utilizator/Downloads/gemini-code-1788183453457.html#" target="_blank" class="text-[#2563eb] hover:underline font-medium flex items-center gap-1">
+                        Megnyitás új lapon ↗
+                    </a>
+                </div>
+                <div class="flex-1 relative bg-slate-100">
+                    <iframe id="ifr" src="./Tábla Kezelő PRO v7 - AI &amp; Kollaboratív Workspace (Csapatos verzió)_files/saved_resource.html" class="w-full h-full border-0"></iframe>
+                </div>
+            </section>
+
+            <section class="flex-1 overflow-y-auto p-6 space-y-6">
+                <div class="flex items-center justify-between">
+                    <h2 class="text-lg font-bold text-[#0f172a]">Generált Táblák (<span id="tableCount">44</span>)</h2>
+                    <span class="text-xs text-slate-400">Kattints a "📄 Preview" gombra az azonnali betöltéshez</span>
+                </div>
+                <div id="cardContainer" class="space-y-6 pb-12">
+                    <div class="space-y-3">
+                        <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400 border-b border-slate-200 pb-1 flex justify-between">
+                            <span>buborek</span>
+                            <span>8 db</span>
+                        </h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                
+                        <div class="bg-white p-3 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between space-y-2 hover:border-blue-200 transition">
+                            <div>
+                                <span class="text-[10px] font-mono text-slate-400 bg-slate-50 px-1 py-0.5 rounded border">#1 | tabla1</span>
+                                <h4 class="text-xs font-semibold text-[#0f172a] mt-1">Melyik buborék repült a legmesszebbre?</h4>
+                            </div>
+                            <div class="flex items-center justify-between pt-2 border-t border-slate-100 text-xs gap-2">
+                                <select onchange="changeItemCategory(1, this.value)" class="text-[10px] bg-slate-50 border border-slate-200 rounded px-1.5 py-1 text-slate-600">
+                                    <option value="buborek" selected="">buborek</option><option value="kombinatorika">kombinatorika</option><option value="matematika">matematika</option><option value="egyes">egyes</option>
+                                </select>
+                                <div class="flex items-center gap-1">
+                                    <button onclick="previewTable(&#39;https://red-zeta-one.vercel.app/tabla/tabla1/index.html&#39;, &#39;Melyik buborék repült a legmesszebbre?&#39;)" class="bg-blue-50 hover:bg-blue-100 text-[#2563eb] px-2 py-1 rounded text-[11px] font-medium transition">📄 Preview</button>
+                                    <button onclick="renameTable(1)" class="p-1 hover:bg-slate-100 rounded text-slate-500" title="Átnevezés">✏️</button>
+                                    <button onclick="softDeleteTable(1)" class="p-1 hover:bg-red-50 rounded text-red-400 hover:text-red-600" title="Törlés">🗑️</button>
+                                </div>
+                            </div>
+                        </div>
+                    
+                        <div class="bg-white p-3 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between space-y-2 hover:border-blue-200 transition">
+                            <div>
+                                <span class="text-[10px] font-mono text-slate-400 bg-slate-50 px-1 py-0.5 rounded border">#4 | tabla4</span>
+                                <h4 class="text-xs font-semibold text-[#0f172a] mt-1">Tábla 4 - Aktív feladat</h4>
+                            </div>
+                            <div class="flex items-center justify-between pt-2 border-t border-slate-100 text-xs gap-2">
+                                <select onchange="changeItemCategory(4, this.value)" class="text-[10px] bg-slate-50 border border-slate-200 rounded px-1.5 py-1 text-slate-600">
+                                    <option value="buborek" selected="">buborek</option><option value="kombinatorika">kombinatorika</option><option value="matematika">matematika</option><option value="egyes">egyes</option>
+                                </select>
+                                <div class="flex items-center gap-1">
+                                    <button onclick="previewTable(&#39;https://red-zeta-one.vercel.app/tabla/tabla4/index.html&#39;, &#39;Tábla 4 - Aktív feladat&#39;)" class="bg-blue-50 hover:bg-blue-100 text-[#2563eb] px-2 py-1 rounded text-[11px] font-medium transition">📄 Preview</button>
+                                    <button onclick="renameTable(4)" class="p-1 hover:bg-slate-100 rounded text-slate-500" title="Átnevezés">✏️</button>
+                                    <button onclick="softDeleteTable(4)" class="p-1 hover:bg-red-50 rounded text-red-400 hover:text-red-600" title="Törlés">🗑️</button>
+                                </div>
+                            </div>
+                        </div>
+                    
+                        <div class="bg-white p-3 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between space-y-2 hover:border-blue-200 transition">
+                            <div>
+                                <span class="text-[10px] font-mono text-slate-400 bg-slate-50 px-1 py-0.5 rounded border">#5 | tabla5</span>
+                                <h4 class="text-xs font-semibold text-[#0f172a] mt-1">Tábla 5 - Aktív feladat</h4>
+                            </div>
+                            <div class="flex items-center justify-between pt-2 border-t border-slate-100 text-xs gap-2">
+                                <select onchange="changeItemCategory(5, this.value)" class="text-[10px] bg-slate-50 border border-slate-200 rounded px-1.5 py-1 text-slate-600">
+                                    <option value="buborek" selected="">buborek</option><option value="kombinatorika">kombinatorika</option><option value="matematika">matematika</option><option value="egyes">egyes</option>
+                                </select>
+                                <div class="flex items-center gap-1">
+                                    <button onclick="previewTable(&#39;https://red-zeta-one.vercel.app/tabla/tabla5/index.html&#39;, &#39;Tábla 5 - Aktív feladat&#39;)" class="bg-blue-50 hover:bg-blue-100 text-[#2563eb] px-2 py-1 rounded text-[11px] font-medium transition">📄 Preview</button>
+                                    <button onclick="renameTable(5)" class="p-1 hover:bg-slate-100 rounded text-slate-500" title="Átnevezés">✏️</button>
+                                    <button onclick="softDeleteTable(5)" class="p-1 hover:bg-red-50 rounded text-red-400 hover:text-red-600" title="Törlés">🗑️</button>
+                                </div>
+                            </div>
+                        </div>
+                    
+                        <div class="bg-white p-3 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between space-y-2 hover:border-blue-200 transition">
+                            <div>
+                                <span class="text-[10px] font-mono text-slate-400 bg-slate-50 px-1 py-0.5 rounded border">#6 | tabla6</span>
+                                <h4 class="text-xs font-semibold text-[#0f172a] mt-1">Tábla 6 - Aktív feladat</h4>
+                            </div>
+                            <div class="flex items-center justify-between pt-2 border-t border-slate-100 text-xs gap-2">
+                                <select onchange="changeItemCategory(6, this.value)" class="text-[10px] bg-slate-50 border border-slate-200 rounded px-1.5 py-1 text-slate-600">
+                                    <option value="buborek" selected="">buborek</option><option value="kombinatorika">kombinatorika</option><option value="matematika">matematika</option><option value="egyes">egyes</option>
+                                </select>
+                                <div class="flex items-center gap-1">
+                                    <button onclick="previewTable(&#39;https://red-zeta-one.vercel.app/tabla/tabla6/index.html&#39;, &#39;Tábla 6 - Aktív feladat&#39;)" class="bg-blue-50 hover:bg-blue-100 text-[#2563eb] px-2 py-1 rounded text-[11px] font-medium transition">📄 Preview</button>
+                                    <button onclick="renameTable(6)" class="p-1 hover:bg-slate-100 rounded text-slate-500" title="Átnevezés">✏️</button>
+                                    <button onclick="softDeleteTable(6)" class="p-1 hover:bg-red-50 rounded text-red-400 hover:text-red-600" title="Törlés">🗑️</button>
+                                </div>
+                            </div>
+                        </div>
+                    
+                        <div class="bg-white p-3 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between space-y-2 hover:border-blue-200 transition">
+                            <div>
+                                <span class="text-[10px] font-mono text-slate-400 bg-slate-50 px-1 py-0.5 rounded border">#7 | tabla7</span>
+                                <h4 class="text-xs font-semibold text-[#0f172a] mt-1">Tábla 7 - Aktív feladat</h4>
+                            </div>
+                            <div class="flex items-center justify-between pt-2 border-t border-slate-100 text-xs gap-2">
+                                <select onchange="changeItemCategory(7, this.value)" class="text-[10px] bg-slate-50 border border-slate-200 rounded px-1.5 py-1 text-slate-600">
+                                    <option value="buborek" selected="">buborek</option><option value="kombinatorika">kombinatorika</option><option value="matematika">matematika</option><option value="egyes">egyes</option>
+                                </select>
+                                <div class="flex items-center gap-1">
+                                    <button onclick="previewTable(&#39;https://red-zeta-one.vercel.app/tabla/tabla7/index.html&#39;, &#39;Tábla 7 - Aktív feladat&#39;)" class="bg-blue-50 hover:bg-blue-100 text-[#2563eb] px-2 py-1 rounded text-[11px] font-medium transition">📄 Preview</button>
+                                    <button onclick="renameTable(7)" class="p-1 hover:bg-slate-100 rounded text-slate-500" title="Átnevezés">✏️</button>
+                                    <button onclick="softDeleteTable(7)" class="p-1 hover:bg-red-50 rounded text-red-400 hover:text-red-600" title="Törlés">🗑️</button>
+                                </div>
+                            </div>
+                        </div>
+                    
+                        <div class="bg-white p-3 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between space-y-2 hover:border-blue-200 transition">
+                            <div>
+                                <span class="text-[10px] font-mono text-slate-400 bg-slate-50 px-1 py-0.5 rounded border">#8 | tabla8</span>
+                                <h4 class="text-xs font-semibold text-[#0f172a] mt-1">Tábla 8 - Aktív feladat</h4>
+                            </div>
+                            <div class="flex items-center justify-between pt-2 border-t border-slate-100 text-xs gap-2">
+                                <select onchange="changeItemCategory(8, this.value)" class="text-[10px] bg-slate-50 border border-slate-200 rounded px-1.5 py-1 text-slate-600">
+                                    <option value="buborek" selected="">buborek</option><option value="kombinatorika">kombinatorika</option><option value="matematika">matematika</option><option value="egyes">egyes</option>
+                                </select>
+                                <div class="flex items-center gap-1">
+                                    <button onclick="previewTable(&#39;https://red-zeta-one.vercel.app/tabla/tabla8/index.html&#39;, &#39;Tábla 8 - Aktív feladat&#39;)" class="bg-blue-50 hover:bg-blue-100 text-[#2563eb] px-2 py-1 rounded text-[11px] font-medium transition">📄 Preview</button>
+                                    <button onclick="renameTable(8)" class="p-1 hover:bg-slate-100 rounded text-slate-500" title="Átnevezés">✏️</button>
+                                    <button onclick="softDeleteTable(8)" class="p-1 hover:bg-red-50 rounded text-red-400 hover:text-red-600" title="Törlés">🗑️</button>
+                                </div>
+                            </div>
+                        </div>
+                    
+                        <div class="bg-white p-3 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between space-y-2 hover:border-blue-200 transition">
+                            <div>
+                                <span class="text-[10px] font-mono text-slate-400 bg-slate-50 px-1 py-0.5 rounded border">#9 | tabla9</span>
+                                <h4 class="text-xs font-semibold text-[#0f172a] mt-1">Tábla 9 - Aktív feladat</h4>
+                            </div>
+                            <div class="flex items-center justify-between pt-2 border-t border-slate-100 text-xs gap-2">
+                                <select onchange="changeItemCategory(9, this.value)" class="text-[10px] bg-slate-50 border border-slate-200 rounded px-1.5 py-1 text-slate-600">
+                                    <option value="buborek" selected="">buborek</option><option value="kombinatorika">kombinatorika</option><option value="matematika">matematika</option><option value="egyes">egyes</option>
+                                </select>
+                                <div class="flex items-center gap-1">
+                                    <button onclick="previewTable(&#39;https://red-zeta-one.vercel.app/tabla/tabla9/index.html&#39;, &#39;Tábla 9 - Aktív feladat&#39;)" class="bg-blue-50 hover:bg-blue-100 text-[#2563eb] px-2 py-1 rounded text-[11px] font-medium transition">📄 Preview</button>
+                                    <button onclick="renameTable(9)" class="p-1 hover:bg-slate-100 rounded text-slate-500" title="Átnevezés">✏️</button>
+                                    <button onclick="softDeleteTable(9)" class="p-1 hover:bg-red-50 rounded text-red-400 hover:text-red-600" title="Törlés">🗑️</button>
+                                </div>
+                            </div>
+                        </div>
+                    
+                        <div class="bg-white p-3 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between space-y-2 hover:border-blue-200 transition">
+                            <div>
+                                <span class="text-[10px] font-mono text-slate-400 bg-slate-50 px-1 py-0.5 rounded border">#10 | tabla10</span>
+                                <h4 class="text-xs font-semibold text-[#0f172a] mt-1">Tábla 10 - Aktív feladat</h4>
+                            </div>
+                            <div class="flex items-center justify-between pt-2 border-t border-slate-100 text-xs gap-2">
+                                <select onchange="changeItemCategory(10, this.value)" class="text-[10px] bg-slate-50 border border-slate-200 rounded px-1.5 py-1 text-slate-600">
+                                    <option value="buborek" selected="">buborek</option><option value="kombinatorika">kombinatorika</option><option value="matematika">matematika</option><option value="egyes">egyes</option>
+                                </select>
+                                <div class="flex items-center gap-1">
+                                    <button onclick="previewTable(&#39;https://red-zeta-one.vercel.app/tabla/tabla10/index.html&#39;, &#39;Tábla 10 - Aktív feladat&#39;)" class="bg-blue-50 hover:bg-blue-100 text-[#2563eb] px-2 py-1 rounded text-[11px] font-medium transition">📄 Preview</button>
+                                    <button onclick="renameTable(10)" class="p-1 hover:bg-slate-100 rounded text-slate-500" title="Átnevezés">✏️</button>
+                                    <button onclick="softDeleteTable(10)" class="p-1 hover:bg-red-50 rounded text-red-400 hover:text-red-600" title="Törlés">🗑️</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div></div>
+                    <div class="space-y-3">
+                        <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400 border-b border-slate-200 pb-1 flex justify-between">
+                            <span>kombinatorika</span>
+                            <span>11 db</span>
+                        </h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                
+                        <div class="bg-white p-3 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between space-y-2 hover:border-blue-200 transition">
+                            <div>
+                                <span class="text-[10px] font-mono text-slate-400 bg-slate-50 px-1 py-0.5 rounded border">#2 | tabla2</span>
+                                <h4 class="text-xs font-semibold text-[#0f172a] mt-1">Színes golyók sorrendje</h4>
+                            </div>
+                            <div class="flex items-center justify-between pt-2 border-t border-slate-100 text-xs gap-2">
+                                <select onchange="changeItemCategory(2, this.value)" class="text-[10px] bg-slate-50 border border-slate-200 rounded px-1.5 py-1 text-slate-600">
+                                    <option value="buborek">buborek</option><option value="kombinatorika" selected="">kombinatorika</option><option value="matematika">matematika</option><option value="egyes">egyes</option>
+                                </select>
+                                <div class="flex items-center gap-1">
+                                    <button onclick="previewTable(&#39;https://red-zeta-one.vercel.app/tabla/tabla2/index.html&#39;, &#39;Színes golyók sorrendje&#39;)" class="bg-blue-50 hover:bg-blue-100 text-[#2563eb] px-2 py-1 rounded text-[11px] font-medium transition">📄 Preview</button>
+                                    <button onclick="renameTable(2)" class="p-1 hover:bg-slate-100 rounded text-slate-500" title="Átnevezés">✏️</button>
+                                    <button onclick="softDeleteTable(2)" class="p-1 hover:bg-red-50 rounded text-red-400 hover:text-red-600" title="Törlés">🗑️</button>
+                                </div>
+                            </div>
+                        </div>
+                    
+                        <div class="bg-white p-3 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between space-y-2 hover:border-blue-200 transition">
+                            <div>
+                                <span class="text-[10px] font-mono text-slate-400 bg-slate-50 px-1 py-0.5 rounded border">#11 | tabla11</span>
+                                <h4 class="text-xs font-semibold text-[#0f172a] mt-1">Tábla 11 - Aktív feladat</h4>
+                            </div>
+                            <div class="flex items-center justify-between pt-2 border-t border-slate-100 text-xs gap-2">
+                                <select onchange="changeItemCategory(11, this.value)" class="text-[10px] bg-slate-50 border border-slate-200 rounded px-1.5 py-1 text-slate-600">
+                                    <option value="buborek">buborek</option><option value="kombinatorika" selected="">kombinatorika</option><option value="matematika">matematika</option><option value="egyes">egyes</option>
+                                </select>
+                                <div class="flex items-center gap-1">
+                                    <button onclick="previewTable(&#39;https://red-zeta-one.vercel.app/tabla/tabla11/index.html&#39;, &#39;Tábla 11 - Aktív feladat&#39;)" class="bg-blue-50 hover:bg-blue-100 text-[#2563eb] px-2 py-1 rounded text-[11px] font-medium transition">📄 Preview</button>
+                                    <button onclick="renameTable(11)" class="p-1 hover:bg-slate-100 rounded text-slate-500" title="Átnevezés">✏️</button>
+                                    <button onclick="softDeleteTable(11)" class="p-1 hover:bg-red-50 rounded text-red-400 hover:text-red-600" title="Törlés">🗑️</button>
+                                </div>
+                            </div>
+                        </div>
+                    
+                        <div class="bg-white p-3 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between space-y-2 hover:border-blue-200 transition">
+                            <div>
+                                <span class="text-[10px] font-mono text-slate-400 bg-slate-50 px-1 py-0.5 rounded border">#12 | tabla12</span>
+                                <h4 class="text-xs font-semibold text-[#0f172a] mt-1">Tábla 12 - Aktív feladat</h4>
+                            </div>
+                            <div class="flex items-center justify-between pt-2 border-t border-slate-100 text-xs gap-2">
+                                <select onchange="changeItemCategory(12, this.value)" class="text-[10px] bg-slate-50 border border-slate-200 rounded px-1.5 py-1 text-slate-600">
+                                    <option value="buborek">buborek</option><option value="kombinatorika" selected="">kombinatorika</option><option value="matematika">matematika</option><option value="egyes">egyes</option>
+                                </select>
+                                <div class="flex items-center gap-1">
+                                    <button onclick="previewTable(&#39;https://red-zeta-one.vercel.app/tabla/tabla12/index.html&#39;, &#39;Tábla 12 - Aktív feladat&#39;)" class="bg-blue-50 hover:bg-blue-100 text-[#2563eb] px-2 py-1 rounded text-[11px] font-medium transition">📄 Preview</button>
+                                    <button onclick="renameTable(12)" class="p-1 hover:bg-slate-100 rounded text-slate-500" title="Átnevezés">✏️</button>
+                                    <button onclick="softDeleteTable(12)" class="p-1 hover:bg-red-50 rounded text-red-400 hover:text-red-600" title="Törlés">🗑️</button>
+                                </div>
+                            </div>
+                        </div>
+                    
+                        <div class="bg-white p-3 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between space-y-2 hover:border-blue-200 transition">
+                            <div>
+                                <span class="text-[10px] font-mono text-slate-400 bg-slate-50 px-1 py-0.5 rounded border">#13 | tabla13</span>
+                                <h4 class="text-xs font-semibold text-[#0f172a] mt-1">Tábla 13 - Aktív feladat</h4>
+                            </div>
+                            <div class="flex items-center justify-between pt-2 border-t border-slate-100 text-xs gap-2">
+                                <select onchange="changeItemCategory(13, this.value)" class="text-[10px] bg-slate-50 border border-slate-200 rounded px-1.5 py-1 text-slate-600">
+                                    <option value="buborek">buborek</option><option value="kombinatorika" selected="">kombinatorika</option><option value="matematika">matematika</option><option value="egyes">egyes</option>
+                                </select>
+                                <div class="flex items-center gap-1">
+                                    <button onclick="previewTable(&#39;https://red-zeta-one.vercel.app/tabla/tabla13/index.html&#39;, &#39;Tábla 13 - Aktív feladat&#39;)" class="bg-blue-50 hover:bg-blue-100 text-[#2563eb] px-2 py-1 rounded text-[11px] font-medium transition">📄 Preview</button>
+                                    <button onclick="renameTable(13)" class="p-1 hover:bg-slate-100 rounded text-slate-500" title="Átnevezés">✏️</button>
+                                    <button onclick="softDeleteTable(13)" class="p-1 hover:bg-red-50 rounded text-red-400 hover:text-red-600" title="Törlés">🗑️</button>
+                                </div>
+                            </div>
+                        </div>
+                    
+                        <div class="bg-white p-3 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between space-y-2 hover:border-blue-200 transition">
+                            <div>
+                                <span class="text-[10px] font-mono text-slate-400 bg-slate-50 px-1 py-0.5 rounded border">#14 | tabla14</span>
+                                <h4 class="text-xs font-semibold text-[#0f172a] mt-1">Tábla 14 - Aktív feladat</h4>
+                            </div>
+                            <div class="flex items-center justify-between pt-2 border-t border-slate-100 text-xs gap-2">
+                                <select onchange="changeItemCategory(14, this.value)" class="text-[10px] bg-slate-50 border border-slate-200 rounded px-1.5 py-1 text-slate-600">
+                                    <option value="buborek">buborek</option><option value="kombinatorika" selected="">kombinatorika</option><option value="matematika">matematika</option><option value="egyes">egyes</option>
+                                </select>
+                                <div class="flex items-center gap-1">
+                                    <button onclick="previewTable(&#39;https://red-zeta-one.vercel.app/tabla/tabla14/index.html&#39;, &#39;Tábla 14 - Aktív feladat&#39;)" class="bg-blue-50 hover:bg-blue-100 text-[#2563eb] px-2 py-1 rounded text-[11px] font-medium transition">📄 Preview</button>
+                                    <button onclick="renameTable(14)" class="p-1 hover:bg-slate-100 rounded text-slate-500" title="Átnevezés">✏️</button>
+                                    <button onclick="softDeleteTable(14)" class="p-1 hover:bg-red-50 rounded text-red-400 hover:text-red-600" title="Törlés">🗑️</button>
+                                </div>
+                            </div>
+                        </div>
+                    
+                        <div class="bg-white p-3 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between space-y-2 hover:border-blue-200 transition">
+                            <div>
+                                <span class="text-[10px] font-mono text-slate-400 bg-slate-50 px-1 py-0.5 rounded border">#15 | tabla15</span>
+                                <h4 class="text-xs font-semibold text-[#0f172a] mt-1">Tábla 15 - Aktív feladat</h4>
+                            </div>
+                            <div class="flex items-center justify-between pt-2 border-t border-slate-100 text-xs gap-2">
+                                <select onchange="changeItemCategory(15, this.value)" class="text-[10px] bg-slate-50 border border-slate-200 rounded px-1.5 py-1 text-slate-600">
+                                    <option value="buborek">buborek</option><option value="kombinatorika" selected="">kombinatorika</option><option value="matematika">matematika</option><option value="egyes">egyes</option>
+                                </select>
+                                <div class="flex items-center gap-1">
+                                    <button onclick="previewTable(&#39;https://red-zeta-one.vercel.app/tabla/tabla15/index.html&#39;, &#39;Tábla 15 - Aktív feladat&#39;)" class="bg-blue-50 hover:bg-blue-100 text-[#2563eb] px-2 py-1 rounded text-[11px] font-medium transition">📄 Preview</button>
+                                    <button onclick="renameTable(15)" class="p-1 hover:bg-slate-100 rounded text-slate-500" title="Átnevezés">✏️</button>
+                                    <button onclick="softDeleteTable(15)" class="p-1 hover:bg-red-50 rounded text-red-400 hover:text-red-600" title="Törlés">🗑️</button>
+                                </div>
+                            </div>
+                        </div>
+                    
+                        <div class="bg-white p-3 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between space-y-2 hover:border-blue-200 transition">
+                            <div>
+                                <span class="text-[10px] font-mono text-slate-400 bg-slate-50 px-1 py-0.5 rounded border">#16 | tabla16</span>
+                                <h4 class="text-xs font-semibold text-[#0f172a] mt-1">Tábla 16 - Aktív feladat</h4>
+                            </div>
+                            <div class="flex items-center justify-between pt-2 border-t border-slate-100 text-xs gap-2">
+                                <select onchange="changeItemCategory(16, this.value)" class="text-[10px] bg-slate-50 border border-slate-200 rounded px-1.5 py-1 text-slate-600">
+                                    <option value="buborek">buborek</option><option value="kombinatorika" selected="">kombinatorika</option><option value="matematika">matematika</option><option value="egyes">egyes</option>
+                                </select>
+                                <div class="flex items-center gap-1">
+                                    <button onclick="previewTable(&#39;https://red-zeta-one.vercel.app/tabla/tabla16/index.html&#39;, &#39;Tábla 16 - Aktív feladat&#39;)" class="bg-blue-50 hover:bg-blue-100 text-[#2563eb] px-2 py-1 rounded text-[11px] font-medium transition">📄 Preview</button>
+                                    <button onclick="renameTable(16)" class="p-1 hover:bg-slate-100 rounded text-slate-500" title="Átnevezés">✏️</button>
+                                    <button onclick="softDeleteTable(16)" class="p-1 hover:bg-red-50 rounded text-red-400 hover:text-red-600" title="Törlés">🗑️</button>
+                                </div>
+                            </div>
+                        </div>
+                    
+                        <div class="bg-white p-3 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between space-y-2 hover:border-blue-200 transition">
+                            <div>
+                                <span class="text-[10px] font-mono text-slate-400 bg-slate-50 px-1 py-0.5 rounded border">#17 | tabla17</span>
+                                <h4 class="text-xs font-semibold text-[#0f172a] mt-1">Tábla 17 - Aktív feladat</h4>
+                            </div>
+                            <div class="flex items-center justify-between pt-2 border-t border-slate-100 text-xs gap-2">
+                                <select onchange="changeItemCategory(17, this.value)" class="text-[10px] bg-slate-50 border border-slate-200 rounded px-1.5 py-1 text-slate-600">
+                                    <option value="buborek">buborek</option><option value="kombinatorika" selected="">kombinatorika</option><option value="matematika">matematika</option><option value="egyes">egyes</option>
+                                </select>
+                                <div class="flex items-center gap-1">
+                                    <button onclick="previewTable(&#39;https://red-zeta-one.vercel.app/tabla/tabla17/index.html&#39;, &#39;Tábla 17 - Aktív feladat&#39;)" class="bg-blue-50 hover:bg-blue-100 text-[#2563eb] px-2 py-1 rounded text-[11px] font-medium transition">📄 Preview</button>
+                                    <button onclick="renameTable(17)" class="p-1 hover:bg-slate-100 rounded text-slate-500" title="Átnevezés">✏️</button>
+                                    <button onclick="softDeleteTable(17)" class="p-1 hover:bg-red-50 rounded text-red-400 hover:text-red-600" title="Törlés">🗑️</button>
+                                </div>
+                            </div>
+                        </div>
+                    
+                        <div class="bg-white p-3 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between space-y-2 hover:border-blue-200 transition">
+                            <div>
+                                <span class="text-[10px] font-mono text-slate-400 bg-slate-50 px-1 py-0.5 rounded border">#18 | tabla18</span>
+                                <h4 class="text-xs font-semibold text-[#0f172a] mt-1">Tábla 18 - Aktív feladat</h4>
+                            </div>
+                            <div class="flex items-center justify-between pt-2 border-t border-slate-100 text-xs gap-2">
+                                <select onchange="changeItemCategory(18, this.value)" class="text-[10px] bg-slate-50 border border-slate-200 rounded px-1.5 py-1 text-slate-600">
+                                    <option value="buborek">buborek</option><option value="kombinatorika" selected="">kombinatorika</option><option value="matematika">matematika</option><option value="egyes">egyes</option>
+                                </select>
+                                <div class="flex items-center gap-1">
+                                    <button onclick="previewTable(&#39;https://red-zeta-one.vercel.app/tabla/tabla18/index.html&#39;, &#39;Tábla 18 - Aktív feladat&#39;)" class="bg-blue-50 hover:bg-blue-100 text-[#2563eb] px-2 py-1 rounded text-[11px] font-medium transition">📄 Preview</button>
+                                    <button onclick="renameTable(18)" class="p-1 hover:bg-slate-100 rounded text-slate-500" title="Átnevezés">✏️</button>
+                                    <button onclick="softDeleteTable(18)" class="p-1 hover:bg-red-50 rounded text-red-400 hover:text-red-600" title="Törlés">🗑️</button>
+                                </div>
+                            </div>
+                        </div>
+                    
+                        <div class="bg-white p-3 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between space-y-2 hover:border-blue-200 transition">
+                            <div>
+                                <span class="text-[10px] font-mono text-slate-400 bg-slate-50 px-1 py-0.5 rounded border">#19 | tabla19</span>
+                                <h4 class="text-xs font-semibold text-[#0f172a] mt-1">Tábla 19 - Aktív feladat</h4>
+                            </div>
+                            <div class="flex items-center justify-between pt-2 border-t border-slate-100 text-xs gap-2">
+                                <select onchange="changeItemCategory(19, this.value)" class="text-[10px] bg-slate-50 border border-slate-200 rounded px-1.5 py-1 text-slate-600">
+                                    <option value="buborek">buborek</option><option value="kombinatorika" selected="">kombinatorika</option><option value="matematika">matematika</option><option value="egyes">egyes</option>
+                                </select>
+                                <div class="flex items-center gap-1">
+                                    <button onclick="previewTable(&#39;https://red-zeta-one.vercel.app/tabla/tabla19/index.html&#39;, &#39;Tábla 19 - Aktív feladat&#39;)" class="bg-blue-50 hover:bg-blue-100 text-[#2563eb] px-2 py-1 rounded text-[11px] font-medium transition">📄 Preview</button>
+                                    <button onclick="renameTable(19)" class="p-1 hover:bg-slate-100 rounded text-slate-500" title="Átnevezés">✏️</button>
+                                    <button onclick="softDeleteTable(19)" class="p-1 hover:bg-red-50 rounded text-red-400 hover:text-red-600" title="Törlés">🗑️</button>
+                                </div>
+                            </div>
+                        </div>
+                    
+                        <div class="bg-white p-3 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between space-y-2 hover:border-blue-200 transition">
+                            <div>
+                                <span class="text-[10px] font-mono text-slate-400 bg-slate-50 px-1 py-0.5 rounded border">#20 | tabla20</span>
+                                <h4 class="text-xs font-semibold text-[#0f172a] mt-1">Tábla 20 - Aktív feladat</h4>
+                            </div>
+                            <div class="flex items-center justify-between pt-2 border-t border-slate-100 text-xs gap-2">
+                                <select onchange="changeItemCategory(20, this.value)" class="text-[10px] bg-slate-50 border border-slate-200 rounded px-1.5 py-1 text-slate-600">
+                                    <option value="buborek">buborek</option><option value="kombinatorika" selected="">kombinatorika</option><option value="matematika">matematika</option><option value="egyes">egyes</option>
+                                </select>
+                                <div class="flex items-center gap-1">
+                                    <button onclick="previewTable(&#39;https://red-zeta-one.vercel.app/tabla/tabla20/index.html&#39;, &#39;Tábla 20 - Aktív feladat&#39;)" class="bg-blue-50 hover:bg-blue-100 text-[#2563eb] px-2 py-1 rounded text-[11px] font-medium transition">📄 Preview</button>
+                                    <button onclick="renameTable(20)" class="p-1 hover:bg-slate-100 rounded text-slate-500" title="Átnevezés">✏️</button>
+                                    <button onclick="softDeleteTable(20)" class="p-1 hover:bg-red-50 rounded text-red-400 hover:text-red-600" title="Törlés">🗑️</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div></div>
+                    <div class="space-y-3">
+                        <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400 border-b border-slate-200 pb-1 flex justify-between">
+                            <span>matematika</span>
+                            <span>16 db</span>
+                        </h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                
+                        <div class="bg-white p-3 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between space-y-2 hover:border-blue-200 transition">
+                            <div>
+                                <span class="text-[10px] font-mono text-slate-400 bg-slate-50 px-1 py-0.5 rounded border">#3 | tabla3</span>
+                                <h4 class="text-xs font-semibold text-[#0f172a] mt-1">Összeadás gyakorlása</h4>
+                            </div>
+                            <div class="flex items-center justify-between pt-2 border-t border-slate-100 text-xs gap-2">
+                                <select onchange="changeItemCategory(3, this.value)" class="text-[10px] bg-slate-50 border border-slate-200 rounded px-1.5 py-1 text-slate-600">
+                                    <option value="buborek">buborek</option><option value="kombinatorika">kombinatorika</option><option value="matematika" selected="">matematika</option><option value="egyes">egyes</option>
+                                </select>
+                                <div class="flex items-center gap-1">
+                                    <button onclick="previewTable(&#39;https://red-zeta-one.vercel.app/tabla/tabla3/index.html&#39;, &#39;Összeadás gyakorlása&#39;)" class="bg-blue-50 hover:bg-blue-100 text-[#2563eb] px-2 py-1 rounded text-[11px] font-medium transition">📄 Preview</button>
+                                    <button onclick="renameTable(3)" class="p-1 hover:bg-slate-100 rounded text-slate-500" title="Átnevezés">✏️</button>
+                                    <button onclick="softDeleteTable(3)" class="p-1 hover:bg-red-50 rounded text-red-400 hover:text-red-600" title="Törlés">🗑️</button>
+                                </div>
+                            </div>
+                        </div>
+                    
+                        <div class="bg-white p-3 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between space-y-2 hover:border-blue-200 transition">
+                            <div>
+                                <span class="text-[10px] font-mono text-slate-400 bg-slate-50 px-1 py-0.5 rounded border">#21 | tabla21</span>
+                                <h4 class="text-xs font-semibold text-[#0f172a] mt-1">Tábla 21 - Aktív feladat</h4>
+                            </div>
+                            <div class="flex items-center justify-between pt-2 border-t border-slate-100 text-xs gap-2">
+                                <select onchange="changeItemCategory(21, this.value)" class="text-[10px] bg-slate-50 border border-slate-200 rounded px-1.5 py-1 text-slate-600">
+                                    <option value="buborek">buborek</option><option value="kombinatorika">kombinatorika</option><option value="matematika" selected="">matematika</option><option value="egyes">egyes</option>
+                                </select>
+                                <div class="flex items-center gap-1">
+                                    <button onclick="previewTable(&#39;https://red-zeta-one.vercel.app/tabla/tabla21/index.html&#39;, &#39;Tábla 21 - Aktív feladat&#39;)" class="bg-blue-50 hover:bg-blue-100 text-[#2563eb] px-2 py-1 rounded text-[11px] font-medium transition">📄 Preview</button>
+                                    <button onclick="renameTable(21)" class="p-1 hover:bg-slate-100 rounded text-slate-500" title="Átnevezés">✏️</button>
+                                    <button onclick="softDeleteTable(21)" class="p-1 hover:bg-red-50 rounded text-red-400 hover:text-red-600" title="Törlés">🗑️</button>
+                                </div>
+                            </div>
+                        </div>
+                    
+                        <div class="bg-white p-3 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between space-y-2 hover:border-blue-200 transition">
+                            <div>
+                                <span class="text-[10px] font-mono text-slate-400 bg-slate-50 px-1 py-0.5 rounded border">#22 | tabla22</span>
+                                <h4 class="text-xs font-semibold text-[#0f172a] mt-1">Tábla 22 - Aktív feladat</h4>
+                            </div>
+                            <div class="flex items-center justify-between pt-2 border-t border-slate-100 text-xs gap-2">
+                                <select onchange="changeItemCategory(22, this.value)" class="text-[10px] bg-slate-50 border border-slate-200 rounded px-1.5 py-1 text-slate-600">
+                                    <option value="buborek">buborek</option><option value="kombinatorika">kombinatorika</option><option value="matematika" selected="">matematika</option><option value="egyes">egyes</option>
+                                </select>
+                                <div class="flex items-center gap-1">
+                                    <button onclick="previewTable(&#39;https://red-zeta-one.vercel.app/tabla/tabla22/index.html&#39;, &#39;Tábla 22 - Aktív feladat&#39;)" class="bg-blue-50 hover:bg-blue-100 text-[#2563eb] px-2 py-1 rounded text-[11px] font-medium transition">📄 Preview</button>
+                                    <button onclick="renameTable(22)" class="p-1 hover:bg-slate-100 rounded text-slate-500" title="Átnevezés">✏️</button>
+                                    <button onclick="softDeleteTable(22)" class="p-1 hover:bg-red-50 rounded text-red-400 hover:text-red-600" title="Törlés">🗑️</button>
+                                </div>
+                            </div>
+                        </div>
+                    
+                        <div class="bg-white p-3 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between space-y-2 hover:border-blue-200 transition">
+                            <div>
+                                <span class="text-[10px] font-mono text-slate-400 bg-slate-50 px-1 py-0.5 rounded border">#23 | tabla23</span>
+                                <h4 class="text-xs font-semibold text-[#0f172a] mt-1">Tábla 23 - Aktív feladat</h4>
+                            </div>
+                            <div class="flex items-center justify-between pt-2 border-t border-slate-100 text-xs gap-2">
+                                <select onchange="changeItemCategory(23, this.value)" class="text-[10px] bg-slate-50 border border-slate-200 rounded px-1.5 py-1 text-slate-600">
+                                    <option value="buborek">buborek</option><option value="kombinatorika">kombinatorika</option><option value="matematika" selected="">matematika</option><option value="egyes">egyes</option>
+                                </select>
+                                <div class="flex items-center gap-1">
+                                    <button onclick="previewTable(&#39;https://red-zeta-one.vercel.app/tabla/tabla23/index.html&#39;, &#39;Tábla 23 - Aktív feladat&#39;)" class="bg-blue-50 hover:bg-blue-100 text-[#2563eb] px-2 py-1 rounded text-[11px] font-medium transition">📄 Preview</button>
+                                    <button onclick="renameTable(23)" class="p-1 hover:bg-slate-100 rounded text-slate-500" title="Átnevezés">✏️</button>
+                                    <button onclick="softDeleteTable(23)" class="p-1 hover:bg-red-50 rounded text-red-400 hover:text-red-600" title="Törlés">🗑️</button>
+                                </div>
+                            </div>
+                        </div>
+                    
+                        <div class="bg-white p-3 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between space-y-2 hover:border-blue-200 transition">
+                            <div>
+                                <span class="text-[10px] font-mono text-slate-400 bg-slate-50 px-1 py-0.5 rounded border">#24 | tabla24</span>
+                                <h4 class="text-xs font-semibold text-[#0f172a] mt-1">Tábla 24 - Aktív feladat</h4>
+                            </div>
+                            <div class="flex items-center justify-between pt-2 border-t border-slate-100 text-xs gap-2">
+                                <select onchange="changeItemCategory(24, this.value)" class="text-[10px] bg-slate-50 border border-slate-200 rounded px-1.5 py-1 text-slate-600">
+                                    <option value="buborek">buborek</option><option value="kombinatorika">kombinatorika</option><option value="matematika" selected="">matematika</option><option value="egyes">egyes</option>
+                                </select>
+                                <div class="flex items-center gap-1">
+                                    <button onclick="previewTable(&#39;https://red-zeta-one.vercel.app/tabla/tabla24/index.html&#39;, &#39;Tábla 24 - Aktív feladat&#39;)" class="bg-blue-50 hover:bg-blue-100 text-[#2563eb] px-2 py-1 rounded text-[11px] font-medium transition">📄 Preview</button>
+                                    <button onclick="renameTable(24)" class="p-1 hover:bg-slate-100 rounded text-slate-500" title="Átnevezés">✏️</button>
+                                    <button onclick="softDeleteTable(24)" class="p-1 hover:bg-red-50 rounded text-red-400 hover:text-red-600" title="Törlés">🗑️</button>
+                                </div>
+                            </div>
+                        </div>
+                    
+                        <div class="bg-white p-3 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between space-y-2 hover:border-blue-200 transition">
+                            <div>
+                                <span class="text-[10px] font-mono text-slate-400 bg-slate-50 px-1 py-0.5 rounded border">#25 | tabla25</span>
+                                <h4 class="text-xs font-semibold text-[#0f172a] mt-1">Tábla 25 - Aktív feladat</h4>
+                            </div>
+                            <div class="flex items-center justify-between pt-2 border-t border-slate-100 text-xs gap-2">
+                                <select onchange="changeItemCategory(25, this.value)" class="text-[10px] bg-slate-50 border border-slate-200 rounded px-1.5 py-1 text-slate-600">
+                                    <option value="buborek">buborek</option><option value="kombinatorika">kombinatorika</option><option value="matematika" selected="">matematika</option><option value="egyes">egyes</option>
+                                </select>
+                                <div class="flex items-center gap-1">
+                                    <button onclick="previewTable(&#39;https://red-zeta-one.vercel.app/tabla/tabla25/index.html&#39;, &#39;Tábla 25 - Aktív feladat&#39;)" class="bg-blue-50 hover:bg-blue-100 text-[#2563eb] px-2 py-1 rounded text-[11px] font-medium transition">📄 Preview</button>
+                                    <button onclick="renameTable(25)" class="p-1 hover:bg-slate-100 rounded text-slate-500" title="Átnevezés">✏️</button>
+                                    <button onclick="softDeleteTable(25)" class="p-1 hover:bg-red-50 rounded text-red-400 hover:text-red-600" title="Törlés">🗑️</button>
+                                </div>
+                            </div>
+                        </div>
+                    
+                        <div class="bg-white p-3 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between space-y-2 hover:border-blue-200 transition">
+                            <div>
+                                <span class="text-[10px] font-mono text-slate-400 bg-slate-50 px-1 py-0.5 rounded border">#26 | tabla26</span>
+                                <h4 class="text-xs font-semibold text-[#0f172a] mt-1">Tábla 26 - Aktív feladat</h4>
+                            </div>
+                            <div class="flex items-center justify-between pt-2 border-t border-slate-100 text-xs gap-2">
+                                <select onchange="changeItemCategory(26, this.value)" class="text-[10px] bg-slate-50 border border-slate-200 rounded px-1.5 py-1 text-slate-600">
+                                    <option value="buborek">buborek</option><option value="kombinatorika">kombinatorika</option><option value="matematika" selected="">matematika</option><option value="egyes">egyes</option>
+                                </select>
+                                <div class="flex items-center gap-1">
+                                    <button onclick="previewTable(&#39;https://red-zeta-one.vercel.app/tabla/tabla26/index.html&#39;, &#39;Tábla 26 - Aktív feladat&#39;)" class="bg-blue-50 hover:bg-blue-100 text-[#2563eb] px-2 py-1 rounded text-[11px] font-medium transition">📄 Preview</button>
+                                    <button onclick="renameTable(26)" class="p-1 hover:bg-slate-100 rounded text-slate-500" title="Átnevezés">✏️</button>
+                                    <button onclick="softDeleteTable(26)" class="p-1 hover:bg-red-50 rounded text-red-400 hover:text-red-600" title="Törlés">🗑️</button>
+                                </div>
+                            </div>
+                        </div>
+                    
+                        <div class="bg-white p-3 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between space-y-2 hover:border-blue-200 transition">
+                            <div>
+                                <span class="text-[10px] font-mono text-slate-400 bg-slate-50 px-1 py-0.5 rounded border">#27 | tabla27</span>
+                                <h4 class="text-xs font-semibold text-[#0f172a] mt-1">Tábla 27 - Aktív feladat</h4>
+                            </div>
+                            <div class="flex items-center justify-between pt-2 border-t border-slate-100 text-xs gap-2">
+                                <select onchange="changeItemCategory(27, this.value)" class="text-[10px] bg-slate-50 border border-slate-200 rounded px-1.5 py-1 text-slate-600">
+                                    <option value="buborek">buborek</option><option value="kombinatorika">kombinatorika</option><option value="matematika" selected="">matematika</option><option value="egyes">egyes</option>
+                                </select>
+                                <div class="flex items-center gap-1">
+                                    <button onclick="previewTable(&#39;https://red-zeta-one.vercel.app/tabla/tabla27/index.html&#39;, &#39;Tábla 27 - Aktív feladat&#39;)" class="bg-blue-50 hover:bg-blue-100 text-[#2563eb] px-2 py-1 rounded text-[11px] font-medium transition">📄 Preview</button>
+                                    <button onclick="renameTable(27)" class="p-1 hover:bg-slate-100 rounded text-slate-500" title="Átnevezés">✏️</button>
+                                    <button onclick="softDeleteTable(27)" class="p-1 hover:bg-red-50 rounded text-red-400 hover:text-red-600" title="Törlés">🗑️</button>
+                                </div>
+                            </div>
+                        </div>
+                    
+                        <div class="bg-white p-3 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between space-y-2 hover:border-blue-200 transition">
+                            <div>
+                                <span class="text-[10px] font-mono text-slate-400 bg-slate-50 px-1 py-0.5 rounded border">#28 | tabla28</span>
+                                <h4 class="text-xs font-semibold text-[#0f172a] mt-1">Tábla 28 - Aktív feladat</h4>
+                            </div>
+                            <div class="flex items-center justify-between pt-2 border-t border-slate-100 text-xs gap-2">
+                                <select onchange="changeItemCategory(28, this.value)" class="text-[10px] bg-slate-50 border border-slate-200 rounded px-1.5 py-1 text-slate-600">
+                                    <option value="buborek">buborek</option><option value="kombinatorika">kombinatorika</option><option value="matematika" selected="">matematika</option><option value="egyes">egyes</option>
+                                </select>
+                                <div class="flex items-center gap-1">
+                                    <button onclick="previewTable(&#39;https://red-zeta-one.vercel.app/tabla/tabla28/index.html&#39;, &#39;Tábla 28 - Aktív feladat&#39;)" class="bg-blue-50 hover:bg-blue-100 text-[#2563eb] px-2 py-1 rounded text-[11px] font-medium transition">📄 Preview</button>
+                                    <button onclick="renameTable(28)" class="p-1 hover:bg-slate-100 rounded text-slate-500" title="Átnevezés">✏️</button>
+                                    <button onclick="softDeleteTable(28)" class="p-1 hover:bg-red-50 rounded text-red-400 hover:text-red-600" title="Törlés">🗑️</button>
+                                </div>
+                            </div>
+                        </div>
+                    
+                        <div class="bg-white p-3 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between space-y-2 hover:border-blue-200 transition">
+                            <div>
+                                <span class="text-[10px] font-mono text-slate-400 bg-slate-50 px-1 py-0.5 rounded border">#29 | tabla29</span>
+                                <h4 class="text-xs font-semibold text-[#0f172a] mt-1">Tábla 29 - Aktív feladat</h4>
+                            </div>
+                            <div class="flex items-center justify-between pt-2 border-t border-slate-100 text-xs gap-2">
+                                <select onchange="changeItemCategory(29, this.value)" class="text-[10px] bg-slate-50 border border-slate-200 rounded px-1.5 py-1 text-slate-600">
+                                    <option value="buborek">buborek</option><option value="kombinatorika">kombinatorika</option><option value="matematika" selected="">matematika</option><option value="egyes">egyes</option>
+                                </select>
+                                <div class="flex items-center gap-1">
+                                    <button onclick="previewTable(&#39;https://red-zeta-one.vercel.app/tabla/tabla29/index.html&#39;, &#39;Tábla 29 - Aktív feladat&#39;)" class="bg-blue-50 hover:bg-blue-100 text-[#2563eb] px-2 py-1 rounded text-[11px] font-medium transition">📄 Preview</button>
+                                    <button onclick="renameTable(29)" class="p-1 hover:bg-slate-100 rounded text-slate-500" title="Átnevezés">✏️</button>
+                                    <button onclick="softDeleteTable(29)" class="p-1 hover:bg-red-50 rounded text-red-400 hover:text-red-600" title="Törlés">🗑️</button>
+                                </div>
+                            </div>
+                        </div>
+                    
+                        <div class="bg-white p-3 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between space-y-2 hover:border-blue-200 transition">
+                            <div>
+                                <span class="text-[10px] font-mono text-slate-400 bg-slate-50 px-1 py-0.5 rounded border">#30 | tabla30</span>
+                                <h4 class="text-xs font-semibold text-[#0f172a] mt-1">Tábla 30 - Aktív feladat</h4>
+                            </div>
+                            <div class="flex items-center justify-between pt-2 border-t border-slate-100 text-xs gap-2">
+                                <select onchange="changeItemCategory(30, this.value)" class="text-[10px] bg-slate-50 border border-slate-200 rounded px-1.5 py-1 text-slate-600">
+                                    <option value="buborek">buborek</option><option value="kombinatorika">kombinatorika</option><option value="matematika" selected="">matematika</option><option value="egyes">egyes</option>
+                                </select>
+                                <div class="flex items-center gap-1">
+                                    <button onclick="previewTable(&#39;https://red-zeta-one.vercel.app/tabla/tabla30/index.html&#39;, &#39;Tábla 30 - Aktív feladat&#39;)" class="bg-blue-50 hover:bg-blue-100 text-[#2563eb] px-2 py-1 rounded text-[11px] font-medium transition">📄 Preview</button>
+                                    <button onclick="renameTable(30)" class="p-1 hover:bg-slate-100 rounded text-slate-500" title="Átnevezés">✏️</button>
+                                    <button onclick="softDeleteTable(30)" class="p-1 hover:bg-red-50 rounded text-red-400 hover:text-red-600" title="Törlés">🗑️</button>
+                                </div>
+                            </div>
+                        </div>
+                    
+                        <div class="bg-white p-3 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between space-y-2 hover:border-blue-200 transition">
+                            <div>
+                                <span class="text-[10px] font-mono text-slate-400 bg-slate-50 px-1 py-0.5 rounded border">#31 | tabla31</span>
+                                <h4 class="text-xs font-semibold text-[#0f172a] mt-1">Tábla 31 - Aktív feladat</h4>
+                            </div>
+                            <div class="flex items-center justify-between pt-2 border-t border-slate-100 text-xs gap-2">
+                                <select onchange="changeItemCategory(31, this.value)" class="text-[10px] bg-slate-50 border border-slate-200 rounded px-1.5 py-1 text-slate-600">
+                                    <option value="buborek">buborek</option><option value="kombinatorika">kombinatorika</option><option value="matematika" selected="">matematika</option><option value="egyes">egyes</option>
+                                </select>
+                                <div class="flex items-center gap-1">
+                                    <button onclick="previewTable(&#39;https://red-zeta-one.vercel.app/tabla/tabla31/index.html&#39;, &#39;Tábla 31 - Aktív feladat&#39;)" class="bg-blue-50 hover:bg-blue-100 text-[#2563eb] px-2 py-1 rounded text-[11px] font-medium transition">📄 Preview</button>
+                                    <button onclick="renameTable(31)" class="p-1 hover:bg-slate-100 rounded text-slate-500" title="Átnevezés">✏️</button>
+                                    <button onclick="softDeleteTable(31)" class="p-1 hover:bg-red-50 rounded text-red-400 hover:text-red-600" title="Törlés">🗑️</button>
+                                </div>
+                            </div>
+                        </div>
+                    
+                        <div class="bg-white p-3 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between space-y-2 hover:border-blue-200 transition">
+                            <div>
+                                <span class="text-[10px] font-mono text-slate-400 bg-slate-50 px-1 py-0.5 rounded border">#32 | tabla32</span>
+                                <h4 class="text-xs font-semibold text-[#0f172a] mt-1">Tábla 32 - Aktív feladat</h4>
+                            </div>
+                            <div class="flex items-center justify-between pt-2 border-t border-slate-100 text-xs gap-2">
+                                <select onchange="changeItemCategory(32, this.value)" class="text-[10px] bg-slate-50 border border-slate-200 rounded px-1.5 py-1 text-slate-600">
+                                    <option value="buborek">buborek</option><option value="kombinatorika">kombinatorika</option><option value="matematika" selected="">matematika</option><option value="egyes">egyes</option>
+                                </select>
+                                <div class="flex items-center gap-1">
+                                    <button onclick="previewTable(&#39;https://red-zeta-one.vercel.app/tabla/tabla32/index.html&#39;, &#39;Tábla 32 - Aktív feladat&#39;)" class="bg-blue-50 hover:bg-blue-100 text-[#2563eb] px-2 py-1 rounded text-[11px] font-medium transition">📄 Preview</button>
+                                    <button onclick="renameTable(32)" class="p-1 hover:bg-slate-100 rounded text-slate-500" title="Átnevezés">✏️</button>
+                                    <button onclick="softDeleteTable(32)" class="p-1 hover:bg-red-50 rounded text-red-400 hover:text-red-600" title="Törlés">🗑️</button>
+                                </div>
+                            </div>
+                        </div>
+                    
+                        <div class="bg-white p-3 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between space-y-2 hover:border-blue-200 transition">
+                            <div>
+                                <span class="text-[10px] font-mono text-slate-400 bg-slate-50 px-1 py-0.5 rounded border">#33 | tabla33</span>
+                                <h4 class="text-xs font-semibold text-[#0f172a] mt-1">Tábla 33 - Aktív feladat</h4>
+                            </div>
+                            <div class="flex items-center justify-between pt-2 border-t border-slate-100 text-xs gap-2">
+                                <select onchange="changeItemCategory(33, this.value)" class="text-[10px] bg-slate-50 border border-slate-200 rounded px-1.5 py-1 text-slate-600">
+                                    <option value="buborek">buborek</option><option value="kombinatorika">kombinatorika</option><option value="matematika" selected="">matematika</option><option value="egyes">egyes</option>
+                                </select>
+                                <div class="flex items-center gap-1">
+                                    <button onclick="previewTable(&#39;https://red-zeta-one.vercel.app/tabla/tabla33/index.html&#39;, &#39;Tábla 33 - Aktív feladat&#39;)" class="bg-blue-50 hover:bg-blue-100 text-[#2563eb] px-2 py-1 rounded text-[11px] font-medium transition">📄 Preview</button>
+                                    <button onclick="renameTable(33)" class="p-1 hover:bg-slate-100 rounded text-slate-500" title="Átnevezés">✏️</button>
+                                    <button onclick="softDeleteTable(33)" class="p-1 hover:bg-red-50 rounded text-red-400 hover:text-red-600" title="Törlés">🗑️</button>
+                                </div>
+                            </div>
+                        </div>
+                    
+                        <div class="bg-white p-3 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between space-y-2 hover:border-blue-200 transition">
+                            <div>
+                                <span class="text-[10px] font-mono text-slate-400 bg-slate-50 px-1 py-0.5 rounded border">#34 | tabla34</span>
+                                <h4 class="text-xs font-semibold text-[#0f172a] mt-1">Tábla 34 - Aktív feladat</h4>
+                            </div>
+                            <div class="flex items-center justify-between pt-2 border-t border-slate-100 text-xs gap-2">
+                                <select onchange="changeItemCategory(34, this.value)" class="text-[10px] bg-slate-50 border border-slate-200 rounded px-1.5 py-1 text-slate-600">
+                                    <option value="buborek">buborek</option><option value="kombinatorika">kombinatorika</option><option value="matematika" selected="">matematika</option><option value="egyes">egyes</option>
+                                </select>
+                                <div class="flex items-center gap-1">
+                                    <button onclick="previewTable(&#39;https://red-zeta-one.vercel.app/tabla/tabla34/index.html&#39;, &#39;Tábla 34 - Aktív feladat&#39;)" class="bg-blue-50 hover:bg-blue-100 text-[#2563eb] px-2 py-1 rounded text-[11px] font-medium transition">📄 Preview</button>
+                                    <button onclick="renameTable(34)" class="p-1 hover:bg-slate-100 rounded text-slate-500" title="Átnevezés">✏️</button>
+                                    <button onclick="softDeleteTable(34)" class="p-1 hover:bg-red-50 rounded text-red-400 hover:text-red-600" title="Törlés">🗑️</button>
+                                </div>
+                            </div>
+                        </div>
+                    
+                        <div class="bg-white p-3 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between space-y-2 hover:border-blue-200 transition">
+                            <div>
+                                <span class="text-[10px] font-mono text-slate-400 bg-slate-50 px-1 py-0.5 rounded border">#35 | tabla35</span>
+                                <h4 class="text-xs font-semibold text-[#0f172a] mt-1">Tábla 35 - Aktív feladat</h4>
+                            </div>
+                            <div class="flex items-center justify-between pt-2 border-t border-slate-100 text-xs gap-2">
+                                <select onchange="changeItemCategory(35, this.value)" class="text-[10px] bg-slate-50 border border-slate-200 rounded px-1.5 py-1 text-slate-600">
+                                    <option value="buborek">buborek</option><option value="kombinatorika">kombinatorika</option><option value="matematika" selected="">matematika</option><option value="egyes">egyes</option>
+                                </select>
+                                <div class="flex items-center gap-1">
+                                    <button onclick="previewTable(&#39;https://red-zeta-one.vercel.app/tabla/tabla35/index.html&#39;, &#39;Tábla 35 - Aktív feladat&#39;)" class="bg-blue-50 hover:bg-blue-100 text-[#2563eb] px-2 py-1 rounded text-[11px] font-medium transition">📄 Preview</button>
+                                    <button onclick="renameTable(35)" class="p-1 hover:bg-slate-100 rounded text-slate-500" title="Átnevezés">✏️</button>
+                                    <button onclick="softDeleteTable(35)" class="p-1 hover:bg-red-50 rounded text-red-400 hover:text-red-600" title="Törlés">🗑️</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div></div>
+                    <div class="space-y-3">
+                        <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400 border-b border-slate-200 pb-1 flex justify-between">
+                            <span>egyes</span>
+                            <span>9 db</span>
+                        </h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                
+                        <div class="bg-white p-3 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between space-y-2 hover:border-blue-200 transition">
+                            <div>
+                                <span class="text-[10px] font-mono text-slate-400 bg-slate-50 px-1 py-0.5 rounded border">#36 | tabla36</span>
+                                <h4 class="text-xs font-semibold text-[#0f172a] mt-1">Tábla 36 - Aktív feladat</h4>
+                            </div>
+                            <div class="flex items-center justify-between pt-2 border-t border-slate-100 text-xs gap-2">
+                                <select onchange="changeItemCategory(36, this.value)" class="text-[10px] bg-slate-50 border border-slate-200 rounded px-1.5 py-1 text-slate-600">
+                                    <option value="buborek">buborek</option><option value="kombinatorika">kombinatorika</option><option value="matematika">matematika</option><option value="egyes" selected="">egyes</option>
+                                </select>
+                                <div class="flex items-center gap-1">
+                                    <button onclick="previewTable(&#39;https://red-zeta-one.vercel.app/tabla/tabla36/index.html&#39;, &#39;Tábla 36 - Aktív feladat&#39;)" class="bg-blue-50 hover:bg-blue-100 text-[#2563eb] px-2 py-1 rounded text-[11px] font-medium transition">📄 Preview</button>
+                                    <button onclick="renameTable(36)" class="p-1 hover:bg-slate-100 rounded text-slate-500" title="Átnevezés">✏️</button>
+                                    <button onclick="softDeleteTable(36)" class="p-1 hover:bg-red-50 rounded text-red-400 hover:text-red-600" title="Törlés">🗑️</button>
+                                </div>
+                            </div>
+                        </div>
+                    
+                        <div class="bg-white p-3 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between space-y-2 hover:border-blue-200 transition">
+                            <div>
+                                <span class="text-[10px] font-mono text-slate-400 bg-slate-50 px-1 py-0.5 rounded border">#37 | tabla37</span>
+                                <h4 class="text-xs font-semibold text-[#0f172a] mt-1">Tábla 37 - Aktív feladat</h4>
+                            </div>
+                            <div class="flex items-center justify-between pt-2 border-t border-slate-100 text-xs gap-2">
+                                <select onchange="changeItemCategory(37, this.value)" class="text-[10px] bg-slate-50 border border-slate-200 rounded px-1.5 py-1 text-slate-600">
+                                    <option value="buborek">buborek</option><option value="kombinatorika">kombinatorika</option><option value="matematika">matematika</option><option value="egyes" selected="">egyes</option>
+                                </select>
+                                <div class="flex items-center gap-1">
+                                    <button onclick="previewTable(&#39;https://red-zeta-one.vercel.app/tabla/tabla37/index.html&#39;, &#39;Tábla 37 - Aktív feladat&#39;)" class="bg-blue-50 hover:bg-blue-100 text-[#2563eb] px-2 py-1 rounded text-[11px] font-medium transition">📄 Preview</button>
+                                    <button onclick="renameTable(37)" class="p-1 hover:bg-slate-100 rounded text-slate-500" title="Átnevezés">✏️</button>
+                                    <button onclick="softDeleteTable(37)" class="p-1 hover:bg-red-50 rounded text-red-400 hover:text-red-600" title="Törlés">🗑️</button>
+                                </div>
+                            </div>
+                        </div>
+                    
+                        <div class="bg-white p-3 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between space-y-2 hover:border-blue-200 transition">
+                            <div>
+                                <span class="text-[10px] font-mono text-slate-400 bg-slate-50 px-1 py-0.5 rounded border">#38 | tabla38</span>
+                                <h4 class="text-xs font-semibold text-[#0f172a] mt-1">Tábla 38 - Aktív feladat</h4>
+                            </div>
+                            <div class="flex items-center justify-between pt-2 border-t border-slate-100 text-xs gap-2">
+                                <select onchange="changeItemCategory(38, this.value)" class="text-[10px] bg-slate-50 border border-slate-200 rounded px-1.5 py-1 text-slate-600">
+                                    <option value="buborek">buborek</option><option value="kombinatorika">kombinatorika</option><option value="matematika">matematika</option><option value="egyes" selected="">egyes</option>
+                                </select>
+                                <div class="flex items-center gap-1">
+                                    <button onclick="previewTable(&#39;https://red-zeta-one.vercel.app/tabla/tabla38/index.html&#39;, &#39;Tábla 38 - Aktív feladat&#39;)" class="bg-blue-50 hover:bg-blue-100 text-[#2563eb] px-2 py-1 rounded text-[11px] font-medium transition">📄 Preview</button>
+                                    <button onclick="renameTable(38)" class="p-1 hover:bg-slate-100 rounded text-slate-500" title="Átnevezés">✏️</button>
+                                    <button onclick="softDeleteTable(38)" class="p-1 hover:bg-red-50 rounded text-red-400 hover:text-red-600" title="Törlés">🗑️</button>
+                                </div>
+                            </div>
+                        </div>
+                    
+                        <div class="bg-white p-3 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between space-y-2 hover:border-blue-200 transition">
+                            <div>
+                                <span class="text-[10px] font-mono text-slate-400 bg-slate-50 px-1 py-0.5 rounded border">#39 | tabla39</span>
+                                <h4 class="text-xs font-semibold text-[#0f172a] mt-1">Tábla 39 - Aktív feladat</h4>
+                            </div>
+                            <div class="flex items-center justify-between pt-2 border-t border-slate-100 text-xs gap-2">
+                                <select onchange="changeItemCategory(39, this.value)" class="text-[10px] bg-slate-50 border border-slate-200 rounded px-1.5 py-1 text-slate-600">
+                                    <option value="buborek">buborek</option><option value="kombinatorika">kombinatorika</option><option value="matematika">matematika</option><option value="egyes" selected="">egyes</option>
+                                </select>
+                                <div class="flex items-center gap-1">
+                                    <button onclick="previewTable(&#39;https://red-zeta-one.vercel.app/tabla/tabla39/index.html&#39;, &#39;Tábla 39 - Aktív feladat&#39;)" class="bg-blue-50 hover:bg-blue-100 text-[#2563eb] px-2 py-1 rounded text-[11px] font-medium transition">📄 Preview</button>
+                                    <button onclick="renameTable(39)" class="p-1 hover:bg-slate-100 rounded text-slate-500" title="Átnevezés">✏️</button>
+                                    <button onclick="softDeleteTable(39)" class="p-1 hover:bg-red-50 rounded text-red-400 hover:text-red-600" title="Törlés">🗑️</button>
+                                </div>
+                            </div>
+                        </div>
+                    
+                        <div class="bg-white p-3 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between space-y-2 hover:border-blue-200 transition">
+                            <div>
+                                <span class="text-[10px] font-mono text-slate-400 bg-slate-50 px-1 py-0.5 rounded border">#40 | tabla40</span>
+                                <h4 class="text-xs font-semibold text-[#0f172a] mt-1">Tábla 40 - Aktív feladat</h4>
+                            </div>
+                            <div class="flex items-center justify-between pt-2 border-t border-slate-100 text-xs gap-2">
+                                <select onchange="changeItemCategory(40, this.value)" class="text-[10px] bg-slate-50 border border-slate-200 rounded px-1.5 py-1 text-slate-600">
+                                    <option value="buborek">buborek</option><option value="kombinatorika">kombinatorika</option><option value="matematika">matematika</option><option value="egyes" selected="">egyes</option>
+                                </select>
+                                <div class="flex items-center gap-1">
+                                    <button onclick="previewTable(&#39;https://red-zeta-one.vercel.app/tabla/tabla40/index.html&#39;, &#39;Tábla 40 - Aktív feladat&#39;)" class="bg-blue-50 hover:bg-blue-100 text-[#2563eb] px-2 py-1 rounded text-[11px] font-medium transition">📄 Preview</button>
+                                    <button onclick="renameTable(40)" class="p-1 hover:bg-slate-100 rounded text-slate-500" title="Átnevezés">✏️</button>
+                                    <button onclick="softDeleteTable(40)" class="p-1 hover:bg-red-50 rounded text-red-400 hover:text-red-600" title="Törlés">🗑️</button>
+                                </div>
+                            </div>
+                        </div>
+                    
+                        <div class="bg-white p-3 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between space-y-2 hover:border-blue-200 transition">
+                            <div>
+                                <span class="text-[10px] font-mono text-slate-400 bg-slate-50 px-1 py-0.5 rounded border">#41 | tabla41</span>
+                                <h4 class="text-xs font-semibold text-[#0f172a] mt-1">Tábla 41 - Aktív feladat</h4>
+                            </div>
+                            <div class="flex items-center justify-between pt-2 border-t border-slate-100 text-xs gap-2">
+                                <select onchange="changeItemCategory(41, this.value)" class="text-[10px] bg-slate-50 border border-slate-200 rounded px-1.5 py-1 text-slate-600">
+                                    <option value="buborek">buborek</option><option value="kombinatorika">kombinatorika</option><option value="matematika">matematika</option><option value="egyes" selected="">egyes</option>
+                                </select>
+                                <div class="flex items-center gap-1">
+                                    <button onclick="previewTable(&#39;https://red-zeta-one.vercel.app/tabla/tabla41/index.html&#39;, &#39;Tábla 41 - Aktív feladat&#39;)" class="bg-blue-50 hover:bg-blue-100 text-[#2563eb] px-2 py-1 rounded text-[11px] font-medium transition">📄 Preview</button>
+                                    <button onclick="renameTable(41)" class="p-1 hover:bg-slate-100 rounded text-slate-500" title="Átnevezés">✏️</button>
+                                    <button onclick="softDeleteTable(41)" class="p-1 hover:bg-red-50 rounded text-red-400 hover:text-red-600" title="Törlés">🗑️</button>
+                                </div>
+                            </div>
+                        </div>
+                    
+                        <div class="bg-white p-3 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between space-y-2 hover:border-blue-200 transition">
+                            <div>
+                                <span class="text-[10px] font-mono text-slate-400 bg-slate-50 px-1 py-0.5 rounded border">#42 | tabla42</span>
+                                <h4 class="text-xs font-semibold text-[#0f172a] mt-1">Tábla 42 - Aktív feladat</h4>
+                            </div>
+                            <div class="flex items-center justify-between pt-2 border-t border-slate-100 text-xs gap-2">
+                                <select onchange="changeItemCategory(42, this.value)" class="text-[10px] bg-slate-50 border border-slate-200 rounded px-1.5 py-1 text-slate-600">
+                                    <option value="buborek">buborek</option><option value="kombinatorika">kombinatorika</option><option value="matematika">matematika</option><option value="egyes" selected="">egyes</option>
+                                </select>
+                                <div class="flex items-center gap-1">
+                                    <button onclick="previewTable(&#39;https://red-zeta-one.vercel.app/tabla/tabla42/index.html&#39;, &#39;Tábla 42 - Aktív feladat&#39;)" class="bg-blue-50 hover:bg-blue-100 text-[#2563eb] px-2 py-1 rounded text-[11px] font-medium transition">📄 Preview</button>
+                                    <button onclick="renameTable(42)" class="p-1 hover:bg-slate-100 rounded text-slate-500" title="Átnevezés">✏️</button>
+                                    <button onclick="softDeleteTable(42)" class="p-1 hover:bg-red-50 rounded text-red-400 hover:text-red-600" title="Törlés">🗑️</button>
+                                </div>
+                            </div>
+                        </div>
+                    
+                        <div class="bg-white p-3 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between space-y-2 hover:border-blue-200 transition">
+                            <div>
+                                <span class="text-[10px] font-mono text-slate-400 bg-slate-50 px-1 py-0.5 rounded border">#43 | tabla43</span>
+                                <h4 class="text-xs font-semibold text-[#0f172a] mt-1">Tábla 43 - Aktív feladat</h4>
+                            </div>
+                            <div class="flex items-center justify-between pt-2 border-t border-slate-100 text-xs gap-2">
+                                <select onchange="changeItemCategory(43, this.value)" class="text-[10px] bg-slate-50 border border-slate-200 rounded px-1.5 py-1 text-slate-600">
+                                    <option value="buborek">buborek</option><option value="kombinatorika">kombinatorika</option><option value="matematika">matematika</option><option value="egyes" selected="">egyes</option>
+                                </select>
+                                <div class="flex items-center gap-1">
+                                    <button onclick="previewTable(&#39;https://red-zeta-one.vercel.app/tabla/tabla43/index.html&#39;, &#39;Tábla 43 - Aktív feladat&#39;)" class="bg-blue-50 hover:bg-blue-100 text-[#2563eb] px-2 py-1 rounded text-[11px] font-medium transition">📄 Preview</button>
+                                    <button onclick="renameTable(43)" class="p-1 hover:bg-slate-100 rounded text-slate-500" title="Átnevezés">✏️</button>
+                                    <button onclick="softDeleteTable(43)" class="p-1 hover:bg-red-50 rounded text-red-400 hover:text-red-600" title="Törlés">🗑️</button>
+                                </div>
+                            </div>
+                        </div>
+                    
+                        <div class="bg-white p-3 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between space-y-2 hover:border-blue-200 transition">
+                            <div>
+                                <span class="text-[10px] font-mono text-slate-400 bg-slate-50 px-1 py-0.5 rounded border">#44 | tabla44</span>
+                                <h4 class="text-xs font-semibold text-[#0f172a] mt-1">Tábla 44 - Aktív feladat</h4>
+                            </div>
+                            <div class="flex items-center justify-between pt-2 border-t border-slate-100 text-xs gap-2">
+                                <select onchange="changeItemCategory(44, this.value)" class="text-[10px] bg-slate-50 border border-slate-200 rounded px-1.5 py-1 text-slate-600">
+                                    <option value="buborek">buborek</option><option value="kombinatorika">kombinatorika</option><option value="matematika">matematika</option><option value="egyes" selected="">egyes</option>
+                                </select>
+                                <div class="flex items-center gap-1">
+                                    <button onclick="previewTable(&#39;https://red-zeta-one.vercel.app/tabla/tabla44/index.html&#39;, &#39;Tábla 44 - Aktív feladat&#39;)" class="bg-blue-50 hover:bg-blue-100 text-[#2563eb] px-2 py-1 rounded text-[11px] font-medium transition">📄 Preview</button>
+                                    <button onclick="renameTable(44)" class="p-1 hover:bg-slate-100 rounded text-slate-500" title="Átnevezés">✏️</button>
+                                    <button onclick="softDeleteTable(44)" class="p-1 hover:bg-red-50 rounded text-red-400 hover:text-red-600" title="Törlés">🗑️</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div></div></div>
+            </section>
+        </main>
+    </div>
+
+    <!-- ================= 3. MODUL: KOLLABORATÍV WORKSPACE ================= -->
+    <div id="module-collab" class="tab-content flex-1 overflow-hidden h-[calc(100vh-57px)] flex flex-col lg:flex-row bg-slate-100">
+        <!-- Tanári Oldal -->
+        <div class="w-full lg:w-1/2 bg-white border-r border-slate-200 flex flex-col h-full overflow-y-auto p-6 space-y-5">
+            <div class="flex items-center justify-between border-b border-blue-100 pb-3">
+                <div>
+                    <span class="bg-blue-100 text-[#2563eb] text-[10px] font-bold px-2 py-0.5 rounded uppercase">Tanári Vezérlő</span>
+                    <h2 class="text-base font-bold text-[#0f172a] mt-1">Élő Megosztások &amp; Kvíz Irányítás</h2>
+                </div>
+                <button onclick="duplicateTab()" class="text-xs bg-blue-50 text-[#2563eb] hover:bg-blue-100 px-3 py-1.5 rounded-lg font-medium transition">Duplikáld a lapot 📑</button>
+            </div>
+
+            <!-- Megosztás Szekció -->
+            <div class="space-y-2.5 bg-blue-50/40 p-4 rounded-xl border border-blue-100">
+                <h3 class="text-xs font-bold text-blue-900 uppercase">Tartalom küldése diákoknak</h3>
+                <input type="text" id="teacherMsgInput" placeholder="Feladat üzenet (pl.: Oldjátok meg a 4. feladatot!)" class="w-full text-xs px-3 py-2 border border-slate-200 rounded-lg bg-white">
+                <input type="text" id="teacherUrlInput" placeholder="Cél URL / Slug (pl.: tabla1)" class="w-full text-xs px-3 py-2 border border-slate-200 rounded-lg bg-white font-mono">
+                <button onclick="teacherShare()" class="w-full bg-[#2563eb] hover:bg-blue-700 text-white text-xs py-2 rounded-lg font-semibold shadow transition">Küldés / Megosztás 🚀</button>
+            </div>
+
+            <!-- Interaktív Kvíz Indító -->
+            <div class="space-y-2.5 bg-emerald-50/40 p-4 rounded-xl border border-emerald-100">
+                <h3 class="text-xs font-bold text-emerald-900 uppercase">A/B/C/D Kvíz Indítása</h3>
+                <input type="text" id="quizQuestionInput" placeholder="Kérdés szövege..." class="w-full text-xs px-3 py-2 border border-slate-200 rounded-lg bg-white">
+                <div class="grid grid-cols-2 gap-2">
+                    <input type="text" id="quizOptA" placeholder="A) opció" class="text-xs px-2.5 py-1.5 border rounded bg-white">
+                    <input type="text" id="quizOptB" placeholder="B) opció" class="text-xs px-2.5 py-1.5 border rounded bg-white">
+                    <input type="text" id="quizOptC" placeholder="C) opció" class="text-xs px-2.5 py-1.5 border rounded bg-white">
+                    <input type="text" id="quizOptD" placeholder="D) opció" class="text-xs px-2.5 py-1.5 border rounded bg-white">
+                </div>
+                <button onclick="launchTeacherQuiz()" class="w-full bg-[#10b981] hover:bg-emerald-600 text-white text-xs py-2 rounded-lg font-semibold shadow transition">Kvíz Kiküldése 📊</button>
+                <div id="quizLiveResults" class="text-xs font-medium text-emerald-800 pt-1">Beérkezett válaszok: 0 db</div>
+            </div>
+
+            <div class="space-y-2 flex-1 flex flex-col">
+                <h3 class="text-xs font-bold text-slate-400 uppercase">Csapatok Aktivitási &amp; Státusz Naplója</h3>
+                <div id="teacherActivityLog" class="flex-1 bg-slate-50 border border-slate-200 rounded-xl p-3 font-mono text-[11px] text-slate-600 overflow-y-auto space-y-1">
+                    <div>[Rendszer] Várakozás 1-10. csapat csatlakozására...</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Diák Oldal -->
+        <div class="w-full lg:w-1/2 bg-white flex flex-col h-full overflow-y-auto p-6 space-y-5">
+            <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between border-b border-emerald-100 pb-3 gap-2">
+                <div>
+                    <span class="bg-emerald-100 text-[#10b981] text-[10px] font-bold px-2 py-0.5 rounded uppercase">Diák / Csapat Munkatér</span>
+                    <h2 class="text-base font-bold text-[#0f172a] mt-1" id="studentStatusHeader">Várakozás a tanári megosztásra...</h2>
+                </div>
+                <!-- Csapat választó & Státusz Gombok -->
+                <div class="flex items-center gap-2 flex-wrap">
+                    <select id="studentTeamSelect" class="text-xs bg-slate-50 border border-slate-200 rounded-lg px-2 py-1.5 font-bold text-slate-700" title="Válaszd ki a csapatod">
+                        <option value="1. Csapat">1. Csapat</option>
+                        <option value="2. Csapat">2. Csapat</option>
+                        <option value="3. Csapat">3. Csapat</option>
+                        <option value="4. Csapat">4. Csapat</option>
+                        <option value="5. Csapat">5. Csapat</option>
+                        <option value="6. Csapat">6. Csapat</option>
+                        <option value="7. Csapat">7. Csapat</option>
+                        <option value="8. Csapat">8. Csapat</option>
+                        <option value="9. Csapat">9. Csapat</option>
+                        <option value="10. Csapat">10. Csapat</option>
+                    </select>
+                    <button onclick="sendStudentStatus(&#39;Kész vagyok ✅&#39;)" class="text-[11px] bg-emerald-50 hover:bg-emerald-100 text-[#10b981] px-2.5 py-1.5 rounded-lg font-semibold transition">✅ Kész</button>
+                    <button onclick="sendStudentStatus(&#39;Segítséget kérek 🙋‍♂️&#39;)" class="text-[11px] bg-amber-50 hover:bg-amber-100 text-amber-600 px-2.5 py-1.5 rounded-lg font-semibold transition">🙋‍♂️ Kérdés</button>
+                </div>
+            </div>
+
+            <!-- Kvíz Megjelenítő (Ha a tanár küldött) -->
+            <div id="studentQuizContainer" class="hidden bg-blue-50 border border-blue-200 rounded-xl p-4 space-y-3">
+                <h4 class="text-xs font-bold text-blue-900 uppercase">Aktív Kvíz a Tanártól:</h4>
+                <p id="studentQuizText" class="text-xs font-semibold text-slate-800"></p>
+                <div id="studentQuizOptions" class="grid grid-cols-2 gap-2"></div>
+            </div>
+
+            <!-- Workspace Fülek -->
+            <div class="space-y-3">
+                <div class="flex border-b border-slate-200 text-xs font-semibold">
+                    <button onclick="switchWorkspaceTab(&#39;word&#39;)" id="wtab-word" class="px-3 py-2 border-b-2 border-[#10b981] text-[#10b981]">Word &amp; AI Segéd</button>
+                    <button onclick="switchWorkspaceTab(&#39;ppt&#39;)" id="wtab-ppt" class="px-3 py-2 border-b-2 border-transparent text-slate-500">PowerPoint</button>
+                    <button onclick="switchWorkspaceTab(&#39;excel&#39;)" id="wtab-excel" class="px-3 py-2 border-b-2 border-transparent text-slate-500">Excel</button>
+                    <button onclick="switchWorkspaceTab(&#39;code&#39;)" id="wtab-code" class="px-3 py-2 border-b-2 border-transparent text-slate-500">Kódoló</button>
+                </div>
+
+                <!-- Word & Beépített AI Segéd -->
+                <div id="workspace-word" class="workspace-panel space-y-3">
+                    <div class="border border-slate-200 rounded-xl p-4 min-h-[140px] bg-white focus:outline-none text-xs" contenteditable="true" id="studentWordEditor" oninput="broadcastStudentActivity(&#39;word&#39;)">Írd ide a csapatod jegyzeteit...</div>
+                    <div class="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-100 rounded-xl p-3 space-y-2">
+                        <div class="flex items-center justify-between">
+                            <span class="text-[11px] font-bold text-blue-800 flex items-center gap-1">🤖 AI Tanulási Asszisztens</span>
+                            <button onclick="runAIAssistant()" class="bg-[#2563eb] text-white text-[10px] px-2.5 py-1 rounded font-semibold hover:bg-blue-700 transition">Elemzés &amp; Összegzés</button>
+                        </div>
+                        <div id="aiOutputBox" class="text-[11px] text-slate-600 bg-white p-2.5 rounded border border-blue-100 min-h-[40px]">Kattints az Elemzés gombra a jegyzetek AI támogatásához...</div>
+                    </div>
+                </div>
+
+                <div id="workspace-ppt" class="workspace-panel hidden">
+                    <div class="border border-slate-200 rounded-xl p-4 bg-slate-50 space-y-2">
+                        <input type="text" value="Bemutató Címe" class="w-full text-xs font-bold px-3 py-1.5 border rounded bg-white">
+                        <textarea rows="3" class="w-full text-xs p-2.5 border rounded bg-white">Dia pontjai...</textarea>
+                    </div>
+                </div>
+
+                <div id="workspace-excel" class="workspace-panel hidden overflow-x-auto">
+                    <table class="w-full text-xs border-collapse border border-slate-200 text-center">
+                        <tbody><tr class="bg-slate-100"><th class="border p-1">#</th><th class="border p-1">A</th><th class="border p-1">B</th></tr>
+                        <tr><td class="bg-slate-50 font-bold">1</td><td class="border p-1" contenteditable="true">10</td><td class="border p-1" contenteditable="true">20</td></tr>
+                    </tbody></table>
+                </div>
+
+                <div id="workspace-code" class="workspace-panel hidden">
+                    <textarea rows="5" class="w-full font-mono text-xs p-3 border rounded bg-slate-900 text-emerald-400">print("Hello Csapat Workspace!")</textarea>
+                </div>
+            </div>
+
+            <!-- Képernyőmegosztás -->
+            <div class="space-y-2 pt-2 border-t border-slate-100">
+                <div class="flex justify-between items-center">
+                    <span class="font-bold text-slate-500 text-xs">Képernyőmegosztás</span>
+                    <button onclick="requestScreenShare()" class="text-[11px] bg-slate-800 text-white px-2.5 py-1 rounded">🖥️ Megosztás indítása</button>
+                </div>
+                <div class="relative bg-slate-900 rounded-xl overflow-hidden h-24 flex items-center justify-center">
+                    <video id="studentScreenVideo" autoplay="" playsinline="" class="w-full h-full object-cover hidden"></video>
+                    <span id="screenPlaceholderText" class="text-xs text-slate-400">Nincs aktív megosztás</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= 4. MODUL: CSOPORTOS KANBAN ================= -->
+    <div id="module-kanban" class="tab-content flex-1 overflow-y-auto p-8 bg-slate-50 space-y-6">
+        <div class="max-w-6xl mx-auto space-y-6">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h2 class="text-xl font-bold text-[#0f172a]">Csoportos Projekt Kanban Tábla</h2>
+                    <p class="text-xs text-slate-500">Mozgasd a feladatkártyákat az oszlopok között a projekthaladás szerint</p>
+                </div>
+                <div class="flex gap-2">
+                    <input type="text" id="newKanbanTitle" placeholder="Új feladat..." class="text-xs px-3 py-1.5 border border-slate-200 rounded-lg bg-white">
+                    <button onclick="addKanbanTask()" class="bg-[#2563eb] text-white text-xs px-3 py-1.5 rounded-lg font-semibold">Feladat hozzáadása</button>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Oszlop 1: Teendő -->
+                <div class="bg-white border border-slate-200 rounded-2xl p-4 flex flex-col h-[550px] shadow-sm">
+                    <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3 pb-2 border-b">📌 Teendő (<span id="count-todo">1</span>)</h3>
+                    <div id="kanban-todo" class="flex-1 overflow-y-auto space-y-3" ondragover="allowDrop(event)" ondrop="dropTask(event, &#39;todo&#39;)">
+                        <div draggable="true" ondragstart="dragStart(event, 1)" class="bg-slate-50 border border-slate-200 p-3 rounded-xl shadow-sm text-xs font-medium flex justify-between items-center cursor-move hover:border-blue-300 transition">
+                            <span>Adatgyűjtés a feladathoz</span>
+                            <button onclick="deleteKanbanTask(1)" class="text-slate-400 hover:text-red-500">×</button>
+                        </div>
+                    </div>
+                </div>
+                <!-- Oszlop 2: Folyamatban -->
+                <div class="bg-white border border-slate-200 rounded-2xl p-4 flex flex-col h-[550px] shadow-sm">
+                    <h3 class="text-xs font-bold text-blue-500 uppercase tracking-wider mb-3 pb-2 border-b">⏳ Folyamatban (<span id="count-progress">1</span>)</h3>
+                    <div id="kanban-progress" class="flex-1 overflow-y-auto space-y-3" ondragover="allowDrop(event)" ondrop="dropTask(event, &#39;progress&#39;)">
+                        <div draggable="true" ondragstart="dragStart(event, 2)" class="bg-slate-50 border border-slate-200 p-3 rounded-xl shadow-sm text-xs font-medium flex justify-between items-center cursor-move hover:border-blue-300 transition">
+                            <span>UI komponensek megírása</span>
+                            <button onclick="deleteKanbanTask(2)" class="text-slate-400 hover:text-red-500">×</button>
+                        </div>
+                    </div>
+                </div>
+                <!-- Oszlop 3: Kész -->
+                <div class="bg-white border border-slate-200 rounded-2xl p-4 flex flex-col h-[550px] shadow-sm">
+                    <h3 class="text-xs font-bold text-emerald-500 uppercase tracking-wider mb-3 pb-2 border-b">✅ Kész (<span id="count-done">1</span>)</h3>
+                    <div id="kanban-done" class="flex-1 overflow-y-auto space-y-3" ondragover="allowDrop(event)" ondrop="dropTask(event, &#39;done&#39;)">
+                        <div draggable="true" ondragstart="dragStart(event, 3)" class="bg-slate-50 border border-slate-200 p-3 rounded-xl shadow-sm text-xs font-medium flex justify-between items-center cursor-move hover:border-blue-300 transition">
+                            <span>Tesztelés és dokumentáció</span>
+                            <button onclick="deleteKanbanTask(3)" class="text-slate-400 hover:text-red-500">×</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= 5. MODUL: LETÖLTÉSEK & PORTFÓLIÓ ================= -->
+    <div id="module-downloads" class="tab-content flex-1 overflow-y-auto p-8 bg-slate-50 space-y-8">
+        <div class="max-w-4xl mx-auto space-y-6">
+            <h2 class="text-xl font-bold text-[#0f172a]">5. Letöltések &amp; Portfólió Export</h2>
+            
+            <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+                <h3 class="text-sm font-bold text-slate-700">Diák Munkatér Portfólió Mentése (PDF / HTML)</h3>
+                <p class="text-xs text-slate-500">Egy kattintással letöltheted a Word jegyzeteidet, a Kanban feladatok állását és a rendszerstruktúrát hivatalos formátumban.</p>
+                <div class="flex flex-wrap gap-3">
+                    <button onclick="exportPortfolioPDF()" class="px-4 py-2.5 bg-[#2563eb] hover:bg-blue-700 text-white text-xs font-semibold rounded-xl transition shadow-sm">📥 Portfólió Letöltése (HTML/PDF)</button>
+                    <button onclick="downloadExport(&#39;txt&#39;)" class="px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold rounded-xl transition">TXT Lista</button>
+                    <button onclick="downloadExport(&#39;struct&#39;)" class="px-4 py-2.5 bg-blue-50 hover:bg-blue-100 text-[#2563eb] text-xs font-semibold rounded-xl transition">structure.txt</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript Rendszermag -->
+    <script>
+        function switchModule(mod) {
+            ['manager', 'collab', 'kanban', 'downloads'].forEach(m => {
+                document.getElementById(`module-${m}`).classList.remove('active');
+                document.getElementById(`btn-${m}`).className = "px-3.5 py-1.5 text-xs font-semibold rounded-lg bg-slate-100 text-slate-600 hover:bg-slate-200 transition";
+            });
+            document.getElementById(`module-${mod}`).classList.add('active');
+            document.getElementById(`btn-${mod}`).className = "px-3.5 py-1.5 text-xs font-semibold rounded-lg bg-[#2563eb] text-white transition";
+        }
+
+        function switchWorkspaceTab(tab) {
+            ['word', 'ppt', 'excel', 'code'].forEach(t => {
+                document.getElementById(`workspace-${t}`).classList.add('hidden');
+                document.getElementById(`wtab-${t}`).className = "px-3 py-2 border-b-2 border-transparent text-slate-500";
+            });
+            document.getElementById(`workspace-${tab}`).classList.remove('hidden');
+            document.getElementById(`wtab-${tab}`).className = "px-3 py-2 border-b-2 border-[#10b981] text-[#10b981]";
+        }
+
+        function getInitialDefaultTables() {
+            let list = [];
+            for (let i = 1; i <= 44; i++) {
+                let title = `Tábla ${i} - Aktív feladat`;
+                let cat = "matematika";
+                if (i === 1) { title = "Melyik buborék repült a legmesszebbre?"; cat = "buborek"; }
+                else if (i === 2) { title = "Színes golyók sorrendje"; cat = "kombinatorika"; }
+                else if (i === 3) { title = "Összeadás gyakorlása"; cat = "matematika"; }
+                else if (i > 3 && i <= 10) { cat = "buborek"; }
+                else if (i > 10 && i <= 20) { cat = "kombinatorika"; }
+                else if (i > 35) { cat = "egyes"; }
+
+                list.push({ id: i, slug: `tabla${i}`, title: title, category: cat, active: true });
+            }
+            return list;
+        }
+
+        let state = {
+            cats: JSON.parse(localStorage.getItem('cats_v7')) || ["buborek", "kombinatorika", "matematika", "egyes"],
+            data: JSON.parse(localStorage.getItem('data_v7')) || getInitialDefaultTables(),
+            kanban: JSON.parse(localStorage.getItem('kanban_v7')) || [
+                { id: 1, title: 'Adatgyűjtés a feladathoz', status: 'todo' },
+                { id: 2, title: 'UI komponensek megírása', status: 'progress' },
+                { id: 3, title: 'Tesztelés és dokumentáció', status: 'done' }
+            ],
+            selectedCategoryFilter: 'all'
+        };
+
+        function saveState() {
+            localStorage.setItem('cats_v7', JSON.stringify(state.cats));
+            localStorage.setItem('data_v7', JSON.stringify(state.data));
+            localStorage.setItem('kanban_v7', JSON.stringify(state.kanban));
+        }
+
+        function safeSlug(slug) {
+            if (!slug || slug === 'undefined' || slug.trim() === '') return 'index';
+            return slug.trim();
+        }
+
+        function buildFullUrl(slug) {
+            const project = document.getElementById('projectName').value.trim() || 'red-zeta-one';
+            const basePath = document.getElementById('basePathInput').value.trim() || 'tabla';
+            const htmlPart = document.getElementById('htmlPartInput').value.trim() || 'index.html';
+            const structure = document.getElementById('structureSelect').value;
+            const sSlug = safeSlug(slug);
+
+            let domain = `https://${project}.vercel.app`;
+            if (structure === 'folder_index') return `${domain}/${basePath}/${sSlug}/index.html`;
+            if (structure === 'folder_html') return `${domain}/${basePath}/${sSlug}/${htmlPart}`;
+            return `${domain}/${basePath}/${sSlug}.html`;
+        }
+
+        function renderApp() {
+            renderCategories();
+            renderCards();
+            updateInitListTextarea();
+            renderKanban();
+        }
+
+        function renderCategories() {
+            const container = document.getElementById('categoryBadgeList');
+            let html = `<button onclick="filterCategory('all')" class="text-[11px] px-2 py-0.5 rounded font-medium transition ${state.selectedCategoryFilter === 'all' ? 'bg-[#2563eb] text-white' : 'bg-slate-100 text-slate-600'}">Mind</button>`;
+            state.cats.forEach(cat => {
+                const active = state.selectedCategoryFilter === cat;
+                html += `<button onclick="filterCategory('${cat}')" class="text-[11px] px-2 py-0.5 rounded font-medium transition ${active ? 'bg-[#2563eb] text-white' : 'bg-slate-100 text-slate-600'}">${cat}</button>`;
+            });
+            container.innerHTML = html;
+        }
+
+        function filterCategory(cat) {
+            state.selectedCategoryFilter = cat;
+            renderCards();
+        }
+
+        function updateInitListTextarea() {
+            const ta = document.getElementById('initList');
+            ta.value = state.data.filter(x => x.active).map(item => `${item.slug} | ${item.title}`).join('\n');
+        }
+
+        function renderCards() {
+            const container = document.getElementById('cardContainer');
+            const searchVal = document.getElementById('searchInput').value.toLowerCase();
+            
+            let filtered = state.data.filter(item => {
+                if (!item.active) return false;
+                if (state.selectedCategoryFilter !== 'all' && item.category !== state.selectedCategoryFilter) return false;
+                if (searchVal && !item.title.toLowerCase().includes(searchVal) && !item.slug.toLowerCase().includes(searchVal)) return false;
+                return true;
+            });
+
+            document.getElementById('tableCount').innerText = filtered.length;
+
+            let grouped = {};
+            filtered.forEach(item => {
+                if (!grouped[item.category]) grouped[item.category] = [];
+                grouped[item.category].push(item);
+            });
+
+            if (Object.keys(grouped).length === 0) {
+                container.innerHTML = `<div class="text-center py-12 text-slate-400 text-sm">Nincs a feltételeknek megfelelő tábla.</div>`;
+                return;
+            }
+
+            let html = '';
+            for (let [cat, items] of Object.entries(grouped)) {
+                html += `
+                    <div class="space-y-3">
+                        <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400 border-b border-slate-200 pb-1 flex justify-between">
+                            <span>${cat}</span>
+                            <span>${items.length} db</span>
+                        </h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                `;
+
+                items.forEach(item => {
+                    const previewUrl = buildFullUrl(item.slug);
+                    let catOptions = state.cats.map(c => `<option value="${c}" ${c === item.category ? 'selected' : ''}>${c}</option>`).join('');
+
+                    html += `
+                        <div class="bg-white p-3 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between space-y-2 hover:border-blue-200 transition">
+                            <div>
+                                <span class="text-[10px] font-mono text-slate-400 bg-slate-50 px-1 py-0.5 rounded border">#${item.id} | ${safeSlug(item.slug)}</span>
+                                <h4 class="text-xs font-semibold text-[#0f172a] mt-1">${item.title}</h4>
+                            </div>
+                            <div class="flex items-center justify-between pt-2 border-t border-slate-100 text-xs gap-2">
+                                <select onchange="changeItemCategory(${item.id}, this.value)" class="text-[10px] bg-slate-50 border border-slate-200 rounded px-1.5 py-1 text-slate-600">
+                                    ${catOptions}
+                                </select>
+                                <div class="flex items-center gap-1">
+                                    <button onclick="previewTable('${previewUrl}', '${item.title.replace(/'/g, "\\'")}')" class="bg-blue-50 hover:bg-blue-100 text-[#2563eb] px-2 py-1 rounded text-[11px] font-medium transition">📄 Preview</button>
+                                    <button onclick="renameTable(${item.id})" class="p-1 hover:bg-slate-100 rounded text-slate-500" title="Átnevezés">✏️</button>
+                                    <button onclick="softDeleteTable(${item.id})" class="p-1 hover:bg-red-50 rounded text-red-400 hover:text-red-600" title="Törlés">🗑️</button>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
+                html += `</div></div>`;
+            }
+            container.innerHTML = html;
+        }
+
+        function previewTable(url, title) {
+            document.getElementById('ifr').src = url;
+            document.getElementById('currentPreviewUrlText').innerText = `(${title} - ${url})`;
+            document.getElementById('openNewTabBtn').href = url;
+        }
+
+        function renameTable(id) {
+            let item = state.data.find(x => x.id === id);
+            if (!item) return;
+            let newTitle = prompt("Add meg az új címet:", item.title);
+            if (newTitle !== null && newTitle.trim() !== "") {
+                item.title = newTitle.trim();
+                saveState();
+                renderApp();
+            }
+        }
+
+        function changeItemCategory(id, newCat) {
+            let item = state.data.find(x => x.id === id);
+            if (item) {
+                item.category = newCat;
+                saveState();
+                renderCards();
+            }
+        }
+
+        function softDeleteTable(id) {
+            let item = state.data.find(x => x.id === id);
+            if (item) {
+                item.active = false;
+                saveState();
+                renderApp();
+            }
+        }
+
+        function addNewCategory() {
+            const input = document.getElementById('newCatInput');
+            const val = input.value.trim().toLowerCase();
+            if (val && !state.cats.includes(val)) {
+                state.cats.push(val);
+                input.value = "";
+                saveState();
+                renderApp();
+            }
+        }
+
+        function resetDefaultData() {
+            if (confirm("Biztosan visszaállítod az alapértelmezett 44 táblát?")) {
+                state.cats = ["buborek", "kombinatorika", "matematika", "egyes"];
+                state.data = getInitialDefaultTables();
+                saveState();
+                renderApp();
+            }
+        }
+
+        function handleFileUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                document.getElementById('initList').value = e.target.result;
+                runGenerator();
+            };
+            reader.readAsText(file);
+        }
+
+        function runGenerator() {
+            const text = document.getElementById('initList').value;
+            const lines = text.split('\n');
+            let newData = [];
+            let idCounter = 1;
+
+            lines.forEach(line => {
+                let cleanLine = line.trim();
+                if (!cleanLine) return;
+                
+                let parts = cleanLine.split('|');
+                let slug = parts[0].trim();
+                let title = parts[1] ? parts[1].trim() : `Generált Tananyag ${idCounter}`;
+                
+                if (slug.startsWith('http')) {
+                    try {
+                        let urlObj = new URL(slug);
+                        let segments = urlObj.pathname.split('/').filter(Boolean);
+                        slug = segments[segments.length - 1] || 'index';
+                        if (slug.endsWith('.html')) slug = slug.replace('.html', '');
+                    } catch(err) {}
+                }
+
+                slug = safeSlug(slug);
+
+                newData.push({
+                    id: idCounter++,
+                    slug: slug,
+                    title: title,
+                    category: "matematika",
+                    active: true
+                });
+            });
+
+            if (newData.length > 0) {
+                state.data = newData;
+                saveState();
+                renderApp();
+                alert("Tananyag lista sikeresen generálva!");
+            }
+        }
+
+        // --- Kollaborációs / Broadcast & AI Logika csapathoz igazítva ---
+        const bc = new BroadcastChannel('tanar_diak_sync_v7');
+        let quizAnswersCount = 0;
+
+        bc.onmessage = function (event) {
+            const msg = event.data;
+            const team = msg.team || 'Ismeretlen csapat';
+
+            if (msg.type === 'share') {
+                document.getElementById('studentStatusHeader').innerText = `Megosztva: ${msg.title} (${msg.url})`;
+                logActivity(`[Tanár -> Mindenki] Új feladat: ${msg.title}`);
+            } else if (msg.type === 'quiz') {
+                showStudentQuiz(msg);
+                logActivity(`[Tanár -> Kvíz] ${msg.question}`);
+            } else if (msg.type === 'status') {
+                logActivity(`[${team}] Státusz: ${msg.status}`);
+            } else if (msg.type === 'quizAnswer') {
+                quizAnswersCount++;
+                document.getElementById('quizLiveResults').innerText = `Beérkezett válaszok: ${quizAnswersCount} db`;
+                logActivity(`[${team}] Válasz: ${msg.answer}`);
+            }
+        };
+
+        function teacherShare() {
+            const title = document.getElementById('teacherMsgInput').value || 'Aktív feladat';
+            const url = document.getElementById('teacherUrlInput').value || 'tabla1';
+            bc.postMessage({ type: 'share', title, url });
+            alert("Megosztás elküldve minden csapatnak!");
+        }
+
+        function launchTeacherQuiz() {
+            const question = document.getElementById('quizQuestionInput').value;
+            const optA = document.getElementById('quizOptA').value;
+            const optB = document.getElementById('quizOptB').value;
+            const optC = document.getElementById('quizOptC').value;
+            const optD = document.getElementById('quizOptD').value;
+
+            if (!question) {
+                alert("Add meg a kérdést!");
+                return;
+            }
+
+            quizAnswersCount = 0;
+            document.getElementById('quizLiveResults').innerText = `Beérkezett válaszok: 0 db`;
+            bc.postMessage({ type: 'quiz', question, optA, optB, optC, optD });
+            alert("Kvíz kiküldve a csapatoknak!");
+        }
+
+        function showStudentQuiz(quiz) {
+            document.getElementById('studentQuizContainer').classList.remove('hidden');
+            document.getElementById('studentQuizText').innerText = quiz.question;
+            const optsContainer = document.getElementById('studentQuizOptions');
+            let html = '';
+            [quiz.optA, quiz.optB, quiz.optC, quiz.optD].forEach((opt, idx) => {
+                if (opt) {
+                    let letter = ['A', 'B', 'C', 'D'][idx];
+                    html += `<button onclick="answerQuiz('${letter}')" class="bg-white border border-blue-200 hover:bg-blue-100 text-blue-900 text-xs py-2 px-3 rounded-lg font-semibold transition">${letter}) ${opt}</button>`;
+                }
+            });
+            optsContainer.innerHTML = html;
+        }
+
+        function answerQuiz(letter) {
+            const team = document.getElementById('studentTeamSelect').value;
+            bc.postMessage({ type: 'quizAnswer', answer: letter, team: team });
+            document.getElementById('studentQuizContainer').classList.add('hidden');
+            alert(`A(z) ${team} válasza (${letter}) elküldve a tanárnak!`);
+        }
+
+        function sendStudentStatus(status) {
+            const team = document.getElementById('studentTeamSelect').value;
+            bc.postMessage({ type: 'status', status, team: team });
+            alert(`Státusz elküldve (${team}): ${status}`);
+        }
+
+        function runAIAssistant() {
+            const text = document.getElementById('studentWordEditor').innerText;
+            const outputBox = document.getElementById('aiOutputBox');
+            outputBox.innerHTML = `<span class="text-blue-600 animate-pulse">AI elemzés folyamatban...</span>`;
+            setTimeout(() => {
+                let summary = text.length > 10 ? `AI Összegzés: A jegyzeted ${text.length} karakterből áll. Fő témakör: Projektfeladat. Javaslat: Folytassátok a megkezdett munkát!` : "A jegyzet még túl rövid az elemzéshez.";
+                outputBox.innerText = summary;
+            }, 800);
+        }
+
+        function duplicateTab() { window.open(window.location.href, '_blank'); }
+
+        async function requestScreenShare() {
+            try {
+                const stream = await navigator.mediaDevices.getDisplayMedia({ video: true });
+                const videoEl = document.getElementById('studentScreenVideo');
+                videoEl.srcObject = stream;
+                videoEl.classList.remove('hidden');
+                document.getElementById('screenPlaceholderText').classList.add('hidden');
+            } catch (err) {
+                alert("Képernyőmegosztás nem engedélyezett vagy korlátozott.");
+            }
+        }
+
+        function logActivity(text) {
+            const logBox = document.getElementById('teacherActivityLog');
+            logBox.innerHTML += `<div>${text}</div>`;
+            logBox.scrollTop = logBox.scrollHeight;
+        }
+
+        // --- Kanban Logika ---
+        function renderKanban() {
+            ['todo', 'progress', 'done'].forEach(status => {
+                const container = document.getElementById(`kanban-${status}`);
+                const items = state.kanban.filter(x => x.status === status);
+                document.getElementById(`count-${status === 'progress' ? 'progress' : status}`).innerText = items.length;
+                
+                let html = '';
+                items.forEach(task => {
+                    html += `
+                        <div draggable="true" ondragstart="dragStart(event, ${task.id})" class="bg-slate-50 border border-slate-200 p-3 rounded-xl shadow-sm text-xs font-medium flex justify-between items-center cursor-move hover:border-blue-300 transition">
+                            <span>${task.title}</span>
+                            <button onclick="deleteKanbanTask(${task.id})" class="text-slate-400 hover:text-red-500">×</button>
+                        </div>
+                    `;
+                });
+                container.innerHTML = html;
+            });
+        }
+
+        function addKanbanTask() {
+            const input = document.getElementById('newKanbanTitle');
+            const title = input.value.trim();
+            if (title) {
+                state.kanban.push({ id: Date.now(), title, status: 'todo' });
+                input.value = '';
+                saveState();
+                renderKanban();
+            }
+        }
+
+        function deleteKanbanTask(id) {
+            state.kanban = state.kanban.filter(x => x.id !== id);
+            saveState();
+            renderKanban();
+        }
+
+        let draggedId = null;
+        function dragStart(event, id) { draggedId = id; }
+        function allowDrop(event) { event.preventDefault(); }
+        function dropTask(event, newStatus) {
+            event.preventDefault();
+            let task = state.kanban.find(x => x.id === draggedId);
+            if (task) {
+                task.status = newStatus;
+                saveState();
+                renderKanban();
+            }
+        }
+
+        function exportPortfolioPDF() {
+            const notes = document.getElementById('studentWordEditor').innerText;
+            const team = document.getElementById('studentTeamSelect').value;
+            let win = window.open('', '_blank');
+            let kanbanHtml = state.kanban.map(t => `<li>[${t.status}] ${t.title}</li>`).join('');
+            
+            win.document.write(`
+                <html>
+                <head>
+                    <title>Portfólió Munkatér Export - ${team}</title>
+                    <script src="https://cdn.tailwindcss.com"><\/script>
+                </head>
+                <body class="p-8 font-sans bg-slate-50 text-slate-800">
+                    <div class="max-w-2xl mx-auto bg-white p-8 rounded-2xl shadow border space-y-4">
+                        <h1 class="text-xl font-bold text-slate-900 border-b pb-2">Diák Portfólió Export – ${team}</h1>
+                        <div>
+                            <h3 class="font-bold text-xs uppercase text-slate-400">Word Jegyzetek</h3>
+                            <p class="text-sm mt-1 bg-slate-50 p-3 rounded border whitespace-pre-wrap">${notes}</p>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-xs uppercase text-slate-400">Kanban Feladatok</h3>
+                            <ul class="list-disc list-inside text-sm mt-1 space-y-1">
+                                ${kanbanHtml}
+                            </ul>
+                        </div>
+                        <button onclick="window.print()" class="mt-4 bg-blue-600 text-white text-xs px-4 py-2 rounded font-semibold">Nyomtatás / PDF Mentés</button>
+                    </div>
+                </body>
+                </html>
+            `);
+            win.document.close();
+        }
+
+        function downloadExport(type) {
+            let content = "";
+            let filename = "export.txt";
+            if (type === 'txt') {
+                content = state.data.filter(x => x.active).map(x => `${x.title} - ${buildFullUrl(x.slug)}`).join('\n');
+            } else if (type === 'struct') {
+                content = state.data.filter(x => x.active).map(x => `tabla/${x.slug}/index.html`).join('\n');
+                filename = "structure.txt";
+            }
+            let blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
+            let link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = filename;
+            link.click();
+        }
+
+        ['projectName', 'basePathInput', 'htmlPartInput', 'structureSelect', 'searchInput'].forEach(id => {
+            document.getElementById(id).addEventListener('input', renderCards);
+        });
+        document.getElementById('structureSelect').addEventListener('change', renderCards);
+
+        window.onload = function() {
+            renderApp();
+        };
+    </script>
+
+</body></html>
