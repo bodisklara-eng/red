@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+  <meta charset="UTF-8">
+  <title>Klara – Glow stick törésanimáció</title>
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: #0b0c10;
+      color: #e5e5e5;
+      line-height: 1.6;
+      padding: 24px;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    h1, h2, h3 {
+      color: #00e0ff;
+    }
+    code, pre {
+      font-family: "Fira Code", Consolas, monospace;
+      background: #11141a;
+      border-radius: 6px;
+    }
+    pre {
+      padding: 12px 14px;
+      overflow-x: auto;
+      border: 1px solid #222833;
+    }
+    .section {
+      margin-bottom: 32px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid #222833;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Glow stick törésanimáció – Klara gondolatmenete</h1>
+
+  <div class="section">
+    <p>
+      Most végigvezetlek a gondolkodásomon, és megmutatom, hogyan tervezek meg egy teljesen új törésanimációt
+      (5. feladat), majd hogyan láncolom össze időzítésekkel (6. feladat). A végén kapsz egy teljes HTML + CSS
+      példát, amelyet be tudsz illeszteni Livresq-be.
+    </p>
+  </div>
+
+  <div class="section">
+    <h2>🛠️ 5. Feladat – Saját törésanimáció tervezése</h2>
+    <h3>Gondolatmenetem</h3>
+
+    <h3>1. Más rázkódási minta</h3>
+    <p>
+      A korábbi rázkódás finom volt. Most valami karakteresebbet szeretnék:
+      – gyors, rövid, „villámcsapás-szerű” mozgás
+      – nem csak bal-jobb, hanem kicsit fel-le is
+      – enyhe forgás, hogy drámaibb legyen.
+    </p>
+    <p>Ezért a rázkódás így fog kinézni:</p>
+    <ul>
+      <li>hirtelen balra csapódik</li>
+      <li>vissza középre</li>
+      <li>jobbra csapódik</li>
+      <li>vissza középre</li>
+      <li>egy kis fel-le vibrálás</li>
+    </ul>
+    <p>Ez már sokkal „agresszívebb” törés-hatás.</p>
+
+    <h3>2. Más repedésvonalak</h3>
+    <p>
+      A korábbi repedés két egyenes vonal volt. Most valami széttört üveg-szerű hatást akarok:
+    </p>
+    <ul>
+      <li>három repedésvonal</li>
+      <li>különböző szögek</li>
+      <li>egyik rövidebb, másik hosszabb</li>
+      <li>halványabb fény, hogy ne legyen túl harsány</li>
+    </ul>
+    <p>Ez sokkal organikusabb törésérzetet ad.</p>
+
+    <h3>3. Más fényerő</h3>
+    <p>
+      A felizzás legyen:
+    </p>
+    <ul>
+      <li>lassabb</li>
+      <li>mélyebb színű</li>
+      <li>kevésbé neon, inkább „kémiai reakció” jellegű</li>
+      <li>a fény ne azonnal robbanjon be, hanem „felkúszva” jelenjen meg</li>
+    </ul>
+    <p>Ezért a fényerőt egy lassú, fokozatos gradient fogja felépíteni.</p>
+
+    <h3>4. Hangulat: „villámcsapás” törés</h3>
+    <p>A teljes animáció hangulata:</p>
+    <ul>
+      <li>hirtelen rázkódás (villámcsapás)</li>
+      <li>repedésvonalak felvillannak</li>
+      <li>fény lassan terjed szét a rúd belsejében</li>
+      <li>végül stabilan világít</li>
+    </ul>
+    <p>Ez egy drámai, energikus törés.</p>
+  </div>
+
+  <div class="section">
+    <h2>🔥 6. Feladat – Időzített töréslánc</h2>
+    <h3>Gondolatmenetem</h3>
+
+    <p>A feladat szerint:</p>
+    <ul>
+      <li>0.5s rázkódás</li>
+      <li>automatikus felizzás</li>
+      <li>3s múlva halványulás</li>
+    </ul>
+
+    <p>Ehhez három animációt kell láncolni:</p>
+    <ul>
+      <li>shake → 0.5s</li>
+      <li>ignite → 0.5s késleltetéssel indul</li>
+      <li>fadeout → 3s késleltetéssel indul</li>
+    </ul>
+
+    <p>A CSS-ben ezt így oldom meg:</p>
+
+    <pre><code>animation:
+  shake 0.5s ease-out,
+  ignite 0.8s ease-out 0.5s forwards,
+  fadeout 2s ease-out 3s forwards;
+</code></pre>
+
+    <p>Ez egy animációs „idővonal”.</p>
+  </div>
+
+  <div class="section">
+    <h2>🌈 A teljes HTML + CSS példa (új törésanimáció + időzítés)</h2>
+    <p>Ez a végső megoldás, amit megterveztem:</p>
+
+    <pre><code>&lt;div class="stick" onclick="this.classList.add('break');"&gt;&lt;/div&gt;
+
+&lt;style&gt;
+.stick {
+  --glow: #00e0ff;
+  width: 240px;
+  height: 26px;
+  margin: 40px auto;
+  border-radius: 999px;
+  background: #111;
+  border: 2px solid #333;
+  cursor: pointer;
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+/* Törés animáció időzítése */
+.stick.break {
+  animation:
+    shake 0.5s ease-out,
+    ignite 0.8s ease-out 0.5s forwards,
+    fadeout 2s ease-out 3s forwards;
+}
+
+/* 1. Rázkódás – villámcsapás stílus */
+@keyframes shake {
+  0%   { transform: translateX(0) translateY(0) rotate(0deg); }
+  20%  { transform: translateX(-6px) translateY(-2px) rotate(-4deg); }
+  40%  { transform: translateX(6px)  translateY(2px)  rotate(4deg); }
+  60%  { transform: translateX(-4px) translateY(1px)  rotate(-2deg); }
+  80%  { transform: translateX(4px)  translateY(-1px) rotate(2deg); }
+  100% { transform: translateX(0) translateY(0) rotate(0deg); }
+}
+
+/* 2. Felizzás – lassú kémiai fényterjedés */
+@keyframes ignite {
+  0% {
+    background: #111;
+    border-color: #333;
+    box-shadow: none;
+  }
+  100% {
+    background: radial-gradient(circle at 50% 50%, var(--glow) 0%, #001018 70%);
+    border-color: var(--glow);
+    box-shadow:
+      0 0 10px var(--glow),
+      0 0 25px var(--glow),
+      0 0 40px var(--glow);
+  }
+}
+
+/* 3. Halványulás – lassú kihunyás */
+@keyframes fadeout {
+  0% {
+    box-shadow:
+      0 0 10px var(--glow),
+      0 0 25px var(--glow),
+      0 0 40px var(--glow);
+    opacity: 1;
+  }
+  100% {
+    box-shadow: none;
+    opacity: 0.3;
+  }
+}
+
+/* Repedésvonalak – három különböző szögben */
+.stick.break::before,
+.stick.break::after,
+.stick.break .crack3 {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 70%;
+  height: 2px;
+  background: rgba(255, 255, 255, 0.7);
+  box-shadow: 0 0 8px rgba(255, 255, 255, 0.9);
+  pointer-events: none;
+}
+
+.stick.break::before {
+  transform: translate(-50%, -50%) rotate(12deg);
+}
+
+.stick.break::after {
+  transform: translate(-50%, -50%) rotate(-10deg);
+}
+
+.stick.break .crack3 {
+  transform: translate(-50%, -50%) rotate(3deg);
+}
+&lt;/style&gt;
+</code></pre>
+  </div>
+
+  <div class="section">
+    <h2>✨ Mit kaptál?</h2>
+    <ul>
+      <li>✔ teljesen új törésanimáció</li>
+      <li>✔ drámai, villámcsapás-szerű rázkódás</li>
+      <li>✔ három repedésvonal</li>
+      <li>✔ lassú felizzás</li>
+      <li>✔ időzített halványulás</li>
+      <li>✔ egyetlen HTML elem</li>
+      <li>✔ Livresq-kompatibilis</li>
+    </ul>
+
+    <p>Ha szeretnéd, megcsinálom ugyanezt:</p>
+    <ul>
+      <li>🎨 más színben</li>
+      <li>⚡ robbanás-hatású töréssel</li>
+      <li>🌈 szivárványos glow stickkel</li>
+      <li>🧪 „kémiai reakció” stílusú fényterjedéssel</li>
+    </ul>
+    <p>Csak mondd, melyik legyen a következő.</p>
+  </div>
+
+</body>
+</html>
