@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<!-- saved from url=(0068)file:///C:/Users/Utilizator/Downloads/gemini-code-1788088026561.html -->
+<html lang="hu"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feladat Létrehozó</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .card-link {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .task-box {
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            width: 280px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+        }
+
+        .task-box:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Kulcs ikon alapstílusa */
+        .key-icon {
+            width: 60px;
+            height: 60px;
+            fill: #4a90e2;
+            margin-bottom: 15px;
+            display: inline-block;
+            transform-origin: center center;
+            transition: fill 0.3s ease;
+        }
+
+        /* Amikor a doboz fölé viszed az egeret, elindul a 3 fordulatos animáció */
+        .task-box:hover .key-icon {
+            fill: #27ae60; /* Színváltás zöldre */
+            animation: spin-three-times 1.5s ease-in-out forwards;
+        }
+
+        /* 3 teljes fordulat (360° x 3 = 1080°) */
+        @keyframes spin-three-times {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(1080deg);
+            }
+        }
+
+        .task-box h3 {
+            margin: 0 0 10px 0;
+            color: #333333;
+            font-size: 18px;
+            line-height: 1.4;
+        }
+
+        .task-box p {
+            margin: 0;
+            font-size: 14px;
+            color: #777777;
+        }
+    </style>
+</head>
+<body>
+
+    <a href="file:///C:/Users/Utilizator/Downloads/index.html" class="card-link">
+        <div class="task-box">
+            <!-- SVG Kulcs ikon -->
+            <svg class="key-icon" viewBox="0 0 24 24">
+                <path d="M7 14c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5c0 .88-.23 1.7-.63 2.41L18.59 23 22 23v-3h-2v-2h-2v-2h-2.41l-1.42-1.41C13.46 13.77 14.28 12.95 14.28 12c0-2.76-2.24-5-5-5zm0-2c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2z"></path>
+            </svg>
+            <h3>Feladat létrehozó felület lépésről lépésre</h3>
+            <p>Kattints a megnyitáshoz</p>
+        </div>
+    </a>
+
+
+</body></html>
