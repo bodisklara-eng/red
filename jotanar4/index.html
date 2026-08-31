@@ -1,1 +1,771 @@
 
+<!DOCTYPE html>
+<!-- saved from url=(0069)file:///C:/Users/Utilizator/Downloads/vercel_generator_pro%20(2).html -->
+<html lang="hu"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vercel Panel &amp; Menü Generátor Pro</title>
+    <!-- SortableJS CDN -->
+    <script src="./Vercel Panel &amp; Menü Generátor Pro1_files/Sortable.min.js.descărcare"></script>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-hover: #1d4ed8;
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --text-color: #1e293b;
+            --border-color: #cbd5e1;
+            --danger: #ef4444;
+            --danger-hover: #dc2626;
+            --success: #10b981;
+            --warning: #f59e0b;
+        }
+
+        body {
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.5;
+        }
+
+        h1 { font-size: 1.5rem; margin-bottom: 1.5rem; font-weight: 700; color: #0f172a; }
+
+        .main-container {
+            display: flex;
+            gap: 15px;
+            align-items: flex-start;
+            position: relative;
+        }
+
+        .left-column {
+            flex: 1;
+            min-width: 400px;
+            max-height: 90vh;
+            overflow-y: auto;
+            padding-right: 8px;
+        }
+
+        .resizer {
+            width: 6px;
+            background: var(--border-color);
+            cursor: col-resize;
+            border-radius: 3px;
+            align-self: stretch;
+            flex-shrink: 0;
+            transition: background 0.2s;
+        }
+        .resizer:hover, .resizer.active { background: var(--primary); }
+
+        .right-column {
+            flex: 1;
+            min-width: 350px;
+            background: var(--card-bg);
+            padding: 16px;
+            border-radius: 10px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            max-height: 90vh;
+            overflow-y: auto;
+            position: sticky;
+            top: 20px;
+        }
+
+        .section {
+            background: var(--card-bg);
+            padding: 16px;
+            margin-bottom: 16px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+        }
+
+        .section-header-text { border-left: 4px solid #f43f5e; background: #fff1f2; }
+        .section-metadata { border-left: 4px solid #6366f1; background: #faf5ff; }
+        .section-builder-3 { border-left: 4px solid var(--success); }
+        .section-builder-2 { border-left: 4px solid #0ea5e9; }
+        .section-manual { border-left: 4px solid #8b5cf6; }
+        .section-panel { border-left: 4px solid var(--warning); background: #fffdf5; }
+        .section-main { border-left: 4px solid var(--primary); background: #f0fdf4; }
+
+        h3 { margin-top: 0; font-size: 1rem; border-bottom: 1px solid #f1f5f9; padding-bottom: 8px; color: #334155; }
+        label { display: block; margin-bottom: 4px; font-weight: 600; font-size: 0.85rem; color: #475569; }
+
+        input[type="text"], textarea, select {
+            width: 100%;
+            padding: 8px 12px;
+            box-sizing: border-box;
+            margin-bottom: 8px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 0.9rem;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        input[type="text"]:focus, textarea:focus, select:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+        textarea { height: 70px; resize: vertical; }
+
+        .grid-3 {
+            display: grid;
+            grid-template-columns: 1fr 1.5fr 1fr;
+            gap: 8px;
+        }
+
+        button {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            font-size: 0.9rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background-color 0.2s;
+        }
+        button:hover { background-color: var(--primary-hover); }
+
+        .btn-green { background-color: var(--success); }
+        .btn-green:hover { background-color: #059669; }
+        .btn-cyan { background-color: #0ea5e9; }
+        .btn-cyan:hover { background-color: #0284c7; }
+        .btn-purple { background-color: #8b5cf6; }
+        .btn-purple:hover { background-color: #7c3aed; }
+        .btn-indigo { background-color: #6366f1; }
+        .btn-indigo:hover { background-color: #4f46e5; }
+        .btn-rose { background-color: #f43f5e; }
+        .btn-rose:hover { background-color: #e11d48; }
+        .btn-danger { background-color: var(--danger); font-size: 0.8rem; padding: 4px 10px; }
+        .btn-danger:hover { background-color: var(--danger-hover); }
+
+        .list-container {
+            list-style-type: none;
+            padding: 8px;
+            margin: 0 0 12px 0;
+            min-height: 60px;
+            background: #f8fafc;
+            border: 2px dashed var(--border-color);
+            border-radius: 6px;
+        }
+
+        #sortable-main { border-color: var(--primary); background: #fff; }
+
+        .list-container li {
+            padding: 8px 12px;
+            background: #fff;
+            margin-bottom: 6px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.02);
+        }
+
+        #sortable-main li {
+            flex-direction: column;
+            align-items: stretch;
+            gap: 6px;
+            background: #fdfdfd;
+            border-color: #cbd5e1;
+            cursor: default;
+        }
+
+        #sortable-main li.highlighted-item {
+            background: #eff6ff !important;
+            border-color: var(--primary) !important;
+            box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2);
+        }
+
+        .main-item-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid #f1f5f9;
+            padding-bottom: 4px;
+            cursor: grab;
+        }
+        .main-item-top:active { cursor: grabbing; }
+
+        .main-item-inputs {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 6px;
+            background: #f8fafc;
+            padding: 6px;
+            border-radius: 4px;
+            border: 1px solid #e2e8f0;
+        }
+        .main-item-inputs label { font-size: 0.7rem; color: #64748b; margin-bottom: 1px; }
+        .main-item-inputs input { margin-bottom: 0; padding: 4px 6px; font-size: 0.8rem; }
+
+        .drag-handle { color: #94a3b8; font-weight: bold; cursor: grab; font-size: 0.9rem; }
+        .link-info { flex-grow: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: 0.85rem; margin-right: 10px; }
+        .link-info a { color: var(--primary); text-decoration: none; }
+        .link-info a:hover { text-decoration: underline; }
+
+        .meta-results {
+            max-height: 150px;
+            overflow-y: auto;
+            background: #fff;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 4px;
+            margin-bottom: 8px;
+        }
+        .meta-item-row {
+            padding: 6px 8px;
+            font-size: 0.85rem;
+            border-bottom: 1px solid #f1f5f9;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .meta-item-row:last-child { border-bottom: none; }
+        .badge {
+            font-size: 0.7rem;
+            background: #e0e7ff;
+            color: #3730a3;
+            padding: 2px 6px;
+            border-radius: 4px;
+            margin-left: 6px;
+        }
+
+        .iframe-item {
+            margin-bottom: 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            background: #fff;
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .iframe-item:hover { border-color: var(--primary); box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); }
+        .iframe-item.highlighted-iframe {
+            border-color: var(--primary) !important;
+            box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.3) !important;
+        }
+
+        .iframe-header {
+            background: #f1f5f9;
+            padding: 6px 10px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .iframe-header-actions { display: flex; align-items: center; gap: 6px; }
+        .iframe-header a { color: var(--primary); text-decoration: none; }
+        .iframe-wrapper { width: 100%; height: 130px; }
+        .iframe-wrapper iframe { width: 100%; height: 100%; border: none; }
+
+        .html-preview-box {
+            margin-top: 8px;
+            padding: 10px;
+            background: #fff;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            min-height: 40px;
+        }
+        .action-group { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px; }
+        .settings-box { background: #fefce8; border: 1px solid #fef08a; padding: 10px; border-radius: 6px; margin-bottom: 10px; }
+        .panel-header-flex { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+    </style>
+</head>
+<body>
+
+    <h1>Vercel Panel &amp; Menü Generátor Pro</h1>
+    
+    <div class="main-container">
+        <!-- BAL OSZLOP -->
+        <div class="left-column" id="left-column">
+            
+            <!-- FEDŐSZÖVEG / CÍM SZEKCIÓ -->
+            <div class="section section-header-text">
+                <h3 style="color: #e11d48;">Fedőlap / Kezdő Tartalom</h3>
+                <label>Fejléc címe vagy bevezető HTML/szöveg:</label>
+                <textarea id="header-text-input" placeholder="Pl. &lt;h2&gt;Projekt gyűjteményem&lt;/h2&gt;&lt;p&gt;Üdvözlök mindenkit a vezérlőpulton!&lt;/p&gt;"></textarea>
+            </div>
+
+            <!-- METAADAT SZŰRŐ & KERESŐ (GitHub JSON + Fallback) -->
+            <div class="section section-metadata">
+                <h3 style="color: #4f46e5;">Központi Metaadat &amp; Keresés (GitHub JSON)</h3>
+                <label>Keresés név, kategória vagy tagek alapján:</label>
+                <input type="text" id="meta-search-input" placeholder="Pl. Admin, Vue, Dashboard...">
+                
+                <div class="meta-results" id="meta-results-container">
+                    <div style="padding:6px; font-size:0.8rem; color:#888;">Adatok betöltése...</div>
+                </div>
+                <button id="add-filtered-to-panel" class="btn-indigo" style="width: 100%;">Találatok átküldése a Vercel Panelbe</button>
+            </div>
+
+            <!-- 3. OPCIÓ -->
+            <div class="section section-builder-3">
+                <h3>Hárommezős Link Összefűzés</h3>
+                <div class="grid-3">
+                    <div>
+                        <label>Alap URL:</label>
+                        <input type="text" id="part1-input" value="https://red-zeta-one.vercel.app/">
+                    </div>
+                    <div>
+                        <label>Almappák:</label>
+                        <textarea id="part2-input" placeholder="platform1
+platform2"></textarea>
+                    </div>
+                    <div>
+                        <label>Végződés:</label>
+                        <input type="text" id="part3-input" value="/index.html">
+                    </div>
+                </div>
+                <button id="load-3part-btn" class="btn-green">Összefűzés és Hozzáadás</button>
+            </div>
+
+            <!-- 2. OPCIÓ -->
+            <div class="section section-builder-2">
+                <h3>Kétmezős Link Összefűzés</h3>
+                <label>Vercel Alap URL:</label>
+                <input type="text" id="base-url-2" value="https://red-zeta-one.vercel.app/">
+                <label>Almappák / Fájlok (soronként):</label>
+                <textarea id="paths-2" placeholder="platform1/index.html
+platform2/index.html"></textarea>
+                <button id="load-2part-btn" class="btn-cyan">Összefűzés és Hozzáadás</button>
+            </div>
+
+            <!-- MANUÁLIS -->
+            <div class="section section-manual">
+                <h3>Manuális Beillesztés</h3>
+                <label>Szöveg vagy Link:</label>
+                <textarea id="manual-input" placeholder="Írd be vagy illaszd be ide..."></textarea>
+                <button id="load-manual-btn" class="btn-purple">Hozzáadás</button>
+            </div>
+
+            <!-- VERCEL GYŰJTŐHELY -->
+            <div class="section section-panel">
+                <div class="panel-header-flex">
+                    <h3 style="color: #b45309; margin:0; border:none; padding:0;">Vercel Panel (Gyűjtőhely)</h3>
+                    <button id="clear-vercel-btn" class="btn-danger">🗑️ Kiürítés</button>
+                </div>
+                <ul id="sortable-vercel" class="list-container"></ul>
+                <button id="transfer-all-btn" class="btn-green" style="width: 100%;">🚀 Mind átküldése az Aktív Sorrendbe</button>
+            </div>
+
+            <!-- AKTÍV SORREND -->
+            <div class="section section-main">
+                <div class="panel-header-flex">
+                    <h3 style="color: #1d4ed8; margin:0; border:none; padding:0;">Aktív Sorrend &amp; Menü Beállítások</h3>
+                    <button id="clear-main-btn" class="btn-danger">🗑️ Kiürítés</button>
+                </div>
+                
+                <div class="settings-box">
+                    <label>Kimenet Típusa / Iránya:</label>
+                    <select id="menu-orientation" style="background:#fff;">
+                        <option value="horizontal">Vízszintes stílusú menü</option>
+                        <option value="vertical">Függőleges (Sidebar) stílusú menü</option>
+                        <option value="plain-list">Sima, CSS nélküli lista (egymás alatt)</option>
+                    </select>
+
+                    <label style="display:inline-flex; align-items:center; cursor:pointer; margin-top:6px;" id="hierarchical-wrapper">
+                        <input type="checkbox" id="hierarchical-mode" style="margin-right:6px; width:16px; height:16px;">
+                        <strong>Alárendelt (Lenyíló almenü) struktúra</strong>
+                    </label>
+                </div>
+
+                <ul id="sortable-main" class="list-container"></ul>
+                <button id="save-btn">HTML Kód Frissítése</button>
+            </div>
+
+            <!-- EXPORT -->
+            <div class="section">
+                <h3>Generált HTML kód &amp; Mentés</h3>
+                <textarea id="html-output" readonly="" placeholder="Itt jelenik meg a kód..."></textarea>
+                <div class="action-group">
+                    <button id="download-local-btn" class="btn-green">📥 Letöltés (.html)</button>
+                </div>
+                <label style="margin-top: 10px;">Élő vizuális előnézet:</label>
+                <div id="html-preview" class="html-preview-box"></div>
+            </div>
+        </div>
+
+        <div class="resizer" id="drag-resizer"></div>
+
+        <!-- JOBB OSZLOP: IFRAME KÁRTYÁK A LAP TETEJÉN -->
+        <div class="right-column" id="right-column">
+            <h3 style="color: var(--primary); border-bottom: 2px solid var(--primary); font-size: 0.9rem;">Élő Iframe Előnézetek (Kattints a kártyára a szinkronizáláshoz)</h3>
+            <div id="iframe-series-container" class="list-container" style="border-color: var(--primary); background: #fff;"></div>
+        </div>
+    </div>
+
+    <script>
+        const fallbackMetadata = [
+            { id: "app-1", title: "Admin Dashboard (Alapértelmezett)", url: "https://red-zeta-one.vercel.app/platform1/index.html", category: "Admin", tags: ["vue", "tailwind"] },
+            { id: "app-2", title: "Landing Page (Alapértelmezett)", url: "https://red-zeta-one.vercel.app/platform2/index.html", category: "Marketing", tags: ["html", "css"] }
+        ];
+
+        let centralMetadata = [];
+
+        const metaSearchInput = document.getElementById('meta-search-input');
+        const metaResultsContainer = document.getElementById('meta-results-container');
+        const headerTextInput = document.getElementById('header-text-input');
+
+        async function loadMetadata() {
+            const githubRawUrl = 'https://raw.githubusercontent.com/FELHASZNALONEV/REPO-NEV/main/metadata.json';
+            try {
+                const response = await fetch(githubRawUrl);
+                if (!response.ok) throw new Error(`HTTP hiba: ${response.status}`);
+                centralMetadata = await response.json();
+            } catch (error) {
+                centralMetadata = fallbackMetadata;
+            }
+            renderMetaResults(centralMetadata);
+        }
+
+        loadMetadata();
+
+        function renderMetaResults(items) {
+            metaResultsContainer.innerHTML = '';
+            if (items.length === 0) {
+                metaResultsContainer.innerHTML = '<div style="padding:6px; font-size:0.8rem; color:#888;">Nincs találat.</div>';
+                return;
+            }
+            items.forEach(item => {
+                const row = document.createElement('div');
+                row.className = 'meta-item-row';
+                row.innerHTML = `
+                    <div>
+                        <strong>${item.title}</strong>
+                        <span class="badge">${item.category}</span>
+                        <span style="font-size:0.7rem; color:#64748b;">[${item.tags.join(', ')}]</span>
+                    </div>
+                    <button class="btn-green" style="font-size:0.7rem; padding:2px 6px;" data-url="${item.url}" data-title="${item.title}">＋</button>
+                `;
+                row.querySelector('button').addEventListener('click', () => {
+                    addVercelItem(item.title, item.url);
+                });
+                metaResultsContainer.appendChild(row);
+            });
+        }
+
+        metaSearchInput.addEventListener('input', (e) => {
+            const query = e.target.value.toLowerCase();
+            const filtered = centralMetadata.filter(item => 
+                item.title.toLowerCase().includes(query) ||
+                item.category.toLowerCase().includes(query) ||
+                item.tags.some(tag => tag.toLowerCase().includes(query))
+            );
+            renderMetaResults(filtered);
+        });
+
+        document.getElementById('add-filtered-to-panel').addEventListener('click', () => {
+            const query = metaSearchInput.value.toLowerCase();
+            const filtered = centralMetadata.filter(item => 
+                item.title.toLowerCase().includes(query) ||
+                item.category.toLowerCase().includes(query) ||
+                item.tags.some(tag => tag.toLowerCase().includes(query))
+            );
+            filtered.forEach(item => addVercelItem(item.title, item.url));
+        });
+
+        const resizer = document.getElementById('drag-resizer');
+        const leftCol = document.getElementById('left-column');
+        let isResizing = false;
+
+        resizer.addEventListener('mousedown', (e) => {
+            isResizing = true;
+            resizer.classList.add('active');
+            document.body.style.cursor = 'col-resize';
+            e.preventDefault();
+        });
+
+        document.addEventListener('mousemove', (e) => {
+            if (!isResizing) return;
+            const containerOffsetLeft = leftCol.getBoundingClientRect().left;
+            const pointerPos = e.clientX - containerOffsetLeft;
+            const totalWidth = leftCol.parentElement.clientWidth;
+            if (pointerPos > 300 && pointerPos < totalWidth - 300) {
+                leftCol.style.flex = `0 0 ${pointerPos}px`;
+            }
+        });
+
+        document.addEventListener('mouseup', () => {
+            if (isResizing) {
+                isResizing = false;
+                resizer.classList.remove('active');
+                document.body.style.cursor = 'default';
+            }
+        });
+
+        const sortableVercel = document.getElementById('sortable-vercel');
+        const sortableMain = document.getElementById('sortable-main');
+        const iframeSeriesContainer = document.getElementById('iframe-series-container');
+        const htmlOutput = document.getElementById('html-output');
+        const htmlPreview = document.getElementById('html-preview');
+        const hierarchicalModeCheckbox = document.getElementById('hierarchical-mode');
+        const menuOrientationSelect = document.getElementById('menu-orientation');
+        const hierarchicalWrapper = document.getElementById('hierarchical-wrapper');
+
+        function generateUniqueId() {
+            return 'id_' + Math.random().toString(36).substr(2, 9);
+        }
+
+        function clearHighlights() {
+            document.querySelectorAll('.highlighted-item').forEach(el => el.classList.remove('highlighted-item'));
+            document.querySelectorAll('.highlighted-iframe').forEach(el => el.classList.remove('highlighted-iframe'));
+        }
+
+        function addVercelItem(text, href) {
+            const li = document.createElement('li');
+            li.setAttribute('data-href', href);
+            li.setAttribute('data-text', text);
+            li.innerHTML = `
+                <span class="drag-handle">☰</span>
+                <div class="link-info"><strong>${text}</strong> (<a href="${href}" target="_blank">${href}</a>)</div>
+                <button class="delete-btn" title="Törlés">✕</button>
+            `;
+            li.querySelector('.delete-btn').addEventListener('click', () => li.remove());
+            sortableVercel.appendChild(li);
+        }
+
+        document.getElementById('load-3part-btn').addEventListener('click', () => {
+            const base = document.getElementById('part1-input').value.trim();
+            const paths = document.getElementById('part2-input').value.split('
+').map(p => p.trim()).filter(Boolean);
+            const end = document.getElementById('part3-input').value.trim();
+            paths.forEach(p => addVercelItem(p, base + p + end));
+        });
+
+        document.getElementById('load-2part-btn').addEventListener('click', () => {
+            const base = document.getElementById('base-url-2').value.trim();
+            const paths = document.getElementById('paths-2').value.split('
+').map(p => p.trim()).filter(Boolean);
+            paths.forEach(p => addVercelItem(p, base.endsWith('/') || p.startsWith('/') ? base + p : base + '/' + p));
+        });
+
+        document.getElementById('load-manual-btn').addEventListener('click', () => {
+            const manualInput = document.getElementById('manual-input');
+            manualInput.value.split('
+').map(l => l.trim()).filter(Boolean).forEach(l => addVercelItem(l, l));
+            manualInput.value = '';
+        });
+
+        document.getElementById('clear-vercel-btn').addEventListener('click', () => sortableVercel.innerHTML = '');
+        document.getElementById('clear-main-btn').addEventListener('click', () => {
+            sortableMain.innerHTML = '';
+            iframeSeriesContainer.innerHTML = '';
+            updatePreviewAndCode();
+        });
+
+        document.getElementById('transfer-all-btn').addEventListener('click', () => {
+            sortableMain.innerHTML = '';
+            iframeSeriesContainer.innerHTML = '';
+            sortableVercel.querySelectorAll('li[data-href]').forEach(li => {
+                addMainItem(li.getAttribute('data-text'), li.getAttribute('data-href'));
+            });
+            updatePreviewAndCode();
+        });
+
+        function addMainItem(text, href) {
+            const uniqueId = generateUniqueId();
+            
+            const mainLi = document.createElement('li');
+            mainLi.setAttribute('data-unique-id', uniqueId);
+            mainLi.innerHTML = `
+                <div class="main-item-top">
+                    <span class="drag-handle">☰ Átrendezés</span>
+                    <button class="delete-btn" title="Törlés">✕</button>
+                </div>
+                <div class="main-item-inputs">
+                    <div>
+                        <label>Megjelenő név:</label>
+                        <input type="text" class="main-text-input" value="${text}">
+                    </div>
+                    <div>
+                        <label>Link URL:</label>
+                        <input type="text" class="main-href-input" value="${href}">
+                    </div>
+                </div>
+            `;
+            
+            mainLi.querySelector('.delete-btn').addEventListener('click', () => {
+                mainLi.remove();
+                const iframeItem = iframeSeriesContainer.querySelector(`[data-unique-id="${uniqueId}"]`);
+                if (iframeItem) iframeItem.remove();
+                updatePreviewAndCode();
+            });
+
+            mainLi.addEventListener('click', (e) => {
+                if (e.target.tagName === 'INPUT' || e.target.tagName === 'BUTTON') return;
+                clearHighlights();
+                mainLi.classList.add('highlighted-item');
+                const iframeItem = iframeSeriesContainer.querySelector(`[data-unique-id="${uniqueId}"]`);
+                if (iframeItem) {
+                    iframeItem.classList.add('highlighted-iframe');
+                    iframeItem.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+            });
+
+            mainLi.querySelectorAll('input').forEach(input => input.addEventListener('input', updatePreviewAndCode));
+            sortableMain.appendChild(mainLi);
+
+            const iframeItem = document.createElement('div');
+            iframeItem.className = 'iframe-item';
+            iframeItem.setAttribute('data-unique-id', uniqueId);
+            iframeItem.innerHTML = `
+                <div class="iframe-header">
+                    <span>${text}</span>
+                    <div class="iframe-header-actions">
+                        <a href="${href}" target="_blank" title="Új lapon">↗</a>
+                        <button class="delete-btn btn-danger" style="font-size:0.7rem; padding:2px 6px;">✕</button>
+                    </div>
+                </div>
+                <div class="iframe-wrapper">
+                    <iframe src="${href}" title="${text}"></iframe>
+                </div>
+            `;
+
+            iframeItem.addEventListener('click', () => {
+                clearHighlights();
+                iframeItem.classList.add('highlighted-iframe');
+                mainLi.classList.add('highlighted-item');
+                mainLi.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            });
+
+            iframeItem.querySelector('.btn-danger').addEventListener('click', (e) => {
+                e.stopPropagation();
+                iframeItem.remove();
+                mainLi.remove();
+                updatePreviewAndCode();
+            });
+
+            iframeSeriesContainer.appendChild(iframeItem);
+        }
+
+        function updatePreviewAndCode() {
+            const items = sortableMain.querySelectorAll('li');
+            const isHierarchical = hierarchicalModeCheckbox.checked;
+            const orientation = menuOrientationSelect.value;
+            const headerContent = headerTextInput.value.trim();
+            let menuHtml = '';
+
+            if (orientation === 'plain-list') {
+                hierarchicalWrapper.style.display = 'none';
+            } else {
+                hierarchicalWrapper.style.display = 'inline-flex';
+            }
+
+            if (orientation === 'plain-list') {
+                let listHtml = '';
+                items.forEach(li => {
+                    listHtml += `<a href="${li.querySelector('.main-href-input').value}">${li.querySelector('.main-text-input').value}</a><br>
+`;
+                });
+                menuHtml = listHtml.trim();
+            } else if (orientation === 'vertical') {
+                if (isHierarchical && items.length > 0) {
+                    let subHtml = '';
+                    let mainText = '', mainHref = '';
+                    items.forEach((li, idx) => {
+                        const t = li.querySelector('.main-text-input').value;
+                        const h = li.querySelector('.main-href-input').value;
+                        if (idx === 0) { mainText = t; mainHref = h; }
+                        else { subHtml += `    <li><a href="${h}">${t}</a></li>
+`; }
+                    });
+                    menuHtml = `<style>
+  .v-menu { width: 220px; background: #1e293b; list-style: none; padding: 0; margin: 0; border-radius: 6px; font-family: sans-serif; }
+  .v-menu li { position: relative; }
+  .v-menu a { display: block; padding: 10px 14px; color: #fff; text-decoration: none; border-bottom: 1px solid #334155; }
+  .v-menu a:hover { background: #334155; }
+  .v-menu ul { display: none; list-style: none; padding: 0; margin: 0; background: #0f172a; }
+  .v-menu li:hover > ul { display: block; }
+</style>
+<ul class="v-menu">
+  <li><a href="${mainHref}">▶ ${mainText}</a>
+    <ul>
+${subHtml}    </ul>
+  </li>
+</ul>`;
+                } else {
+                    let listHtml = '';
+                    items.forEach(li => {
+                        listHtml += `  <li><a href="${li.querySelector('.main-href-input').value}">${li.querySelector('.main-text-input').value}</a></li>
+`;
+                    });
+                    menuHtml = `<style>
+  .v-menu { width: 220px; background: #1e293b; list-style: none; padding: 0; margin: 0; border-radius: 6px; font-family: sans-serif; }
+  .v-menu a { display: block; padding: 10px 14px; color: #fff; text-decoration: none; border-bottom: 1px solid #334155; }
+  .v-menu a:hover { background: #334155; }
+</style>
+<ul class="v-menu">
+${listHtml}</ul>`;
+                }
+            } else {
+                if (isHierarchical && items.length > 0) {
+                    let subHtml = '';
+                    let mainText = '', mainHref = '';
+                    items.forEach((li, idx) => {
+                        const t = li.querySelector('.main-text-input').value;
+                        const h = li.querySelector('.main-href-input').value;
+                        if (idx === 0) { mainText = t; mainHref = h; }
+                        else { subHtml += `      <li><a href="${h}">${t}</a></li>
+`; }
+                    });
+                    menuHtml = `<style>
+  .h-menu { list-style: none; padding: 0; margin: 0; background: #1e293b; display: flex; border-radius: 6px; font-family: sans-serif; }
+  .h-menu li { position: relative; }
+  .h-menu a { display: block; padding: 10px 18px; color: #fff; text-decoration: none; }
+  .h-menu a:hover { background: #334155; }
+  .h-menu ul { display: none; position: absolute; top: 100%; left: 0; background: #1e293b; list-style: none; padding: 0; min-width: 160px; box-shadow: 0 4px 6px rgba(0,0,0,0.2); }
+  .h-menu li:hover > ul { display: block; }
+</style>
+<ul class="h-menu">
+  <li><a href="${mainHref}">${mainText} ▾</a>
+    <ul>
+${subHtml}    </ul>
+  </li>
+</ul>`;
+                } else {
+                    let listHtml = '';
+                    items.forEach(li => {
+                        listHtml += `  <li><a href="${li.querySelector('.main-href-input').value}">${li.querySelector('.main-text-input').value}</a></li>
+`;
+                    });
+                    menuHtml = `<style>
+  .h-menu { list-style: none; padding: 0; margin: 0; background: #1e293b; display: flex; border-radius: 6px; gap: 4px; font-family: sans-serif; }
+  .h-menu a { display: block; padding: 10px 18px; color: #fff; text-decoration: none; border-radius: 4px; }
+  .h-menu a:hover { background: #334155; }
+</style>
+<ul class="h-menu">
+${listHtml}</ul>`;
+                }
+            }
+
+            let finalOutput = headerContent ? `${headerContent}\n\n${menuHtml}` : menuHtml;
+
+            htmlOutput.value = finalOutput;
+            htmlPreview.innerHTML = finalOutput;
+        }
+
+        document.getElementById('save-btn').addEventListener('click', updatePreviewAndCode);
+        headerTextInput.addEventListener('input', updatePreviewAndCode);
+        hierarchicalModeCheckbox.addEventListener('change', updatePreviewAndCode);
+        menuOrientationSelect.addEventListener('change', updatePreviewAndCode);
+
+        document.getElementById('download-local-btn').addEventListener('click', () => {
+            const blob = new Blob([htmlOutput.value], { type: 'text/html;charset=utf-8' };
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'menu-pro.html';
+            a.click();
+            URL.revokeObjectURL(url);
+        });
+    </script>
+
+
+</body></html>
