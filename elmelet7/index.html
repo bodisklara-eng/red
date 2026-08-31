@@ -1,0 +1,1529 @@
+<!DOCTYPE html>
+<!-- saved from url=(0068)file:///C:/Users/Utilizator/Downloads/gemini-code-1788079566562.html -->
+<html lang="hu"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teljes Esettanulmányok és Részletes Magyarázatok</title>
+    <!-- MathJax a matematikai és fizikai képletek megjelenítéséhez -->
+    <script src="./Teljes Esettanulmányok és Részletes Magyarázatok_files/polyfill.min.js.descărcare"></script>
+    <script id="MathJax-script" async="" src="./Teljes Esettanulmányok és Részletes Magyarázatok_files/tex-mml-chtml.js.descărcare"></script>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        html {
+            height: 100%;
+            overflow-y: auto; /* Garantált függőleges görgetősáv az egész oldalnak */
+        }
+        body {
+            background-color: #0f172a;
+            color: #f8fafc;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+            padding: 2rem 1rem;
+            overflow-y: auto; /* Függőleges scroll engedélyezése */
+        }
+        .main-wrapper {
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+        h1 {
+            color: #38bdf8;
+            font-size: 2.2rem;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+        .controls {
+            position: sticky;
+            top: 1rem;
+            z-index: 100;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 1rem;
+            background: rgba(30, 41, 59, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 0.8rem 1.5rem;
+            border-radius: 50px;
+            border: 1px solid #38bdf8;
+            width: fit-content;
+            margin: 1rem auto 2.5rem;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+        }
+        .btn {
+            background: #0369a1;
+            color: #ffffff;
+            border: none;
+            padding: 0.6rem 1.2rem;
+            border-radius: 20px;
+            font-size: 0.95rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .btn:hover {
+            background: #38bdf8;
+            color: #0f172a;
+        }
+        .btn:disabled {
+            background: #334155;
+            color: #64748b;
+            cursor: not-allowed;
+        }
+        .section-box {
+            background: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2.5rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+        .section-box.active-card {
+            border-color: #facc15 !important;
+            box-shadow: 0 0 25px rgba(250, 204, 21, 0.3);
+        }
+        .tag {
+            display: inline-block;
+            background: #0369a1;
+            color: #e0f2fe;
+            font-size: 0.8rem;
+            padding: 0.3rem 0.6rem;
+            border-radius: 4px;
+            margin-bottom: 0.75rem;
+            text-transform: uppercase;
+            font-weight: bold;
+        }
+        h2 {
+            color: #38bdf8;
+            font-size: 1.5rem;
+            margin-bottom: 1.2rem;
+            border-bottom: 2px solid #334155;
+            padding-bottom: 0.5rem;
+        }
+        h3 {
+            color: #facc15;
+            font-size: 1.15rem;
+            margin-top: 1.5rem;
+            margin-bottom: 0.75rem;
+        }
+        p, li {
+            color: #cbd5e1;
+            line-height: 1.7;
+            font-size: 1rem;
+            margin-bottom: 0.75rem;
+        }
+        ul, ol {
+            margin-left: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        .sentence {
+            transition: background-color 0.2s ease, color 0.2s ease;
+            border-radius: 3px;
+            padding: 0 2px;
+            cursor: pointer;
+        }
+        .sentence:hover {
+            background-color: rgba(56, 189, 248, 0.25);
+        }
+        .sentence.active-sentence {
+            background-color: #facc15;
+            color: #0f172a;
+            font-weight: bold;
+            box-shadow: 0 0 8px #facc15;
+        }
+        .analysis-box {
+            background: #0f172a;
+            border-left: 4px solid #38bdf8;
+            padding: 1.5rem;
+            margin-top: 1.5rem;
+            border-radius: 0 8px 8px 0;
+            max-height: 500px; /* Belső magas tartalom esetén görgethető kártya */
+            overflow-y: auto;  /* Függőleges scroll az elemzés dobozán belül, ha túl hosszú */
+        }
+        .formula-block {
+            background: #1e293b;
+            padding: 1rem;
+            border-radius: 6px;
+            margin: 1rem 0;
+            overflow-x: auto; /* Vízszintes scroll a hosszú képleteknek */
+            border: 1px solid #475569;
+        }
+
+        /* Testreszabott görgetősáv stílus (Chrome, Edge, Safari) */
+        ::-webkit-scrollbar {
+            width: 10px;
+            height: 10px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0f172a;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #334155;
+            border-radius: 5px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #38bdf8;
+        }
+    </style>
+<style type="text/css">.CtxtMenu_InfoClose {  top:.2em; right:.2em;}
+.CtxtMenu_InfoContent {  overflow:auto; text-align:left; font-size:80%;  padding:.4em .6em; border:1px inset; margin:1em 0px;  max-height:20em; max-width:30em; background-color:#EEEEEE;  white-space:normal;}
+.CtxtMenu_Info.CtxtMenu_MousePost {outline:none;}
+.CtxtMenu_Info {  position:fixed; left:50%; width:auto; text-align:center;  border:3px outset; padding:1em 2em; background-color:#DDDDDD;  color:black;  cursor:default; font-family:message-box; font-size:120%;  font-style:normal; text-indent:0; text-transform:none;  line-height:normal; letter-spacing:normal; word-spacing:normal;  word-wrap:normal; white-space:nowrap; float:none; z-index:201;  border-radius: 15px;                     /* Opera 10.5 and IE9 */  -webkit-border-radius:15px;               /* Safari and Chrome */  -moz-border-radius:15px;                  /* Firefox */  -khtml-border-radius:15px;                /* Konqueror */  box-shadow:0px 10px 20px #808080;         /* Opera 10.5 and IE9 */  -webkit-box-shadow:0px 10px 20px #808080; /* Safari 3 & Chrome */  -moz-box-shadow:0px 10px 20px #808080;    /* Forefox 3.5 */  -khtml-box-shadow:0px 10px 20px #808080;  /* Konqueror */  filter:progid:DXImageTransform.Microsoft.dropshadow(OffX=2, OffY=2, Color="gray", Positive="true"); /* IE */}
+</style><style type="text/css">.CtxtMenu_MenuClose {  position:absolute;  cursor:pointer;  display:inline-block;  border:2px solid #AAA;  border-radius:18px;  -webkit-border-radius: 18px;             /* Safari and Chrome */  -moz-border-radius: 18px;                /* Firefox */  -khtml-border-radius: 18px;              /* Konqueror */  font-family: "Courier New", Courier;  font-size:24px;  color:#F0F0F0}
+.CtxtMenu_MenuClose span {  display:block; background-color:#AAA; border:1.5px solid;  border-radius:18px;  -webkit-border-radius: 18px;             /* Safari and Chrome */  -moz-border-radius: 18px;                /* Firefox */  -khtml-border-radius: 18px;              /* Konqueror */  line-height:0;  padding:8px 0 6px     /* may need to be browser-specific */}
+.CtxtMenu_MenuClose:hover {  color:white!important;  border:2px solid #CCC!important}
+.CtxtMenu_MenuClose:hover span {  background-color:#CCC!important}
+.CtxtMenu_MenuClose:hover:focus {  outline:none}
+</style><style type="text/css">.CtxtMenu_Menu {  position:absolute;  background-color:white;  color:black;  width:auto; padding:5px 0px;  border:1px solid #CCCCCC; margin:0; cursor:default;  font: menu; text-align:left; text-indent:0; text-transform:none;  line-height:normal; letter-spacing:normal; word-spacing:normal;  word-wrap:normal; white-space:nowrap; float:none; z-index:201;  border-radius: 5px;                     /* Opera 10.5 and IE9 */  -webkit-border-radius: 5px;             /* Safari and Chrome */  -moz-border-radius: 5px;                /* Firefox */  -khtml-border-radius: 5px;              /* Konqueror */  box-shadow:0px 10px 20px #808080;         /* Opera 10.5 and IE9 */  -webkit-box-shadow:0px 10px 20px #808080; /* Safari 3 & Chrome */  -moz-box-shadow:0px 10px 20px #808080;    /* Forefox 3.5 */  -khtml-box-shadow:0px 10px 20px #808080;  /* Konqueror */}
+.CtxtMenu_MenuItem {  padding: 1px 2em;  background:transparent;}
+.CtxtMenu_MenuArrow {  position:absolute; right:.5em; padding-top:.25em; color:#666666;  font-family: null; font-size: .75em}
+.CtxtMenu_MenuActive .CtxtMenu_MenuArrow {color:white}
+.CtxtMenu_MenuArrow.CtxtMenu_RTL {left:.5em; right:auto}
+.CtxtMenu_MenuCheck {  position:absolute; left:.7em;  font-family: null}
+.CtxtMenu_MenuCheck.CtxtMenu_RTL { right:.7em; left:auto }
+.CtxtMenu_MenuRadioCheck {  position:absolute; left: .7em;}
+.CtxtMenu_MenuRadioCheck.CtxtMenu_RTL {  right: .7em; left:auto}
+.CtxtMenu_MenuInputBox {  padding-left: 1em; right:.5em; color:#666666;  font-family: null;}
+.CtxtMenu_MenuInputBox.CtxtMenu_RTL {  left: .1em;}
+.CtxtMenu_MenuComboBox {  left:.1em; padding-bottom:.5em;}
+.CtxtMenu_MenuSlider {  left: .1em;}
+.CtxtMenu_SliderValue {  position:absolute; right:.1em; padding-top:.25em; color:#333333;  font-size: .75em}
+.CtxtMenu_SliderBar {  outline: none; background: #d3d3d3}
+.CtxtMenu_MenuLabel {  padding: 1px 2em 3px 1.33em;  font-style:italic}
+.CtxtMenu_MenuRule {  border-top: 1px solid #DDDDDD;  margin: 4px 3px;}
+.CtxtMenu_MenuDisabled {  color:GrayText}
+.CtxtMenu_MenuActive {  background-color: #606872;  color: white;}
+.CtxtMenu_MenuDisabled:focus {  background-color: #E8E8E8}
+.CtxtMenu_MenuLabel:focus {  background-color: #E8E8E8}
+.CtxtMenu_ContextMenu:focus {  outline:none}
+.CtxtMenu_ContextMenu .CtxtMenu_MenuItem:focus {  outline:none}
+.CtxtMenu_SelectionMenu {  position:relative; float:left;  border-bottom: none; -webkit-box-shadow:none; -webkit-border-radius:0px; }
+.CtxtMenu_SelectionItem {  padding-right: 1em;}
+.CtxtMenu_Selection {  right: 40%; width:50%; }
+.CtxtMenu_SelectionBox {  padding: 0em; max-height:20em; max-width: none;  background-color:#FFFFFF;}
+.CtxtMenu_SelectionDivider {  clear: both; border-top: 2px solid #000000;}
+.CtxtMenu_Menu .CtxtMenu_MenuClose {  top:-10px; left:-10px}
+</style><style id="MJX-CHTML-styles">
+mjx-container[jax="CHTML"] {
+  line-height: 0;
+}
+
+mjx-container [space="1"] {
+  margin-left: .111em;
+}
+
+mjx-container [space="2"] {
+  margin-left: .167em;
+}
+
+mjx-container [space="3"] {
+  margin-left: .222em;
+}
+
+mjx-container [space="4"] {
+  margin-left: .278em;
+}
+
+mjx-container [space="5"] {
+  margin-left: .333em;
+}
+
+mjx-container [rspace="1"] {
+  margin-right: .111em;
+}
+
+mjx-container [rspace="2"] {
+  margin-right: .167em;
+}
+
+mjx-container [rspace="3"] {
+  margin-right: .222em;
+}
+
+mjx-container [rspace="4"] {
+  margin-right: .278em;
+}
+
+mjx-container [rspace="5"] {
+  margin-right: .333em;
+}
+
+mjx-container [size="s"] {
+  font-size: 70.7%;
+}
+
+mjx-container [size="ss"] {
+  font-size: 50%;
+}
+
+mjx-container [size="Tn"] {
+  font-size: 60%;
+}
+
+mjx-container [size="sm"] {
+  font-size: 85%;
+}
+
+mjx-container [size="lg"] {
+  font-size: 120%;
+}
+
+mjx-container [size="Lg"] {
+  font-size: 144%;
+}
+
+mjx-container [size="LG"] {
+  font-size: 173%;
+}
+
+mjx-container [size="hg"] {
+  font-size: 207%;
+}
+
+mjx-container [size="HG"] {
+  font-size: 249%;
+}
+
+mjx-container [width="full"] {
+  width: 100%;
+}
+
+mjx-box {
+  display: inline-block;
+}
+
+mjx-block {
+  display: block;
+}
+
+mjx-itable {
+  display: inline-table;
+}
+
+mjx-row {
+  display: table-row;
+}
+
+mjx-row > * {
+  display: table-cell;
+}
+
+mjx-mtext {
+  display: inline-block;
+  text-align: left;
+}
+
+mjx-mstyle {
+  display: inline-block;
+}
+
+mjx-merror {
+  display: inline-block;
+  color: red;
+  background-color: yellow;
+}
+
+mjx-mphantom {
+  visibility: hidden;
+}
+
+_::-webkit-full-page-media, _:future, :root mjx-container {
+  will-change: opacity;
+}
+
+mjx-assistive-mml {
+  position: absolute !important;
+  top: 0px;
+  left: 0px;
+  clip: rect(1px, 1px, 1px, 1px);
+  padding: 1px 0px 0px 0px !important;
+  border: 0px !important;
+  display: block !important;
+  width: auto !important;
+  overflow: hidden !important;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+mjx-assistive-mml[display="block"] {
+  width: 100% !important;
+}
+
+mjx-math {
+  display: inline-block;
+  text-align: left;
+  line-height: 0;
+  text-indent: 0;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 100%;
+  font-size-adjust: none;
+  letter-spacing: normal;
+  border-collapse: collapse;
+  word-wrap: normal;
+  word-spacing: normal;
+  white-space: nowrap;
+  direction: ltr;
+  padding: 1px 0;
+}
+
+mjx-container[jax="CHTML"][display="true"] {
+  display: block;
+  text-align: center;
+  margin: 1em 0;
+}
+
+mjx-container[jax="CHTML"][display="true"][width="full"] {
+  display: flex;
+}
+
+mjx-container[jax="CHTML"][display="true"] mjx-math {
+  padding: 0;
+}
+
+mjx-container[jax="CHTML"][justify="left"] {
+  text-align: left;
+}
+
+mjx-container[jax="CHTML"][justify="right"] {
+  text-align: right;
+}
+
+mjx-mi {
+  display: inline-block;
+  text-align: left;
+}
+
+mjx-c {
+  display: inline-block;
+}
+
+mjx-utext {
+  display: inline-block;
+  padding: .75em 0 .2em 0;
+}
+
+mjx-mo {
+  display: inline-block;
+  text-align: left;
+}
+
+mjx-stretchy-h {
+  display: inline-table;
+  width: 100%;
+}
+
+mjx-stretchy-h > * {
+  display: table-cell;
+  width: 0;
+}
+
+mjx-stretchy-h > * > mjx-c {
+  display: inline-block;
+  transform: scalex(1.0000001);
+}
+
+mjx-stretchy-h > * > mjx-c::before {
+  display: inline-block;
+  width: initial;
+}
+
+mjx-stretchy-h > mjx-ext {
+  /* IE */ overflow: hidden;
+  /* others */ overflow: clip visible;
+  width: 100%;
+}
+
+mjx-stretchy-h > mjx-ext > mjx-c::before {
+  transform: scalex(500);
+}
+
+mjx-stretchy-h > mjx-ext > mjx-c {
+  width: 0;
+}
+
+mjx-stretchy-h > mjx-beg > mjx-c {
+  margin-right: -.1em;
+}
+
+mjx-stretchy-h > mjx-end > mjx-c {
+  margin-left: -.1em;
+}
+
+mjx-stretchy-v {
+  display: inline-block;
+}
+
+mjx-stretchy-v > * {
+  display: block;
+}
+
+mjx-stretchy-v > mjx-beg {
+  height: 0;
+}
+
+mjx-stretchy-v > mjx-end > mjx-c {
+  display: block;
+}
+
+mjx-stretchy-v > * > mjx-c {
+  transform: scaley(1.0000001);
+  transform-origin: left center;
+  overflow: hidden;
+}
+
+mjx-stretchy-v > mjx-ext {
+  display: block;
+  height: 100%;
+  box-sizing: border-box;
+  border: 0px solid transparent;
+  /* IE */ overflow: hidden;
+  /* others */ overflow: visible clip;
+}
+
+mjx-stretchy-v > mjx-ext > mjx-c::before {
+  width: initial;
+  box-sizing: border-box;
+}
+
+mjx-stretchy-v > mjx-ext > mjx-c {
+  transform: scaleY(500) translateY(.075em);
+  overflow: visible;
+}
+
+mjx-mark {
+  display: inline-block;
+  height: 0px;
+}
+
+mjx-mfrac {
+  display: inline-block;
+  text-align: left;
+}
+
+mjx-frac {
+  display: inline-block;
+  vertical-align: 0.17em;
+  padding: 0 .22em;
+}
+
+mjx-frac[type="d"] {
+  vertical-align: .04em;
+}
+
+mjx-frac[delims] {
+  padding: 0 .1em;
+}
+
+mjx-frac[atop] {
+  padding: 0 .12em;
+}
+
+mjx-frac[atop][delims] {
+  padding: 0;
+}
+
+mjx-dtable {
+  display: inline-table;
+  width: 100%;
+}
+
+mjx-dtable > * {
+  font-size: 2000%;
+}
+
+mjx-dbox {
+  display: block;
+  font-size: 5%;
+}
+
+mjx-num {
+  display: block;
+  text-align: center;
+}
+
+mjx-den {
+  display: block;
+  text-align: center;
+}
+
+mjx-mfrac[bevelled] > mjx-num {
+  display: inline-block;
+}
+
+mjx-mfrac[bevelled] > mjx-den {
+  display: inline-block;
+}
+
+mjx-den[align="right"], mjx-num[align="right"] {
+  text-align: right;
+}
+
+mjx-den[align="left"], mjx-num[align="left"] {
+  text-align: left;
+}
+
+mjx-nstrut {
+  display: inline-block;
+  height: .054em;
+  width: 0;
+  vertical-align: -.054em;
+}
+
+mjx-nstrut[type="d"] {
+  height: .217em;
+  vertical-align: -.217em;
+}
+
+mjx-dstrut {
+  display: inline-block;
+  height: .505em;
+  width: 0;
+}
+
+mjx-dstrut[type="d"] {
+  height: .726em;
+}
+
+mjx-line {
+  display: block;
+  box-sizing: border-box;
+  min-height: 1px;
+  height: .06em;
+  border-top: .06em solid;
+  margin: .06em -.1em;
+  overflow: hidden;
+}
+
+mjx-line[type="d"] {
+  margin: .18em -.1em;
+}
+
+mjx-mrow {
+  display: inline-block;
+  text-align: left;
+}
+
+mjx-msub {
+  display: inline-block;
+  text-align: left;
+}
+
+mjx-TeXAtom {
+  display: inline-block;
+  text-align: left;
+}
+
+mjx-mn {
+  display: inline-block;
+  text-align: left;
+}
+
+mjx-msubsup {
+  display: inline-block;
+  text-align: left;
+}
+
+mjx-script {
+  display: inline-block;
+  padding-right: .05em;
+  padding-left: .033em;
+}
+
+mjx-script > mjx-spacer {
+  display: block;
+}
+
+mjx-msqrt {
+  display: inline-block;
+  text-align: left;
+}
+
+mjx-root {
+  display: inline-block;
+  white-space: nowrap;
+}
+
+mjx-surd {
+  display: inline-block;
+  vertical-align: top;
+}
+
+mjx-sqrt {
+  display: inline-block;
+  padding-top: .07em;
+}
+
+mjx-sqrt > mjx-box {
+  border-top: .07em solid;
+}
+
+mjx-sqrt.mjx-tall > mjx-box {
+  padding-left: .3em;
+  margin-left: -.3em;
+}
+
+mjx-c::before {
+  display: block;
+  width: 0;
+}
+
+.MJX-TEX {
+  font-family: MJXZERO, MJXTEX;
+}
+
+.TEX-B {
+  font-family: MJXZERO, MJXTEX-B;
+}
+
+.TEX-I {
+  font-family: MJXZERO, MJXTEX-I;
+}
+
+.TEX-MI {
+  font-family: MJXZERO, MJXTEX-MI;
+}
+
+.TEX-BI {
+  font-family: MJXZERO, MJXTEX-BI;
+}
+
+.TEX-S1 {
+  font-family: MJXZERO, MJXTEX-S1;
+}
+
+.TEX-S2 {
+  font-family: MJXZERO, MJXTEX-S2;
+}
+
+.TEX-S3 {
+  font-family: MJXZERO, MJXTEX-S3;
+}
+
+.TEX-S4 {
+  font-family: MJXZERO, MJXTEX-S4;
+}
+
+.TEX-A {
+  font-family: MJXZERO, MJXTEX-A;
+}
+
+.TEX-C {
+  font-family: MJXZERO, MJXTEX-C;
+}
+
+.TEX-CB {
+  font-family: MJXZERO, MJXTEX-CB;
+}
+
+.TEX-FR {
+  font-family: MJXZERO, MJXTEX-FR;
+}
+
+.TEX-FRB {
+  font-family: MJXZERO, MJXTEX-FRB;
+}
+
+.TEX-SS {
+  font-family: MJXZERO, MJXTEX-SS;
+}
+
+.TEX-SSB {
+  font-family: MJXZERO, MJXTEX-SSB;
+}
+
+.TEX-SSI {
+  font-family: MJXZERO, MJXTEX-SSI;
+}
+
+.TEX-SC {
+  font-family: MJXZERO, MJXTEX-SC;
+}
+
+.TEX-T {
+  font-family: MJXZERO, MJXTEX-T;
+}
+
+.TEX-V {
+  font-family: MJXZERO, MJXTEX-V;
+}
+
+.TEX-VB {
+  font-family: MJXZERO, MJXTEX-VB;
+}
+
+mjx-stretchy-v mjx-c, mjx-stretchy-h mjx-c {
+  font-family: MJXZERO, MJXTEX-S1, MJXTEX-S4, MJXTEX, MJXTEX-A ! important;
+}
+
+@font-face /* 0 */ {
+  font-family: MJXZERO;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2/MathJax_Zero.woff") format("woff");
+}
+
+@font-face /* 1 */ {
+  font-family: MJXTEX;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2/MathJax_Main-Regular.woff") format("woff");
+}
+
+@font-face /* 2 */ {
+  font-family: MJXTEX-B;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2/MathJax_Main-Bold.woff") format("woff");
+}
+
+@font-face /* 3 */ {
+  font-family: MJXTEX-I;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2/MathJax_Math-Italic.woff") format("woff");
+}
+
+@font-face /* 4 */ {
+  font-family: MJXTEX-MI;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2/MathJax_Main-Italic.woff") format("woff");
+}
+
+@font-face /* 5 */ {
+  font-family: MJXTEX-BI;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2/MathJax_Math-BoldItalic.woff") format("woff");
+}
+
+@font-face /* 6 */ {
+  font-family: MJXTEX-S1;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2/MathJax_Size1-Regular.woff") format("woff");
+}
+
+@font-face /* 7 */ {
+  font-family: MJXTEX-S2;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2/MathJax_Size2-Regular.woff") format("woff");
+}
+
+@font-face /* 8 */ {
+  font-family: MJXTEX-S3;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2/MathJax_Size3-Regular.woff") format("woff");
+}
+
+@font-face /* 9 */ {
+  font-family: MJXTEX-S4;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2/MathJax_Size4-Regular.woff") format("woff");
+}
+
+@font-face /* 10 */ {
+  font-family: MJXTEX-A;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2/MathJax_AMS-Regular.woff") format("woff");
+}
+
+@font-face /* 11 */ {
+  font-family: MJXTEX-C;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2/MathJax_Calligraphic-Regular.woff") format("woff");
+}
+
+@font-face /* 12 */ {
+  font-family: MJXTEX-CB;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2/MathJax_Calligraphic-Bold.woff") format("woff");
+}
+
+@font-face /* 13 */ {
+  font-family: MJXTEX-FR;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2/MathJax_Fraktur-Regular.woff") format("woff");
+}
+
+@font-face /* 14 */ {
+  font-family: MJXTEX-FRB;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2/MathJax_Fraktur-Bold.woff") format("woff");
+}
+
+@font-face /* 15 */ {
+  font-family: MJXTEX-SS;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2/MathJax_SansSerif-Regular.woff") format("woff");
+}
+
+@font-face /* 16 */ {
+  font-family: MJXTEX-SSB;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2/MathJax_SansSerif-Bold.woff") format("woff");
+}
+
+@font-face /* 17 */ {
+  font-family: MJXTEX-SSI;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2/MathJax_SansSerif-Italic.woff") format("woff");
+}
+
+@font-face /* 18 */ {
+  font-family: MJXTEX-SC;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2/MathJax_Script-Regular.woff") format("woff");
+}
+
+@font-face /* 19 */ {
+  font-family: MJXTEX-T;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2/MathJax_Typewriter-Regular.woff") format("woff");
+}
+
+@font-face /* 20 */ {
+  font-family: MJXTEX-V;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2/MathJax_Vector-Regular.woff") format("woff");
+}
+
+@font-face /* 21 */ {
+  font-family: MJXTEX-VB;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2/MathJax_Vector-Bold.woff") format("woff");
+}
+
+mjx-c.mjx-c1D438.TEX-I::before {
+  padding: 0.68em 0.764em 0 0;
+  content: "E";
+}
+
+mjx-c.mjx-c3D::before {
+  padding: 0.583em 0.778em 0.082em 0;
+  content: "=";
+}
+
+mjx-c.mjx-c2211.TEX-S1::before {
+  padding: 0.75em 1.056em 0.25em 0;
+  content: "\2211";
+}
+
+mjx-c.mjx-c1D434.TEX-I::before {
+  padding: 0.716em 0.75em 0 0;
+  content: "A";
+}
+
+mjx-c.mjx-c6B::before {
+  padding: 0.694em 0.528em 0 0;
+  content: "k";
+}
+
+mjx-c.mjx-c70::before {
+  padding: 0.442em 0.556em 0.194em 0;
+  content: "p";
+}
+
+mjx-c.mjx-c66::before {
+  padding: 0.705em 0.372em 0 0;
+  content: "f";
+}
+
+mjx-c.mjx-c65::before {
+  padding: 0.448em 0.444em 0.011em 0;
+  content: "e";
+}
+
+mjx-c.mjx-c6C::before {
+  padding: 0.694em 0.278em 0 0;
+  content: "l";
+}
+
+mjx-c.mjx-c74::before {
+  padding: 0.615em 0.389em 0.01em 0;
+  content: "t";
+}
+
+mjx-c.mjx-c1D443.TEX-I::before {
+  padding: 0.683em 0.751em 0 0;
+  content: "P";
+}
+
+mjx-c.mjx-c1D45B.TEX-I::before {
+  padding: 0.442em 0.6em 0.011em 0;
+  content: "n";
+}
+
+mjx-c.mjx-c21::before {
+  padding: 0.716em 0.278em 0 0;
+  content: "!";
+}
+
+mjx-c.mjx-c31::before {
+  padding: 0.666em 0.5em 0 0;
+  content: "1";
+}
+
+mjx-c.mjx-c22C5::before {
+  padding: 0.31em 0.278em 0 0;
+  content: "\22C5";
+}
+
+mjx-c.mjx-c32::before {
+  padding: 0.666em 0.5em 0 0;
+  content: "2";
+}
+
+mjx-c.mjx-c33::before {
+  padding: 0.665em 0.5em 0.022em 0;
+  content: "3";
+}
+
+mjx-c.mjx-c2026::before {
+  padding: 0.12em 1.172em 0 0;
+  content: "\2026";
+}
+
+mjx-c.mjx-c2C::before {
+  padding: 0.121em 0.278em 0.194em 0;
+  content: ",";
+}
+
+mjx-c.mjx-c1D458.TEX-I::before {
+  padding: 0.694em 0.521em 0.011em 0;
+  content: "k";
+}
+
+mjx-c.mjx-c1D441.TEX-I::before {
+  padding: 0.683em 0.888em 0 0;
+  content: "N";
+}
+
+mjx-c.mjx-c1D45A.TEX-I::before {
+  padding: 0.442em 0.878em 0.011em 0;
+  content: "m";
+}
+
+mjx-c.mjx-c73::before {
+  padding: 0.448em 0.394em 0.011em 0;
+  content: "s";
+}
+
+mjx-c.mjx-c7A::before {
+  padding: 0.431em 0.444em 0 0;
+  content: "z";
+}
+
+mjx-c.mjx-c6F::before {
+  padding: 0.448em 0.5em 0.01em 0;
+  content: "o";
+}
+
+mjx-c.mjx-c6D::before {
+  padding: 0.442em 0.833em 0 0;
+  content: "m";
+}
+
+mjx-c.mjx-c64::before {
+  padding: 0.694em 0.556em 0.011em 0;
+  content: "d";
+}
+
+mjx-c.mjx-c2212::before {
+  padding: 0.583em 0.778em 0.082em 0;
+  content: "\2212";
+}
+
+mjx-c.mjx-c1D436.TEX-I::before {
+  padding: 0.705em 0.76em 0.022em 0;
+  content: "C";
+}
+
+mjx-c.mjx-c28.TEX-S3::before {
+  padding: 1.45em 0.736em 0.949em 0;
+  content: "(";
+}
+
+mjx-c.mjx-c29.TEX-S3::before {
+  padding: 1.45em 0.736em 0.949em 0;
+  content: ")";
+}
+
+mjx-c.mjx-c28::before {
+  padding: 0.75em 0.389em 0.25em 0;
+  content: "(";
+}
+
+mjx-c.mjx-c29::before {
+  padding: 0.75em 0.389em 0.25em 0;
+  content: ")";
+}
+
+mjx-c.mjx-c4B::before {
+  padding: 0.683em 0.778em 0 0;
+  content: "K";
+}
+
+mjx-c.mjx-c6E::before {
+  padding: 0.442em 0.556em 0 0;
+  content: "n";
+}
+
+mjx-c.mjx-c62::before {
+  padding: 0.694em 0.556em 0.011em 0;
+  content: "b";
+}
+
+mjx-c.mjx-c20::before {
+  padding: 0 0.25em 0 0;
+  content: " ";
+}
+
+mjx-c.mjx-c72::before {
+  padding: 0.442em 0.392em 0 0;
+  content: "r";
+}
+
+mjx-c.mjx-c69::before {
+  padding: 0.669em 0.278em 0 0;
+  content: "i";
+}
+
+mjx-c.mjx-c68::before {
+  padding: 0.694em 0.556em 0 0;
+  content: "h";
+}
+
+mjx-c.mjx-c79::before {
+  padding: 0.431em 0.528em 0.204em 0;
+  content: "y";
+}
+
+mjx-c.mjx-c61::before {
+  padding: 0.448em 0.5em 0.011em 0;
+  content: "a";
+}
+
+mjx-c.mjx-c2B::before {
+  padding: 0.583em 0.778em 0.082em 0;
+  content: "+";
+}
+
+mjx-c.mjx-c1D43B.TEX-I::before {
+  padding: 0.683em 0.888em 0 0;
+  content: "H";
+}
+
+mjx-c.mjx-c1D45D.TEX-I::before {
+  padding: 0.442em 0.503em 0.194em 0;
+  content: "p";
+}
+
+mjx-c.mjx-c30::before {
+  padding: 0.666em 0.5em 0.022em 0;
+  content: "0";
+}
+
+mjx-c.mjx-c1D70C.TEX-I::before {
+  padding: 0.442em 0.517em 0.216em 0;
+  content: "\3C1";
+}
+
+mjx-c.mjx-c1D454.TEX-I::before {
+  padding: 0.442em 0.477em 0.205em 0;
+  content: "g";
+}
+
+mjx-c.mjx-c210E.TEX-I::before {
+  padding: 0.694em 0.576em 0.011em 0;
+  content: "h";
+}
+
+mjx-c.mjx-c78::before {
+  padding: 0.431em 0.528em 0 0;
+  content: "x";
+}
+
+mjx-c.mjx-c2248::before {
+  padding: 0.483em 0.778em 0 0;
+  content: "\2248";
+}
+
+mjx-c.mjx-c2E::before {
+  padding: 0.12em 0.278em 0 0;
+  content: ".";
+}
+
+mjx-c.mjx-cA0::before {
+  padding: 0 0.25em 0 0;
+  content: "\A0";
+}
+
+mjx-c.mjx-c1D463.TEX-I::before {
+  padding: 0.443em 0.485em 0.011em 0;
+  content: "v";
+}
+
+mjx-c.mjx-c221A.TEX-S1::before {
+  padding: 0.85em 1.02em 0.35em 0;
+  content: "\221A";
+}
+
+mjx-c.mjx-c394::before {
+  padding: 0.716em 0.833em 0 0;
+  content: "\394";
+}
+</style></head>
+<body>
+
+    <div class="main-wrapper">
+        <h1>Feldiktált Szövegek Esettanulmányai és Magyarázatai</h1>
+
+        <!-- VEZÉRLŐPANEL A FELOLVASÁSHOZ -->
+        <div class="controls">
+            <button id="btn-play" class="btn">▶ Teljes felolvasás</button>
+            <button id="btn-pause" class="btn" disabled="">⏸ Szünet</button>
+            <button id="btn-stop" class="btn" disabled="">⏹ Leállítás</button>
+        </div>
+
+        <div id="cases-container">
+            <!-- Dinamikusan generált kártyák -->
+        <div class="section-box" id="card-case1">
+                <span class="tag">1. Esettanulmány: Képgalériák &amp; Jegyeink</span>
+                <h2>Monotónia vs. Pozitív Ismétlődés a UI/UX-ben és az Oktatásban</h2>
+                <h3>Eredeti Feldiktált Szöveg:</h3>
+                <p><span class="sentence" id="sent-0" onclick="playFromIndex(0)">Nézd meg a projekt elején lévő képgalériát!</span> <span class="sentence" id="sent-1" onclick="playFromIndex(1)"> Mindegyik képgalériában a képek hogyan helyezkednek el?</span> <span class="sentence" id="sent-2" onclick="playFromIndex(2)"> Van-e összefüggés a képek között?</span> <span class="sentence" id="sent-3" onclick="playFromIndex(3)"> Ismétlődnek-e a képek, méretükben különböznek-e?</span> <span class="sentence" id="sent-4" onclick="playFromIndex(4)"> Láthatod, hogy egyes galériák több helyet foglalnak el, mint mekkorák, így pazarolva a helyet a webfelületen.</span> <span class="sentence" id="sent-5" onclick="playFromIndex(5)"> Mások ugyanolyan témájú képeket tárolnak, de színükben, tartalmukban eltérnek.</span> <span class="sentence" id="sent-6" onclick="playFromIndex(6)"> Vannak, amelyekben azonos méretűek a képek, megegyeznek, de vannak, amelyekben egyáltalán nem azonos méretűek és nem azonos számosságúak.</span> <span class="sentence" id="sent-7" onclick="playFromIndex(7)"> Mindegyikben más-más számosságú kép van.</span> <span class="sentence" id="sent-8" onclick="playFromIndex(8)"> De lehet az is, hogy ismétlődik egy-egy kép, vagy csak a színük változik meg, de ugyanazt a képet mutatják be.</span> <span class="sentence" id="sent-9" onclick="playFromIndex(9)"> Szerinted egy képgaléria esetén, ha ugyanazt a képet látod egymás után semmi változtatás nélkül – sem effekt, sem szín, sem méret –, az zavaró lehet-e?</span> <span class="sentence" id="sent-10" onclick="playFromIndex(10)"> De mi van akkor, ha a jegyeid között sok tízest látsz a naplóban egymás után, vagy éppen szétszórva?</span> <span class="sentence" id="sent-11" onclick="playFromIndex(11)"> Melyiknek örülnél jobban?</span> <span class="sentence" id="sent-12" onclick="playFromIndex(12)"> Tehát mit tudsz ebből kikövetkeztetni?</span> <span class="sentence" id="sent-13" onclick="playFromIndex(13)"> A jegyeknél jó, ha ismétlődnek, főleg akkor, ha nagy jegyek.</span> <span class="sentence" id="sent-14" onclick="playFromIndex(14)"> A képeknél nem annyira jó, ha ismétlődnek.</span> <span class="sentence" id="sent-15" onclick="playFromIndex(15)"> Ha nincs változtatás rajtuk, monotonná válnak.</span> <span class="sentence" id="sent-16" onclick="playFromIndex(16)"> Persze akadnak ellenpéldák, mivel az ízlések mások minden ember számára.</span> <span class="sentence" id="sent-17" onclick="playFromIndex(17)"> De láttál három példát: a kis csibét, Annácskát és a ruháit, valamint láttad a színpompában csillogó-villogó szilveszteri karkötőket.</span> </p>
+                <div class="analysis-box">
+                    <h3>Részletes Matematikai és Fizikai Magyarázat:</h3>
+                    <div><p>Ez a fejezet a vizuális redundancia és az érzelmi asszociáció közötti különbséget elemzi a webes felületeken (UI/UX) és a pedagógiai értékelésben.</p><p>1. Vizuális felületek (UI/UX elvek):</p><p>- Helypazarlás és rácsmodell: A nem megfelelően méretezett elemek rontják az információs sűrűséget. A konténer elrendezése hatékonysági mutatóval írható le:</p><div class="formula-block"><mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" display="true" tabindex="0" ctxtmenu_counter="0" style="font-size: 113.1%; position: relative;"><mjx-math display="true" class="MJX-TEX" aria-hidden="true" style="margin-left: 0px; margin-right: 0px;"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D438 TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n" space="4"><mjx-c class="mjx-c3D"></mjx-c></mjx-mo><mjx-mfrac space="4"><mjx-frac type="d"><mjx-num><mjx-nstrut type="d"></mjx-nstrut><mjx-mrow><mjx-mo class="mjx-sop"><mjx-c class="mjx-c2211 TEX-S1"></mjx-c></mjx-mo><mjx-msub space="2"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D434 TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: -0.177em;"><mjx-texatom size="s" texclass="ORD"><mjx-mtext class="mjx-n"><mjx-c class="mjx-c6B"></mjx-c><mjx-utext variant="normal" style="font-size: 88.4%; padding: 0.848em 0px 0.226em; font-family: MJXZERO, serif;">é</mjx-utext><mjx-c class="mjx-c70"></mjx-c></mjx-mtext></mjx-texatom></mjx-script></mjx-msub></mjx-mrow></mjx-num><mjx-dbox><mjx-dtable><mjx-line type="d"></mjx-line><mjx-row><mjx-den><mjx-dstrut type="d"></mjx-dstrut><mjx-msub><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D434 TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: -0.177em;"><mjx-texatom size="s" texclass="ORD"><mjx-mtext class="mjx-n"><mjx-c class="mjx-c66"></mjx-c><mjx-c class="mjx-c65"></mjx-c><mjx-c class="mjx-c6C"></mjx-c><mjx-utext variant="normal" style="font-size: 88.4%; padding: 0.848em 0px 0.226em; font-family: MJXZERO, serif;">ü</mjx-utext><mjx-c class="mjx-c6C"></mjx-c><mjx-c class="mjx-c65"></mjx-c><mjx-c class="mjx-c74"></mjx-c></mjx-mtext></mjx-texatom></mjx-script></mjx-msub></mjx-den></mjx-row></mjx-dtable></mjx-dbox></mjx-frac></mjx-mfrac></mjx-math><mjx-assistive-mml unselectable="on" display="block"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mi>E</mi><mo>=</mo><mfrac><mrow><mo data-mjx-texclass="OP">∑</mo><msub><mi>A</mi><mrow data-mjx-texclass="ORD"><mtext>kép</mtext></mrow></msub></mrow><msub><mi>A</mi><mrow data-mjx-texclass="ORD"><mtext>felület</mtext></mrow></msub></mfrac></math></mjx-assistive-mml></mjx-container></div><p>ahol $A_{\text{kép}}$ a képek területe, $A_{\text{felület}}$ pedig a rendelkezésre álló felület. Ha $E \ll 1$, a felületkészlet pazarló.</p><p>- Monotónia és információelmélet: Shannon információelmélete alapján, ha egy képsorozat elemei azonosak ($P(x) = 1$), az entrópiája $H(X) = 0$. Ez a felhasználó számára nem hordoz új információt, így kognitív fáradtságot vált ki.</p><p>2. A jegyek és az ismétlődés pszichológiája:</p><p>- Míg a képi redundancia unalmas, a pozitív visszacsatolás (pl. kiváló iskolai jegyek) folyamatos megerősítést nyújt. A motivációs érték felhalmozódó függvénye nem csökken, mert a jegy nem vizuális mintázatként, hanem az elért siker mérőszámaként értelmeződik.</p></div>
+                </div>
+            </div><div class="section-box" id="card-case2">
+                <span class="tag">2. Esettanulmány: Rendezés és Logika</span>
+                <h2>Annácska Ruhái: Kombinatorikai Permutációk és Rendszerezés</h2>
+                <h3>Eredeti Feldiktált Szöveg:</h3>
+                <p><span class="sentence" id="sent-29" onclick="playFromIndex(29)">Folytassuk az előbbi gondolatmenetet!</span> <span class="sentence" id="sent-30" onclick="playFromIndex(30)"> Ám ott csak a kapott feladatok között szét kellett választanod a képeket.</span> <span class="sentence" id="sent-31" onclick="playFromIndex(31)"> Egy történet leírása, egy kép.</span> <span class="sentence" id="sent-32" onclick="playFromIndex(32)"> Szét tudtad választani őket?</span> <span class="sentence" id="sent-33" onclick="playFromIndex(33)"> Hogyan tetted őket sorba?</span> <span class="sentence" id="sent-34" onclick="playFromIndex(34)"> Lehetett volna-e más sorrend?</span> <span class="sentence" id="sent-35" onclick="playFromIndex(35)"> Esetleg stílusukban megegyeztek ezek a képek, amikor összeválogattad őket?</span> <span class="sentence" id="sent-36" onclick="playFromIndex(36)"> Bár mondanivalójukban megegyeztek, stílusukban nem.</span> <span class="sentence" id="sent-37" onclick="playFromIndex(37)"> Hányféleképpen lehetett volna ezt szétválogatni?</span> <span class="sentence" id="sent-38" onclick="playFromIndex(38)"> Stílusok szerint is ismered ezeket a lehetőségeket?</span> <span class="sentence" id="sent-39" onclick="playFromIndex(39)"> Vagy vedd figyelembe a számosságukat, a képek számosságát!</span> <span class="sentence" id="sent-40" onclick="playFromIndex(40)"> Hány darabot tettél össze?</span> <span class="sentence" id="sent-41" onclick="playFromIndex(41)"> Lehetett-e volna több kockából vagy kevesebből ugyanazt a mesét összerakni?</span> <span class="sentence" id="sent-42" onclick="playFromIndex(42)"> De ezeken túl láthatod, hogy ha a színeket teszed össze a ruháknál, méretük szerint válogatod össze őket, vagy stílusok szerint, tudnál még ilyen szempontokat sorolni, amik alapján össze tudnád állítani ezeket?</span> <span class="sentence" id="sent-43" onclick="playFromIndex(43)"> Természetesen, mivel véletlenszerűen sorszámozhatóak ezek a ruhák az adott kupacban, meg tudnád mondani, hányféleképpen lehetett volna őket sorszámozni?</span> <span class="sentence" id="sent-44" onclick="playFromIndex(44)"> És mennyiben befolyásolták volna ezt Annát a döntéseiben, amikor a ruhadarabokat kiválogatta és elment végül a buliba?</span> <span class="sentence" id="sent-45" onclick="playFromIndex(45)"> Vagy amikor rendezte a ruhákat, hányféleképpen tudta volna egymásra helyezni a nadrágokat vagy éppen a pólókat a külön kupacokban?</span> <span class="sentence" id="sent-46" onclick="playFromIndex(46)"> Lehetett volna több megoldás?</span> <span class="sentence" id="sent-47" onclick="playFromIndex(47)"> És így tovább.</span> <span class="sentence" id="sent-48" onclick="playFromIndex(48)"> És ha a színük alapján nézzük a ruhákat, akkor az eredeti sorban hogyan helyezkedtek el a ruhák szétválogatás előtt?</span> <span class="sentence" id="sent-49" onclick="playFromIndex(49)"> Lehetett volna ez a sorrend más, ha csak a színeket nézzük?</span> <span class="sentence" id="sent-50" onclick="playFromIndex(50)"> De mi van akkor, ha a méretet tekintjük?</span> <span class="sentence" id="sent-51" onclick="playFromIndex(51)"> Gondoljuk végig ezt!</span> </p>
+                <div class="analysis-box">
+                    <h3>Részletes Matematikai és Fizikai Magyarázat:</h3>
+                    <div><p>Ez a fejezet a csoportosítás, a rendezési kritériumok és a kombinatorikai elrendezések matematikai alapjait részletezi.</p><p>1. Permutációk száma egy kupacban:</p><p>Ha Anna $n$ darab különböző ruhadarabot helyez el egyetlen kupacba sorrendben, a lehetséges sorrendek száma az $n$ elem ismétlés nélküli permutációja:</p><div class="formula-block"><mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" display="true" tabindex="0" ctxtmenu_counter="1" style="font-size: 113.1%; position: relative;"><mjx-math display="true" class="MJX-TEX" aria-hidden="true" style="margin-left: 0px; margin-right: 0px;"><mjx-msub><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D443 TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: -0.15em; margin-left: -0.109em;"><mjx-mi class="mjx-i" size="s"><mjx-c class="mjx-c1D45B TEX-I"></mjx-c></mjx-mi></mjx-script></mjx-msub><mjx-mo class="mjx-n" space="4"><mjx-c class="mjx-c3D"></mjx-c></mjx-mo><mjx-mi class="mjx-i" space="4"><mjx-c class="mjx-c1D45B TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n"><mjx-c class="mjx-c21"></mjx-c></mjx-mo><mjx-mo class="mjx-n" space="4"><mjx-c class="mjx-c3D"></mjx-c></mjx-mo><mjx-mn class="mjx-n" space="4"><mjx-c class="mjx-c31"></mjx-c></mjx-mn><mjx-mo class="mjx-n" space="3"><mjx-c class="mjx-c22C5"></mjx-c></mjx-mo><mjx-mn class="mjx-n" space="3"><mjx-c class="mjx-c32"></mjx-c></mjx-mn><mjx-mo class="mjx-n" space="3"><mjx-c class="mjx-c22C5"></mjx-c></mjx-mo><mjx-mn class="mjx-n" space="3"><mjx-c class="mjx-c33"></mjx-c></mjx-mn><mjx-mo class="mjx-n" space="2"><mjx-c class="mjx-c2026"></mjx-c></mjx-mo><mjx-mi class="mjx-i" space="2"><mjx-c class="mjx-c1D45B TEX-I"></mjx-c></mjx-mi></mjx-math><mjx-assistive-mml unselectable="on" display="block"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><msub><mi>P</mi><mi>n</mi></msub><mo>=</mo><mi>n</mi><mo>!</mo><mo>=</mo><mn>1</mn><mo>⋅</mo><mn>2</mn><mo>⋅</mo><mn>3</mn><mo>…</mo><mi>n</mi></math></mjx-assistive-mml></mjx-container></div><p>2. Csoportosítás tulajdonságok (attribútumok) szerint:</p><p>Ha a ruhákat attribútumok (szín, méret, stílus) szerint válogatja szét, többhalmazos particionálást végzünk.</p><p>- Ha $n$ ruhadarab $k$ különböző színcsoportba oszlik, ahol az egyes csoportok létszáma $n_1, n_2, \dots, n_k$, és a csoporton belüli azonos színű elemeket nem különböztetjük meg, az ismétléses permutációk száma:</p><div class="formula-block"><mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" display="true" tabindex="0" ctxtmenu_counter="2" style="font-size: 113.1%; position: relative;"><mjx-math display="true" class="MJX-TEX" aria-hidden="true" style="margin-left: 0px; margin-right: 0px;"><mjx-msubsup><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D443 TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: -0.247em; margin-left: -0.109em;"><mjx-texatom size="s" texclass="ORD" style="margin-left: 0.233em;"><mjx-msub><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D45B TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: -0.15em;"><mjx-mn class="mjx-n" size="s"><mjx-c class="mjx-c31"></mjx-c></mjx-mn></mjx-script></mjx-msub><mjx-mo class="mjx-n"><mjx-c class="mjx-c2C"></mjx-c></mjx-mo><mjx-msub><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D45B TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: -0.15em;"><mjx-mn class="mjx-n" size="s"><mjx-c class="mjx-c32"></mjx-c></mjx-mn></mjx-script></mjx-msub><mjx-mo class="mjx-n"><mjx-c class="mjx-c2C"></mjx-c></mjx-mo><mjx-mo class="mjx-n"><mjx-c class="mjx-c2026"></mjx-c></mjx-mo><mjx-mo class="mjx-n"><mjx-c class="mjx-c2C"></mjx-c></mjx-mo><mjx-msub><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D45B TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: -0.15em;"><mjx-mi class="mjx-i" size="s"><mjx-c class="mjx-c1D458 TEX-I"></mjx-c></mjx-mi></mjx-script></mjx-msub></mjx-texatom><mjx-spacer style="margin-top: 0.21em;"></mjx-spacer><mjx-mi class="mjx-i" size="s"><mjx-c class="mjx-c1D45B TEX-I"></mjx-c></mjx-mi></mjx-script></mjx-msubsup><mjx-mo class="mjx-n" space="4"><mjx-c class="mjx-c3D"></mjx-c></mjx-mo><mjx-mfrac space="4"><mjx-frac type="d"><mjx-num><mjx-nstrut type="d"></mjx-nstrut><mjx-mrow><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D45B TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n"><mjx-c class="mjx-c21"></mjx-c></mjx-mo></mjx-mrow></mjx-num><mjx-dbox><mjx-dtable><mjx-line type="d"></mjx-line><mjx-row><mjx-den><mjx-dstrut type="d"></mjx-dstrut><mjx-mrow><mjx-msub><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D45B TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: -0.15em;"><mjx-mn class="mjx-n" size="s"><mjx-c class="mjx-c31"></mjx-c></mjx-mn></mjx-script></mjx-msub><mjx-mo class="mjx-n"><mjx-c class="mjx-c21"></mjx-c></mjx-mo><mjx-mo class="mjx-n" space="3"><mjx-c class="mjx-c22C5"></mjx-c></mjx-mo><mjx-msub space="3"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D45B TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: -0.15em;"><mjx-mn class="mjx-n" size="s"><mjx-c class="mjx-c32"></mjx-c></mjx-mn></mjx-script></mjx-msub><mjx-mo class="mjx-n"><mjx-c class="mjx-c21"></mjx-c></mjx-mo><mjx-mo class="mjx-n" space="2"><mjx-c class="mjx-c2026"></mjx-c></mjx-mo><mjx-msub space="2"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D45B TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: -0.15em;"><mjx-mi class="mjx-i" size="s"><mjx-c class="mjx-c1D458 TEX-I"></mjx-c></mjx-mi></mjx-script></mjx-msub><mjx-mo class="mjx-n"><mjx-c class="mjx-c21"></mjx-c></mjx-mo></mjx-mrow></mjx-den></mjx-row></mjx-dtable></mjx-dbox></mjx-frac></mjx-mfrac></mjx-math><mjx-assistive-mml unselectable="on" display="block"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><msubsup><mi>P</mi><mi>n</mi><mrow data-mjx-texclass="ORD"><msub><mi>n</mi><mn>1</mn></msub><mo>,</mo><msub><mi>n</mi><mn>2</mn></msub><mo>,</mo><mo>…</mo><mo>,</mo><msub><mi>n</mi><mi>k</mi></msub></mrow></msubsup><mo>=</mo><mfrac><mrow><mi>n</mi><mo>!</mo></mrow><mrow><msub><mi>n</mi><mn>1</mn></msub><mo>!</mo><mo>⋅</mo><msub><mi>n</mi><mn>2</mn></msub><mo>!</mo><mo>…</mo><msub><mi>n</mi><mi>k</mi></msub><mo>!</mo></mrow></mfrac></math></mjx-assistive-mml></mjx-container></div><p>3. Döntési fák és outfit kiválasztás:</p><p>Ha Anna egy öltözéket választ ki (pl. 1 póló, 1 nadrág, 1 cipő), és a kategóriákban $m_1$ póló, $m_2$ nadrág és $m_3$ cipő van, a független választási lehetőségek száma a szorzási szabállyal adódik:</p><div class="formula-block"><mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" display="true" tabindex="0" ctxtmenu_counter="3" style="font-size: 113.1%; position: relative;"><mjx-math display="true" class="MJX-TEX" aria-hidden="true" style="margin-left: 0px; margin-right: 0px;"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D441 TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n" space="4"><mjx-c class="mjx-c3D"></mjx-c></mjx-mo><mjx-msub space="4"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D45A TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: -0.15em;"><mjx-mn class="mjx-n" size="s"><mjx-c class="mjx-c31"></mjx-c></mjx-mn></mjx-script></mjx-msub><mjx-mo class="mjx-n" space="3"><mjx-c class="mjx-c22C5"></mjx-c></mjx-mo><mjx-msub space="3"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D45A TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: -0.15em;"><mjx-mn class="mjx-n" size="s"><mjx-c class="mjx-c32"></mjx-c></mjx-mn></mjx-script></mjx-msub><mjx-mo class="mjx-n" space="3"><mjx-c class="mjx-c22C5"></mjx-c></mjx-mo><mjx-msub space="3"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D45A TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: -0.15em;"><mjx-mn class="mjx-n" size="s"><mjx-c class="mjx-c33"></mjx-c></mjx-mn></mjx-script></mjx-msub></mjx-math><mjx-assistive-mml unselectable="on" display="block"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mi>N</mi><mo>=</mo><msub><mi>m</mi><mn>1</mn></msub><mo>⋅</mo><msub><mi>m</mi><mn>2</mn></msub><mo>⋅</mo><msub><mi>m</mi><mn>3</mn></msub></math></mjx-assistive-mml></mjx-container></div></div>
+                </div>
+            </div><div class="section-box" id="card-case3">
+                <span class="tag">3. Esettanulmány: Kombinatorika</span>
+                <h2>A Csibék Kikelése: Pozicionális Variációk és Mintázatok</h2>
+                <h3>Eredeti Feldiktált Szöveg:</h3>
+                <p><span class="sentence" id="sent-63" onclick="playFromIndex(63)">Most hasonlítsd össze a csibék kikelésének sorrendjét és a színek párosítását, azaz a kombinatorikai feladatokat!</span> <span class="sentence" id="sent-64" onclick="playFromIndex(64)"> Van-e hasonlóság közöttük?</span> <span class="sentence" id="sent-65" onclick="playFromIndex(65)"> Főleg amikor például kettesével vettük a csibék kikelését.</span> <span class="sentence" id="sent-66" onclick="playFromIndex(66)"> Hogyan vehettük őket?</span> <span class="sentence" id="sent-67" onclick="playFromIndex(67)"> Két egymás melletti pozíción vagy szétszórt pozíciókon?</span> <span class="sentence" id="sent-68" onclick="playFromIndex(68)"> És hány ilyen megoldást találtunk?</span> <span class="sentence" id="sent-69" onclick="playFromIndex(69)"> Mi van akkor, ha ez a két pozíció egy azonos színhez társul, és az összes többi pozíción más-más szín van?</span> <span class="sentence" id="sent-70" onclick="playFromIndex(70)"> Vagy az is meglehet, hogy az összes többi pozíción azonos szín van.</span> <span class="sentence" id="sent-71" onclick="playFromIndex(71)"> Mennyiben befolyásolja ezeket a döntéseket a választásunk?</span> </p>
+                <div class="analysis-box">
+                    <h3>Részletes Matematikai és Fizikai Magyarázat:</h3>
+                    <div><p>A csibék kikelési sorrendje és pozicionálása a diszkrét matematika pozicionális kiválasztási feladatait modellezi.</p><p>1. Két szomszédos pozíció kiválasztása:</p><p>Ha $n$ sorba rendezett pozícióból 2 egymás melletti pozíciót választunk ki, a lehetséges párválasztások száma:</p><div class="formula-block"><mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" display="true" tabindex="0" ctxtmenu_counter="4" style="font-size: 113.1%; position: relative;"><mjx-math display="true" class="MJX-TEX" aria-hidden="true" style="margin-left: 0px; margin-right: 0px;"><mjx-msub><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D441 TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: -0.177em; margin-left: -0.085em;"><mjx-texatom size="s" texclass="ORD"><mjx-mtext class="mjx-n"><mjx-c class="mjx-c73"></mjx-c><mjx-c class="mjx-c7A"></mjx-c><mjx-c class="mjx-c6F"></mjx-c><mjx-c class="mjx-c6D"></mjx-c><mjx-c class="mjx-c73"></mjx-c><mjx-c class="mjx-c7A"></mjx-c><mjx-utext variant="normal" style="font-size: 88.4%; padding: 0.848em 0px 0.226em; font-family: MJXZERO, serif;">é</mjx-utext><mjx-c class="mjx-c64"></mjx-c><mjx-c class="mjx-c6F"></mjx-c><mjx-c class="mjx-c73"></mjx-c></mjx-mtext></mjx-texatom></mjx-script></mjx-msub><mjx-mo class="mjx-n" space="4"><mjx-c class="mjx-c3D"></mjx-c></mjx-mo><mjx-mi class="mjx-i" space="4"><mjx-c class="mjx-c1D45B TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n" space="3"><mjx-c class="mjx-c2212"></mjx-c></mjx-mo><mjx-mn class="mjx-n" space="3"><mjx-c class="mjx-c31"></mjx-c></mjx-mn></mjx-math><mjx-assistive-mml unselectable="on" display="block"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><msub><mi>N</mi><mrow data-mjx-texclass="ORD"><mtext>szomszédos</mtext></mrow></msub><mo>=</mo><mi>n</mi><mo>−</mo><mn>1</mn></math></mjx-assistive-mml></mjx-container></div><p>2. Bármely két pozíció kiválasztása (szétszórt pozíciók):</p><p>Ha a $n$ pozícióból tetszőleges 2 pozíciót választunk ki a sorrend figyelembevétele nélkül, az ismétlés nélküli kombináció:</p><div class="formula-block"><mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" display="true" tabindex="0" ctxtmenu_counter="5" style="font-size: 113.1%; position: relative;"><mjx-math display="true" class="MJX-TEX" aria-hidden="true" style="margin-left: 0px; margin-right: 0px;"><mjx-msubsup><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D436 TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: -0.247em; margin-left: -0.045em;"><mjx-mn class="mjx-n" size="s" style="margin-left: 0.138em;"><mjx-c class="mjx-c32"></mjx-c></mjx-mn><mjx-spacer style="margin-top: 0.347em;"></mjx-spacer><mjx-mi class="mjx-i" size="s"><mjx-c class="mjx-c1D45B TEX-I"></mjx-c></mjx-mi></mjx-script></mjx-msubsup><mjx-mo class="mjx-n" space="4"><mjx-c class="mjx-c3D"></mjx-c></mjx-mo><mjx-mrow space="4"><mjx-texatom texclass="OPEN"><mjx-mo class="mjx-s3"><mjx-c class="mjx-c28 TEX-S3"></mjx-c></mjx-mo></mjx-texatom><mjx-mfrac><mjx-frac type="d" atop="true" delims="true" style="vertical-align: -0.686em;"><mjx-num style="padding-bottom: 0.685em;"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D45B TEX-I"></mjx-c></mjx-mi></mjx-num><mjx-den><mjx-mn class="mjx-n"><mjx-c class="mjx-c32"></mjx-c></mjx-mn></mjx-den></mjx-frac></mjx-mfrac><mjx-texatom texclass="CLOSE"><mjx-mo class="mjx-s3"><mjx-c class="mjx-c29 TEX-S3"></mjx-c></mjx-mo></mjx-texatom></mjx-mrow><mjx-mo class="mjx-n" space="4"><mjx-c class="mjx-c3D"></mjx-c></mjx-mo><mjx-mfrac space="4"><mjx-frac type="d"><mjx-num><mjx-nstrut type="d"></mjx-nstrut><mjx-mrow><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D45B TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n"><mjx-c class="mjx-c28"></mjx-c></mjx-mo><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D45B TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n" space="3"><mjx-c class="mjx-c2212"></mjx-c></mjx-mo><mjx-mn class="mjx-n" space="3"><mjx-c class="mjx-c31"></mjx-c></mjx-mn><mjx-mo class="mjx-n"><mjx-c class="mjx-c29"></mjx-c></mjx-mo></mjx-mrow></mjx-num><mjx-dbox><mjx-dtable><mjx-line type="d"></mjx-line><mjx-row><mjx-den><mjx-dstrut type="d"></mjx-dstrut><mjx-mn class="mjx-n"><mjx-c class="mjx-c32"></mjx-c></mjx-mn></mjx-den></mjx-row></mjx-dtable></mjx-dbox></mjx-frac></mjx-mfrac></mjx-math><mjx-assistive-mml unselectable="on" display="block"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><msubsup><mi>C</mi><mi>n</mi><mn>2</mn></msubsup><mo>=</mo><mrow data-mjx-texclass="ORD"><mrow data-mjx-texclass="OPEN"><mo minsize="2.047em" maxsize="2.047em">(</mo></mrow><mfrac linethickness="0"><mi>n</mi><mn>2</mn></mfrac><mrow data-mjx-texclass="CLOSE"><mo minsize="2.047em" maxsize="2.047em">)</mo></mrow></mrow><mo>=</mo><mfrac><mrow><mi>n</mi><mo stretchy="false">(</mo><mi>n</mi><mo>−</mo><mn>1</mn><mo stretchy="false">)</mo></mrow><mn>2</mn></mfrac></math></mjx-assistive-mml></mjx-container></div><p>3. Színezési mintázatok:</p><p>- Ha 2 kiválasztott pozíció azonos $A$ színű, míg a maradék $n-2$ pozíció mind különböző $B_1, B_2, \dots, B_{n-2}$ színű, a színezések száma megegyezik a 2 azonos elemet tartalmazó ismétléses permutációval:</p><div class="formula-block"><mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" display="true" tabindex="0" ctxtmenu_counter="6" style="font-size: 113.1%; position: relative;"><mjx-math display="true" class="MJX-TEX" aria-hidden="true" style="margin-left: 0px; margin-right: 0px;"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D443 TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n" space="4"><mjx-c class="mjx-c3D"></mjx-c></mjx-mo><mjx-mfrac space="4"><mjx-frac type="d"><mjx-num><mjx-nstrut type="d"></mjx-nstrut><mjx-mrow><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D45B TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n"><mjx-c class="mjx-c21"></mjx-c></mjx-mo></mjx-mrow></mjx-num><mjx-dbox><mjx-dtable><mjx-line type="d"></mjx-line><mjx-row><mjx-den><mjx-dstrut type="d"></mjx-dstrut><mjx-mrow><mjx-mn class="mjx-n"><mjx-c class="mjx-c32"></mjx-c></mjx-mn><mjx-mo class="mjx-n"><mjx-c class="mjx-c21"></mjx-c></mjx-mo><mjx-mo class="mjx-n" space="3"><mjx-c class="mjx-c22C5"></mjx-c></mjx-mo><mjx-mn class="mjx-n" space="3"><mjx-c class="mjx-c31"></mjx-c></mjx-mn><mjx-mo class="mjx-n"><mjx-c class="mjx-c21"></mjx-c></mjx-mo><mjx-mo class="mjx-n" space="2"><mjx-c class="mjx-c2026"></mjx-c></mjx-mo><mjx-mn class="mjx-n" space="2"><mjx-c class="mjx-c31"></mjx-c></mjx-mn><mjx-mo class="mjx-n"><mjx-c class="mjx-c21"></mjx-c></mjx-mo></mjx-mrow></mjx-den></mjx-row></mjx-dtable></mjx-dbox></mjx-frac></mjx-mfrac><mjx-mo class="mjx-n" space="4"><mjx-c class="mjx-c3D"></mjx-c></mjx-mo><mjx-mfrac space="4"><mjx-frac type="d"><mjx-num><mjx-nstrut type="d"></mjx-nstrut><mjx-mrow><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D45B TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n"><mjx-c class="mjx-c21"></mjx-c></mjx-mo></mjx-mrow></mjx-num><mjx-dbox><mjx-dtable><mjx-line type="d"></mjx-line><mjx-row><mjx-den><mjx-dstrut type="d"></mjx-dstrut><mjx-mn class="mjx-n"><mjx-c class="mjx-c32"></mjx-c></mjx-mn></mjx-den></mjx-row></mjx-dtable></mjx-dbox></mjx-frac></mjx-mfrac></mjx-math><mjx-assistive-mml unselectable="on" display="block"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mi>P</mi><mo>=</mo><mfrac><mrow><mi>n</mi><mo>!</mo></mrow><mrow><mn>2</mn><mo>!</mo><mo>⋅</mo><mn>1</mn><mo>!</mo><mo>…</mo><mn>1</mn><mo>!</mo></mrow></mfrac><mo>=</mo><mfrac><mrow><mi>n</mi><mo>!</mo></mrow><mn>2</mn></mfrac></math></mjx-assistive-mml></mjx-container></div><p>- Ha a maradék $n-2$ pozíció mind egyetlen közös $C$ színű (azaz 2 darab $A$ és $n-2$ darab $C$ szín van), a lehetőségek száma:</p><div class="formula-block"><mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" display="true" tabindex="0" ctxtmenu_counter="7" style="font-size: 113.1%; position: relative;"><mjx-math display="true" class="MJX-TEX" aria-hidden="true" style="margin-left: 0px; margin-right: 0px;"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D443 TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n" space="4"><mjx-c class="mjx-c3D"></mjx-c></mjx-mo><mjx-mfrac space="4"><mjx-frac type="d"><mjx-num><mjx-nstrut type="d"></mjx-nstrut><mjx-mrow><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D45B TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n"><mjx-c class="mjx-c21"></mjx-c></mjx-mo></mjx-mrow></mjx-num><mjx-dbox><mjx-dtable><mjx-line type="d"></mjx-line><mjx-row><mjx-den><mjx-dstrut type="d"></mjx-dstrut><mjx-mrow><mjx-mn class="mjx-n"><mjx-c class="mjx-c32"></mjx-c></mjx-mn><mjx-mo class="mjx-n"><mjx-c class="mjx-c21"></mjx-c></mjx-mo><mjx-mo class="mjx-n"><mjx-c class="mjx-c28"></mjx-c></mjx-mo><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D45B TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n" space="3"><mjx-c class="mjx-c2212"></mjx-c></mjx-mo><mjx-mn class="mjx-n" space="3"><mjx-c class="mjx-c32"></mjx-c></mjx-mn><mjx-mo class="mjx-n"><mjx-c class="mjx-c29"></mjx-c></mjx-mo><mjx-mo class="mjx-n"><mjx-c class="mjx-c21"></mjx-c></mjx-mo></mjx-mrow></mjx-den></mjx-row></mjx-dtable></mjx-dbox></mjx-frac></mjx-mfrac><mjx-mo class="mjx-n" space="4"><mjx-c class="mjx-c3D"></mjx-c></mjx-mo><mjx-mrow space="4"><mjx-texatom texclass="OPEN"><mjx-mo class="mjx-s3"><mjx-c class="mjx-c28 TEX-S3"></mjx-c></mjx-mo></mjx-texatom><mjx-mfrac><mjx-frac type="d" atop="true" delims="true" style="vertical-align: -0.686em;"><mjx-num style="padding-bottom: 0.685em;"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D45B TEX-I"></mjx-c></mjx-mi></mjx-num><mjx-den><mjx-mn class="mjx-n"><mjx-c class="mjx-c32"></mjx-c></mjx-mn></mjx-den></mjx-frac></mjx-mfrac><mjx-texatom texclass="CLOSE"><mjx-mo class="mjx-s3"><mjx-c class="mjx-c29 TEX-S3"></mjx-c></mjx-mo></mjx-texatom></mjx-mrow></mjx-math><mjx-assistive-mml unselectable="on" display="block"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mi>P</mi><mo>=</mo><mfrac><mrow><mi>n</mi><mo>!</mo></mrow><mrow><mn>2</mn><mo>!</mo><mo stretchy="false">(</mo><mi>n</mi><mo>−</mo><mn>2</mn><mo stretchy="false">)</mo><mo>!</mo></mrow></mfrac><mo>=</mo><mrow data-mjx-texclass="ORD"><mrow data-mjx-texclass="OPEN"><mo minsize="2.047em" maxsize="2.047em">(</mo></mrow><mfrac linethickness="0"><mi>n</mi><mn>2</mn></mfrac><mrow data-mjx-texclass="CLOSE"><mo minsize="2.047em" maxsize="2.047em">)</mo></mrow></mrow></math></mjx-assistive-mml></mjx-container></div></div>
+                </div>
+            </div><div class="section-box" id="card-case4">
+                <span class="tag">4. Esettanulmány: Pozicionálás</span>
+                <h2>Ruhák a Szárítókötélen: Elembeillesztési Feladatok</h2>
+                <h3>Eredeti Feldiktált Szöveg:</h3>
+                <p><span class="sentence" id="sent-84" onclick="playFromIndex(84)">Most nézd a szárítós feladatot!</span> <span class="sentence" id="sent-85" onclick="playFromIndex(85)"> Képzeld el azt a helyzetet, amikor Anna két ruhát akar feltenni száradni a már meglévő ruhasorba.</span> <span class="sentence" id="sent-86" onclick="playFromIndex(86)"> Hová helyezheti el ezt a két ruhát?</span> <span class="sentence" id="sent-87" onclick="playFromIndex(87)"> Hány lehetősége van, és hogyan tudja ezt megtenni?</span> <span class="sentence" id="sent-88" onclick="playFromIndex(88)"> Próbáld ugyanezt a ruhák esetén!</span> <span class="sentence" id="sent-89" onclick="playFromIndex(89)"> Ott is ennyire bonyolult a döntés, vagy ott egyszerűbb?</span> </p>
+                <div class="analysis-box">
+                    <h3>Részletes Matematikai és Fizikai Magyarázat:</h3>
+                    <div><p>Ez a feladat az elemek meglévő sorozatba történő beszúrásának (insertion problem) matematikai szerkezetét vizsgálja.</p><p>1. Szabad helyek (rések) meghatározása:</p><p>Ha a szárítókötélen már fel van függesztve $n$ darab ruha egymás után, a ruhák között és a két szélén összesen $n + 1$ szabad rés (slot) keletkezik:</p><div class="formula-block"><mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" display="true" tabindex="0" ctxtmenu_counter="8" style="font-size: 113.1%; position: relative;"><mjx-math display="true" class="MJX-TEX" aria-hidden="true" style="margin-left: 0px; margin-right: 0px;"><mjx-mtext class="mjx-n"><mjx-c class="mjx-c4B"></mjx-c><mjx-utext variant="normal" style="font-size: 88.4%; padding: 0.848em 0px 0.226em; font-family: MJXZERO, serif;">ü</mjx-utext><mjx-c class="mjx-c6C"></mjx-c><mjx-utext variant="normal" style="font-size: 88.4%; padding: 0.848em 0px 0.226em; font-family: MJXZERO, serif;">ö</mjx-utext><mjx-c class="mjx-c6E"></mjx-c><mjx-c class="mjx-c62"></mjx-c><mjx-utext variant="normal" style="font-size: 88.4%; padding: 0.848em 0px 0.226em; font-family: MJXZERO, serif;">ö</mjx-utext><mjx-c class="mjx-c7A"></mjx-c><mjx-utext variant="normal" style="font-size: 88.4%; padding: 0.848em 0px 0.226em; font-family: MJXZERO, serif;">ő</mjx-utext><mjx-c class="mjx-c20"></mjx-c><mjx-c class="mjx-c62"></mjx-c><mjx-c class="mjx-c65"></mjx-c><mjx-c class="mjx-c73"></mjx-c><mjx-c class="mjx-c7A"></mjx-c><mjx-utext variant="normal" style="font-size: 88.4%; padding: 0.848em 0px 0.226em; font-family: MJXZERO, serif;">ú</mjx-utext><mjx-c class="mjx-c72"></mjx-c><mjx-utext variant="normal" style="font-size: 88.4%; padding: 0.848em 0px 0.226em; font-family: MJXZERO, serif;">á</mjx-utext><mjx-c class="mjx-c73"></mjx-c><mjx-c class="mjx-c69"></mjx-c><mjx-c class="mjx-c20"></mjx-c><mjx-c class="mjx-c68"></mjx-c><mjx-c class="mjx-c65"></mjx-c><mjx-c class="mjx-c6C"></mjx-c><mjx-c class="mjx-c79"></mjx-c><mjx-c class="mjx-c65"></mjx-c><mjx-c class="mjx-c6B"></mjx-c><mjx-c class="mjx-c20"></mjx-c><mjx-c class="mjx-c73"></mjx-c><mjx-c class="mjx-c7A"></mjx-c><mjx-utext variant="normal" style="font-size: 88.4%; padding: 0.848em 0px 0.226em; font-family: MJXZERO, serif;">á</mjx-utext><mjx-c class="mjx-c6D"></mjx-c><mjx-c class="mjx-c61"></mjx-c></mjx-mtext><mjx-mo class="mjx-n" space="4"><mjx-c class="mjx-c3D"></mjx-c></mjx-mo><mjx-mi class="mjx-i" space="4"><mjx-c class="mjx-c1D45B TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n" space="3"><mjx-c class="mjx-c2B"></mjx-c></mjx-mo><mjx-mn class="mjx-n" space="3"><mjx-c class="mjx-c31"></mjx-c></mjx-mn></mjx-math><mjx-assistive-mml unselectable="on" display="block"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mtext>Különböző beszúrási helyek száma</mtext><mo>=</mo><mi>n</mi><mo>+</mo><mn>1</mn></math></mjx-assistive-mml></mjx-container></div><p>2. Két új ruha beszúrása:</p><p>- Ha a két új ruha megkülönböztethető ($R_1$ és $R_2$), és ugyanabba a résbe is kerülhetnek egymás mellé (sorrendjük számit):</p><p>- Ha külön résekbe tesszük őket: $(n+1) \cdot n$ lehetőség.</p><p>- Ha ugyanabba a résbe tesszük őket: $(n+1) \cdot 2$ lehetőség.</p><p>- Összes lehetőség: $(n+1)(n+2)$.</p><p>- Ha a két új ruha azonos/megkülönböztethetetlen, és egy résbe legfeljebb 1 ruha kerülhet, az ismétlés nélküli kombináció:</p><div class="formula-block"><mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" display="true" tabindex="0" ctxtmenu_counter="9" style="font-size: 113.1%; position: relative;"><mjx-math display="true" class="MJX-TEX" aria-hidden="true" style="margin-left: 0px; margin-right: 0px;"><mjx-msubsup><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D436 TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: -0.247em; margin-left: -0.045em;"><mjx-mn class="mjx-n" size="s" style="margin-left: 0.138em;"><mjx-c class="mjx-c32"></mjx-c></mjx-mn><mjx-spacer style="margin-top: 0.189em;"></mjx-spacer><mjx-texatom size="s" texclass="ORD"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D45B TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n"><mjx-c class="mjx-c2B"></mjx-c></mjx-mo><mjx-mn class="mjx-n"><mjx-c class="mjx-c31"></mjx-c></mjx-mn></mjx-texatom></mjx-script></mjx-msubsup><mjx-mo class="mjx-n" space="4"><mjx-c class="mjx-c3D"></mjx-c></mjx-mo><mjx-mrow space="4"><mjx-texatom texclass="OPEN"><mjx-mo class="mjx-s3"><mjx-c class="mjx-c28 TEX-S3"></mjx-c></mjx-mo></mjx-texatom><mjx-mfrac><mjx-frac type="d" atop="true" delims="true" style="vertical-align: -0.686em;"><mjx-num style="padding-bottom: 0.614em;"><mjx-mrow><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D45B TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n" space="3"><mjx-c class="mjx-c2B"></mjx-c></mjx-mo><mjx-mn class="mjx-n" space="3"><mjx-c class="mjx-c31"></mjx-c></mjx-mn></mjx-mrow></mjx-num><mjx-den><mjx-mn class="mjx-n"><mjx-c class="mjx-c32"></mjx-c></mjx-mn></mjx-den></mjx-frac></mjx-mfrac><mjx-texatom texclass="CLOSE"><mjx-mo class="mjx-s3"><mjx-c class="mjx-c29 TEX-S3"></mjx-c></mjx-mo></mjx-texatom></mjx-mrow><mjx-mo class="mjx-n" space="4"><mjx-c class="mjx-c3D"></mjx-c></mjx-mo><mjx-mfrac space="4"><mjx-frac type="d"><mjx-num><mjx-nstrut type="d"></mjx-nstrut><mjx-mrow><mjx-mo class="mjx-n"><mjx-c class="mjx-c28"></mjx-c></mjx-mo><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D45B TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n" space="3"><mjx-c class="mjx-c2B"></mjx-c></mjx-mo><mjx-mn class="mjx-n" space="3"><mjx-c class="mjx-c31"></mjx-c></mjx-mn><mjx-mo class="mjx-n"><mjx-c class="mjx-c29"></mjx-c></mjx-mo><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D45B TEX-I"></mjx-c></mjx-mi></mjx-mrow></mjx-num><mjx-dbox><mjx-dtable><mjx-line type="d"></mjx-line><mjx-row><mjx-den><mjx-dstrut type="d"></mjx-dstrut><mjx-mn class="mjx-n"><mjx-c class="mjx-c32"></mjx-c></mjx-mn></mjx-den></mjx-row></mjx-dtable></mjx-dbox></mjx-frac></mjx-mfrac></mjx-math><mjx-assistive-mml unselectable="on" display="block"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><msubsup><mi>C</mi><mrow data-mjx-texclass="ORD"><mi>n</mi><mo>+</mo><mn>1</mn></mrow><mn>2</mn></msubsup><mo>=</mo><mrow data-mjx-texclass="ORD"><mrow data-mjx-texclass="OPEN"><mo minsize="2.047em" maxsize="2.047em">(</mo></mrow><mfrac linethickness="0"><mrow><mi>n</mi><mo>+</mo><mn>1</mn></mrow><mn>2</mn></mfrac><mrow data-mjx-texclass="CLOSE"><mo minsize="2.047em" maxsize="2.047em">)</mo></mrow></mrow><mo>=</mo><mfrac><mrow><mo stretchy="false">(</mo><mi>n</mi><mo>+</mo><mn>1</mn><mo stretchy="false">)</mo><mi>n</mi></mrow><mn>2</mn></mfrac></math></mjx-assistive-mml></mjx-container></div><p>- Ha egy résbe több azonos ruha is kerülhet, az ismétléses kombináció írja le a lehetőségeket:</p><div class="formula-block"><mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" display="true" tabindex="0" ctxtmenu_counter="10" style="font-size: 113.1%; position: relative;"><mjx-math display="true" class="MJX-TEX" aria-hidden="true" style="margin-left: 0px; margin-right: 0px;"><mjx-msubsup><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D43B TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: -0.247em; margin-left: -0.057em;"><mjx-mn class="mjx-n" size="s" style="margin-left: 0.155em;"><mjx-c class="mjx-c32"></mjx-c></mjx-mn><mjx-spacer style="margin-top: 0.189em;"></mjx-spacer><mjx-texatom size="s" texclass="ORD"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D45B TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n"><mjx-c class="mjx-c2B"></mjx-c></mjx-mo><mjx-mn class="mjx-n"><mjx-c class="mjx-c31"></mjx-c></mjx-mn></mjx-texatom></mjx-script></mjx-msubsup><mjx-mo class="mjx-n" space="4"><mjx-c class="mjx-c3D"></mjx-c></mjx-mo><mjx-mrow space="4"><mjx-texatom texclass="OPEN"><mjx-mo class="mjx-s3"><mjx-c class="mjx-c28 TEX-S3"></mjx-c></mjx-mo></mjx-texatom><mjx-mfrac><mjx-frac type="d" atop="true" delims="true" style="vertical-align: -0.686em;"><mjx-num style="padding-bottom: 0.446em;"><mjx-mrow><mjx-mo class="mjx-n"><mjx-c class="mjx-c28"></mjx-c></mjx-mo><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D45B TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n" space="3"><mjx-c class="mjx-c2B"></mjx-c></mjx-mo><mjx-mn class="mjx-n" space="3"><mjx-c class="mjx-c31"></mjx-c></mjx-mn><mjx-mo class="mjx-n"><mjx-c class="mjx-c29"></mjx-c></mjx-mo><mjx-mo class="mjx-n" space="3"><mjx-c class="mjx-c2B"></mjx-c></mjx-mo><mjx-mn class="mjx-n" space="3"><mjx-c class="mjx-c32"></mjx-c></mjx-mn><mjx-mo class="mjx-n" space="3"><mjx-c class="mjx-c2212"></mjx-c></mjx-mo><mjx-mn class="mjx-n" space="3"><mjx-c class="mjx-c31"></mjx-c></mjx-mn></mjx-mrow></mjx-num><mjx-den><mjx-mn class="mjx-n"><mjx-c class="mjx-c32"></mjx-c></mjx-mn></mjx-den></mjx-frac></mjx-mfrac><mjx-texatom texclass="CLOSE"><mjx-mo class="mjx-s3"><mjx-c class="mjx-c29 TEX-S3"></mjx-c></mjx-mo></mjx-texatom></mjx-mrow><mjx-mo class="mjx-n" space="4"><mjx-c class="mjx-c3D"></mjx-c></mjx-mo><mjx-mrow space="4"><mjx-texatom texclass="OPEN"><mjx-mo class="mjx-s3"><mjx-c class="mjx-c28 TEX-S3"></mjx-c></mjx-mo></mjx-texatom><mjx-mfrac><mjx-frac type="d" atop="true" delims="true" style="vertical-align: -0.686em;"><mjx-num style="padding-bottom: 0.614em;"><mjx-mrow><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D45B TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n" space="3"><mjx-c class="mjx-c2B"></mjx-c></mjx-mo><mjx-mn class="mjx-n" space="3"><mjx-c class="mjx-c32"></mjx-c></mjx-mn></mjx-mrow></mjx-num><mjx-den><mjx-mn class="mjx-n"><mjx-c class="mjx-c32"></mjx-c></mjx-mn></mjx-den></mjx-frac></mjx-mfrac><mjx-texatom texclass="CLOSE"><mjx-mo class="mjx-s3"><mjx-c class="mjx-c29 TEX-S3"></mjx-c></mjx-mo></mjx-texatom></mjx-mrow><mjx-mo class="mjx-n" space="4"><mjx-c class="mjx-c3D"></mjx-c></mjx-mo><mjx-mfrac space="4"><mjx-frac type="d"><mjx-num><mjx-nstrut type="d"></mjx-nstrut><mjx-mrow><mjx-mo class="mjx-n"><mjx-c class="mjx-c28"></mjx-c></mjx-mo><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D45B TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n" space="3"><mjx-c class="mjx-c2B"></mjx-c></mjx-mo><mjx-mn class="mjx-n" space="3"><mjx-c class="mjx-c32"></mjx-c></mjx-mn><mjx-mo class="mjx-n"><mjx-c class="mjx-c29"></mjx-c></mjx-mo><mjx-mo class="mjx-n"><mjx-c class="mjx-c28"></mjx-c></mjx-mo><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D45B TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n" space="3"><mjx-c class="mjx-c2B"></mjx-c></mjx-mo><mjx-mn class="mjx-n" space="3"><mjx-c class="mjx-c31"></mjx-c></mjx-mn><mjx-mo class="mjx-n"><mjx-c class="mjx-c29"></mjx-c></mjx-mo></mjx-mrow></mjx-num><mjx-dbox><mjx-dtable><mjx-line type="d"></mjx-line><mjx-row><mjx-den><mjx-dstrut type="d"></mjx-dstrut><mjx-mn class="mjx-n"><mjx-c class="mjx-c32"></mjx-c></mjx-mn></mjx-den></mjx-row></mjx-dtable></mjx-dbox></mjx-frac></mjx-mfrac></mjx-math><mjx-assistive-mml unselectable="on" display="block"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><msubsup><mi>H</mi><mrow data-mjx-texclass="ORD"><mi>n</mi><mo>+</mo><mn>1</mn></mrow><mn>2</mn></msubsup><mo>=</mo><mrow data-mjx-texclass="ORD"><mrow data-mjx-texclass="OPEN"><mo minsize="2.047em" maxsize="2.047em">(</mo></mrow><mfrac linethickness="0"><mrow><mo stretchy="false">(</mo><mi>n</mi><mo>+</mo><mn>1</mn><mo stretchy="false">)</mo><mo>+</mo><mn>2</mn><mo>−</mo><mn>1</mn></mrow><mn>2</mn></mfrac><mrow data-mjx-texclass="CLOSE"><mo minsize="2.047em" maxsize="2.047em">)</mo></mrow></mrow><mo>=</mo><mrow data-mjx-texclass="ORD"><mrow data-mjx-texclass="OPEN"><mo minsize="2.047em" maxsize="2.047em">(</mo></mrow><mfrac linethickness="0"><mrow><mi>n</mi><mo>+</mo><mn>2</mn></mrow><mn>2</mn></mfrac><mrow data-mjx-texclass="CLOSE"><mo minsize="2.047em" maxsize="2.047em">)</mo></mrow></mrow><mo>=</mo><mfrac><mrow><mo stretchy="false">(</mo><mi>n</mi><mo>+</mo><mn>2</mn><mo stretchy="false">)</mo><mo stretchy="false">(</mo><mi>n</mi><mo>+</mo><mn>1</mn><mo stretchy="false">)</mo></mrow><mn>2</mn></mfrac></math></mjx-assistive-mml></mjx-container></div></div>
+                </div>
+            </div><div class="section-box" id="card-case5">
+                <span class="tag">5. Esettanulmány: Problémamegoldás &amp; Fizika</span>
+                <h2>Erdei Szivattyú és Szökőkút Építése: Hidrosztatika és Csőhálózatok</h2>
+                <h3>Eredeti Feldiktált Szöveg:</h3>
+                <p><span class="sentence" id="sent-96" onclick="playFromIndex(96)">És most vegyük azt, hogy itt a vakáció vége, az iskola kezdete.</span> <span class="sentence" id="sent-97" onclick="playFromIndex(97)"> De ha nem is, a mindennapi rutin megköveteli tólünk, hogy ruháinkat tisztán tartsuk.</span> <span class="sentence" id="sent-98" onclick="playFromIndex(98)"> Annácska egy csomó ruhát kiválogatott, és át kell mossa őket, elkészítve azokat az új tanévre, vagy éppenséggel a következő napra, hétre vagy holnapra.</span> <span class="sentence" id="sent-99" onclick="playFromIndex(99)"> De mivel nagyon sok vizet elhasznált, ezért elfogyott a víz otthonról.</span> <span class="sentence" id="sent-100" onclick="playFromIndex(100)"> Ezért elment a kerek erdőbe – mivel szárazság van –, úgy gondolván, hogy az erdőben hamarabb kap vizet.</span> <span class="sentence" id="sent-101" onclick="playFromIndex(101)"> A víz megtalálása nagy örömöt okozott számára egy erdő közepén lévő kút alján.</span> <span class="sentence" id="sent-102" onclick="playFromIndex(102)"> Igen ám, de elfelejtett magával eszközt hozni, és mégis vizet akart hazavinni.</span> <span class="sentence" id="sent-103" onclick="playFromIndex(103)"> Mikor szétnézett, egy csomó üres flakont talált az erdőben itt-ott elszórva, melyek közül egyesek nagyobb, mások kisebb méretűek voltak.</span> <span class="sentence" id="sent-104" onclick="playFromIndex(104)"> Aztán talált csöveket, PVC-csöveket.</span> <span class="sentence" id="sent-105" onclick="playFromIndex(105)"> Megörvendve eszébe jutott, amit fizikaórán tanult, és elkészítette a saját szivattyúját, amethyl kiszivattyúzta a vizet a kútból.</span> <span class="sentence" id="sent-106" onclick="playFromIndex(106)"> Ahogy ott próbálkozott, kedve támadt, és elkészítette a saját kis szökőkútját is, mert megtetszett neki annyira az erdőben a vízcsobbanás, amit a kutacska mellett látott.</span> <span class="sentence" id="sent-107" onclick="playFromIndex(107)"> Segítsetek neki megszerkeszteni a szivattyút és a szökőkutat!</span> </p>
+                <div class="analysis-box">
+                    <h3>Részletes Matematikai és Fizikai Magyarázat:</h3>
+                    <div><p>Ez a komplex gyakorlati feladat a hidrosztatika, a közlekedőedények és a mechanikai dugattyús rendszerek elvét ötvözi.</p><p>1. A kézi dugattyús szivattyú működési elve:</p><p>Anna a műanyag flakonokból és PVC csövekből visszacsapó szeleppel ellátott kézi szivattyút (lopót/dugattyús pumpát) készíthet.</p><p>- Hidrosztatikai nyomás a kút alján $h$ méter mélységben:</p><div class="formula-block"><mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" display="true" tabindex="0" ctxtmenu_counter="11" style="font-size: 113.1%; position: relative;"><mjx-math display="true" class="MJX-TEX" aria-hidden="true" style="margin-left: 0px; margin-right: 0px;"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D45D TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n" space="4"><mjx-c class="mjx-c3D"></mjx-c></mjx-mo><mjx-msub space="4"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D45D TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: -0.15em;"><mjx-mn class="mjx-n" size="s"><mjx-c class="mjx-c30"></mjx-c></mjx-mn></mjx-script></mjx-msub><mjx-mo class="mjx-n" space="3"><mjx-c class="mjx-c2B"></mjx-c></mjx-mo><mjx-mi class="mjx-i" space="3"><mjx-c class="mjx-c1D70C TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n" space="3"><mjx-c class="mjx-c22C5"></mjx-c></mjx-mo><mjx-mi class="mjx-i" space="3"><mjx-c class="mjx-c1D454 TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n" space="3"><mjx-c class="mjx-c22C5"></mjx-c></mjx-mo><mjx-mi class="mjx-i" space="3"><mjx-c class="mjx-c210E TEX-I"></mjx-c></mjx-mi></mjx-math><mjx-assistive-mml unselectable="on" display="block"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mi>p</mi><mo>=</mo><msub><mi>p</mi><mn>0</mn></msub><mo>+</mo><mi>ρ</mi><mo>⋅</mo><mi>g</mi><mo>⋅</mo><mi>h</mi></math></mjx-assistive-mml></mjx-container></div><p>ahol $p_0$ a légköri nyomás, $\rho$ a víz sűrűsége (1000 kg/m³), $g$ a gravitációs gyorsulás (9.81 m/s²).</p><p>- A szívási elv: A csőben lévő dugattyú felhúzásakor lecsökken a belső nyomás ($p_{\text{belső}} &lt; p_0$), így a külső légköri nyomás feltolja a vizet a csőben. A maximális elméleti szívómélység légköri nyomáson:</p><div class="formula-block"><mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" display="true" tabindex="0" ctxtmenu_counter="12" style="font-size: 113.1%; position: relative;"><mjx-math display="true" class="MJX-TEX" aria-hidden="true" style="margin-left: 0px; margin-right: 0px;"><mjx-msub><mjx-mi class="mjx-i"><mjx-c class="mjx-c210E TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: -0.15em;"><mjx-texatom size="s" texclass="ORD"><mjx-mo class="mjx-n"><mjx-c class="mjx-c6D"></mjx-c><mjx-c class="mjx-c61"></mjx-c><mjx-c class="mjx-c78"></mjx-c></mjx-mo></mjx-texatom></mjx-script></mjx-msub><mjx-mo class="mjx-n" space="4"><mjx-c class="mjx-c3D"></mjx-c></mjx-mo><mjx-mfrac space="4"><mjx-frac type="d"><mjx-num><mjx-nstrut type="d"></mjx-nstrut><mjx-msub><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D45D TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: -0.15em;"><mjx-mn class="mjx-n" size="s"><mjx-c class="mjx-c30"></mjx-c></mjx-mn></mjx-script></mjx-msub></mjx-num><mjx-dbox><mjx-dtable><mjx-line type="d"></mjx-line><mjx-row><mjx-den><mjx-dstrut type="d"></mjx-dstrut><mjx-mrow><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D70C TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n" space="3"><mjx-c class="mjx-c22C5"></mjx-c></mjx-mo><mjx-mi class="mjx-i" space="3"><mjx-c class="mjx-c1D454 TEX-I"></mjx-c></mjx-mi></mjx-mrow></mjx-den></mjx-row></mjx-dtable></mjx-dbox></mjx-frac></mjx-mfrac><mjx-mo class="mjx-n" space="4"><mjx-c class="mjx-c2248"></mjx-c></mjx-mo><mjx-mn class="mjx-n" space="4"><mjx-c class="mjx-c31"></mjx-c><mjx-c class="mjx-c30"></mjx-c><mjx-c class="mjx-c2E"></mjx-c><mjx-c class="mjx-c33"></mjx-c><mjx-c class="mjx-c33"></mjx-c></mjx-mn><mjx-mtext class="mjx-n"><mjx-c class="mjx-cA0"></mjx-c><mjx-c class="mjx-c6D"></mjx-c><mjx-utext variant="normal" style="font-size: 88.4%; padding: 0.848em 0px 0.226em; font-family: MJXZERO, serif;">é</mjx-utext><mjx-c class="mjx-c74"></mjx-c><mjx-c class="mjx-c65"></mjx-c><mjx-c class="mjx-c72"></mjx-c></mjx-mtext></mjx-math><mjx-assistive-mml unselectable="on" display="block"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><msub><mi>h</mi><mrow data-mjx-texclass="ORD"><mo data-mjx-texclass="OP" movablelimits="true">max</mo></mrow></msub><mo>=</mo><mfrac><msub><mi>p</mi><mn>0</mn></msub><mrow><mi>ρ</mi><mo>⋅</mo><mi>g</mi></mrow></mfrac><mo>≈</mo><mn>10.33</mn><mtext>&nbsp;méter</mtext></math></mjx-assistive-mml></mjx-container></div><p>2. Héroi szökőkút (Hero's Fountain) építése flakonokból:</p><p>Ha nincs elektromos energia, Anna 3 összekötött tartályból (flakonból) álló Héroi szökőkutat építhet:</p><p>- 1. tartály (nyitott tál) legfelül, 2. tartály (vízzel teli) középen, 3. tartály (levegővel teli) alul.</p><p>- A legfelső tálból a víz lefolyik az alsó légtartályba, összenyomva az ott lévő levegőt.</p><p>- A megnövekedett légnyomás áttevődik a középső víztartályba, és a vizet egy keskeny fúvókán keresztül a magasba préseli.</p><p>- A kilépő vízsugár elméleti sebessége a Bernoulli-egyenlet alapján:</p><div class="formula-block"><mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" display="true" tabindex="0" ctxtmenu_counter="13" style="font-size: 113.1%; position: relative;"><mjx-math display="true" class="MJX-TEX" aria-hidden="true" style="margin-left: 0px; margin-right: 0px;"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D463 TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n" space="4"><mjx-c class="mjx-c3D"></mjx-c></mjx-mo><mjx-msqrt space="4"><mjx-sqrt><mjx-surd><mjx-mo class="mjx-sop"><mjx-c class="mjx-c221A TEX-S1"></mjx-c></mjx-mo></mjx-surd><mjx-box style="padding-top: 0.195em;"><mjx-mn class="mjx-n"><mjx-c class="mjx-c32"></mjx-c></mjx-mn><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D454 TEX-I"></mjx-c></mjx-mi><mjx-mi class="mjx-n"><mjx-c class="mjx-c394"></mjx-c></mjx-mi><mjx-mi class="mjx-i"><mjx-c class="mjx-c210E TEX-I"></mjx-c></mjx-mi></mjx-box></mjx-sqrt></mjx-msqrt></mjx-math><mjx-assistive-mml unselectable="on" display="block"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mi>v</mi><mo>=</mo><msqrt><mn>2</mn><mi>g</mi><mi mathvariant="normal">Δ</mi><mi>h</mi></msqrt></math></mjx-assistive-mml></mjx-container></div><p>ahol $\Delta h$ a felső és alsó vízszintek közötti magasságkülönbség.</p></div>
+                </div>
+            </div></div>
+    </div>
+
+    <script>
+        const fullStudyData = [
+            {
+                id: "case1",
+                category: "1. Esettanulmány: Képgalériák & Jegyeink",
+                title: "Monotónia vs. Pozitív Ismétlődés a UI/UX-ben és az Oktatásban",
+                originalText: "Nézd meg a projekt elején lévő képgalériát! Mindegyik képgalériában a képek hogyan helyezkednek el? Van-e összefüggés a képek között? Ismétlődnek-e a képek, méretükben különböznek-e? Láthatod, hogy egyes galériák több helyet foglalnak el, mint mekkorák, így pazarolva a helyet a webfelületen. Mások ugyanolyan témájú képeket tárolnak, de színükben, tartalmukban eltérnek. Vannak, amelyekben azonos méretűek a képek, megegyeznek, de vannak, amelyekben egyáltalán nem azonos méretűek és nem azonos számosságúak. Mindegyikben más-más számosságú kép van. De lehet az is, hogy ismétlődik egy-egy kép, vagy csak a színük változik meg, de ugyanazt a képet mutatják be. Szerinted egy képgaléria esetén, ha ugyanazt a képet látod egymás után semmi változtatás nélkül – sem effekt, sem szín, sem méret –, az zavaró lehet-e? De mi van akkor, ha a jegyeid között sok tízest látsz a naplóban egymás után, vagy éppen szétszórva? Melyiknek örülnél jobban? Tehát mit tudsz ebből kikövetkeztetni? A jegyeknél jó, ha ismétlődnek, főleg akkor, ha nagy jegyek. A képeknél nem annyira jó, ha ismétlődnek. Ha nincs változtatás rajtuk, monotonná válnak. Persze akadnak ellenpéldák, mivel az ízlések mások minden ember számára. De láttál három példát: a kis csibét, Annácskát és a ruháit, valamint láttad a színpompában csillogó-villogó szilveszteri karkötőket.",
+                analysis: `
+                    Ez a fejezet a vizuális redundancia és az érzelmi asszociáció közötti különbséget elemzi a webes felületeken (UI/UX) és a pedagógiai értékelésben.
+
+                    1. Vizuális felületek (UI/UX elvek):
+                    - Helypazarlás és rácsmodell: A nem megfelelően méretezett elemek rontják az információs sűrűséget. A konténer elrendezése hatékonysági mutatóval írható le:
+                    $$ E = \\frac{\\sum A_{\\text{kép}}}{A_{\\text{felület}}} $$
+                    ahol $A_{\\text{kép}}$ a képek területe, $A_{\\text{felület}}$ pedig a rendelkezésre álló felület. Ha $E \\ll 1$, a felületkészlet pazarló.
+                    - Monotónia és információelmélet: Shannon információelmélete alapján, ha egy képsorozat elemei azonosak ($P(x) = 1$), az entrópiája $H(X) = 0$. Ez a felhasználó számára nem hordoz új információt, így kognitív fáradtságot vált ki.
+
+                    2. A jegyek és az ismétlődés pszichológiája:
+                    - Míg a képi redundancia unalmas, a pozitív visszacsatolás (pl. kiváló iskolai jegyek) folyamatos megerősítést nyújt. A motivációs érték felhalmozódó függvénye nem csökken, mert a jegy nem vizuális mintázatként, hanem az elért siker mérőszámaként értelmeződik.
+                `
+            },
+            {
+                id: "case2",
+                category: "2. Esettanulmány: Rendezés és Logika",
+                title: "Annácska Ruhái: Kombinatorikai Permutációk és Rendszerezés",
+                originalText: "Folytassuk az előbbi gondolatmenetet! Ám ott csak a kapott feladatok között szét kellett választanod a képeket. Egy történet leírása, egy kép. Szét tudtad választani őket? Hogyan tetted őket sorba? Lehetett volna-e más sorrend? Esetleg stílusukban megegyeztek ezek a képek, amikor összeválogattad őket? Bár mondanivalójukban megegyeztek, stílusukban nem. Hányféleképpen lehetett volna ezt szétválogatni? Stílusok szerint is ismered ezeket a lehetőségeket? Vagy vedd figyelembe a számosságukat, a képek számosságát! Hány darabot tettél össze? Lehetett-e volna több kockából vagy kevesebből ugyanazt a mesét összerakni? De ezeken túl láthatod, hogy ha a színeket teszed össze a ruháknál, méretük szerint válogatod össze őket, vagy stílusok szerint, tudnál még ilyen szempontokat sorolni, amik alapján össze tudnád állítani ezeket? Természetesen, mivel véletlenszerűen sorszámozhatóak ezek a ruhák az adott kupacban, meg tudnád mondani, hányféleképpen lehetett volna őket sorszámozni? És mennyiben befolyásolták volna ezt Annát a döntéseiben, amikor a ruhadarabokat kiválogatta és elment végül a buliba? Vagy amikor rendezte a ruhákat, hányféleképpen tudta volna egymásra helyezni a nadrágokat vagy éppen a pólókat a külön kupacokban? Lehetett volna több megoldás? És így tovább. És ha a színük alapján nézzük a ruhákat, akkor az eredeti sorban hogyan helyezkedtek el a ruhák szétválogatás előtt? Lehetett volna ez a sorrend más, ha csak a színeket nézzük? De mi van akkor, ha a méretet tekintjük? Gondoljuk végig ezt!",
+                analysis: `
+                    Ez a fejezet a csoportosítás, a rendezési kritériumok és a kombinatorikai elrendezések matematikai alapjait részletezi.
+
+                    1. Permutációk száma egy kupacban:
+                    Ha Anna $n$ darab különböző ruhadarabot helyez el egyetlen kupacba sorrendben, a lehetséges sorrendek száma az $n$ elem ismétlés nélküli permutációja:
+                    $$ P_n = n! = 1 \\cdot 2 \\cdot 3 \\dots n $$
+
+                    2. Csoportosítás tulajdonságok (attribútumok) szerint:
+                    Ha a ruhákat attribútumok (szín, méret, stílus) szerint válogatja szét, többhalmazos particionálást végzünk.
+                    - Ha $n$ ruhadarab $k$ különböző színcsoportba oszlik, ahol az egyes csoportok létszáma $n_1, n_2, \\dots, n_k$, és a csoporton belüli azonos színű elemeket nem különböztetjük meg, az ismétléses permutációk száma:
+                    $$ P_n^{n_1, n_2, \\dots, n_k} = \\frac{n!}{n_1! \\cdot n_2! \\dots n_k!} $$
+
+                    3. Döntési fák és outfit kiválasztás:
+                    Ha Anna egy öltözéket választ ki (pl. 1 póló, 1 nadrág, 1 cipő), és a kategóriákban $m_1$ póló, $m_2$ nadrág és $m_3$ cipő van, a független választási lehetőségek száma a szorzási szabállyal adódik:
+                    $$ N = m_1 \\cdot m_2 \\cdot m_3 $$
+                `
+            },
+            {
+                id: "case3",
+                category: "3. Esettanulmány: Kombinatorika",
+                title: "A Csibék Kikelése: Pozicionális Variációk és Mintázatok",
+                originalText: "Most hasonlítsd össze a csibék kikelésének sorrendjét és a színek párosítását, azaz a kombinatorikai feladatokat! Van-e hasonlóság közöttük? Főleg amikor például kettesével vettük a csibék kikelését. Hogyan vehettük őket? Két egymás melletti pozíción vagy szétszórt pozíciókon? És hány ilyen megoldást találtunk? Mi van akkor, ha ez a két pozíció egy azonos színhez társul, és az összes többi pozíción más-más szín van? Vagy az is meglehet, hogy az összes többi pozíción azonos szín van. Mennyiben befolyásolja ezeket a döntéseket a választásunk?",
+                analysis: `
+                    A csibék kikelési sorrendje és pozicionálása a diszkrét matematika pozicionális kiválasztási feladatait modellezi.
+
+                    1. Két szomszédos pozíció kiválasztása:
+                    Ha $n$ sorba rendezett pozícióból 2 egymás melletti pozíciót választunk ki, a lehetséges párválasztások száma:
+                    $$ N_{\\text{szomszédos}} = n - 1 $$
+
+                    2. Bármely két pozíció kiválasztása (szétszórt pozíciók):
+                    Ha a $n$ pozícióból tetszőleges 2 pozíciót választunk ki a sorrend figyelembevétele nélkül, az ismétlés nélküli kombináció:
+                    $$ C_n^2 = \\binom{n}{2} = \\frac{n(n-1)}{2} $$
+
+                    3. Színezési mintázatok:
+                    - Ha 2 kiválasztott pozíció azonos $A$ színű, míg a maradék $n-2$ pozíció mind különböző $B_1, B_2, \\dots, B_{n-2}$ színű, a színezések száma megegyezik a 2 azonos elemet tartalmazó ismétléses permutációval:
+                    $$ P = \\frac{n!}{2! \\cdot 1! \\dots 1!} = \\frac{n!}{2} $$
+                    - Ha a maradék $n-2$ pozíció mind egyetlen közös $C$ színű (azaz 2 darab $A$ és $n-2$ darab $C$ szín van), a lehetőségek száma:
+                    $$ P = \\frac{n!}{2!(n-2)!} = \\binom{n}{2} $$
+                `
+            },
+            {
+                id: "case4",
+                category: "4. Esettanulmány: Pozicionálás",
+                title: "Ruhák a Szárítókötélen: Elembeillesztési Feladatok",
+                originalText: "Most nézd a szárítós feladatot! Képzeld el azt a helyzetet, amikor Anna két ruhát akar feltenni száradni a már meglévő ruhasorba. Hová helyezheti el ezt a két ruhát? Hány lehetősége van, és hogyan tudja ezt megtenni? Próbáld ugyanezt a ruhák esetén! Ott is ennyire bonyolult a döntés, vagy ott egyszerűbb?",
+                analysis: `
+                    Ez a feladat az elemek meglévő sorozatba történő beszúrásának (insertion problem) matematikai szerkezetét vizsgálja.
+
+                    1. Szabad helyek (rések) meghatározása:
+                    Ha a szárítókötélen már fel van függesztve $n$ darab ruha egymás után, a ruhák között és a két szélén összesen $n + 1$ szabad rés (slot) keletkezik:
+                    $$ \\text{Különböző beszúrási helyek száma} = n + 1 $$
+
+                    2. Két új ruha beszúrása:
+                    - Ha a két új ruha megkülönböztethető ($R_1$ és $R_2$), és ugyanabba a résbe is kerülhetnek egymás mellé (sorrendjük számit):
+                        - Ha külön résekbe tesszük őket: $(n+1) \\cdot n$ lehetőség.
+                        - Ha ugyanabba a résbe tesszük őket: $(n+1) \\cdot 2$ lehetőség.
+                        - Összes lehetőség: $(n+1)(n+2)$.
+                    - Ha a két új ruha azonos/megkülönböztethetetlen, és egy résbe legfeljebb 1 ruha kerülhet, az ismétlés nélküli kombináció:
+                    $$ C_{n+1}^2 = \\binom{n+1}{2} = \\frac{(n+1)n}{2} $$
+                    - Ha egy résbe több azonos ruha is kerülhet, az ismétléses kombináció írja le a lehetőségeket:
+                    $$ H_{n+1}^2 = \\binom{(n+1) + 2 - 1}{2} = \\binom{n+2}{2} = \\frac{(n+2)(n+1)}{2} $$
+                `
+            },
+            {
+                id: "case5",
+                category: "5. Esettanulmány: Problémamegoldás & Fizika",
+                title: "Erdei Szivattyú és Szökőkút Építése: Hidrosztatika és Csőhálózatok",
+                originalText: "És most vegyük azt, hogy itt a vakáció vége, az iskola kezdete. De ha nem is, a mindennapi rutin megköveteli tólünk, hogy ruháinkat tisztán tartsuk. Annácska egy csomó ruhát kiválogatott, és át kell mossa őket, elkészítve azokat az új tanévre, vagy éppenséggel a következő napra, hétre vagy holnapra. De mivel nagyon sok vizet elhasznált, ezért elfogyott a víz otthonról. Ezért elment a kerek erdőbe – mivel szárazság van –, úgy gondolván, hogy az erdőben hamarabb kap vizet. A víz megtalálása nagy örömöt okozott számára egy erdő közepén lévő kút alján. Igen ám, de elfelejtett magával eszközt hozni, és mégis vizet akart hazavinni. Mikor szétnézett, egy csomó üres flakont talált az erdőben itt-ott elszórva, melyek közül egyesek nagyobb, mások kisebb méretűek voltak. Aztán talált csöveket, PVC-csöveket. Megörvendve eszébe jutott, amit fizikaórán tanult, és elkészítette a saját szivattyúját, amethyl kiszivattyúzta a vizet a kútból. Ahogy ott próbálkozott, kedve támadt, és elkészítette a saját kis szökőkútját is, mert megtetszett neki annyira az erdőben a vízcsobbanás, amit a kutacska mellett látott. Segítsetek neki megszerkeszteni a szivattyút és a szökőkutat!",
+                analysis: `
+                    Ez a komplex gyakorlati feladat a hidrosztatika, a közlekedőedények és a mechanikai dugattyús rendszerek elvét ötvözi.
+
+                    1. A kézi dugattyús szivattyú működési elve:
+                    Anna a műanyag flakonokból és PVC csövekből visszacsapó szeleppel ellátott kézi szivattyút (lopót/dugattyús pumpát) készíthet.
+                    - Hidrosztatikai nyomás a kút alján $h$ méter mélységben:
+                    $$ p = p_0 + \\rho \\cdot g \\cdot h $$
+                    ahol $p_0$ a légköri nyomás, $\\rho$ a víz sűrűsége (1000 kg/m³), $g$ a gravitációs gyorsulás (9.81 m/s²).
+                    - A szívási elv: A csőben lévő dugattyú felhúzásakor lecsökken a belső nyomás ($p_{\\text{belső}} < p_0$), így a külső légköri nyomás feltolja a vizet a csőben. A maximális elméleti szívómélység légköri nyomáson:
+                    $$ h_{\\max} = \\frac{p_0}{\\rho \\cdot g} \\approx 10.33 \\text{ méter} $$
+
+                    2. Héroi szökőkút (Hero's Fountain) építése flakonokból:
+                    Ha nincs elektromos energia, Anna 3 összekötött tartályból (flakonból) álló Héroi szökőkutat építhet:
+                    - 1. tartály (nyitott tál) legfelül, 2. tartály (vízzel teli) középen, 3. tartály (levegővel teli) alul.
+                    - A legfelső tálból a víz lefolyik az alsó légtartályba, összenyomva az ott lévő levegőt.
+                    - A megnövekedett légnyomás áttevődik a középső víztartályba, és a vizet egy keskeny fúvókán keresztül a magasba préseli.
+                    - A kilépő vízsugár elméleti sebessége a Bernoulli-egyenlet alapján:
+                    $$ v = \\sqrt{2g \\Delta h} $$
+                    ahol $\\Delta h$ a felső és alsó vízszintek közötti magasságkülönbség.
+                `
+            }
+        ];
+
+        const container = document.getElementById('cases-container');
+        const sentenceElements = [];
+
+        function splitIntoSentences(text) {
+            return text.match(/[^.!?]+[.!?]+/g) || [text];
+        }
+
+        fullStudyData.forEach((item) => {
+            const card = document.createElement('div');
+            card.className = 'section-box';
+            card.id = `card-${item.id}`;
+
+            const origSentences = splitIntoSentences(item.originalText);
+            let origHtml = '';
+            origSentences.forEach((s) => {
+                const globalIdx = sentenceElements.length;
+                origHtml += `<span class="sentence" id="sent-${globalIdx}" onclick="playFromIndex(${globalIdx})">${s}</span> `;
+                sentenceElements.push({
+                    id: `sent-${globalIdx}`,
+                    cardId: `card-${item.id}`,
+                    text: s.trim()
+                });
+            });
+
+            const cleanAnalysisText = item.analysis.replace(/\\ me\\/g, '').replace(/\$\$/g, '').replace(/\$/g, '');
+            const analysisSentences = splitIntoSentences(cleanAnalysisText);
+            
+            const formattedAnalysisLines = item.analysis.trim().split('\n').map(line => {
+                const trimmed = line.trim();
+                if (trimmed.startsWith('$$') && trimmed.endsWith('$$')) {
+                    return `<div class="formula-block">${trimmed}</div>`;
+                }
+                if (trimmed.length > 0) {
+                    return `<p>${trimmed}</p>`;
+                }
+                return '';
+            }).join('');
+
+            analysisSentences.forEach((s) => {
+                const globalIdx = sentenceElements.length;
+                sentenceElements.push({
+                    id: `sent-${globalIdx}`,
+                    cardId: `card-${item.id}`,
+                    text: s.trim()
+                });
+            });
+
+            card.innerHTML = `
+                <span class="tag">${item.category}</span>
+                <h2>${item.title}</h2>
+                <h3>Eredeti Feldiktált Szöveg:</h3>
+                <p>${origHtml}</p>
+                <div class="analysis-box">
+                    <h3>Részletes Matematikai és Fizikai Magyarázat:</h3>
+                    <div>${formattedAnalysisLines}</div>
+                </div>
+            `;
+            container.appendChild(card);
+        });
+
+        // SPEECH SYNTHESIS LOGIKA
+        const synth = window.speechSynthesis;
+        let currentIndex = 0;
+        let isPaused = false;
+        let isPlaying = false;
+        let wasPausedByTabSwitch = false;
+
+        const btnPlay = document.getElementById('btn-play');
+        const btnPause = document.getElementById('btn-pause');
+        const btnStop = document.getElementById('btn-stop');
+
+        function clearHighlights() {
+            document.querySelectorAll('.sentence').forEach(el => el.classList.remove('active-sentence'));
+            document.querySelectorAll('.section-box').forEach(el => el.classList.remove('active-card'));
+        }
+
+        function speakCurrentSentence() {
+            if (currentIndex >= sentenceElements.length || !isPlaying) {
+                stopSpeech();
+                return;
+            }
+
+            clearHighlights();
+
+            const currentObj = sentenceElements[currentIndex];
+            const sentenceEl = document.getElementById(currentObj.id);
+            const cardEl = document.getElementById(currentObj.cardId);
+
+            if (sentenceEl) {
+                sentenceEl.classList.add('active-sentence');
+                sentenceEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+            if (cardEl) {
+                cardEl.classList.add('active-card');
+            }
+
+            const utterance = new SpeechSynthesisUtterance(currentObj.text);
+            utterance.lang = 'hu-HU';
+            utterance.rate = 1.0;
+
+            utterance.onend = () => {
+                if (isPlaying && !isPaused) {
+                    currentIndex++;
+                    speakCurrentSentence();
+                }
+            };
+
+            utterance.onerror = () => {
+                if (isPlaying && !isPaused) {
+                    currentIndex++;
+                    speakCurrentSentence();
+                }
+            };
+
+            synth.speak(utterance);
+        }
+
+        function startSpeech(startIndex = 0) {
+            synth.cancel();
+            isPlaying = true;
+            isPaused = false;
+            wasPausedByTabSwitch = false;
+            currentIndex = startIndex;
+            
+            btnPlay.disabled = true;
+            btnPause.disabled = false;
+            btnStop.disabled = false;
+
+            speakCurrentSentence();
+        }
+
+        function playFromIndex(index) {
+            startSpeech(index);
+        }
+
+        function pauseSpeech() {
+            if (synth.speaking && !synth.paused) {
+                synth.pause();
+                isPaused = true;
+                btnPlay.disabled = false;
+                btnPause.disabled = true;
+            }
+        }
+
+        function resumeSpeech() {
+            if (isPaused) {
+                synth.resume();
+                isPaused = false;
+                btnPlay.disabled = true;
+                btnPause.disabled = false;
+            }
+        }
+
+        btnPlay.addEventListener('click', () => {
+            if (isPaused) {
+                resumeSpeech();
+            } else {
+                startSpeech(0);
+            }
+        });
+
+        btnPause.addEventListener('click', pauseSpeech);
+        btnStop.addEventListener('click', stopSpeech);
+
+        function stopSpeech() {
+            synth.cancel();
+            isPlaying = false;
+            isPaused = false;
+            wasPausedByTabSwitch = false;
+            currentIndex = 0;
+            clearHighlights();
+            btnPlay.disabled = false;
+            btnPause.disabled = true;
+            btnStop.disabled = true;
+        }
+
+        document.addEventListener('visibilitychange', () => {
+            if (document.hidden) {
+                if (isPlaying && !isPaused) {
+                    pauseSpeech();
+                    wasPausedByTabSwitch = true;
+                }
+            } else {
+                if (wasPausedByTabSwitch && isPaused) {
+                    resumeSpeech();
+                    wasPausedByTabSwitch = false;
+                }
+            }
+        });
+
+        window.addEventListener('beforeunload', () => {
+            synth.cancel();
+        });
+    </script>
+
+</body></html>
