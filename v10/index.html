@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<!-- saved from url=(0068)file:///C:/Users/Utilizator/Downloads/gemini-code-1787756405233.html -->
+<html lang="hu"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <title>Mátrix Transzformációk &amp; Szenzomotoros Tréning</title>
+    <style>
+        body { font-family: sans-serif; background: #0f172a; color: #f8fafc; padding: 20px; display: flex; flex-direction: column; align-items: center; }
+        .card { background: #1e293b; border-radius: 8px; padding: 20px; margin-bottom: 20px; width: 100%; max-width: 700px; box-shadow: 0 4px 6px rgba(0,0,0,0.3); }
+        canvas { background: #020617; border-radius: 6px; width: 100%; height: 200px; display: block; margin-top: 10px; }
+        button { background: #2563eb; color: white; border: none; padding: 10px 15px; border-radius: 6px; cursor: pointer; font-weight: bold; margin-right: 5px; margin-top: 10px; }
+        button:hover { background: #1d4ed8; }
+        .stats { font-family: monospace; color: #38bdf8; margin-top: 8px; }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <h2>🌊 1. Mátrixos Diffúzió (Állapotvektor Frissítés)</h2>
+    <p>A mátrixszorzás szétosztja az energiát a szomszédos oszlopok között ($\vec{x}_{t+1} = \mathbf{M} \cdot \vec{x}_t$).</p>
+    <canvas id="cMatrix" width="700"></canvas>
+    <button onclick="applyMatrix()">⚡ 1 Mátrix-Lépés (Diffúzió)</button>
+    <button onclick="resetVector()">🔄 Alaphelyzet</button>
+    <div id="vectorState" class="stats">x = [ 0, 0, 100, 0, 0, 0, 0 ]</div>
+</div>
+
+<div class="card">
+    <h2>🎯 2. Szenzomotoros Dinoszaurusz/Célkövetés</h2>
+    <p>Tartsd az kurzort a hullámzó célponton! A rendszer a $\Delta \vec{r}$ hibavektort méri.</p>
+    <canvas id="cTrack" width="700"></canvas>
+    <div id="trackScore" class="stats">Pillanatnyi eltérés: 449 px | Átlagos hiba: 365 px</div>
+</div>
+
+<script>
+    // --- 1. MÁTRIX DIFFÚZIÓ SZIMULÁCIÓ ---
+    let vector = [0, 0, 100, 0, 0, 0, 0]; // Kezdő állapot: a 2-es indexű elem 100%
+    const cMat = document.getElementById('cMatrix');
+    const ctxMat = cMat.getContext('2d');
+
+    function drawMatrixSim() {
+        cMat.width = cMat.clientWidth;
+        ctxMat.clearRect(0, 0, cMat.width, cMat.height);
+        const w = cMat.width / vector.length;
+
+        vector.forEach((val, i) => {
+            const h = (val / 100) * (cMat.height - 30);
+            ctxMat.fillStyle = `hsl(${200 + val * 1.2}, 80%, 50%)`;
+            ctxMat.fillRect(i * w + 5, cMat.height - h - 20, w - 10, h);
+            
+            ctxMat.fillStyle = '#fff';
+            ctxMat.font = '12px monospace';
+            ctxMat.fillText(`${Math.round(val)}%`, i * w + 10, cMat.height - 5);
+        });
+        document.getElementById('vectorState').innerText = `x = [ ${vector.map(v => Math.round(v)).join(', ')} ]`;
+    }
+
+    function applyMatrix() {
+        // Simple 1D Smoothing / Diffusion Transition Matrix Logic
+        let next = new Array(vector.length).fill(0);
+        for(let i = 0; i < vector.length; i++) {
+            let left = i > 0 ? vector[i-1] : vector[i];
+            let right = i < vector.length - 1 ? vector[i+1] : vector[i];
+            next[i] = 0.2 * left + 0.6 * vector[i] + 0.2 * right;
+        }
+        vector = next;
+        drawMatrixSim();
+    }
+
+    function resetVector() {
+        vector = [0, 0, 100, 0, 0, 0, 0];
+        drawMatrixSim();
+    }
+
+    // --- 2. SZENZOMOTOROS CÉLKÖVETÉS ---
+    const cTrk = document.getElementById('cTrack');
+    const ctxTrk = cTrk.getContext('2d');
+    let time = 0;
+    let mouseX = 0, mouseY = 0;
+    let totalError = 0, samples = 0;
+
+    cTrk.addEventListener('mousemove', (e) => {
+        const rect = cTrk.getBoundingClientRect();
+        mouseX = e.clientX - rect.left;
+        mouseY = e.clientY - rect.top;
+    });
+
+    function loopTracking() {
+        cTrk.width = cTrk.clientWidth;
+        ctxTrk.clearRect(0, 0, cTrk.width, cTrk.height);
+
+        time += 0.03;
+        // Célpont Lissajous / Szinuszos pályája
+        const targetX = (Math.sin(time) * 0.4 + 0.5) * cTrk.width;
+        const targetY = (Math.cos(time * 1.5) * 0.3 + 0.5) * cTrk.height;
+
+        // Célpont kirajzolása
+        ctxTrk.fillStyle = '#ef4444';
+        ctxTrk.beginPath();
+        ctxTrk.arc(targetX, targetY, 15, 0, Math.PI * 2);
+        ctxTrk.fill();
+
+        // Egér pozíció
+        ctxTrk.strokeStyle = '#38bdf8';
+        ctxTrk.beginPath();
+        ctxTrk.arc(mouseX, mouseY, 10, 0, Math.PI * 2);
+        ctxTrk.stroke();
+
+        // Hibavektor kiszámítása: || Δr || = sqrt((x2-x1)^2 + (y2-y1)^2)
+        const dx = targetX - mouseX;
+        const dy = targetY - mouseY;
+        const dist = Math.sqrt(dx*dx + dy*dy);
+
+        totalError += dist;
+        samples++;
+
+        document.getElementById('trackScore').innerText = 
+            `Pillanatnyi eltérés: ${Math.round(dist)} px | Átlagos hiba: ${Math.round(totalError/samples)} px`;
+
+        requestAnimationFrame(loopTracking);
+    }
+
+    drawMatrixSim();
+    loopTracking();
+</script>
+
+</body></html>
