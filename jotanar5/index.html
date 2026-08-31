@@ -1,1 +1,1625 @@
 
+<!DOCTYPE html>
+<!-- saved from url=(0068)file:///C:/Users/Utilizator/Downloads/gemini-code-1788183982095.html -->
+<html lang="hu"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tábla Kezelő PRO v7 - AI, Kollaboratív Workspace &amp; Remote Control Rendszer</title>
+    <script src="./Tábla Kezelő PRO v7 - AI, Kollaboratív Workspace &amp; Remote Control Rendszer_files/browser@4"></script><style>/*! tailwindcss v4.3.3 | MIT License | https://tailwindcss.com */
+@layer properties;
+@layer theme, base, components, utilities;
+@layer theme {
+  :root, :host {
+    --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', 'Noto Sans', Arial,
+    sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+    --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New',
+    monospace;
+    --color-red-300: oklch(80.8% 0.114 19.571);
+    --color-red-400: oklch(70.4% 0.191 22.216);
+    --color-emerald-400: oklch(76.5% 0.177 163.223);
+    --color-emerald-500: oklch(69.6% 0.17 162.48);
+    --color-emerald-600: oklch(59.6% 0.145 163.225);
+    --color-emerald-800: oklch(43.2% 0.095 166.913);
+    --color-emerald-950: oklch(26.2% 0.051 172.552);
+    --color-blue-400: oklch(70.7% 0.165 254.624);
+    --color-blue-500: oklch(62.3% 0.214 259.815);
+    --color-blue-600: oklch(54.6% 0.245 262.881);
+    --color-violet-300: oklch(81.1% 0.111 293.571);
+    --color-violet-400: oklch(70.2% 0.183 293.541);
+    --color-violet-500: oklch(60.6% 0.25 292.717);
+    --color-violet-600: oklch(54.1% 0.281 293.009);
+    --color-violet-700: oklch(49.1% 0.27 292.581);
+    --color-violet-800: oklch(43.2% 0.232 292.759);
+    --color-violet-900: oklch(38% 0.189 293.745);
+    --color-violet-950: oklch(28.3% 0.141 291.089);
+    --color-slate-100: oklch(96.8% 0.007 247.896);
+    --color-slate-200: oklch(92.9% 0.013 255.508);
+    --color-slate-300: oklch(86.9% 0.022 252.894);
+    --color-slate-400: oklch(70.4% 0.04 256.788);
+    --color-slate-500: oklch(55.4% 0.046 257.417);
+    --color-slate-600: oklch(44.6% 0.043 257.281);
+    --color-slate-700: oklch(37.2% 0.044 257.287);
+    --color-slate-800: oklch(27.9% 0.041 260.031);
+    --color-slate-900: oklch(20.8% 0.042 265.755);
+    --color-slate-950: oklch(12.9% 0.042 264.695);
+    --color-white: #fff;
+    --spacing: 0.25rem;
+    --text-xs: 0.75rem;
+    --text-xs--line-height: calc(1 / 0.75);
+    --text-sm: 0.875rem;
+    --text-sm--line-height: calc(1.25 / 0.875);
+    --text-base: 1rem;
+    --text-base--line-height: calc(1.5 / 1);
+    --font-weight-medium: 500;
+    --font-weight-semibold: 600;
+    --font-weight-bold: 700;
+    --font-weight-black: 900;
+    --tracking-wider: 0.05em;
+    --radius-md: 0.375rem;
+    --radius-lg: 0.5rem;
+    --radius-xl: 0.75rem;
+    --radius-2xl: 1rem;
+    --animate-ping: ping 1s cubic-bezier(0, 0, 0.2, 1) infinite;
+    --animate-pulse: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    --default-transition-duration: 150ms;
+    --default-transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    --default-font-family: var(--font-sans);
+    --default-mono-font-family: var(--font-mono);
+  }
+}
+@layer base {
+  *, ::after, ::before, ::backdrop, ::file-selector-button {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    border: 0 solid;
+  }
+  html, :host {
+    line-height: 1.5;
+    -webkit-text-size-adjust: 100%;
+    tab-size: 4;
+    font-family: var(--default-font-family, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', 'Noto Sans', Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji');
+    font-feature-settings: var(--default-font-feature-settings, normal);
+    font-variation-settings: var(--default-font-variation-settings, normal);
+    -webkit-tap-highlight-color: transparent;
+  }
+  hr {
+    height: 0;
+    color: inherit;
+    border-top-width: 1px;
+  }
+  abbr:where([title]) {
+    -webkit-text-decoration: underline dotted;
+    text-decoration: underline dotted;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    font-size: inherit;
+    font-weight: inherit;
+  }
+  a {
+    color: inherit;
+    -webkit-text-decoration: inherit;
+    text-decoration: inherit;
+  }
+  b, strong {
+    font-weight: bolder;
+  }
+  code, kbd, samp, pre {
+    font-family: var(--default-mono-font-family, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace);
+    font-feature-settings: var(--default-mono-font-feature-settings, normal);
+    font-variation-settings: var(--default-mono-font-variation-settings, normal);
+    font-size: 1em;
+  }
+  small {
+    font-size: 80%;
+  }
+  sub, sup {
+    font-size: 75%;
+    line-height: 0;
+    position: relative;
+    vertical-align: baseline;
+  }
+  sub {
+    bottom: -0.25em;
+  }
+  sup {
+    top: -0.5em;
+  }
+  table {
+    text-indent: 0;
+    border-color: inherit;
+    border-collapse: collapse;
+  }
+  :-moz-focusring:where(:not(iframe)) {
+    outline: auto;
+  }
+  progress {
+    vertical-align: baseline;
+  }
+  summary {
+    display: list-item;
+  }
+  ol, ul, menu {
+    list-style: none;
+  }
+  img, svg, video, canvas, audio, iframe, embed, object {
+    display: block;
+    vertical-align: middle;
+  }
+  img, video {
+    max-width: 100%;
+    height: auto;
+  }
+  button, input, select, optgroup, textarea, ::file-selector-button {
+    font: inherit;
+    font-feature-settings: inherit;
+    font-variation-settings: inherit;
+    letter-spacing: inherit;
+    color: inherit;
+    border-radius: 0;
+    background-color: transparent;
+    opacity: 1;
+  }
+  :where(select:is([multiple], [size])) optgroup {
+    font-weight: bolder;
+  }
+  :where(select:is([multiple], [size])) optgroup option {
+    padding-inline-start: 20px;
+  }
+  ::file-selector-button {
+    margin-inline-end: 4px;
+  }
+  ::placeholder {
+    opacity: 1;
+  }
+  @supports (not (-webkit-appearance: -apple-pay-button))  or (contain-intrinsic-size: 1px) {
+    ::placeholder {
+      color: currentcolor;
+      @supports (color: color-mix(in lab, red, red)) {
+        color: color-mix(in oklab, currentcolor 50%, transparent);
+      }
+    }
+  }
+  textarea {
+    resize: vertical;
+  }
+  ::-webkit-search-decoration {
+    -webkit-appearance: none;
+  }
+  ::-webkit-date-and-time-value {
+    min-height: 1lh;
+    text-align: inherit;
+  }
+  ::-webkit-datetime-edit {
+    display: inline-flex;
+  }
+  ::-webkit-datetime-edit-fields-wrapper {
+    padding: 0;
+  }
+  ::-webkit-datetime-edit, ::-webkit-datetime-edit-year-field, ::-webkit-datetime-edit-month-field, ::-webkit-datetime-edit-day-field, ::-webkit-datetime-edit-hour-field, ::-webkit-datetime-edit-minute-field, ::-webkit-datetime-edit-second-field, ::-webkit-datetime-edit-millisecond-field, ::-webkit-datetime-edit-meridiem-field {
+    padding-block: 0;
+  }
+  ::-webkit-calendar-picker-indicator {
+    line-height: 1;
+  }
+  :-moz-ui-invalid {
+    box-shadow: none;
+  }
+  button, input:where([type='button'], [type='reset'], [type='submit']), ::file-selector-button {
+    appearance: button;
+  }
+  ::-webkit-inner-spin-button, ::-webkit-outer-spin-button {
+    height: auto;
+  }
+  [hidden]:where(:not([hidden='until-found'])) {
+    display: none !important;
+  }
+}
+@layer utilities {
+  .col-span-2 {
+    grid-column: span 2 / span 2;
+  }
+  .mt-1 {
+    margin-top: var(--spacing);
+  }
+  .mt-6 {
+    margin-top: calc(var(--spacing) * 6);
+  }
+  .mb-1 {
+    margin-bottom: var(--spacing);
+  }
+  .mb-2 {
+    margin-bottom: calc(var(--spacing) * 2);
+  }
+  .mb-3 {
+    margin-bottom: calc(var(--spacing) * 3);
+  }
+  .mb-4 {
+    margin-bottom: calc(var(--spacing) * 4);
+  }
+  .mb-6 {
+    margin-bottom: calc(var(--spacing) * 6);
+  }
+  .block {
+    display: block;
+  }
+  .flex {
+    display: flex;
+  }
+  .grid {
+    display: grid;
+  }
+  .hidden {
+    display: none;
+  }
+  .inline-block {
+    display: inline-block;
+  }
+  .h-2 {
+    height: calc(var(--spacing) * 2);
+  }
+  .h-3 {
+    height: calc(var(--spacing) * 3);
+  }
+  .h-5 {
+    height: calc(var(--spacing) * 5);
+  }
+  .h-48 {
+    height: calc(var(--spacing) * 48);
+  }
+  .max-h-\[180px\] {
+    max-height: 180px;
+  }
+  .min-h-\[600px\] {
+    min-height: 600px;
+  }
+  .min-h-screen {
+    min-height: 100vh;
+  }
+  .w-2 {
+    width: calc(var(--spacing) * 2);
+  }
+  .w-3 {
+    width: calc(var(--spacing) * 3);
+  }
+  .w-5 {
+    width: calc(var(--spacing) * 5);
+  }
+  .w-32 {
+    width: calc(var(--spacing) * 32);
+  }
+  .w-full {
+    width: 100%;
+  }
+  .flex-1 {
+    flex: 1;
+  }
+  .shrink-0 {
+    flex-shrink: 0;
+  }
+  .animate-ping {
+    animation: var(--animate-ping);
+  }
+  .animate-pulse {
+    animation: var(--animate-pulse);
+  }
+  .cursor-pointer {
+    cursor: pointer;
+  }
+  .grid-cols-1 {
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+  }
+  .grid-cols-2 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .grid-cols-3 {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  .flex-col {
+    flex-direction: column;
+  }
+  .flex-wrap {
+    flex-wrap: wrap;
+  }
+  .items-center {
+    align-items: center;
+  }
+  .justify-between {
+    justify-content: space-between;
+  }
+  .justify-center {
+    justify-content: center;
+  }
+  .gap-1\.5 {
+    gap: calc(var(--spacing) * 1.5);
+  }
+  .gap-2 {
+    gap: calc(var(--spacing) * 2);
+  }
+  .gap-3 {
+    gap: calc(var(--spacing) * 3);
+  }
+  .gap-6 {
+    gap: calc(var(--spacing) * 6);
+  }
+  :where(.space-y-1\.5 > :not(:last-child)) {
+    --tw-space-y-reverse: 0;
+    margin-block-start: calc(calc(var(--spacing) * 1.5) * var(--tw-space-y-reverse));
+    margin-block-end: calc(calc(var(--spacing) * 1.5) * calc(1 - var(--tw-space-y-reverse)));
+  }
+  :where(.space-y-2 > :not(:last-child)) {
+    --tw-space-y-reverse: 0;
+    margin-block-start: calc(calc(var(--spacing) * 2) * var(--tw-space-y-reverse));
+    margin-block-end: calc(calc(var(--spacing) * 2) * calc(1 - var(--tw-space-y-reverse)));
+  }
+  :where(.space-y-3 > :not(:last-child)) {
+    --tw-space-y-reverse: 0;
+    margin-block-start: calc(calc(var(--spacing) * 3) * var(--tw-space-y-reverse));
+    margin-block-end: calc(calc(var(--spacing) * 3) * calc(1 - var(--tw-space-y-reverse)));
+  }
+  :where(.space-y-4 > :not(:last-child)) {
+    --tw-space-y-reverse: 0;
+    margin-block-start: calc(calc(var(--spacing) * 4) * var(--tw-space-y-reverse));
+    margin-block-end: calc(calc(var(--spacing) * 4) * calc(1 - var(--tw-space-y-reverse)));
+  }
+  :where(.space-y-6 > :not(:last-child)) {
+    --tw-space-y-reverse: 0;
+    margin-block-start: calc(calc(var(--spacing) * 6) * var(--tw-space-y-reverse));
+    margin-block-end: calc(calc(var(--spacing) * 6) * calc(1 - var(--tw-space-y-reverse)));
+  }
+  :where(.space-x-1 > :not(:last-child)) {
+    --tw-space-x-reverse: 0;
+    margin-inline-start: calc(var(--spacing) * var(--tw-space-x-reverse));
+    margin-inline-end: calc(var(--spacing) * calc(1 - var(--tw-space-x-reverse)));
+  }
+  :where(.space-x-1\.5 > :not(:last-child)) {
+    --tw-space-x-reverse: 0;
+    margin-inline-start: calc(calc(var(--spacing) * 1.5) * var(--tw-space-x-reverse));
+    margin-inline-end: calc(calc(var(--spacing) * 1.5) * calc(1 - var(--tw-space-x-reverse)));
+  }
+  :where(.space-x-2 > :not(:last-child)) {
+    --tw-space-x-reverse: 0;
+    margin-inline-start: calc(calc(var(--spacing) * 2) * var(--tw-space-x-reverse));
+    margin-inline-end: calc(calc(var(--spacing) * 2) * calc(1 - var(--tw-space-x-reverse)));
+  }
+  :where(.space-x-2\.5 > :not(:last-child)) {
+    --tw-space-x-reverse: 0;
+    margin-inline-start: calc(calc(var(--spacing) * 2.5) * var(--tw-space-x-reverse));
+    margin-inline-end: calc(calc(var(--spacing) * 2.5) * calc(1 - var(--tw-space-x-reverse)));
+  }
+  :where(.space-x-3 > :not(:last-child)) {
+    --tw-space-x-reverse: 0;
+    margin-inline-start: calc(calc(var(--spacing) * 3) * var(--tw-space-x-reverse));
+    margin-inline-end: calc(calc(var(--spacing) * 3) * calc(1 - var(--tw-space-x-reverse)));
+  }
+  :where(.space-x-4 > :not(:last-child)) {
+    --tw-space-x-reverse: 0;
+    margin-inline-start: calc(calc(var(--spacing) * 4) * var(--tw-space-x-reverse));
+    margin-inline-end: calc(calc(var(--spacing) * 4) * calc(1 - var(--tw-space-x-reverse)));
+  }
+  .truncate {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .overflow-hidden {
+    overflow: hidden;
+  }
+  .overflow-x-auto {
+    overflow-x: auto;
+  }
+  .overflow-y-auto {
+    overflow-y: auto;
+  }
+  .rounded {
+    border-radius: 0.25rem;
+  }
+  .rounded-2xl {
+    border-radius: var(--radius-2xl);
+  }
+  .rounded-full {
+    border-radius: calc(infinity * 1px);
+  }
+  .rounded-lg {
+    border-radius: var(--radius-lg);
+  }
+  .rounded-md {
+    border-radius: var(--radius-md);
+  }
+  .rounded-xl {
+    border-radius: var(--radius-xl);
+  }
+  .border {
+    border-style: var(--tw-border-style);
+    border-width: 1px;
+  }
+  .border-2 {
+    border-style: var(--tw-border-style);
+    border-width: 2px;
+  }
+  .border-t {
+    border-top-style: var(--tw-border-style);
+    border-top-width: 1px;
+  }
+  .border-b {
+    border-bottom-style: var(--tw-border-style);
+    border-bottom-width: 1px;
+  }
+  .border-dashed {
+    --tw-border-style: dashed;
+    border-style: dashed;
+  }
+  .border-emerald-800 {
+    border-color: var(--color-emerald-800);
+  }
+  .border-slate-700 {
+    border-color: var(--color-slate-700);
+  }
+  .border-slate-800 {
+    border-color: var(--color-slate-800);
+  }
+  .border-violet-700 {
+    border-color: var(--color-violet-700);
+  }
+  .border-violet-800 {
+    border-color: var(--color-violet-800);
+  }
+  .border-violet-900 {
+    border-color: var(--color-violet-900);
+  }
+  .border-violet-900\/40 {
+    border-color: color-mix(in srgb, oklch(38% 0.189 293.745) 40%, transparent);
+    @supports (color: color-mix(in lab, red, red)) {
+      border-color: color-mix(in oklab, var(--color-violet-900) 40%, transparent);
+    }
+  }
+  .border-violet-900\/50 {
+    border-color: color-mix(in srgb, oklch(38% 0.189 293.745) 50%, transparent);
+    @supports (color: color-mix(in lab, red, red)) {
+      border-color: color-mix(in oklab, var(--color-violet-900) 50%, transparent);
+    }
+  }
+  .bg-emerald-500 {
+    background-color: var(--color-emerald-500);
+  }
+  .bg-emerald-600 {
+    background-color: var(--color-emerald-600);
+  }
+  .bg-emerald-950 {
+    background-color: var(--color-emerald-950);
+  }
+  .bg-slate-800 {
+    background-color: var(--color-slate-800);
+  }
+  .bg-slate-900 {
+    background-color: var(--color-slate-900);
+  }
+  .bg-slate-900\/90 {
+    background-color: color-mix(in srgb, oklch(20.8% 0.042 265.755) 90%, transparent);
+    @supports (color: color-mix(in lab, red, red)) {
+      background-color: color-mix(in oklab, var(--color-slate-900) 90%, transparent);
+    }
+  }
+  .bg-slate-950 {
+    background-color: var(--color-slate-950);
+  }
+  .bg-violet-500 {
+    background-color: var(--color-violet-500);
+  }
+  .bg-violet-600 {
+    background-color: var(--color-violet-600);
+  }
+  .bg-violet-900 {
+    background-color: var(--color-violet-900);
+  }
+  .bg-violet-900\/50 {
+    background-color: color-mix(in srgb, oklch(38% 0.189 293.745) 50%, transparent);
+    @supports (color: color-mix(in lab, red, red)) {
+      background-color: color-mix(in oklab, var(--color-violet-900) 50%, transparent);
+    }
+  }
+  .bg-violet-950 {
+    background-color: var(--color-violet-950);
+  }
+  .bg-violet-950\/60 {
+    background-color: color-mix(in srgb, oklch(28.3% 0.141 291.089) 60%, transparent);
+    @supports (color: color-mix(in lab, red, red)) {
+      background-color: color-mix(in oklab, var(--color-violet-950) 60%, transparent);
+    }
+  }
+  .bg-gradient-to-r {
+    --tw-gradient-position: to right in oklab;
+    background-image: linear-gradient(var(--tw-gradient-stops));
+  }
+  .from-violet-600 {
+    --tw-gradient-from: var(--color-violet-600);
+    --tw-gradient-stops: var(--tw-gradient-via-stops, var(--tw-gradient-position), var(--tw-gradient-from) var(--tw-gradient-from-position), var(--tw-gradient-to) var(--tw-gradient-to-position));
+  }
+  .to-blue-600 {
+    --tw-gradient-to: var(--color-blue-600);
+    --tw-gradient-stops: var(--tw-gradient-via-stops, var(--tw-gradient-position), var(--tw-gradient-from) var(--tw-gradient-from-position), var(--tw-gradient-to) var(--tw-gradient-to-position));
+  }
+  .p-1 {
+    padding: var(--spacing);
+  }
+  .p-2 {
+    padding: calc(var(--spacing) * 2);
+  }
+  .p-2\.5 {
+    padding: calc(var(--spacing) * 2.5);
+  }
+  .p-3 {
+    padding: calc(var(--spacing) * 3);
+  }
+  .p-4 {
+    padding: calc(var(--spacing) * 4);
+  }
+  .p-6 {
+    padding: calc(var(--spacing) * 6);
+  }
+  .px-2 {
+    padding-inline: calc(var(--spacing) * 2);
+  }
+  .px-2\.5 {
+    padding-inline: calc(var(--spacing) * 2.5);
+  }
+  .px-3 {
+    padding-inline: calc(var(--spacing) * 3);
+  }
+  .px-4 {
+    padding-inline: calc(var(--spacing) * 4);
+  }
+  .px-6 {
+    padding-inline: calc(var(--spacing) * 6);
+  }
+  .py-0\.5 {
+    padding-block: calc(var(--spacing) * 0.5);
+  }
+  .py-1 {
+    padding-block: var(--spacing);
+  }
+  .py-1\.5 {
+    padding-block: calc(var(--spacing) * 1.5);
+  }
+  .py-2 {
+    padding-block: calc(var(--spacing) * 2);
+  }
+  .py-2\.5 {
+    padding-block: calc(var(--spacing) * 2.5);
+  }
+  .py-3\.5 {
+    padding-block: calc(var(--spacing) * 3.5);
+  }
+  .py-10 {
+    padding-block: calc(var(--spacing) * 10);
+  }
+  .pt-1 {
+    padding-top: var(--spacing);
+  }
+  .pt-2 {
+    padding-top: calc(var(--spacing) * 2);
+  }
+  .pt-4 {
+    padding-top: calc(var(--spacing) * 4);
+  }
+  .pr-1 {
+    padding-right: var(--spacing);
+  }
+  .pb-4 {
+    padding-bottom: calc(var(--spacing) * 4);
+  }
+  .text-center {
+    text-align: center;
+  }
+  .font-mono {
+    font-family: var(--font-mono);
+  }
+  .text-base {
+    font-size: var(--text-base);
+    line-height: var(--tw-leading, var(--text-base--line-height));
+  }
+  .text-sm {
+    font-size: var(--text-sm);
+    line-height: var(--tw-leading, var(--text-sm--line-height));
+  }
+  .text-xs {
+    font-size: var(--text-xs);
+    line-height: var(--tw-leading, var(--text-xs--line-height));
+  }
+  .text-\[10px\] {
+    font-size: 10px;
+  }
+  .font-black {
+    --tw-font-weight: var(--font-weight-black);
+    font-weight: var(--font-weight-black);
+  }
+  .font-bold {
+    --tw-font-weight: var(--font-weight-bold);
+    font-weight: var(--font-weight-bold);
+  }
+  .font-medium {
+    --tw-font-weight: var(--font-weight-medium);
+    font-weight: var(--font-weight-medium);
+  }
+  .font-semibold {
+    --tw-font-weight: var(--font-weight-semibold);
+    font-weight: var(--font-weight-semibold);
+  }
+  .tracking-wider {
+    --tw-tracking: var(--tracking-wider);
+    letter-spacing: var(--tracking-wider);
+  }
+  .text-blue-400 {
+    color: var(--color-blue-400);
+  }
+  .text-emerald-400 {
+    color: var(--color-emerald-400);
+  }
+  .text-red-400 {
+    color: var(--color-red-400);
+  }
+  .text-slate-100 {
+    color: var(--color-slate-100);
+  }
+  .text-slate-200 {
+    color: var(--color-slate-200);
+  }
+  .text-slate-300 {
+    color: var(--color-slate-300);
+  }
+  .text-slate-400 {
+    color: var(--color-slate-400);
+  }
+  .text-slate-500 {
+    color: var(--color-slate-500);
+  }
+  .text-slate-600 {
+    color: var(--color-slate-600);
+  }
+  .text-violet-300 {
+    color: var(--color-violet-300);
+  }
+  .text-violet-400 {
+    color: var(--color-violet-400);
+  }
+  .text-white {
+    color: var(--color-white);
+  }
+  .uppercase {
+    text-transform: uppercase;
+  }
+  .shadow {
+    --tw-shadow: 0 1px 3px 0 var(--tw-shadow-color, rgb(0 0 0 / 0.1)), 0 1px 2px -1px var(--tw-shadow-color, rgb(0 0 0 / 0.1));
+    box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
+  }
+  .shadow-2xl {
+    --tw-shadow: 0 25px 50px -12px var(--tw-shadow-color, rgb(0 0 0 / 0.25));
+    box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
+  }
+  .shadow-inner {
+    --tw-shadow: inset 0 2px 4px 0 var(--tw-shadow-color, rgb(0 0 0 / 0.05));
+    box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
+  }
+  .shadow-lg {
+    --tw-shadow: 0 10px 15px -3px var(--tw-shadow-color, rgb(0 0 0 / 0.1)), 0 4px 6px -4px var(--tw-shadow-color, rgb(0 0 0 / 0.1));
+    box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
+  }
+  .shadow-md {
+    --tw-shadow: 0 4px 6px -1px var(--tw-shadow-color, rgb(0 0 0 / 0.1)), 0 2px 4px -2px var(--tw-shadow-color, rgb(0 0 0 / 0.1));
+    box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
+  }
+  .shadow-xl {
+    --tw-shadow: 0 20px 25px -5px var(--tw-shadow-color, rgb(0 0 0 / 0.1)), 0 8px 10px -6px var(--tw-shadow-color, rgb(0 0 0 / 0.1));
+    box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
+  }
+  .backdrop-blur {
+    --tw-backdrop-blur: blur(8px);
+    -webkit-backdrop-filter: var(--tw-backdrop-blur,) var(--tw-backdrop-brightness,) var(--tw-backdrop-contrast,) var(--tw-backdrop-grayscale,) var(--tw-backdrop-hue-rotate,) var(--tw-backdrop-invert,) var(--tw-backdrop-opacity,) var(--tw-backdrop-saturate,) var(--tw-backdrop-sepia,);
+    backdrop-filter: var(--tw-backdrop-blur,) var(--tw-backdrop-brightness,) var(--tw-backdrop-contrast,) var(--tw-backdrop-grayscale,) var(--tw-backdrop-hue-rotate,) var(--tw-backdrop-invert,) var(--tw-backdrop-opacity,) var(--tw-backdrop-saturate,) var(--tw-backdrop-sepia,);
+  }
+  .transition {
+    transition-property: color, background-color, border-color, outline-color, text-decoration-color, fill, stroke, --tw-gradient-from, --tw-gradient-via, --tw-gradient-to, opacity, box-shadow, transform, translate, scale, rotate, filter, -webkit-backdrop-filter, backdrop-filter, display, content-visibility, overlay, pointer-events;
+    transition-timing-function: var(--tw-ease, var(--default-transition-timing-function));
+    transition-duration: var(--tw-duration, var(--default-transition-duration));
+  }
+  .file\:mr-4::file-selector-button {
+    margin-right: calc(var(--spacing) * 4);
+  }
+  .file\:rounded-lg::file-selector-button {
+    border-radius: var(--radius-lg);
+  }
+  .file\:border-0::file-selector-button {
+    border-style: var(--tw-border-style);
+    border-width: 0px;
+  }
+  .file\:bg-violet-950::file-selector-button {
+    background-color: var(--color-violet-950);
+  }
+  .file\:px-4::file-selector-button {
+    padding-inline: calc(var(--spacing) * 4);
+  }
+  .file\:py-2::file-selector-button {
+    padding-block: calc(var(--spacing) * 2);
+  }
+  .file\:text-xs::file-selector-button {
+    font-size: var(--text-xs);
+    line-height: var(--tw-leading, var(--text-xs--line-height));
+  }
+  .file\:font-semibold::file-selector-button {
+    --tw-font-weight: var(--font-weight-semibold);
+    font-weight: var(--font-weight-semibold);
+  }
+  .file\:text-violet-300::file-selector-button {
+    color: var(--color-violet-300);
+  }
+  @media (hover: hover) {
+    .hover\:bg-emerald-500:hover {
+      background-color: var(--color-emerald-500);
+    }
+    .hover\:bg-slate-700:hover {
+      background-color: var(--color-slate-700);
+    }
+    .hover\:bg-slate-800:hover {
+      background-color: var(--color-slate-800);
+    }
+    .hover\:bg-violet-500:hover {
+      background-color: var(--color-violet-500);
+    }
+    .hover\:bg-violet-900:hover {
+      background-color: var(--color-violet-900);
+    }
+    .hover\:from-violet-500:hover {
+      --tw-gradient-from: var(--color-violet-500);
+      --tw-gradient-stops: var(--tw-gradient-via-stops, var(--tw-gradient-position), var(--tw-gradient-from) var(--tw-gradient-from-position), var(--tw-gradient-to) var(--tw-gradient-to-position));
+    }
+    .hover\:to-blue-500:hover {
+      --tw-gradient-to: var(--color-blue-500);
+      --tw-gradient-stops: var(--tw-gradient-via-stops, var(--tw-gradient-position), var(--tw-gradient-from) var(--tw-gradient-from-position), var(--tw-gradient-to) var(--tw-gradient-to-position));
+    }
+    .hover\:text-red-300:hover {
+      color: var(--color-red-300);
+    }
+    .hover\:text-white:hover {
+      color: var(--color-white);
+    }
+    .hover\:underline:hover {
+      text-decoration-line: underline;
+    }
+    .hover\:file\:bg-violet-900:hover::file-selector-button {
+      background-color: var(--color-violet-900);
+    }
+  }
+  .focus\:ring-2:focus {
+    --tw-ring-shadow: var(--tw-ring-inset,) 0 0 0 calc(2px + var(--tw-ring-offset-width)) var(--tw-ring-color, currentcolor);
+    box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
+  }
+  .focus\:ring-violet-500:focus {
+    --tw-ring-color: var(--color-violet-500);
+  }
+  .focus\:outline-none:focus {
+    --tw-outline-style: none;
+    outline-style: none;
+  }
+  @media (width >= 48rem) {
+    .md\:flex {
+      display: flex;
+    }
+  }
+  @media (width >= 64rem) {
+    .lg\:col-span-5 {
+      grid-column: span 5 / span 5;
+    }
+    .lg\:col-span-7 {
+      grid-column: span 7 / span 7;
+    }
+    .lg\:grid-cols-12 {
+      grid-template-columns: repeat(12, minmax(0, 1fr));
+    }
+  }
+}
+@property --tw-space-y-reverse {
+  syntax: "*";
+  inherits: false;
+  initial-value: 0;
+}
+@property --tw-space-x-reverse {
+  syntax: "*";
+  inherits: false;
+  initial-value: 0;
+}
+@property --tw-border-style {
+  syntax: "*";
+  inherits: false;
+  initial-value: solid;
+}
+@property --tw-gradient-position {
+  syntax: "*";
+  inherits: false;
+}
+@property --tw-gradient-from {
+  syntax: "<color>";
+  inherits: false;
+  initial-value: #0000;
+}
+@property --tw-gradient-via {
+  syntax: "<color>";
+  inherits: false;
+  initial-value: #0000;
+}
+@property --tw-gradient-to {
+  syntax: "<color>";
+  inherits: false;
+  initial-value: #0000;
+}
+@property --tw-gradient-stops {
+  syntax: "*";
+  inherits: false;
+}
+@property --tw-gradient-via-stops {
+  syntax: "*";
+  inherits: false;
+}
+@property --tw-gradient-from-position {
+  syntax: "<length-percentage>";
+  inherits: false;
+  initial-value: 0%;
+}
+@property --tw-gradient-via-position {
+  syntax: "<length-percentage>";
+  inherits: false;
+  initial-value: 50%;
+}
+@property --tw-gradient-to-position {
+  syntax: "<length-percentage>";
+  inherits: false;
+  initial-value: 100%;
+}
+@property --tw-font-weight {
+  syntax: "*";
+  inherits: false;
+}
+@property --tw-tracking {
+  syntax: "*";
+  inherits: false;
+}
+@property --tw-shadow {
+  syntax: "*";
+  inherits: false;
+  initial-value: 0 0 #0000;
+}
+@property --tw-shadow-color {
+  syntax: "*";
+  inherits: false;
+}
+@property --tw-shadow-alpha {
+  syntax: "<percentage>";
+  inherits: false;
+  initial-value: 100%;
+}
+@property --tw-inset-shadow {
+  syntax: "*";
+  inherits: false;
+  initial-value: 0 0 #0000;
+}
+@property --tw-inset-shadow-color {
+  syntax: "*";
+  inherits: false;
+}
+@property --tw-inset-shadow-alpha {
+  syntax: "<percentage>";
+  inherits: false;
+  initial-value: 100%;
+}
+@property --tw-ring-color {
+  syntax: "*";
+  inherits: false;
+}
+@property --tw-ring-shadow {
+  syntax: "*";
+  inherits: false;
+  initial-value: 0 0 #0000;
+}
+@property --tw-inset-ring-color {
+  syntax: "*";
+  inherits: false;
+}
+@property --tw-inset-ring-shadow {
+  syntax: "*";
+  inherits: false;
+  initial-value: 0 0 #0000;
+}
+@property --tw-ring-inset {
+  syntax: "*";
+  inherits: false;
+}
+@property --tw-ring-offset-width {
+  syntax: "<length>";
+  inherits: false;
+  initial-value: 0px;
+}
+@property --tw-ring-offset-color {
+  syntax: "*";
+  inherits: false;
+  initial-value: #fff;
+}
+@property --tw-ring-offset-shadow {
+  syntax: "*";
+  inherits: false;
+  initial-value: 0 0 #0000;
+}
+@property --tw-backdrop-blur {
+  syntax: "*";
+  inherits: false;
+}
+@property --tw-backdrop-brightness {
+  syntax: "*";
+  inherits: false;
+}
+@property --tw-backdrop-contrast {
+  syntax: "*";
+  inherits: false;
+}
+@property --tw-backdrop-grayscale {
+  syntax: "*";
+  inherits: false;
+}
+@property --tw-backdrop-hue-rotate {
+  syntax: "*";
+  inherits: false;
+}
+@property --tw-backdrop-invert {
+  syntax: "*";
+  inherits: false;
+}
+@property --tw-backdrop-opacity {
+  syntax: "*";
+  inherits: false;
+}
+@property --tw-backdrop-saturate {
+  syntax: "*";
+  inherits: false;
+}
+@property --tw-backdrop-sepia {
+  syntax: "*";
+  inherits: false;
+}
+@keyframes ping {
+  75%, 100% {
+    transform: scale(2);
+    opacity: 0;
+  }
+}
+@keyframes pulse {
+  50% {
+    opacity: 0.5;
+  }
+}
+@layer properties {
+  @supports ((-webkit-hyphens: none) and (not (margin-trim: inline))) or ((-moz-orient: inline) and (not (color:rgb(from red r g b)))) {
+    *, ::before, ::after, ::backdrop {
+      --tw-space-y-reverse: 0;
+      --tw-space-x-reverse: 0;
+      --tw-border-style: solid;
+      --tw-gradient-position: initial;
+      --tw-gradient-from: #0000;
+      --tw-gradient-via: #0000;
+      --tw-gradient-to: #0000;
+      --tw-gradient-stops: initial;
+      --tw-gradient-via-stops: initial;
+      --tw-gradient-from-position: 0%;
+      --tw-gradient-via-position: 50%;
+      --tw-gradient-to-position: 100%;
+      --tw-font-weight: initial;
+      --tw-tracking: initial;
+      --tw-shadow: 0 0 #0000;
+      --tw-shadow-color: initial;
+      --tw-shadow-alpha: 100%;
+      --tw-inset-shadow: 0 0 #0000;
+      --tw-inset-shadow-color: initial;
+      --tw-inset-shadow-alpha: 100%;
+      --tw-ring-color: initial;
+      --tw-ring-shadow: 0 0 #0000;
+      --tw-inset-ring-color: initial;
+      --tw-inset-ring-shadow: 0 0 #0000;
+      --tw-ring-inset: initial;
+      --tw-ring-offset-width: 0px;
+      --tw-ring-offset-color: #fff;
+      --tw-ring-offset-shadow: 0 0 #0000;
+      --tw-backdrop-blur: initial;
+      --tw-backdrop-brightness: initial;
+      --tw-backdrop-contrast: initial;
+      --tw-backdrop-grayscale: initial;
+      --tw-backdrop-hue-rotate: initial;
+      --tw-backdrop-invert: initial;
+      --tw-backdrop-opacity: initial;
+      --tw-backdrop-saturate: initial;
+      --tw-backdrop-sepia: initial;
+    }
+  }
+}
+</style>
+    <style>
+        body { background-color: #090d16; font-family: system-ui, -apple-system, sans-serif; color: #f1f5f9; }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between">
+
+    <!-- Top Navigation / Header -->
+    <header class="bg-slate-900 border-b border-slate-800 px-6 py-3.5 flex items-center justify-between shadow-xl">
+        <div class="flex items-center space-x-4">
+            <span class="bg-gradient-to-r from-violet-600 to-blue-600 text-white text-xs font-black px-3 py-1.5 rounded-md shadow-md tracking-wider">PRO v7 AI WORKSPACE</span>
+            <h1 class="text-base font-bold text-slate-100">Tábla Kezelő PRO v7 - AI, Kollaboratív &amp; Remote</h1>
+        </div>
+        
+        <!-- Module Navigation Tabs -->
+        <div class="hidden md:flex items-center space-x-1 bg-slate-950 p-1 rounded-xl border border-slate-800">
+            <button onclick="switchModule(&#39;generator&#39;)" id="nav-generator" class="px-3 py-1.5 text-xs font-semibold rounded-lg transition text-slate-400">Kezelő &amp; Generáló</button>
+            <button onclick="switchModule(&#39;workspace&#39;)" id="nav-workspace" class="px-3 py-1.5 text-xs font-semibold rounded-lg hover:text-white transition text-slate-400">Kollaboratív Workspace</button>
+            <button onclick="switchModule(&#39;kanban&#39;)" id="nav-kanban" class="px-3 py-1.5 text-xs font-semibold rounded-lg hover:text-white transition bg-violet-600 text-white">Csoportos Kanban</button>
+        </div>
+
+        <div class="flex items-center space-x-3">
+            <span id="connectionBadge" class="bg-emerald-950 text-emerald-400 text-xs px-3 py-1 rounded-full border border-emerald-800 font-mono flex items-center gap-1.5">
+                <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> Remote Sync: Aktív
+            </span>
+            <button onclick="toggleRemoteMode()" id="remoteToggleBtn" class="bg-violet-600 hover:bg-violet-500 text-white text-xs font-semibold px-4 py-2 rounded-lg shadow transition">Távirányító Mód Ki</button>
+        </div>
+    </header>
+
+    <!-- Main Workspace Grid -->
+    <main class="grid grid-cols-1 lg:grid-cols-12 gap-6 p-6 flex-1">
+        
+        <!-- Left Sidebar: Controls & Input & Task Solver -->
+        <section class="lg:col-span-5 bg-slate-900/90 backdrop-blur p-6 rounded-2xl shadow-2xl border border-slate-800 space-y-6 flex flex-col justify-between">
+            
+            <div class="space-y-6">
+                <!-- Project & Remote Sync Settings -->
+                <div>
+                    <h2 class="text-xs font-bold uppercase tracking-wider text-violet-400 mb-3">Projekt &amp; Struktúra Beállítások</h2>
+                    <div class="space-y-3">
+                        <div class="grid grid-cols-2 gap-3">
+                            <div>
+                                <label class="block text-xs font-medium text-slate-400 mb-1">Projekt Név (Vercel)</label>
+                                <input type="text" id="projectName" value="red-zeta-one" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-sm text-slate-200 focus:ring-2 focus:ring-violet-500 focus:outline-none">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-medium text-slate-400 mb-1">Base Path</label>
+                                <input type="text" id="basePath" value="tabla" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-sm text-slate-200 focus:ring-2 focus:ring-violet-500 focus:outline-none">
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-2 gap-3">
+                            <div>
+                                <label class="block text-xs font-medium text-slate-400 mb-1">HTML Part</label>
+                                <input type="text" id="htmlPart" value="index.html" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-sm text-slate-200 focus:ring-2 focus:ring-violet-500 focus:outline-none">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-medium text-slate-400 mb-1">Struktúra Választó</label>
+                                <select id="structSelector" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-sm text-slate-200 focus:ring-2 focus:ring-violet-500 focus:outline-none">
+                                    <option value="folder_index">folder / index.html</option>
+                                    <option value="folder_html">folder / file.html</option>
+                                    <option value="flat">lapos (flat)</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Module 2: Generator & Interactive Task Solver -->
+                <div class="pt-2 border-t border-slate-800">
+                    <h2 class="text-xs font-bold uppercase tracking-wider text-violet-400 mb-3">Generáló &amp; Interaktív Lista</h2>
+                    <div class="space-y-3">
+                        <div>
+                            <label class="block text-xs font-medium text-slate-400 mb-1">Tananyag / Feladat Lista (tabla1 - tabla44)</label>
+                            <textarea id="tananyagInput" rows="5" class="w-full bg-slate-950 border border-slate-800 rounded-lg p-3 text-xs font-mono text-emerald-400 focus:ring-2 focus:ring-violet-500 focus:outline-none" placeholder="Írd be vagy kattints az Alap 44-re..."></textarea>
+                        </div>
+                        
+                        <!-- File Uploader -->
+                        <div>
+                            <label class="block text-xs font-medium text-slate-400 mb-1">Fájl Feltöltés (.txt, .html, .csv)</label>
+                            <input type="file" id="fileUploader" accept=".txt,.html,.csv" onchange="handleFileUpload(event)" class="w-full text-xs text-slate-400 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-violet-950 file:text-violet-300 hover:file:bg-violet-900 cursor-pointer">
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div class="flex space-x-3 pt-2">
+                            <button onclick="runGenerator()" class="flex-1 bg-gradient-to-r from-violet-600 to-blue-600 hover:from-violet-500 hover:to-blue-500 text-white text-sm font-bold py-2.5 px-4 rounded-xl shadow-lg transition text-center">
+                                Feladatok Generálása
+                            </button>
+                            <button onclick="resetDefaultData()" class="bg-slate-800 hover:bg-slate-700 text-slate-200 text-sm font-semibold py-2.5 px-4 rounded-xl transition border border-slate-700">
+                                Alap 44
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Remote Control Panel -->
+                <div id="remoteControlPanel" class="bg-slate-950 p-4 rounded-xl border border-violet-900/50 space-y-3" style="display: block;">
+                    <h3 class="text-xs font-bold uppercase tracking-wider text-violet-400 flex items-center justify-between">
+                        <span>🎮 Remote Control Panel</span>
+                        <span class="text-[10px] text-emerald-400 animate-pulse">● Éles csatorna</span>
+                    </h3>
+                    <div class="grid grid-cols-2 gap-2">
+                        <button onclick="remoteAction(&#39;next&#39;)" class="bg-slate-900 hover:bg-slate-800 text-xs font-medium py-2 px-3 rounded-lg border border-slate-800 transition text-slate-300">Következő Feladat →</button>
+                        <button onclick="remoteAction(&#39;prev&#39;)" class="bg-slate-900 hover:bg-slate-800 text-xs font-medium py-2 px-3 rounded-lg border border-slate-800 transition text-slate-300">← Előző Feladat</button>
+                        <button onclick="remoteAction(&#39;broadcast&#39;)" class="bg-violet-950 hover:bg-violet-900 text-xs font-medium py-2 px-3 rounded-lg border border-violet-800 text-violet-300 transition col-span-2">Minden Diáknak Küldés (Broadcast)</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="text-center text-[10px] text-slate-500 pt-4 border-t border-slate-800">
+                Tábla Kezelő PRO v7 AI Engine • Kollaboratív Workspace
+            </div>
+
+        </section>
+
+        <!-- Right Preview & Interactive Task Solver Area -->
+        <section class="lg:col-span-7 bg-slate-900/90 backdrop-blur p-6 rounded-2xl shadow-2xl border border-slate-800 flex flex-col min-h-[600px] justify-between">
+            
+            <div>
+                <!-- Live Iframe Preview Header / Status -->
+                <div class="flex items-center justify-between pb-4 border-b border-slate-800 mb-6">
+                    <div class="flex items-center space-x-2">
+                        <span class="w-3 h-3 rounded-full bg-violet-500 inline-block animate-ping"></span>
+                        <span class="text-xs font-bold text-slate-400 uppercase">Élő Előnézet &amp; Megoldó</span>
+                        <span id="previewStatus" class="text-xs text-slate-500">(14 elem)</span>
+                    </div>
+                    <div class="flex items-center space-x-3">
+                        <div id="activeTaskBadge" class="text-xs font-bold text-violet-400 bg-violet-950/60 px-3 py-1 rounded-full border border-violet-900">Aktív: #14 (buborek)</div>
+                        <a id="externalLink" href="https://red-zeta-one.vercel.app/tabla/tabla14" target="_blank" class="text-xs text-blue-400 hover:underline font-mono">Megnyitás ↗</a>
+                    </div>
+                </div>
+
+                <!-- Interactive Workspace or Task Solver Box / Iframe Preview -->
+                <div id="workspaceView" class="space-y-4 hidden">
+                    <div id="iframeContainer" class="mb-4">
+                        <iframe id="livePreviewFrame" src="./Tábla Kezelő PRO v7 - AI, Kollaboratív Workspace &amp; Remote Control Rendszer_files/tabla14.html" class="w-full h-48 bg-slate-950 rounded-xl border border-slate-800"></iframe>
+                    </div>
+                    <div id="taskSolverContainer" class="space-y-4">
+                <div class="bg-slate-950 p-4 rounded-xl border border-violet-900/40 space-y-3 shadow-inner">
+                    <div class="flex items-center justify-between">
+                        <span class="bg-violet-900/50 text-violet-300 text-xs font-bold px-3 py-1 rounded-md border border-violet-700">Cím 14 [buborek]</span>
+                        <span class="text-xs font-mono text-slate-400">https://red-zeta-one.vercel.app/tabla/tabla14</span>
+                    </div>
+                    <div class="space-y-1.5">
+                        <label class="block text-xs font-medium text-slate-300">Interaktív Válasz / Megoldás rögzítése:</label>
+                        <textarea rows="2" class="w-full bg-slate-900 border border-slate-800 rounded-lg p-2 text-xs text-slate-100 focus:ring-2 focus:ring-violet-500 focus:outline-none" placeholder="Írd ide a megoldást..."></textarea>
+                    </div>
+                    <div class="flex justify-between items-center pt-1">
+                        <button onclick="remoteAction(&#39;prev&#39;)" class="bg-slate-900 hover:bg-slate-800 text-slate-300 text-xs font-semibold px-3 py-1.5 rounded-lg border border-slate-800">← Előző</button>
+                        <button onclick="alert(&#39;Megoldás sikeresen mentve a Workspace hálózatra!&#39;)" class="bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold px-4 py-1.5 rounded-lg shadow">Mentés &amp; Küldés</button>
+                        <button onclick="remoteAction(&#39;next&#39;)" class="bg-slate-900 hover:bg-slate-800 text-slate-300 text-xs font-semibold px-3 py-1.5 rounded-lg border border-slate-800">Következő →</button>
+                    </div>
+                </div>
+            </div>
+                </div>
+
+                <!-- Alternative Views (Hidden by default, switched via Header) -->
+                <div id="kanbanView" class="space-y-4">
+                    <h3 class="text-sm font-bold text-slate-200">Csoportos Kanban Tábla</h3>
+                    <div class="grid grid-cols-3 gap-3">
+                        <div class="bg-slate-950 p-3 rounded-xl border border-slate-800">
+                            <h4 class="text-xs font-bold text-violet-400 mb-2">Feladatok</h4>
+                            <div class="space-y-2" id="kanbanTodo"><div class="p-2 bg-slate-900 border border-slate-800 rounded text-xs text-slate-300">Cím 1 [buborek]</div><div class="p-2 bg-slate-900 border border-slate-800 rounded text-xs text-slate-300">Cím 2 [buborek]</div><div class="p-2 bg-slate-900 border border-slate-800 rounded text-xs text-slate-300">Cím 3 [buborek]</div><div class="p-2 bg-slate-900 border border-slate-800 rounded text-xs text-slate-300">Cím 4 [buborek]</div><div class="p-2 bg-slate-900 border border-slate-800 rounded text-xs text-slate-300">Cím 5 [buborek]</div><div class="p-2 bg-slate-900 border border-slate-800 rounded text-xs text-slate-300">Cím 6 [buborek]</div><div class="p-2 bg-slate-900 border border-slate-800 rounded text-xs text-slate-300">Cím 7 [buborek]</div><div class="p-2 bg-slate-900 border border-slate-800 rounded text-xs text-slate-300">Cím 8 [buborek]</div><div class="p-2 bg-slate-900 border border-slate-800 rounded text-xs text-slate-300">Cím 9 [buborek]</div><div class="p-2 bg-slate-900 border border-slate-800 rounded text-xs text-slate-300">Cím 10 [buborek]</div><div class="p-2 bg-slate-900 border border-slate-800 rounded text-xs text-slate-300">Cím 11 [buborek]</div><div class="p-2 bg-slate-900 border border-slate-800 rounded text-xs text-slate-300">Cím 12 [buborek]</div><div class="p-2 bg-slate-900 border border-slate-800 rounded text-xs text-slate-300">Cím 13 [buborek]</div><div class="p-2 bg-slate-900 border border-slate-800 rounded text-xs text-slate-300">Cím 14 [buborek]</div><div class="p-2 bg-slate-900 border border-slate-800 rounded text-xs text-slate-300">Cím 15 [buborek]</div></div>
+                        </div>
+                        <div class="bg-slate-950 p-3 rounded-xl border border-slate-800">
+                            <h4 class="text-xs font-bold text-blue-400 mb-2">Folyamatban</h4>
+                            <div class="space-y-2" id="kanbanProgress"><div class="p-2 bg-slate-900 border border-slate-800 rounded text-xs text-slate-300">Cím 16 [kombinatorika]</div><div class="p-2 bg-slate-900 border border-slate-800 rounded text-xs text-slate-300">Cím 17 [kombinatorika]</div><div class="p-2 bg-slate-900 border border-slate-800 rounded text-xs text-slate-300">Cím 18 [kombinatorika]</div><div class="p-2 bg-slate-900 border border-slate-800 rounded text-xs text-slate-300">Cím 19 [kombinatorika]</div><div class="p-2 bg-slate-900 border border-slate-800 rounded text-xs text-slate-300">Cím 20 [kombinatorika]</div><div class="p-2 bg-slate-900 border border-slate-800 rounded text-xs text-slate-300">Cím 21 [kombinatorika]</div><div class="p-2 bg-slate-900 border border-slate-800 rounded text-xs text-slate-300">Cím 22 [kombinatorika]</div><div class="p-2 bg-slate-900 border border-slate-800 rounded text-xs text-slate-300">Cím 23 [kombinatorika]</div><div class="p-2 bg-slate-900 border border-slate-800 rounded text-xs text-slate-300">Cím 24 [kombinatorika]</div><div class="p-2 bg-slate-900 border border-slate-800 rounded text-xs text-slate-300">Cím 25 [kombinatorika]</div><div class="p-2 bg-slate-900 border border-slate-800 rounded text-xs text-slate-300">Cím 26 [kombinatorika]</div><div class="p-2 bg-slate-900 border border-slate-800 rounded text-xs text-slate-300">Cím 27 [kombinatorika]</div><div class="p-2 bg-slate-900 border border-slate-800 rounded text-xs text-slate-300">Cím 28 [kombinatorika]</div><div class="p-2 bg-slate-900 border border-slate-800 rounded text-xs text-slate-300">Cím 29 [kombinatorika]</div><div class="p-2 bg-slate-900 border border-slate-800 rounded text-xs text-slate-300">Cím 30 [kombinatorika]</div></div>
+                        </div>
+                        <div class="bg-slate-950 p-3 rounded-xl border border-slate-800">
+                            <h4 class="text-xs font-bold text-emerald-400 mb-2">Kész</h4>
+                            <div class="space-y-2" id="kanbanDone"><div class="p-2 bg-slate-900 border border-slate-800 rounded text-xs text-slate-300">Cím 31 [matematika]</div><div class="p-2 bg-slate-900 border border-slate-800 rounded text-xs text-slate-300">Cím 32 [matematika]</div><div class="p-2 bg-slate-900 border border-slate-800 rounded text-xs text-slate-300">Cím 33 [matematika]</div><div class="p-2 bg-slate-900 border border-slate-800 rounded text-xs text-slate-300">Cím 34 [matematika]</div><div class="p-2 bg-slate-900 border border-slate-800 rounded text-xs text-slate-300">Cím 35 [matematika]</div><div class="p-2 bg-slate-900 border border-slate-800 rounded text-xs text-slate-300">Cím 36 [matematika]</div><div class="p-2 bg-slate-900 border border-slate-800 rounded text-xs text-slate-300">Cím 37 [matematika]</div><div class="p-2 bg-slate-900 border border-slate-800 rounded text-xs text-slate-300">Cím 38 [matematika]</div><div class="p-2 bg-slate-900 border border-slate-800 rounded text-xs text-slate-300">Cím 39 [matematika]</div><div class="p-2 bg-slate-900 border border-slate-800 rounded text-xs text-slate-300">Cím 40 [matematika]</div><div class="p-2 bg-slate-900 border border-slate-800 rounded text-xs text-slate-300">Cím 41 [matematika]</div><div class="p-2 bg-slate-900 border border-slate-800 rounded text-xs text-slate-300">Cím 42 [matematika]</div><div class="p-2 bg-slate-900 border border-slate-800 rounded text-xs text-slate-300">Cím 43 [matematika]</div><div class="p-2 bg-slate-900 border border-slate-800 rounded text-xs text-slate-300">Cím 44 [matematika]</div></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Generated Tables List (Scrollable) with Categories & Search -->
+            <div class="mt-6 pt-4 border-t border-slate-800">
+                <div class="flex items-center justify-between mb-3 flex-wrap gap-2">
+                    <h3 id="generatedTitle" class="text-xs font-bold uppercase tracking-wider text-slate-400">Generált Elemek (14)</h3>
+                    
+                    <!-- Categories filter pills -->
+                    <div id="categoryFilters" class="flex items-center space-x-1 overflow-x-auto text-[10px]">
+                        <button onclick="filterCategory(&#39;Mind&#39;)" class="px-2 py-1 bg-violet-900 text-white rounded-md font-semibold">Mind</button>
+                        <button onclick="filterCategory(&#39;buborek&#39;)" class="px-2 py-1 bg-slate-950 text-slate-400 rounded-md border border-slate-800 hover:text-white">buborek</button>
+                        <button onclick="filterCategory(&#39;kombinatorika&#39;)" class="px-2 py-1 bg-slate-950 text-slate-400 rounded-md border border-slate-800 hover:text-white">kombinatorika</button>
+                        <button onclick="filterCategory(&#39;matematika&#39;)" class="px-2 py-1 bg-slate-950 text-slate-400 rounded-md border border-slate-800 hover:text-white">matematika</button>
+                    </div>
+
+                    <input type="text" id="searchInput" oninput="filterTables()" placeholder="Keresés..." class="bg-slate-950 border border-slate-800 rounded-lg px-2.5 py-1 text-xs text-slate-300 focus:outline-none w-32">
+                </div>
+                <div id="tablesContainer" class="max-h-[180px] overflow-y-auto space-y-2 pr-1">
+                    <div class="flex items-center justify-between p-2.5 bg-slate-950 hover:bg-slate-800 border border-slate-800 rounded-lg transition group">
+                        <div onclick="loadTaskIntoSolver(0)" class="flex items-center space-x-2.5 overflow-hidden cursor-pointer flex-1">
+                            <span class="w-5 h-5 flex items-center justify-center bg-violet-950 text-violet-400 text-[10px] font-bold rounded-full shrink-0 border border-violet-800">31</span>
+                            <span class="text-xs font-medium text-slate-200 truncate">Cím 31 [matematika]</span>
+                            <span class="text-[10px] text-violet-400 bg-violet-950 px-2 py-0.5 rounded border border-violet-900">matematika</span>
+                        </div>
+                        <div class="flex items-center space-x-1.5 shrink-0">
+                            <a href="https://red-zeta-one.vercel.app/tabla/tabla31" target="_blank" title="Megnyitás" class="text-[10px] bg-slate-900 text-slate-300 hover:text-white px-2 py-1 rounded border border-slate-800">📄</a>
+                            <button onclick="renameItem(0)" title="Átnevezés" class="text-[10px] bg-slate-900 text-slate-300 hover:text-white px-2 py-1 rounded border border-slate-800">✏️</button>
+                            <button onclick="deleteItem(0)" title="Törlés" class="text-[10px] bg-slate-900 text-red-400 hover:text-red-300 px-2 py-1 rounded border border-slate-800">🗑️</button>
+                        </div>
+                    </div>
+                
+                    <div class="flex items-center justify-between p-2.5 bg-slate-950 hover:bg-slate-800 border border-slate-800 rounded-lg transition group">
+                        <div onclick="loadTaskIntoSolver(1)" class="flex items-center space-x-2.5 overflow-hidden cursor-pointer flex-1">
+                            <span class="w-5 h-5 flex items-center justify-center bg-violet-950 text-violet-400 text-[10px] font-bold rounded-full shrink-0 border border-violet-800">32</span>
+                            <span class="text-xs font-medium text-slate-200 truncate">Cím 32 [matematika]</span>
+                            <span class="text-[10px] text-violet-400 bg-violet-950 px-2 py-0.5 rounded border border-violet-900">matematika</span>
+                        </div>
+                        <div class="flex items-center space-x-1.5 shrink-0">
+                            <a href="https://red-zeta-one.vercel.app/tabla/tabla32" target="_blank" title="Megnyitás" class="text-[10px] bg-slate-900 text-slate-300 hover:text-white px-2 py-1 rounded border border-slate-800">📄</a>
+                            <button onclick="renameItem(1)" title="Átnevezés" class="text-[10px] bg-slate-900 text-slate-300 hover:text-white px-2 py-1 rounded border border-slate-800">✏️</button>
+                            <button onclick="deleteItem(1)" title="Törlés" class="text-[10px] bg-slate-900 text-red-400 hover:text-red-300 px-2 py-1 rounded border border-slate-800">🗑️</button>
+                        </div>
+                    </div>
+                
+                    <div class="flex items-center justify-between p-2.5 bg-slate-950 hover:bg-slate-800 border border-slate-800 rounded-lg transition group">
+                        <div onclick="loadTaskIntoSolver(2)" class="flex items-center space-x-2.5 overflow-hidden cursor-pointer flex-1">
+                            <span class="w-5 h-5 flex items-center justify-center bg-violet-950 text-violet-400 text-[10px] font-bold rounded-full shrink-0 border border-violet-800">33</span>
+                            <span class="text-xs font-medium text-slate-200 truncate">Cím 33 [matematika]</span>
+                            <span class="text-[10px] text-violet-400 bg-violet-950 px-2 py-0.5 rounded border border-violet-900">matematika</span>
+                        </div>
+                        <div class="flex items-center space-x-1.5 shrink-0">
+                            <a href="https://red-zeta-one.vercel.app/tabla/tabla33" target="_blank" title="Megnyitás" class="text-[10px] bg-slate-900 text-slate-300 hover:text-white px-2 py-1 rounded border border-slate-800">📄</a>
+                            <button onclick="renameItem(2)" title="Átnevezés" class="text-[10px] bg-slate-900 text-slate-300 hover:text-white px-2 py-1 rounded border border-slate-800">✏️</button>
+                            <button onclick="deleteItem(2)" title="Törlés" class="text-[10px] bg-slate-900 text-red-400 hover:text-red-300 px-2 py-1 rounded border border-slate-800">🗑️</button>
+                        </div>
+                    </div>
+                
+                    <div class="flex items-center justify-between p-2.5 bg-slate-950 hover:bg-slate-800 border border-slate-800 rounded-lg transition group">
+                        <div onclick="loadTaskIntoSolver(3)" class="flex items-center space-x-2.5 overflow-hidden cursor-pointer flex-1">
+                            <span class="w-5 h-5 flex items-center justify-center bg-violet-950 text-violet-400 text-[10px] font-bold rounded-full shrink-0 border border-violet-800">34</span>
+                            <span class="text-xs font-medium text-slate-200 truncate">Cím 34 [matematika]</span>
+                            <span class="text-[10px] text-violet-400 bg-violet-950 px-2 py-0.5 rounded border border-violet-900">matematika</span>
+                        </div>
+                        <div class="flex items-center space-x-1.5 shrink-0">
+                            <a href="https://red-zeta-one.vercel.app/tabla/tabla34" target="_blank" title="Megnyitás" class="text-[10px] bg-slate-900 text-slate-300 hover:text-white px-2 py-1 rounded border border-slate-800">📄</a>
+                            <button onclick="renameItem(3)" title="Átnevezés" class="text-[10px] bg-slate-900 text-slate-300 hover:text-white px-2 py-1 rounded border border-slate-800">✏️</button>
+                            <button onclick="deleteItem(3)" title="Törlés" class="text-[10px] bg-slate-900 text-red-400 hover:text-red-300 px-2 py-1 rounded border border-slate-800">🗑️</button>
+                        </div>
+                    </div>
+                
+                    <div class="flex items-center justify-between p-2.5 bg-slate-950 hover:bg-slate-800 border border-slate-800 rounded-lg transition group">
+                        <div onclick="loadTaskIntoSolver(4)" class="flex items-center space-x-2.5 overflow-hidden cursor-pointer flex-1">
+                            <span class="w-5 h-5 flex items-center justify-center bg-violet-950 text-violet-400 text-[10px] font-bold rounded-full shrink-0 border border-violet-800">35</span>
+                            <span class="text-xs font-medium text-slate-200 truncate">Cím 35 [matematika]</span>
+                            <span class="text-[10px] text-violet-400 bg-violet-950 px-2 py-0.5 rounded border border-violet-900">matematika</span>
+                        </div>
+                        <div class="flex items-center space-x-1.5 shrink-0">
+                            <a href="https://red-zeta-one.vercel.app/tabla/tabla35" target="_blank" title="Megnyitás" class="text-[10px] bg-slate-900 text-slate-300 hover:text-white px-2 py-1 rounded border border-slate-800">📄</a>
+                            <button onclick="renameItem(4)" title="Átnevezés" class="text-[10px] bg-slate-900 text-slate-300 hover:text-white px-2 py-1 rounded border border-slate-800">✏️</button>
+                            <button onclick="deleteItem(4)" title="Törlés" class="text-[10px] bg-slate-900 text-red-400 hover:text-red-300 px-2 py-1 rounded border border-slate-800">🗑️</button>
+                        </div>
+                    </div>
+                
+                    <div class="flex items-center justify-between p-2.5 bg-slate-950 hover:bg-slate-800 border border-slate-800 rounded-lg transition group">
+                        <div onclick="loadTaskIntoSolver(5)" class="flex items-center space-x-2.5 overflow-hidden cursor-pointer flex-1">
+                            <span class="w-5 h-5 flex items-center justify-center bg-violet-950 text-violet-400 text-[10px] font-bold rounded-full shrink-0 border border-violet-800">36</span>
+                            <span class="text-xs font-medium text-slate-200 truncate">Cím 36 [matematika]</span>
+                            <span class="text-[10px] text-violet-400 bg-violet-950 px-2 py-0.5 rounded border border-violet-900">matematika</span>
+                        </div>
+                        <div class="flex items-center space-x-1.5 shrink-0">
+                            <a href="https://red-zeta-one.vercel.app/tabla/tabla36" target="_blank" title="Megnyitás" class="text-[10px] bg-slate-900 text-slate-300 hover:text-white px-2 py-1 rounded border border-slate-800">📄</a>
+                            <button onclick="renameItem(5)" title="Átnevezés" class="text-[10px] bg-slate-900 text-slate-300 hover:text-white px-2 py-1 rounded border border-slate-800">✏️</button>
+                            <button onclick="deleteItem(5)" title="Törlés" class="text-[10px] bg-slate-900 text-red-400 hover:text-red-300 px-2 py-1 rounded border border-slate-800">🗑️</button>
+                        </div>
+                    </div>
+                
+                    <div class="flex items-center justify-between p-2.5 bg-slate-950 hover:bg-slate-800 border border-slate-800 rounded-lg transition group">
+                        <div onclick="loadTaskIntoSolver(6)" class="flex items-center space-x-2.5 overflow-hidden cursor-pointer flex-1">
+                            <span class="w-5 h-5 flex items-center justify-center bg-violet-950 text-violet-400 text-[10px] font-bold rounded-full shrink-0 border border-violet-800">37</span>
+                            <span class="text-xs font-medium text-slate-200 truncate">Cím 37 [matematika]</span>
+                            <span class="text-[10px] text-violet-400 bg-violet-950 px-2 py-0.5 rounded border border-violet-900">matematika</span>
+                        </div>
+                        <div class="flex items-center space-x-1.5 shrink-0">
+                            <a href="https://red-zeta-one.vercel.app/tabla/tabla37" target="_blank" title="Megnyitás" class="text-[10px] bg-slate-900 text-slate-300 hover:text-white px-2 py-1 rounded border border-slate-800">📄</a>
+                            <button onclick="renameItem(6)" title="Átnevezés" class="text-[10px] bg-slate-900 text-slate-300 hover:text-white px-2 py-1 rounded border border-slate-800">✏️</button>
+                            <button onclick="deleteItem(6)" title="Törlés" class="text-[10px] bg-slate-900 text-red-400 hover:text-red-300 px-2 py-1 rounded border border-slate-800">🗑️</button>
+                        </div>
+                    </div>
+                
+                    <div class="flex items-center justify-between p-2.5 bg-slate-950 hover:bg-slate-800 border border-slate-800 rounded-lg transition group">
+                        <div onclick="loadTaskIntoSolver(7)" class="flex items-center space-x-2.5 overflow-hidden cursor-pointer flex-1">
+                            <span class="w-5 h-5 flex items-center justify-center bg-violet-950 text-violet-400 text-[10px] font-bold rounded-full shrink-0 border border-violet-800">38</span>
+                            <span class="text-xs font-medium text-slate-200 truncate">Cím 38 [matematika]</span>
+                            <span class="text-[10px] text-violet-400 bg-violet-950 px-2 py-0.5 rounded border border-violet-900">matematika</span>
+                        </div>
+                        <div class="flex items-center space-x-1.5 shrink-0">
+                            <a href="https://red-zeta-one.vercel.app/tabla/tabla38" target="_blank" title="Megnyitás" class="text-[10px] bg-slate-900 text-slate-300 hover:text-white px-2 py-1 rounded border border-slate-800">📄</a>
+                            <button onclick="renameItem(7)" title="Átnevezés" class="text-[10px] bg-slate-900 text-slate-300 hover:text-white px-2 py-1 rounded border border-slate-800">✏️</button>
+                            <button onclick="deleteItem(7)" title="Törlés" class="text-[10px] bg-slate-900 text-red-400 hover:text-red-300 px-2 py-1 rounded border border-slate-800">🗑️</button>
+                        </div>
+                    </div>
+                
+                    <div class="flex items-center justify-between p-2.5 bg-slate-950 hover:bg-slate-800 border border-slate-800 rounded-lg transition group">
+                        <div onclick="loadTaskIntoSolver(8)" class="flex items-center space-x-2.5 overflow-hidden cursor-pointer flex-1">
+                            <span class="w-5 h-5 flex items-center justify-center bg-violet-950 text-violet-400 text-[10px] font-bold rounded-full shrink-0 border border-violet-800">39</span>
+                            <span class="text-xs font-medium text-slate-200 truncate">Cím 39 [matematika]</span>
+                            <span class="text-[10px] text-violet-400 bg-violet-950 px-2 py-0.5 rounded border border-violet-900">matematika</span>
+                        </div>
+                        <div class="flex items-center space-x-1.5 shrink-0">
+                            <a href="https://red-zeta-one.vercel.app/tabla/tabla39" target="_blank" title="Megnyitás" class="text-[10px] bg-slate-900 text-slate-300 hover:text-white px-2 py-1 rounded border border-slate-800">📄</a>
+                            <button onclick="renameItem(8)" title="Átnevezés" class="text-[10px] bg-slate-900 text-slate-300 hover:text-white px-2 py-1 rounded border border-slate-800">✏️</button>
+                            <button onclick="deleteItem(8)" title="Törlés" class="text-[10px] bg-slate-900 text-red-400 hover:text-red-300 px-2 py-1 rounded border border-slate-800">🗑️</button>
+                        </div>
+                    </div>
+                
+                    <div class="flex items-center justify-between p-2.5 bg-slate-950 hover:bg-slate-800 border border-slate-800 rounded-lg transition group">
+                        <div onclick="loadTaskIntoSolver(9)" class="flex items-center space-x-2.5 overflow-hidden cursor-pointer flex-1">
+                            <span class="w-5 h-5 flex items-center justify-center bg-violet-950 text-violet-400 text-[10px] font-bold rounded-full shrink-0 border border-violet-800">40</span>
+                            <span class="text-xs font-medium text-slate-200 truncate">Cím 40 [matematika]</span>
+                            <span class="text-[10px] text-violet-400 bg-violet-950 px-2 py-0.5 rounded border border-violet-900">matematika</span>
+                        </div>
+                        <div class="flex items-center space-x-1.5 shrink-0">
+                            <a href="https://red-zeta-one.vercel.app/tabla/tabla40" target="_blank" title="Megnyitás" class="text-[10px] bg-slate-900 text-slate-300 hover:text-white px-2 py-1 rounded border border-slate-800">📄</a>
+                            <button onclick="renameItem(9)" title="Átnevezés" class="text-[10px] bg-slate-900 text-slate-300 hover:text-white px-2 py-1 rounded border border-slate-800">✏️</button>
+                            <button onclick="deleteItem(9)" title="Törlés" class="text-[10px] bg-slate-900 text-red-400 hover:text-red-300 px-2 py-1 rounded border border-slate-800">🗑️</button>
+                        </div>
+                    </div>
+                
+                    <div class="flex items-center justify-between p-2.5 bg-slate-950 hover:bg-slate-800 border border-slate-800 rounded-lg transition group">
+                        <div onclick="loadTaskIntoSolver(10)" class="flex items-center space-x-2.5 overflow-hidden cursor-pointer flex-1">
+                            <span class="w-5 h-5 flex items-center justify-center bg-violet-950 text-violet-400 text-[10px] font-bold rounded-full shrink-0 border border-violet-800">41</span>
+                            <span class="text-xs font-medium text-slate-200 truncate">Cím 41 [matematika]</span>
+                            <span class="text-[10px] text-violet-400 bg-violet-950 px-2 py-0.5 rounded border border-violet-900">matematika</span>
+                        </div>
+                        <div class="flex items-center space-x-1.5 shrink-0">
+                            <a href="https://red-zeta-one.vercel.app/tabla/tabla41" target="_blank" title="Megnyitás" class="text-[10px] bg-slate-900 text-slate-300 hover:text-white px-2 py-1 rounded border border-slate-800">📄</a>
+                            <button onclick="renameItem(10)" title="Átnevezés" class="text-[10px] bg-slate-900 text-slate-300 hover:text-white px-2 py-1 rounded border border-slate-800">✏️</button>
+                            <button onclick="deleteItem(10)" title="Törlés" class="text-[10px] bg-slate-900 text-red-400 hover:text-red-300 px-2 py-1 rounded border border-slate-800">🗑️</button>
+                        </div>
+                    </div>
+                
+                    <div class="flex items-center justify-between p-2.5 bg-slate-950 hover:bg-slate-800 border border-slate-800 rounded-lg transition group">
+                        <div onclick="loadTaskIntoSolver(11)" class="flex items-center space-x-2.5 overflow-hidden cursor-pointer flex-1">
+                            <span class="w-5 h-5 flex items-center justify-center bg-violet-950 text-violet-400 text-[10px] font-bold rounded-full shrink-0 border border-violet-800">42</span>
+                            <span class="text-xs font-medium text-slate-200 truncate">Cím 42 [matematika]</span>
+                            <span class="text-[10px] text-violet-400 bg-violet-950 px-2 py-0.5 rounded border border-violet-900">matematika</span>
+                        </div>
+                        <div class="flex items-center space-x-1.5 shrink-0">
+                            <a href="https://red-zeta-one.vercel.app/tabla/tabla42" target="_blank" title="Megnyitás" class="text-[10px] bg-slate-900 text-slate-300 hover:text-white px-2 py-1 rounded border border-slate-800">📄</a>
+                            <button onclick="renameItem(11)" title="Átnevezés" class="text-[10px] bg-slate-900 text-slate-300 hover:text-white px-2 py-1 rounded border border-slate-800">✏️</button>
+                            <button onclick="deleteItem(11)" title="Törlés" class="text-[10px] bg-slate-900 text-red-400 hover:text-red-300 px-2 py-1 rounded border border-slate-800">🗑️</button>
+                        </div>
+                    </div>
+                
+                    <div class="flex items-center justify-between p-2.5 bg-slate-950 hover:bg-slate-800 border border-slate-800 rounded-lg transition group">
+                        <div onclick="loadTaskIntoSolver(12)" class="flex items-center space-x-2.5 overflow-hidden cursor-pointer flex-1">
+                            <span class="w-5 h-5 flex items-center justify-center bg-violet-950 text-violet-400 text-[10px] font-bold rounded-full shrink-0 border border-violet-800">43</span>
+                            <span class="text-xs font-medium text-slate-200 truncate">Cím 43 [matematika]</span>
+                            <span class="text-[10px] text-violet-400 bg-violet-950 px-2 py-0.5 rounded border border-violet-900">matematika</span>
+                        </div>
+                        <div class="flex items-center space-x-1.5 shrink-0">
+                            <a href="https://red-zeta-one.vercel.app/tabla/tabla43" target="_blank" title="Megnyitás" class="text-[10px] bg-slate-900 text-slate-300 hover:text-white px-2 py-1 rounded border border-slate-800">📄</a>
+                            <button onclick="renameItem(12)" title="Átnevezés" class="text-[10px] bg-slate-900 text-slate-300 hover:text-white px-2 py-1 rounded border border-slate-800">✏️</button>
+                            <button onclick="deleteItem(12)" title="Törlés" class="text-[10px] bg-slate-900 text-red-400 hover:text-red-300 px-2 py-1 rounded border border-slate-800">🗑️</button>
+                        </div>
+                    </div>
+                
+                    <div class="flex items-center justify-between p-2.5 bg-slate-950 hover:bg-slate-800 border border-slate-800 rounded-lg transition group">
+                        <div onclick="loadTaskIntoSolver(13)" class="flex items-center space-x-2.5 overflow-hidden cursor-pointer flex-1">
+                            <span class="w-5 h-5 flex items-center justify-center bg-violet-950 text-violet-400 text-[10px] font-bold rounded-full shrink-0 border border-violet-800">44</span>
+                            <span class="text-xs font-medium text-slate-200 truncate">Cím 44 [matematika]</span>
+                            <span class="text-[10px] text-violet-400 bg-violet-950 px-2 py-0.5 rounded border border-violet-900">matematika</span>
+                        </div>
+                        <div class="flex items-center space-x-1.5 shrink-0">
+                            <a href="https://red-zeta-one.vercel.app/tabla/tabla44" target="_blank" title="Megnyitás" class="text-[10px] bg-slate-900 text-slate-300 hover:text-white px-2 py-1 rounded border border-slate-800">📄</a>
+                            <button onclick="renameItem(13)" title="Átnevezés" class="text-[10px] bg-slate-900 text-slate-300 hover:text-white px-2 py-1 rounded border border-slate-800">✏️</button>
+                            <button onclick="deleteItem(13)" title="Törlés" class="text-[10px] bg-slate-900 text-red-400 hover:text-red-300 px-2 py-1 rounded border border-slate-800">🗑️</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </section>
+
+    </main>
+
+    <!-- JavaScript logic -->
+    <script>
+        let allGeneratedItems = [];
+        let currentIndex = 0;
+        let activeCategoryFilter = 'Mind';
+
+        function switchModule(moduleName) {
+            ['generator', 'workspace', 'kanban'].forEach(m => {
+                document.getElementById('nav-' + m)?.classList.remove('bg-violet-600', 'text-white');
+                document.getElementById('nav-' + m)?.classList.add('text-slate-400');
+            });
+            document.getElementById('nav-' + moduleName)?.classList.add('bg-violet-600', 'text-white');
+            document.getElementById('nav-' + moduleName)?.classList.remove('text-slate-400');
+
+            const workspaceView = document.getElementById('workspaceView');
+            const kanbanView = document.getElementById('kanbanView');
+
+            if (moduleName === 'kanban') {
+                workspaceView.classList.add('hidden');
+                kanbanView.classList.remove('hidden');
+                renderKanban();
+            } else {
+                kanbanView.classList.add('hidden');
+                workspaceView.classList.remove('hidden');
+            }
+        }
+
+        function resetDefaultData() {
+            const domain = document.getElementById('projectName').value.trim() || 'red-zeta-one';
+            const basePath = document.getElementById('basePath').value.trim() || 'tabla';
+            
+            let lines = [];
+            for (let i = 1; i <= 44; i++) {
+                let cat = i <= 15 ? 'buborek' : (i <= 30 ? 'kombinatorika' : 'matematika');
+                lines.push(`https://${domain}.vercel.app/${basePath}/tabla${i} | Cím ${i} [${cat}]`);
+            }
+            
+            document.getElementById('tananyagInput').value = lines.join('\n');
+            runGenerator();
+        }
+
+        function runGenerator() {
+            const text = document.getElementById('tananyagInput').value;
+            allGeneratedItems = text.split('\n').map(l => l.trim()).filter(l => l.length > 0).map((line, idx) => {
+                let parts = line.split('|');
+                let url = parts[0].trim();
+                let title = parts[1] ? parts[1].trim() : `Feladat ${idx + 1}`;
+                let catMatch = title.match(/\[(.*?)\]/);
+                let category = catMatch ? catMatch[1] : 'egyes';
+                return { url, title, category, id: idx + 1 };
+            });
+            currentIndex = 0;
+            renderTables(allGeneratedItems);
+            if (allGeneratedItems.length > 0) {
+                loadTaskIntoSolver(0);
+            }
+        }
+
+        function handleFileUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                document.getElementById('tananyagInput').value = e.target.result;
+                runGenerator();
+            };
+            reader.readAsText(file);
+        }
+
+        function filterCategory(cat) {
+            activeCategoryFilter = cat;
+            filterTables();
+        }
+
+        function renderTables(items) {
+            const container = document.getElementById('tablesContainer');
+            const titleElem = document.getElementById('generatedTitle');
+            const previewStatus = document.getElementById('previewStatus');
+            
+            titleElem.textContent = `Generált Elemek (${items.length})`;
+            
+            if (items.length === 0) {
+                container.innerHTML = `<p class="text-xs text-slate-600 text-center py-4">Nincs elem.</p>`;
+                previewStatus.textContent = "(0 aktív elem)";
+                return;
+            }
+            
+            previewStatus.textContent = `(${items.length} elem)`;
+            
+            let htmlContent = '';
+            items.forEach((item, index) => {
+                htmlContent += `
+                    <div class="flex items-center justify-between p-2.5 bg-slate-950 hover:bg-slate-800 border border-slate-800 rounded-lg transition group">
+                        <div onclick="loadTaskIntoSolver(${index})" class="flex items-center space-x-2.5 overflow-hidden cursor-pointer flex-1">
+                            <span class="w-5 h-5 flex items-center justify-center bg-violet-950 text-violet-400 text-[10px] font-bold rounded-full shrink-0 border border-violet-800">${item.id}</span>
+                            <span class="text-xs font-medium text-slate-200 truncate">${escapeHtml(item.title)}</span>
+                            <span class="text-[10px] text-violet-400 bg-violet-950 px-2 py-0.5 rounded border border-violet-900">${item.category}</span>
+                        </div>
+                        <div class="flex items-center space-x-1.5 shrink-0">
+                            <a href="${item.url}" target="_blank" title="Megnyitás" class="text-[10px] bg-slate-900 text-slate-300 hover:text-white px-2 py-1 rounded border border-slate-800">📄</a>
+                            <button onclick="renameItem(${index})" title="Átnevezés" class="text-[10px] bg-slate-900 text-slate-300 hover:text-white px-2 py-1 rounded border border-slate-800">✏️</button>
+                            <button onclick="deleteItem(${index})" title="Törlés" class="text-[10px] bg-slate-900 text-red-400 hover:text-red-300 px-2 py-1 rounded border border-slate-800">🗑️</button>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            container.innerHTML = htmlContent;
+        }
+
+        function loadTaskIntoSolver(index) {
+            if (index < 0 || index >= allGeneratedItems.length) return;
+            currentIndex = index;
+            const item = allGeneratedItems[index];
+            
+            document.getElementById('activeTaskBadge').textContent = `Aktív: #${item.id} (${item.category})`;
+            const extLink = document.getElementById('externalLink');
+            extLink.href = item.url;
+            extLink.classList.remove('hidden');
+
+            document.getElementById('livePreviewFrame').src = item.url;
+            
+            const solverContainer = document.getElementById('taskSolverContainer');
+            solverContainer.innerHTML = `
+                <div class="bg-slate-950 p-4 rounded-xl border border-violet-900/40 space-y-3 shadow-inner">
+                    <div class="flex items-center justify-between">
+                        <span class="bg-violet-900/50 text-violet-300 text-xs font-bold px-3 py-1 rounded-md border border-violet-700">${item.title}</span>
+                        <span class="text-xs font-mono text-slate-400">${item.url}</span>
+                    </div>
+                    <div class="space-y-1.5">
+                        <label class="block text-xs font-medium text-slate-300">Interaktív Válasz / Megoldás rögzítése:</label>
+                        <textarea rows="2" class="w-full bg-slate-900 border border-slate-800 rounded-lg p-2 text-xs text-slate-100 focus:ring-2 focus:ring-violet-500 focus:outline-none" placeholder="Írd ide a megoldást..."></textarea>
+                    </div>
+                    <div class="flex justify-between items-center pt-1">
+                        <button onclick="remoteAction('prev')" class="bg-slate-900 hover:bg-slate-800 text-slate-300 text-xs font-semibold px-3 py-1.5 rounded-lg border border-slate-800">← Előző</button>
+                        <button onclick="alert('Megoldás sikeresen mentve a Workspace hálózatra!')" class="bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold px-4 py-1.5 rounded-lg shadow">Mentés & Küldés</button>
+                        <button onclick="remoteAction('next')" class="bg-slate-900 hover:bg-slate-800 text-slate-300 text-xs font-semibold px-3 py-1.5 rounded-lg border border-slate-800">Következő →</button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function remoteAction(action) {
+            if (allGeneratedItems.length === 0) return;
+            if (action === 'next') {
+                currentIndex = (currentIndex + 1) % allGeneratedItems.length;
+            } else if (action === 'prev') {
+                currentIndex = (currentIndex - 1 + allGeneratedItems.length) % allGeneratedItems.length;
+            } else if (action === 'broadcast') {
+                alert(`Broadcast elküldve: A(z) #${allGeneratedItems[currentIndex].id}. feladat szinkronizálva az összes csatlakozott kollégával!`);
+                return;
+            }
+            loadTaskIntoSolver(currentIndex);
+        }
+
+        function renameItem(index) {
+            let newTitle = prompt('Add meg az új címet:', allGeneratedItems[index].title);
+            if (newTitle) {
+                allGeneratedItems[index].title = newTitle;
+                renderTables(allGeneratedItems);
+            }
+        }
+
+        function deleteItem(index) {
+            allGeneratedItems.splice(index, 1);
+            renderTables(allGeneratedItems);
+            if (allGeneratedItems.length > 0) {
+                loadTaskIntoSolver(0);
+            } else {
+                document.getElementById('taskSolverContainer').innerHTML = `<p class="text-xs text-slate-500 text-center py-6">Nincs aktív elem.</p>`;
+            }
+        }
+
+        function filterTables() {
+            const query = document.getElementById('searchInput').value.toLowerCase();
+            const filtered = allGeneratedItems.filter(item => {
+                const matchesQuery = item.title.toLowerCase().includes(query) || item.url.toLowerCase().includes(query);
+                const matchesCat = activeCategoryFilter === 'Mind' || item.category === activeCategoryFilter;
+                return matchesQuery && matchesCat;
+            });
+            renderTables(filtered);
+        }
+
+        function toggleRemoteMode() {
+            const panel = document.getElementById('remoteControlPanel');
+            const btn = document.getElementById('remoteToggleBtn');
+            if (panel.style.display === 'none') {
+                panel.style.display = 'block';
+                btn.textContent = 'Távirányító Mód Ki';
+            } else {
+                panel.style.display = 'none';
+                btn.textContent = 'Távirányító Mód Be';
+            }
+        }
+
+        function renderKanban() {
+            document.getElementById('kanbanTodo').innerHTML = allGeneratedItems.slice(0, 15).map(i => `<div class="p-2 bg-slate-900 border border-slate-800 rounded text-xs text-slate-300">${i.title}</div>`).join('');
+            document.getElementById('kanbanProgress').innerHTML = allGeneratedItems.slice(15, 30).map(i => `<div class="p-2 bg-slate-900 border border-slate-800 rounded text-xs text-slate-300">${i.title}</div>`).join('');
+            document.getElementById('kanbanDone').innerHTML = allGeneratedItems.slice(30).map(i => `<div class="p-2 bg-slate-900 border border-slate-800 rounded text-xs text-slate-300">${i.title}</div>`).join('');
+        }
+
+        function escapeHtml(text) {
+            return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+        }
+    </script>
+
+</body></html>
