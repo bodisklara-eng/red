@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Héroon-szökőkút Animáció & Szimulációs Szoftverek</title>
+    <style>
+        body {
+            background-color: #0f172a;
+            color: #f8fafc;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            margin: 0;
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #38bdf8;
+            margin-bottom: 30px;
+        }
+
+        /* Fő elrendezés: Bal oldal (Animáció + Prompt) - Jobb oldal (Kártyák) */
+        .main-layout {
+            display: flex;
+            flex-direction: row;
+            gap: 25px;
+            max-width: 1400px;
+            margin: 0 auto;
+            align-items: flex-start;
+        }
+
+        /* Bal oldali konténer az animációhoz és prompt szöveghez */
+        .simulation-section {
+            flex: 0 0 480px;
+            background-color: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            box-sizing: border-box;
+        }
+
+        .simulation-section h2 {
+            color: #38bdf8;
+            font-size: 1.3rem;
+            margin-top: 0;
+            margin-bottom: 15px;
+        }
+
+        .controls {
+            margin-bottom: 15px;
+            display: flex;
+            gap: 10px;
+        }
+
+        button {
+            background-color: #0284c7;
+            color: #ffffff;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.1s;
+        }
+
+        button:hover {
+            background-color: #0369a1;
+        }
+
+        button:active {
+            transform: scale(0.98);
+        }
+
+        canvas {
+            border: 2px solid #2ac3de;
+            border-radius: 8px;
+            background-color: #05070a;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+            max-width: 100%;
+            height: auto;
+        }
+
+        /* Prompt megtekintése és másolása szekció */
+        .prompt-container {
+            width: 100%;
+            margin-top: 20px;
+            border-top: 1px solid #334155;
+            padding-top: 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        .prompt-title {
+            font-size: 0.85rem;
+            font-weight: bold;
+            color: #94a3b8;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .prompt-text-box {
+            background-color: #090d16;
+            border: 1px solid #1e293b;
+            border-radius: 6px;
+            padding: 12px;
+            font-family: 'Consolas', 'Courier New', monospace;
+            font-size: 0.75rem;
+            color: #a7f3d0;
+            max-height: 180px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+            word-break: break-word;
+            margin-bottom: 10px;
+        }
+
+        .btn-prompt {
+            background-color: #10b981;
+            width: 100%;
+            padding: 10px;
+            font-size: 0.9rem;
+        }
+
+        .btn-prompt:hover {
+            background-color: #059669;
+        }
+
+        /* Jobb oldali kártyák hálója */
+        .cards-container {
+            flex: 1;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 20px;
+        }
+
+        .card {
+            background-color: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            transition: transform 0.2s, border-color 0.2s;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            border-color: #38bdf8;
+        }
+
+        .category-title {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #94a3b8;
+            margin-bottom: 8px;
+        }
+
+        .software-name {
+            font-size: 1.25rem;
+            color: #38bdf8;
+            margin-top: 0;
+            margin-bottom: 12px;
+        }
+
+        .description {
+            font-size: 0.9rem;
+            line-height: 1.4;
+            color: #cbd5e1;
+        }
+
+        .example-box {
+            margin-top: 15px;
+            padding: 10px;
+            background-color: #0f172a;
+            border-left: 3px solid #0284c7;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            color: #e2e8f0;
+        }
+
+        .example-box strong {
+            color: #7aa2f7;
+        }
+
+        .btn-link {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 10px 14px;
+            background-color: #0284c7;
+            color: #ffffff;
+            text-decoration: none;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            font-weight: bold;
+            text-align: center;
+            transition: background-color 0.2s;
+        }
+
+        .btn-link:hover {
+            background-color: #0369a1;
+        }
+
+        @media (max-width: 992px) {
+            .main-layout {
+                flex-direction: column;
+                align-items: center;
+            }
+            .simulation-section {
+                width: 100%;
+                flex: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <h1>⛲ Szökőkút Szimuláció és Szoftveres Felületek</h1>
+
+    <div class="main-layout">
+        
+        <!-- BAL OLDAL: Héroon-szökőkút Animáció + Prompt szöveg & másoló gomb -->
+        <div class="simulation-section">
+            <h2>⛲ Héroon-szökőkút Animáció</h2>
+            <div class="controls">
+                <button onclick="toggleSimulation()">Start / Indítás</button>
+                <button onclick="resetSimulation()">Reset / Újratöltés</button>
+            </div>
+            
+            <canvas id="fountainCanvas" width="440" height="380"></canvas>
+
+            <!-- PROMPT SZÖVEG ÉS MÁSOLÁSA SZEKCIÓ -->
+            <div class="prompt-container">
+                <div class="prompt-title">📝 AI Projekt Prompt Szövege:</div>
+                <div class="prompt-text-box" id="promptDisplay">Feladat: Készíts egy interaktív, modern HTML/CSS/JavaScript alapú weboldalt a szökőkút-szimulációk és a Héroon-szökőkút bemutatására.
+
+Stílus és Megjelenés:
+- Sötét téma (Dark Mode) modern színpalettával: mélykék background (#0f172a), kártyák (#1e293b), kiemelések (#38bdf8 és #0284c7).
+- Reszponzív elrendezés (CSS Flexbox és Grid), ami mobilon és asztali gépen is megfelelően jelenik meg.
+- Bal oldalon egy interaktív szimuláció, jobb oldalon információs kártyák külső linkekkel.
+
+Technikai és Funkcionális Követelmények:
+
+1. Bal oldal - Héroon-szökőkút Szimuláció (HTML5 Canvas + JS):
+   - Grafikus elemek: 2 zárt tartály (felső és alsó), összekötő csövek és egy kiömlő fúvóka.
+   - Vízszint-állapotok: A felső tartály vízszintje folyamatosan csökken, az alsóé nő.
+   - Fizikai animáció: Vízcsepp-részecskék (particle system) kilövellése a fúvókából, ahol a vízsugár magassága arányosan csökken a felső tartály nyomásával/vízszintjével.
+   - Vezérlés: "Start / Indítás" és "Reset / Újratöltés" gombok a szimuláció kezeléséhez.
+
+2. Jobb oldal - Szimulációs Szoftverek Kártyái (CSS Grid):
+   - Készíts 4 különálló kártyát az alábbi kategóriákban:
+     1. Látványtervező & Koreográfia (Pl. Depence / Syncronorm)
+     2. Áramlástani Mérnöki Szoftver (Pl. ANSYS Fluent CFD)
+     3. 3D Animáció & Folyadékok (Pl. Blender FLIP Fluids)
+     4. Oktatási & Webes Felület (Pl. GeoGebra / HTML5 Canvas)
+   - Minden kártya tartalmazza a kategóriát, a szoftver nevét, egy rövid leírást, egy gyakorlati példát és egy működő külső link gombot (target="_blank"), ami releváns animációkra/keresésekre mutat (YouTube / GeoGebra).
+
+Kimenet: Egyetlen, teljesen működőképes, önálló HTML fájl (beágyazott CSS-sel és JS-sel), ami azonnal megnyitható böngészőben.</div>
+                <button id="copyPromptBtn" class="btn-prompt" onclick="copyProjectPrompt()">📋 AI Prompt másolása a vágólapra</button>
+            </div>
+        </div>
+
+        <!-- JOBB OLDAL: Szimulációs Szoftver Kártyák -->
+        <div class="cards-container">
+            
+            <!-- 1. Látványtervező / Koreográfiai szoftver -->
+            <div class="card">
+                <div>
+                    <div class="category-title">1. Látványtervező & Koreográfia</div>
+                    <h3 class="software-name">Depence (Syncronorm)</h3>
+                    <div class="description">
+                        Professzionális, valós idejű 3D visualizer és vezérlőszoftver szökőkutakhoz, zenei vízijátékokhoz és fényshow-khoz.
+                    </div>
+                    <div class="example-box">
+                        <strong>Gyakorlati példa:</strong> Szállodák vagy városi főterek zenélő szökőkútjainak (pl. Las Vegas-i Bellagio jellegű) előzetes 3D koreografálása.
+                    </div>
+                </div>
+                <a href="https://www.youtube.com/results?search_query=Depence+fountain+simulation" target="_blank" rel="noopener noreferrer" class="btn-link">🎬 Animációk (YouTube)</a>
+            </div>
+
+            <!-- 2. Áramlástani (CFD) szoftver -->
+            <div class="card">
+                <div>
+                    <div class="category-title">2. Áramlástani Mérnöki Szoftver</div>
+                    <h3 class="software-name">ANSYS Fluent</h3>
+                    <div class="description">
+                        Industriális CFD (Computational Fluid Dynamics) szimulációs környezet, amellyel a folyadékok fizikai és hidraulikai viselkedése modellezhető.
+                    </div>
+                    <div class="example-box">
+                        <strong>Gyakorlati példa:</strong> Egy komplex fúvóka belső nyomásesésének, örvénylésének és a kilépő vízsugár szétporladásának fizikai számítása.
+                    </div>
+                </div>
+                <a href="https://www.youtube.com/results?search_query=ANSYS+Fluent+water+jet+fountain+simulation" target="_blank" rel="noopener noreferrer" class="btn-link">🎬 CFD Animációk (YouTube)</a>
+            </div>
+
+            <!-- 3. 3D Animáció és Folyadékszimuláció -->
+            <div class="card">
+                <div>
+                    <div class="category-title">3. 3D Animáció & Folyadékok</div>
+                    <h3 class="software-name">Blender (FLIP Fluids)</h3>
+                    <div class="description">
+                        Nyílt forráskódú 3D grafikai szoftver fizikaalapú FLIP (Fluid Implicit Particle) folyadékszimulációs kiegészítővel.
+                    </div>
+                    <div class="example-box">
+                        <strong>Gyakorlati példa:</strong> Fotorealisztikus 3D látványterv és animáció készítése egy építészeti szökőkútról csobbanásokkal és vízcsepp-effektekkel.
+                    </div>
+                </div>
+                <a href="https://www.youtube.com/results?search_query=Blender+FLIP+Fluids+fountain+simulation" target="_blank" rel="noopener noreferrer" class="btn-link">🎬 3D Render (YouTube)</a>
+            </div>
+
+            <!-- 4. Oktatási / Webes szimuláció -->
+            <div class="card">
+                <div>
+                    <div class="category-title">4. Oktatási & Webes Felület</div>
+                    <h3 class="software-name">GeoGebra / HTML5</h3>
+                    <div class="description">
+                        Böngészőben futó, interaktív matematikai és fizikai modellező felületek a szökőkutak és hidrosztatikai elvek demonstrálására.
+                    </div>
+                    <div class="example-box">
+                        <strong>Gyakorlati példa:</strong> A Héroon-szökőkút zárt tartályai közötti légnyomás és hidrosztatikai vízszintváltozás élő interaktív modellezése.
+                    </div>
+                </div>
+                <a href="https://www.geogebra.org/search/hero%20fountain" target="_blank" rel="noopener noreferrer" class="btn-link">🌐 GeoGebra Modellek Megtekintése</a>
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- JAVASCRIPT KÓD (ANIMÁCIÓ + PROMPT MÁSOLÓ) -->
+    <script>
+        // --- HÉROON SZÖKŐKÚT ANIMÁCIÓ ---
+        const canvas = document.getElementById('fountainCanvas');
+        const ctx = canvas.getContext('2d');
+
+        let isRunning = false;
+        let particles = [];
+
+        let topWaterLevel = 80;
+        let bottomWaterLevel = 10;
+
+        const containerWidth = 90;
+        const containerHeight = 110;
+
+        const topTank = { x: 175, y: 60 };
+        const bottomTank = { x: 175, y: 240 };
+
+        function toggleSimulation() {
+            isRunning = !isRunning;
+        }
+
+        function resetSimulation() {
+            isRunning = false;
+            topWaterLevel = 80;
+            bottomWaterLevel = 10;
+            particles = [];
+            draw();
+        }
+
+        function createWaterParticles() {
+            if (!isRunning || topWaterLevel <= 5) return;
+
+            const fountainOriginX = topTank.x + containerWidth / 2;
+            const fountainOriginY = topTank.y - 12;
+            const pressureFactor = topWaterLevel / 100;
+
+            for (let i = 0; i < 3; i++) {
+                particles.push({
+                    x: fountainOriginX,
+                    y: fountainOriginY,
+                    vx: (Math.random() - 0.5) * 1.5,
+                    vy: -(Math.random() * 3 + 3.5) * pressureFactor,
+                    size: Math.random() * 2 + 1.5
+                });
+            }
+        }
+
+        function updatePhysics() {
+            if (!isRunning) return;
+
+            if (topWaterLevel > 2) {
+                topWaterLevel -= 0.05;
+                if (bottomWaterLevel < 95) {
+                    bottomWaterLevel += 0.05;
+                }
+            } else {
+                isRunning = false;
+            }
+
+            for (let i = 0; i < particles.length; i++) {
+                let p = particles[i];
+                p.x += p.vx;
+                p.y += p.vy;
+                p.vy += 0.15;
+
+                if (p.y >= topTank.y) {
+                    particles.splice(i, 1);
+                    i--;
+                }
+            }
+        }
+
+        function drawTank(x, y, label, waterLevel) {
+            ctx.save();
+
+            ctx.strokeStyle = '#38bdf8';
+            ctx.lineWidth = 2;
+            ctx.strokeRect(x, y, containerWidth, containerHeight);
+
+            const currentWaterHeight = (containerHeight * waterLevel) / 100;
+            const waterY = y + containerHeight - currentWaterHeight;
+
+            ctx.fillStyle = 'rgba(56, 189, 248, 0.6)';
+            ctx.fillRect(x + 2, waterY, containerWidth - 4, currentWaterHeight - 2);
+
+            ctx.fillStyle = '#cbd5e1';
+            ctx.font = '11px Segoe UI';
+            ctx.fillText(label, x + 5, y - 8);
+
+            ctx.restore();
+        }
+
+        function drawPipes() {
+            ctx.save();
+            ctx.strokeStyle = '#cbd5e1';
+            ctx.lineWidth = 3;
+
+            const topCenterX = topTank.x + containerWidth / 2;
+
+            // Légvezető cső
+            ctx.beginPath();
+            ctx.moveTo(bottomTank.x + 15, bottomTank.y);
+            ctx.lineTo(topTank.x + 15, topTank.y + 10);
+            ctx.stroke();
+
+            // Vízelvezető cső
+            ctx.beginPath();
+            ctx.moveTo(topTank.x + containerWidth - 15, topTank.y + containerHeight);
+            ctx.lineTo(bottomTank.x + containerWidth - 15, bottomTank.y + containerHeight - 10);
+            ctx.stroke();
+
+            // Szökőkút kiömlő csöve
+            ctx.strokeStyle = '#38bdf8';
+            ctx.beginPath();
+            ctx.moveTo(topCenterX, topTank.y + containerHeight - 15);
+            ctx.lineTo(topCenterX, topTank.y - 12);
+            ctx.stroke();
+
+            ctx.restore();
+        }
+
+        function drawParticles() {
+            ctx.save();
+            ctx.fillStyle = '#38bdf8';
+            for (let p of particles) {
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+            ctx.restore();
+        }
+
+        function draw() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            drawPipes();
+            drawTank(topTank.x, topTank.y, 'Felső Tartály (A)', topWaterLevel);
+            drawTank(bottomTank.x, bottomTank.y, 'Alsó Tartály (B)', bottomWaterLevel);
+            drawParticles();
+
+            createWaterParticles();
+            updatePhysics();
+
+            requestAnimationFrame(draw);
+        }
+
+        draw();
+
+        // --- PROMPT MÁSOLÁSA FUNKCIÓ ---
+        function copyProjectPrompt() {
+            const projectPrompt = document.getElementById('promptDisplay').innerText;
+
+            navigator.clipboard.writeText(projectPrompt).then(() => {
+                const btn = document.getElementById('copyPromptBtn');
+                btn.innerText = '✅ Sikeresen másolva!';
+                btn.style.backgroundColor = '#059669';
+
+                setTimeout(() => {
+                    btn.innerText = '📋 AI Prompt másolása a vágólapra';
+                    btn.style.backgroundColor = '#10b981';
+                }, 2500);
+            }).catch(err => {
+                alert('Nem sikerült a másolás: ' + err);
+            });
+        }
+    </script>
+</body>
+</html>
