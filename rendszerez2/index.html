@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<!-- saved from url=(0068)file:///C:/Users/Utilizator/Downloads/gemini-code-1787999824525.html -->
+<html lang="hu"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>STEAM Videó Rendszerező &amp; Szimulációs Platformok</title>
+  <style>
+    :root {
+      --bg-color: #0f172a;
+      --card-bg: #1e293b;
+      --accent-color: #38bdf8;
+      --accent-hover: #0284c7;
+      --text-color: #f8fafc;
+      --text-muted: #94a3b8;
+      --border-color: #334155;
+    }
+
+    body {
+      margin: 0;
+      padding: 24px 16px;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      box-sizing: border-box;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 36px;
+    }
+
+    h1 {
+      font-size: 2.1rem;
+      margin: 0 0 10px 0;
+      color: var(--accent-color);
+    }
+
+    p.subtitle {
+      margin: 0;
+      color: var(--text-muted);
+      font-size: 1rem;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .section-title {
+      font-size: 1.4rem;
+      color: var(--accent-color);
+      border-bottom: 2px solid var(--border-color);
+      padding-bottom: 8px;
+      margin: 40px 0 20px 0;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 20px;
+    }
+
+    .card {
+      background-color: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    }
+
+    .video-thumb {
+      position: relative;
+      width: 100%;
+      padding-bottom: 56.25%;
+      background-size: cover;
+      background-position: center;
+      display: block;
+      text-decoration: none;
+    }
+
+    .play-button {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 60px;
+      height: 60px;
+      background-color: rgba(15, 23, 42, 0.85);
+      border: 2px solid var(--accent-color);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s ease;
+    }
+
+    .play-button::after {
+      content: "";
+      display: block;
+      width: 0;
+      height: 0;
+      border-style: solid;
+      border-width: 10px 0 10px 18px;
+      border-color: transparent transparent transparent var(--accent-color);
+      margin-left: 4px;
+    }
+
+    .video-thumb:hover .play-button {
+      background-color: var(--accent-color);
+      scale: 1.1;
+    }
+
+    .video-thumb:hover .play-button::after {
+      border-color: transparent transparent transparent #0f172a;
+    }
+
+    .card-content {
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      flex-grow: 1;
+    }
+
+    .tag {
+      align-self: flex-start;
+      background-color: rgba(56, 189, 248, 0.15);
+      color: var(--accent-color);
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 4px 8px;
+      border-radius: 4px;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+
+    .card-title {
+      font-size: 1.1rem;
+      margin: 0 0 8px 0;
+      color: #fff;
+    }
+
+    .card-desc {
+      font-size: 0.875rem;
+      color: var(--text-muted);
+      margin: 0 0 16px 0;
+      line-height: 1.5;
+      flex-grow: 1;
+    }
+
+    .card-list {
+      margin: 0 0 16px 0;
+      padding-left: 20px;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    .card-list li {
+      margin-bottom: 4px;
+    }
+
+    .btn {
+      display: inline-block;
+      text-align: center;
+      background-color: var(--accent-color);
+      color: #0f172a;
+      font-weight: 600;
+      font-size: 0.875rem;
+      padding: 10px 16px;
+      border-radius: 6px;
+      text-decoration: none;
+      transition: background-color 0.2s ease;
+      margin-top: auto;
+    }
+
+    .btn:hover {
+      background-color: var(--accent-hover);
+      color: #fff;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <header>
+      <h1>STEAM Videó Rendszerező &amp; Szimulációs Platformok</h1>
+      <p class="subtitle">Interaktív oktatási modellek, fizikai szimulációk és digitális keretrendszerek</p>
+    </header>
+
+    <!-- 1. KATEGÓRIA: VIDEÓS OKTATÓANYAGOK -->
+    <div class="section-title">Oktatóvideók és Szimulációs Módszertan</div>
+    <div class="grid">
+      
+      <div class="card">
+        <a href="https://www.youtube.com/watch?v=fNk_zzaMoSs" target="_blank" class="video-thumb" style="background-image: url(&#39;https://img.youtube.com/vi/fNk_zzaMoSs/hqdefault.jpg&#39;);">
+          <div class="play-button"></div>
+        </a>
+        <div class="card-content">
+          <span class="tag">Mátrixok &amp; Lineáris Algebra</span>
+          <h2 class="card-title">Mátrix transzformációk vizuálisan</h2>
+          <p class="card-desc">A 3Blue1Brown szemléletes videója arról, hogyan alakítják át a mátrixok a teret és az állapotvektorokat.</p>
+          <a href="https://www.youtube.com/watch?v=fNk_zzaMoSs" target="_blank" class="btn">Videó Megtekintése</a>
+        </div>
+      </div>
+
+      <div class="card">
+        <a href="https://www.youtube.com/watch?v=rSKMYc1CQHE" target="_blank" class="video-thumb" style="background-image: url(&#39;https://img.youtube.com/vi/rSKMYc1CQHE/hqdefault.jpg&#39;);">
+          <div class="play-button"></div>
+        </a>
+        <div class="card-content">
+          <span class="tag">JavaScript &amp; p5.js</span>
+          <h2 class="card-title">Fizikai szimulációk p5.js-ben</h2>
+          <p class="card-desc">A The Coding Train útmutatója vektorműveletek, erők és részecskerendszerek programozásához böngészőben.</p>
+          <a href="https://www.youtube.com/watch?v=rSKMYc1CQHE" target="_blank" class="btn">Videó Megtekintése</a>
+        </div>
+      </div>
+
+      <div class="card">
+        <a href="https://www.youtube.com/watch?v=qAB2XzUgCbQ" target="_blank" class="video-thumb" style="background-image: url(&#39;https://img.youtube.com/vi/qAB2XzUgCbQ/hqdefault.jpg&#39;);">
+          <div class="play-button"></div>
+        </a>
+        <div class="card-content">
+          <span class="tag">2D Fizika &amp; Algodoo</span>
+          <h2 class="card-title">Folyadékszimuláció és Mechanika</h2>
+          <p class="card-desc">Algodoo oktatóvideó: Víz, anyag tulajdonságok és lézerek kezelése a fizikai szimulációs motorban.</p>
+          <a href="https://www.youtube.com/watch?v=qAB2XzUgCbQ" target="_blank" class="btn">Videó Megtekintése</a>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- 2. KATEGÓRIA: EGYDIMENZIÓS TÖMBÖK VIZUÁLIS OKTATÁSA -->
+    <div class="section-title">1D Tömbök &amp; Vektorok Interaktív Tanulása</div>
+    <div class="grid">
+
+      <div class="card">
+        <div class="card-content">
+          <span class="tag">Zene &amp; Hangképzés</span>
+          <h2 class="card-title">Audió Szekvencer &amp; DMX Fények</h2>
+          <p class="card-desc">Az 1D tömb indexei az időbélyegeket vagy a csatornákat képviselik. Az elemek értékei határozzák meg a hangmagasságot vagy a fúvókák nyomását.</p>
+          <ul class="card-list">
+            <li>Dallamok és ütemek tárolása tömbökben (p5.sound)</li>
+            <li>Szökőkút vízsugár-magasság sora időbeli lépésekben</li>
+          </ul>
+          <a href="https://p5js.org/reference/#/libraries/p5.sound" target="_blank" class="btn">p5.sound Dokumentáció</a>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-content">
+          <span class="tag">Algoritmusok</span>
+          <h2 class="card-title">Rendezési Algoritmusok (VisuAlgo)</h2>
+          <p class="card-desc">Iparági vizualizációk a tömbelemenkénti cserékre, keresésekre (Bubble, Insertion, QuickSort) és adatszerkezetekre.</p>
+          <ul class="card-list">
+            <li>Animált elemcsere és indexmutatók kísérése</li>
+            <li>Lineáris és bináris keresés szemléltetése</li>
+          </ul>
+          <a href="https://visualgo.net/" target="_blank" class="btn">VisuAlgo Megnyitása</a>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-content">
+          <span class="tag">Hardver</span>
+          <h2 class="card-title">LED-Sáv Vezérlés (NeoPixel / RGB)</h2>
+          <p class="card-desc">Címezhető RGB LED szalag (1D tömb). Minden index egy fizikai fényforrásnak felel meg, ahol a diákok futófényeket és színátmeneteket programoznak.</p>
+          <ul class="card-list">
+            <li>Közvetlen indexelés: strip[i] = Color(R,G,B)</li>
+            <li>Mátrixok alapozása egydimenziós tömbi gondolkodással</li>
+          </ul>
+          <a href="https://makecode.microbit.org/pkg/microsoft/pxt-neopixel" target="_blank" class="btn">MakeCode Neopixel</a>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- 3. KATEGÓRIA: KÉT-DIMENZIÓS TÖMBÖK VIZUÁLIS OKTATÁSA -->
+    <div class="section-title">2D Tömbök &amp; Mátrixok Interaktív Oktatása</div>
+    <div class="grid">
+
+      <div class="card">
+        <div class="card-content">
+          <span class="tag">Grafika &amp; Kód</span>
+          <h2 class="card-title">Pixel Art Canvas &amp; Képmátrix</h2>
+          <p class="card-desc">A 2D tömb elemei színkódokat tárolnak. Beágyazott for ciklusok segítségével a diákok közvetlenül kódolhatják és rajzolhatják ki a képpontokat.</p>
+          <ul class="card-list">
+            <li>Képpontok indexelése [sor][oszlop] alapon</li>
+            <li>Képszűrők és színmodifikációk mátrixos megvalósítása</li>
+          </ul>
+          <a href="https://editor.p5js.org/" target="_blank" class="btn">p5.js Szerkesztő</a>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-content">
+          <span class="tag">Játékfejlesztés</span>
+          <h2 class="card-title">Tilemap Engine (Térképtömb)</h2>
+          <p class="card-desc">A játéktér szerkezete egy 2D tömbben (0=fű, 1=fal, 2=kincs). A karakter pozíciója a mátrix elemeinek lekérdezésével határozza meg az ütközést.</p>
+          <ul class="card-list">
+            <li>Interaktív pályatervezés és labirintusok</li>
+            <li>Aknakereső és Csatahajó logikai játékok építése</li>
+          </ul>
+          <a href="https://arcade.makecode.com/" target="_blank" class="btn">MakeCode Arcade</a>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-content">
+          <span class="tag">Fizikai Hardver</span>
+          <h2 class="card-title">LED Mátrix Vezérlés (micro:bit)</h2>
+          <p class="card-desc">Egy 5x5-ös vagy 8x8-as Neopixel LED kijelző közvetlen irányítása 2D tömbök segítségével MakeCode vagy C++ környezetben.</p>
+          <ul class="card-list">
+            <li>Futófények, animációk és fizikai visszajelzés</li>
+            <li>Vízmagasság és fényerő 2D reprezentációja</li>
+          </ul>
+          <a href="https://microbit.org/" target="_blank" class="btn">Micro:bit Megnyitása</a>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- 4. KATEGÓRIA: WEBES ÉS KLIENSOLDALI TECHNOLÓGIÁK -->
+    <div class="section-title">Webes és Kliensoldali Technológiák</div>
+    <div class="grid">
+
+      <div class="card">
+        <div class="card-content">
+          <span class="tag">JavaScript / TypeScript</span>
+          <h2 class="card-title">p5.js &amp; Three.js</h2>
+          <p class="card-desc">A p5.js a Processing webes megfelelője oktatási célokra. A Three.js 3D-s szökőkút-modellek és részecskerendszerek böngészős megjelenítését teszi lehetővé.</p>
+          <ul class="card-list">
+            <li>Vízoszlopok kirajzolása és valós idejű mátrixszorzás (math.js)</li>
+            <li>Fusion 360-ból exportált OBJ/GLTF 3D fájlok kezelése</li>
+          </ul>
+          <a href="https://threejs.org/" target="_blank" class="btn">Three.js Megnyitása</a>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-content">
+          <span class="tag">Vanilla JS / GPU</span>
+          <h2 class="card-title">HTML5 Canvas / WebGL</h2>
+          <p class="card-desc">Tiszta HTML5 Canvas API-val külső könyvtárak nélkül megrajzolható a szökőkút visualizer és a DMX-vezérlő.</p>
+          <ul class="card-list">
+            <li>GPU-n futtatható grafikai számítások WebGL shader-ekkel (GLSL)</li>
+            <li>Alacsony gépigényű, közvetlen böngészős vizualizáció</li>
+          </ul>
+          <a href="https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API" target="_blank" class="btn">MDN Canvas API</a>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- 5. KATEGÓRIA: VIZUÁLIS ÉS BLOKKALAPÚ PROGRAMOZÁS -->
+    <div class="section-title">Vizuális és Blokkalapú Nyelvek (5–8. Osztály)</div>
+    <div class="grid">
+
+      <div class="card">
+        <div class="card-content">
+          <span class="tag">Block-Based</span>
+          <h2 class="card-title">Scratch / Snap!</h2>
+          <p class="card-desc">A diákok a mátrixot listák listájaként (2D tömb) kezelhetik. A fúvókák pozíciója a mátrixszorzásból számítódik.</p>
+          <ul class="card-list">
+            <li>Nincs szintaktikai nehézség</li>
+            <li>Közvetlenül megérthető lineáris algebrai logika</li>
+          </ul>
+          <a href="https://scratch.mit.edu/" target="_blank" class="btn">Scratch Megnyitása</a>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-content">
+          <span class="tag">Mikrokontrollerek</span>
+          <h2 class="card-title">MakeCode / Micro:bit / Arduino</h2>
+          <p class="card-desc">A virtuális szimuláció átültetése fizikai modellé C++ vagy blokkalapú kód segítségével.</p>
+          <ul class="card-list">
+            <li>5 darab szervómotor vagy LED-sáv (Neopixel) mozgatása</li>
+            <li>Fizikai vízmagasság-vizualizáció</li>
+          </ul>
+          <a href="https://www.arduino.cc/" target="_blank" class="btn">Arduino Megnyitása</a>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- 6. KATEGÓRIA: OKTATÁSI SZIMULÁCIÓS SZOFTVEREK & JÁTÉKMOTOROK -->
+    <div class="section-title">Oktatási Szimulátorok és Játékmotorok</div>
+    <div class="grid">
+
+      <div class="card">
+        <div class="card-content">
+          <span class="tag">2D Fizika</span>
+          <h2 class="card-title">Algodoo &amp; Algobox</h2>
+          <p class="card-desc">Interaktív 2D-s fizikai szimulációs szoftver. Folyadékmolekulák ezreinek modellezésére és Thyme script automatizációra.</p>
+          <a href="http://www.algodoo.com/algobox/" target="_blank" class="btn">Algobox Közösség</a>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-content">
+          <span class="tag">Játékmotor</span>
+          <h2 class="card-title">Godot Engine</h2>
+          <p class="card-desc">Könnyűsúlyú, nyílt forráskódú 2D/3D játékmotor. GDScript nyelve nagyon hasonlít a Pythonhoz, beépített UI elemekkel.</p>
+          <a href="https://godotengine.org/" target="_blank" class="btn">Godot Megnyitása</a>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-content">
+          <span class="tag">3D VFX</span>
+          <h2 class="card-title">Unity (C#)</h2>
+          <p class="card-desc">A profibb 9–12. osztályos projektekhez. VFX Graph és Particle System segítségével fotorealisztikus vízsugarak érhetők el.</p>
+          <a href="https://unity.com/" target="_blank" class="btn">Unity Megnyitása</a>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- 7. KATEGÓRIA: VIRTUÁLIS LABORATÓRIUMOK ÉS 3D PLATFORMOK -->
+    <div class="section-title">Virtuális Laboratóriumok és Alternatív Platformok</div>
+    <div class="grid">
+
+      <div class="card">
+        <div class="card-content">
+          <span class="tag">Interaktív Szimuláció</span>
+          <h2 class="card-title">PhET Interactive Simulations</h2>
+          <p class="card-desc">HTML5-alapú, kutatásalapú oktatási szimulációs gyűjtemény a Colorado-i Egyetemtől folyadékmechanikára és hullámtanra.</p>
+          <a href="https://phet.colorado.edu/" target="_blank" class="btn">PhET Megnyitása</a>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-content">
+          <span class="tag">2D Fizika</span>
+          <h2 class="card-title">Physion &amp; Interactive Physics</h2>
+          <p class="card-desc">Ingyenes 2D-s fizikai szimulátorok JavaScript automatizálással és precíz erőtörvény-mérésekkel.</p>
+          <a href="https://physion.net/" target="_blank" class="btn">Physion Megnyitása</a>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-content">
+          <span class="tag">3D &amp; Elektronika</span>
+          <h2 class="card-title">Tinkercad Circuits</h2>
+          <p class="card-desc">Autodesk által fejlesztett ingyenes 3D modellező és mikrokontroller szimulátor (Arduino, micro:bit).</p>
+          <a href="https://www.tinkercad.com/" target="_blank" class="btn">Tinkercad Megnyitása</a>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-content">
+          <span class="tag">Matematika &amp; Fizika</span>
+          <h2 class="card-title">GeoGebra</h2>
+          <p class="card-desc">Mátrixos transzformációk, vektorok és szinuszos hullámok interaktív vizuális ábrázolására.</p>
+          <a href="https://www.geogebra.org/" target="_blank" class="btn">GeoGebra Megnyitása</a>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- 8. KATEGÓRIA: INTERAKTÍV ANIMÁCIÓS & TANANYAGKÉSZÍTŐ PLATFORMOK -->
+    <div class="section-title">Animációs és Tananyagkészítő Platformok</div>
+    <div class="grid">
+
+      <div class="card">
+        <div class="card-content">
+          <span class="tag">Vector Animation</span>
+          <h2 class="card-title">LottieFiles &amp; Synfig</h2>
+          <p class="card-desc">Vektoros JSON animációk gyűjteménye. Interaktív szökőkút-szimulációk egyszerű beágyazásához LIVRESQ tananyagokba.</p>
+          <a href="https://lottiefiles.com/" target="_blank" class="btn">LottieFiles Megnyitása</a>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-content">
+          <span class="tag">State Machines</span>
+          <h2 class="card-title">Rive</h2>
+          <p class="card-desc">A Lottie korszerű alternatívája állapotgépek építésére, amelyek közvetlenül reagálnak az egérmozgásra.</p>
+          <a href="https://rive.app/" target="_blank" class="btn">Rive Megnyitása</a>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-content">
+          <span class="tag">LMS Interaktivitás</span>
+          <h2 class="card-title">H5P Framework</h2>
+          <p class="card-desc">Nyílt forráskódú tartalomkészítő keretrendszer interaktív videók és virtuális labor-feladatok építéséhez.</p>
+          <a href="https://h5p.org/" target="_blank" class="btn">H5P Megnyitása</a>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-content">
+          <span class="tag">Webes Matematika</span>
+          <h2 class="card-title">Desmos &amp; Falstad &amp; MyPhysicsLab</h2>
+          <p class="card-desc">Grafikus kalkulátorok, hullámterjedés-szimulátorok és JavaScript differenciálegyenlet-megoldók.</p>
+          <a href="https://www.desmos.com/" target="_blank" class="btn">Desmos Megnyitása</a>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- 9. KATEGÓRIA: MŰSZAKI ÉS PEDAGÓGIAI MÓDSZERTAN -->
+    <div class="section-title">Műszaki Környezetek és Pedagógiai Módszertan</div>
+    <div class="grid">
+
+      <div class="card">
+        <div class="card-content">
+          <span class="tag">Mérnöki Eszközök</span>
+          <h2 class="card-title">MATLAB / Octave / C++</h2>
+          <p class="card-desc">Natív mátrixműveletek és alacsony szintű DMX512/Art-Net hálózati protokollok fizikai hardverek irányításához.</p>
+          <a href="https://www.mathworks.com/products/matlab.html" target="_blank" class="btn">MATLAB Megnyitása</a>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-content">
+          <span class="tag">Oktatási Keretrendszerek</span>
+          <h2 class="card-title">TeachEngineering &amp; Bootstrap</h2>
+          <p class="card-desc">Mérnöki feladatokon keresztül tanítják a lineáris algebrát. A tömböket fizikai eszközök (fúvókák, LED-ek) állapotleíróiként használják.</p>
+          <a href="https://www.teachengineering.org/" target="_blank" class="btn">TeachEngineering</a>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-content">
+          <span class="tag">Physics &amp; Code</span>
+          <h2 class="card-title">Glowscript / VPython</h2>
+          <p class="card-desc">3D tömbök és vektorok közvetlen összekötése fizikai vizuális objektumokkal (rugók, vízsugarak).</p>
+          <a href="https://www.glowscript.org/" target="_blank" class="btn">Glowscript Megnyitása</a>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+
+</body></html>
