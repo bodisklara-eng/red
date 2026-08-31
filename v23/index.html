@@ -1,0 +1,787 @@
+<!DOCTYPE html>
+<!-- saved from url=(0068)file:///C:/Users/Utilizator/Downloads/gemini-code-1787311690323.html -->
+<html lang="hu"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Komplex Neuro-Fejlesztő &amp; Neuromatematikai Rendszer</title>
+    <style>
+        :root {
+            --primary: #1e3a8a;
+            --primary-light: #2563eb;
+            --accent: #0284c7;
+            --bg-light: #f8fafc;
+            --text-dark: #0f172a;
+            --card-bg: #ffffff;
+            --success: #10b981;
+            --danger: #ef4444;
+            --border: #e2e8f0;
+            --neuro-purple: #7c3aed;
+        }
+
+        body { 
+            font-family: 'Segoe UI', Roboto, sans-serif; 
+            line-height: 1.6; 
+            color: var(--text-dark); 
+            background-color: var(--bg-light); 
+            margin: 0; 
+            padding: 20px; 
+        }
+
+        /* KEZDŐ INDÍTÓKÉPERNYŐ ÉS TESZT MODÁLIS ABLAK STÍLUSA */
+        #startScreenOverlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(15, 23, 42, 0.95);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            color: white;
+            text-align: center;
+        }
+
+        .start-card {
+            background: #1e1b4b;
+            border: 2px solid var(--neuro-purple);
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+            max-width: 500px;
+            width: 90%;
+        }
+
+        .start-btn {
+            background: linear-gradient(135deg, #7c3aed 0%, #2563eb 100%);
+            color: white;
+            border: none;
+            padding: 16px 32px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            margin-top: 20px;
+        }
+
+        .start-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 20px rgba(124, 58, 237, 0.6);
+        }
+
+        /* FŐ TARTALOM */
+        .container { 
+            max-width: 1350px; 
+            margin: 0 auto; 
+            background: var(--card-bg); 
+            padding: 25px; 
+            border-radius: 12px; 
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05); 
+        }
+
+        h1 { 
+            color: var(--primary); 
+            border-bottom: 4px solid var(--primary-light); 
+            padding-bottom: 10px; 
+            margin-top: 0; 
+        }
+        
+        .badge-container { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 15px; }
+        .badge { background: #e0e7ff; color: var(--primary); padding: 4px 12px; border-radius: 15px; font-weight: 600; font-size: 0.85rem; }
+        .badge.neuro { background: #f3e8ff; color: var(--neuro-purple); border: 1px solid var(--neuro-purple); }
+
+        .neuro-timer-box {
+            background: linear-gradient(135deg, #4c1d95 0%, #1e1b4b 100%);
+            color: #fff;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .card { 
+            background: #f8fafc; 
+            border: 2px solid #cbd5e1; 
+            border-radius: 8px; 
+            padding: 15px; 
+            margin-bottom: 20px; 
+        }
+
+        canvas { 
+            background: #ffffff; 
+            border: 1px solid #94a3b8; 
+            border-radius: 6px; 
+            width: 100%; 
+            height: auto; 
+            display: block; 
+            margin-top: 10px; 
+            touch-action: none; 
+        }
+
+        .canvas-dark {
+            background: #0f172a !important;
+        }
+
+        .btn, .action-btn { 
+            background: var(--primary-light); 
+            color: white; 
+            border: none; 
+            padding: 8px 16px; 
+            border-radius: 6px; 
+            font-weight: bold; 
+            cursor: pointer; 
+            margin-right: 8px; 
+            margin-top: 10px; 
+        }
+        .btn:hover, .action-btn:hover { background: #1d4ed8; }
+        .btn-purple, .action-btn.neuro { background: var(--neuro-purple); }
+        .btn-purple:hover, .action-btn.neuro:hover { background: #6d28d9; }
+        
+        .status { font-weight: bold; margin-left: 10px; }
+    </style>
+</head>
+<body>
+
+<!-- 0. ELŐZETES TESZT INDÍTÓ ABLAK (OVERLAY) -->
+<div id="startScreenOverlay" style="display: none;">
+    <div class="start-card" id="startCardContent">
+            <h2>⚡ Teszt Folyamatban...</h2>
+            <p>Szenzoros és válaszidő kalibráció fut.</p>
+            <div id="testProgress" style="font-size: 2rem; font-weight: bold; color: #a7f3d0; margin: 20px 0;">0</div>
+            <p style="font-size: 0.85rem; color: #cbd5e1;">A teszt végeztével a felület automatikusan megnyílik.</p>
+        </div>
+</div>
+
+<!-- FŐ SZIMULÁCIÓS FELÜLET -->
+<div class="container" id="mainContainer" style="filter: none; pointer-events: auto;">
+    <h1>🧠 Neuromatematikai &amp; Neuroplaszticitási Tréning Rendszer</h1>
+    
+    <div class="badge-container">
+        <span class="badge neuro">⚡ Fast Flash Anzan (0.2s)</span>
+        <span class="badge neuro">🧘 Alpha-Theta Binaurális Hangok</span>
+        <span class="badge neuro">🎯 Working Memory Stroop-Teszt</span>
+        <span class="badge neuro">🧮 Mentális Abakusz Modul</span>
+        <span class="badge neuro">🖐️ Szenzomotoros Tréning</span>
+    </div>
+
+    <!-- 20 PERCES INTERAKTÍV TRÉNING PANEL -->
+    <div class="neuro-timer-box">
+        <div>
+            <h2 style="margin: 0; color: #f3e8ff; border: none;">⏱️ 20 Perces Neuroplaszticitási Edzés</h2>
+            <p id="neuroPhaseText" style="margin: 5px 0 0 0; font-size: 0.9rem; color: #ddd6fe;">1. Fázis: Szenzoros Szinkron (00:00 - 03:00)</p>
+        </div>
+        <div style="text-align: right;">
+            <div id="neuroTimerDisplay" style="font-size: 1.8rem; font-family: monospace; font-weight: bold;">20:00</div>
+            <button class="action-btn neuro" onclick="start20MinSession()">▶ Edzés Indítása</button>
+        </div>
+    </div>
+
+    <!-- ADVANCED NEUROMATHEMATICS & VÍZSUGÁR SIMULATION SECTION -->
+    <div class="card" style="background: #ffffff; border-color: #7c3aed;">
+        <div style="display: flex; gap: 20px; flex-wrap: wrap;">
+            <div style="flex: 1; min-width: 300px;">
+                <h3>👁️ Vizuális Vízsugár &amp; Neuromatematikai Canvas</h3>
+                <canvas id="neuroCanvas" class="canvas-dark" width="600" height="280"></canvas>
+                <div style="margin-top: 10px; display: flex; gap: 10px; flex-wrap: wrap;">
+                    <button class="action-btn neuro" onclick="runFlashAnzanTest()">⚡ Flash Anzan (300ms)</button>
+                    <button class="action-btn neuro" onclick="runStroopTest()">🎯 Stroop-Teszt Indítása</button>
+                </div>
+            </div>
+            
+            <div style="flex: 1; min-width: 300px; background: #fafafa; padding: 15px; border-radius: 8px; border: 1px solid #e2e8f0;">
+                <h3>🧮 Virtuális Abakusz (Finommotoros D&amp;D)</h3>
+                <p style="font-size: 0.85rem; color: #475569;">Állítsd be a helyzetvektort a golyók eltolásával!</p>
+                <div id="abacusContainer" style="display: flex; gap: 12px; justify-content: center; background: #78350f; padding: 15px; border-radius: 8px; flex-wrap: wrap;"><div style="width: 35px; background: rgb(254, 243, 199); height: 120px; border-radius: 4px; position: relative; display: flex; flex-direction: column; justify-content: space-between; align-items: center; padding: 4px 0px;">
+                <div style="width: 25px; height: 15px; background: #d97706; border-radius: 10px; cursor: pointer;" onclick="moveBead(0)"></div>
+                <div style="width: 2px; height: 100%; background: #78350f; position: absolute; z-index: 0;"></div>
+                <span style="z-index: 1; font-weight: bold; font-size: 0.8rem;">50</span>
+            </div><div style="width: 35px; background: rgb(254, 243, 199); height: 120px; border-radius: 4px; position: relative; display: flex; flex-direction: column; justify-content: space-between; align-items: center; padding: 4px 0px;">
+                <div style="width: 25px; height: 15px; background: #d97706; border-radius: 10px; cursor: pointer;" onclick="moveBead(1)"></div>
+                <div style="width: 2px; height: 100%; background: #78350f; position: absolute; z-index: 0;"></div>
+                <span style="z-index: 1; font-weight: bold; font-size: 0.8rem;">90</span>
+            </div><div style="width: 35px; background: rgb(254, 243, 199); height: 120px; border-radius: 4px; position: relative; display: flex; flex-direction: column; justify-content: space-between; align-items: center; padding: 4px 0px;">
+                <div style="width: 25px; height: 15px; background: #d97706; border-radius: 10px; cursor: pointer;" onclick="moveBead(2)"></div>
+                <div style="width: 2px; height: 100%; background: #78350f; position: absolute; z-index: 0;"></div>
+                <span style="z-index: 1; font-weight: bold; font-size: 0.8rem;">20</span>
+            </div><div style="width: 35px; background: rgb(254, 243, 199); height: 120px; border-radius: 4px; position: relative; display: flex; flex-direction: column; justify-content: space-between; align-items: center; padding: 4px 0px;">
+                <div style="width: 25px; height: 15px; background: #d97706; border-radius: 10px; cursor: pointer;" onclick="moveBead(3)"></div>
+                <div style="width: 2px; height: 100%; background: #78350f; position: absolute; z-index: 0;"></div>
+                <span style="z-index: 1; font-weight: bold; font-size: 0.8rem;">20</span>
+            </div><div style="width: 35px; background: rgb(254, 243, 199); height: 120px; border-radius: 4px; position: relative; display: flex; flex-direction: column; justify-content: space-between; align-items: center; padding: 4px 0px;">
+                <div style="width: 25px; height: 15px; background: #d97706; border-radius: 10px; cursor: pointer;" onclick="moveBead(4)"></div>
+                <div style="width: 2px; height: 100%; background: #78350f; position: absolute; z-index: 0;"></div>
+                <span style="z-index: 1; font-weight: bold; font-size: 0.8rem;">80</span>
+            </div><div style="width: 35px; background: rgb(254, 243, 199); height: 120px; border-radius: 4px; position: relative; display: flex; flex-direction: column; justify-content: space-between; align-items: center; padding: 4px 0px;">
+                <div style="width: 25px; height: 15px; background: #d97706; border-radius: 10px; cursor: pointer;" onclick="moveBead(5)"></div>
+                <div style="width: 2px; height: 100%; background: #78350f; position: absolute; z-index: 0;"></div>
+                <span style="z-index: 1; font-weight: bold; font-size: 0.8rem;">60</span>
+            </div></div>
+                <div id="neuroFeedback" style="margin-top: 15px; font-weight: bold; font-size: 0.9rem;">⚡ Mentsd el a képet a vizuális memóriádban!</div>
+            </div>
+        </div>
+    </div>
+
+    <h2>🧩 Neuro-Fejlesztő Modulok</h2>
+
+    <!-- 1. FINOMMOTORIKA & PRECÍZIÓ -->
+    <div class="card">
+        <h3>1. Finommotorika: Pontos Célba Húzás (Szenzomotoros tréning)</h3>
+        <p>Húzd a sárga golyót pontosan a szaggatott célkereszt közepébe!</p>
+        <canvas id="cMotor" width="600" height="150"></canvas>
+        <div>
+            <span id="stMotor" class="status">Fogd meg és húzd a golyót!</span>
+        </div>
+    </div>
+
+    <!-- 2. AUDITÍV MEMÓRIA & DISZKRIMINÁCIÓ -->
+    <div class="card">
+        <h3>2. Auditív Érzékelés: Hang-memória</h3>
+        <p>Hallgasd meg a lejátszott hangot, majd válaszd ki a megfelelő frekvenciát!</p>
+        <canvas id="cAudio" width="600" height="100"></canvas>
+        <div>
+            <button class="btn btn-purple" onclick="playTargetTone()">🔊 Hang Lejátszása</button>
+            <button class="btn" onclick="checkTone(261.63)">Mély</button>
+            <button class="btn" onclick="checkTone(440)">Közepes</button>
+            <button class="btn" onclick="checkTone(880)">Magas</button>
+            <span id="stAudio" class="status"></span>
+        </div>
+    </div>
+
+    <!-- 3. LOGIKAI AND KAPU -->
+    <div class="card">
+        <h3>3. Logikai AND Kapu (Szenzomotoros Interakció)</h3>
+        <p>Kattints a kapcsolókra a lámpa bekapcsolásához!</p>
+        <canvas id="c2" width="600" height="120" style="cursor:pointer;" onclick="click2(event)"></canvas>
+        <div>
+            <span id="st2" class="status">Kattints a dobozokra!</span>
+        </div>
+    </div>
+
+    <!-- 4. TÉRBELL TÁJÉKOZÓDÁS & FORGATÁS -->
+    <div class="card">
+        <h3>4. Térbeli Tájékozódás: Színes Forgatás</h3>
+        <p>Forgasd el az elemet úgy, hogy a színes ágak a célpozícióba (90°) kerüljenek!</p>
+        <canvas id="c3" width="600" height="200"></canvas>
+        <div>
+            <button class="btn btn-purple" onclick="rotate3()">🔄 Forgatás (+90°)</button>
+            <span id="st3" class="status"></span>
+        </div>
+    </div>
+
+    <!-- 5. LOGIKAI SZÍNSORREND -->
+    <div class="card">
+        <h3>5. Logikai Színsorrend (Auditív &amp; Vizuális Memória)</h3>
+        <p>Milyen színű kör következik a sorozatban?</p>
+        <canvas id="cMinta" width="600" height="120"></canvas>
+        <div>
+            <button class="btn" style="background-color: #ef4444;" onclick="checkMinta(&#39;piros&#39;)">Piros</button>
+            <button class="btn" style="background-color: #2563eb;" onclick="checkMinta(&#39;kék&#39;)">Kék</button>
+            <button class="btn" style="background-color: #10b981;" onclick="checkMinta(&#39;zöld&#39;)">Zöld</button>
+            <span id="stMinta" class="status"></span>
+        </div>
+    </div>
+
+    <!-- 6. LOGIKAI & PERCEPCIÓS MÁTRIX -->
+    <div class="card">
+        <h3>6. Vizuális Mátrix: Hiányzó Alakzat</h3>
+        <p>Milyen alakzat hiányzik a végéről? (Sorrend: Négyzet ➔ Háromszög ➔ Négyzet ➔ ?)</p>
+        <canvas id="c1" width="600" height="120"></canvas>
+        <div>
+            <button class="btn" onclick="check1(&#39;kör&#39;)">Kör</button>
+            <button class="btn" onclick="check1(&#39;négyzet&#39;)">Négyzet</button>
+            <button class="btn" onclick="check1(&#39;háromszög&#39;)">Háromszög</button>
+            <span id="st1" class="status"></span>
+        </div>
+    </div>
+</div>
+
+<script>
+    let t = 0;
+    const AudioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+    // TESZT INDÍTÓ ÉS AUTOMATIKUS ZÁRÓ LOGIKA
+    function startPreTest() {
+        const content = document.getElementById('startCardContent');
+        content.innerHTML = `
+            <h2>⚡ Teszt Folyamatban...</h2>
+            <p>Szenzoros és válaszidő kalibráció fut.</p>
+            <div id="testProgress" style="font-size: 2rem; font-weight: bold; color: #a7f3d0; margin: 20px 0;">3</div>
+            <p style="font-size: 0.85rem; color: #cbd5e1;">A teszt végeztével a felület automatikusan megnyílik.</p>
+        `;
+
+        playSound(440, 'sine', 0.2);
+        let count = 3;
+        const timer = setInterval(() => {
+            count--;
+            const progressEl = document.getElementById('testProgress');
+            if (progressEl) progressEl.innerText = count;
+            
+            if (count > 0) {
+                playSound(440 + (3 - count) * 110, 'sine', 0.2);
+            } else {
+                clearInterval(timer);
+                playSound(880, 'sine', 0.4);
+                // Teszt ablak bezárása és felület feloldása
+                document.getElementById('startScreenOverlay').style.display = 'none';
+                const mainContainer = document.getElementById('mainContainer');
+                mainContainer.style.filter = 'none';
+                mainContainer.style.pointerEvents = 'auto';
+            }
+        }, 1000);
+    }
+
+    // Haptikus és auditív visszajelzés segédfüggvények
+    function triggerHaptic(pattern = [50]) {
+        if (navigator.vibrate) navigator.vibrate(pattern);
+    }
+
+    function playSound(freq, type = 'sine', duration = 0.2) {
+        if (AudioCtx.state === 'suspended') AudioCtx.resume();
+        const osc = AudioCtx.createOscillator();
+        const gain = AudioCtx.createGain();
+        osc.type = type;
+        osc.frequency.setValueAtTime(freq, AudioCtx.currentTime);
+        gain.gain.setValueAtTime(0.1, AudioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.0001, AudioCtx.currentTime + duration);
+        osc.connect(gain);
+        gain.connect(AudioCtx.destination);
+        osc.start();
+        osc.stop(AudioCtx.currentTime + duration);
+    }
+
+    // --- NEUROMATEMATIKA & ABAKUSZ ÁLLAPOT ÉS LOGIKA ---
+    let neuroVector = [50, 80, 20, 90, 30, 60];
+    let sessionTimer = null;
+    let secondsLeft = 1200; // 20 perc
+
+    function playBinauralTone(freq) {
+        if (AudioCtx.state === 'suspended') AudioCtx.resume();
+        const osc1 = AudioCtx.createOscillator();
+        const osc2 = AudioCtx.createOscillator();
+        const merger = AudioCtx.createChannelMerger(2);
+
+        osc1.frequency.value = freq;
+        osc2.frequency.value = freq + 7;
+
+        osc1.connect(merger, 0, 0);
+        osc2.connect(merger, 0, 1);
+        merger.connect(AudioCtx.destination);
+
+        osc1.start(); osc2.start();
+        osc1.stop(AudioCtx.currentTime + 0.3);
+        osc2.stop(AudioCtx.currentTime + 0.3);
+    }
+
+    function start20MinSession() {
+        if (sessionTimer) clearInterval(sessionTimer);
+        secondsLeft = 1200;
+        sessionTimer = setInterval(() => {
+            secondsLeft--;
+            let mins = Math.floor(secondsLeft / 60);
+            let secs = secondsLeft % 60;
+            document.getElementById('neuroTimerDisplay').innerText = 
+                `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+
+            if (secondsLeft > 1020) {
+                document.getElementById('neuroPhaseText').innerText = "1. Fázis: Szenzoros Szinkron (00:00 - 03:00)";
+            } else if (secondsLeft > 720) {
+                document.getElementById('neuroPhaseText').innerText = "2. Fázis: Fast Flash Anzan Vizuális Memória (03:00 - 08:00)";
+            } else if (secondsLeft > 300) {
+                document.getElementById('neuroPhaseText').innerText = "3. Fázis: Working Memory Stroop-teszt (08:00 - 15:00)";
+            } else if (secondsLeft > 0) {
+                document.getElementById('neuroPhaseText').innerText = "4. Fázis: Finommotoros Abakusz Levezetés (15:00 - 20:00)";
+            } else {
+                clearInterval(sessionTimer);
+                alert("🎉 A 20 perces Neuromatematikai Tréning sikeresen véget ért!");
+            }
+        }, 1000);
+    }
+
+    function drawNeuroCanvas(hideValues = false, stroopMode = false) {
+        const cvs = document.getElementById('neuroCanvas');
+        if (!cvs) return;
+        const ctx = cvs.getContext('2d');
+        ctx.clearRect(0, 0, cvs.width, cvs.height);
+
+        const barW = cvs.width / neuroVector.length;
+
+        neuroVector.forEach((val, i) => {
+            const h = (val / 100) * (cvs.height - 40);
+            const x = i * barW + 10;
+            const y = cvs.height - h - 20;
+
+            let color = '#2563eb';
+            if (stroopMode) {
+                const colors = ['#ef4444', '#10b981', '#f59e0b', '#8b5cf6'];
+                color = colors[(i + 1) % colors.length];
+            }
+
+            ctx.fillStyle = color;
+            ctx.fillRect(x, y, barW - 20, h);
+
+            if (!hideValues) {
+                ctx.fillStyle = '#ffffff';
+                ctx.font = '12px monospace';
+                ctx.fillText(`${val}%`, x + 5, y - 5);
+                ctx.fillText(`i:${i}`, x + 5, cvs.height - 5);
+            }
+        });
+    }
+
+    function runFlashAnzanTest() {
+        drawNeuroCanvas(false);
+        playBinauralTone(440);
+        setTimeout(() => {
+            drawNeuroCanvas(true);
+            document.getElementById('neuroFeedback').innerText = "⚡ Mentsd el a képet a vizuális memóriádban!";
+        }, 300);
+    }
+
+    function runStroopTest() {
+        drawNeuroCanvas(false, true);
+        document.getElementById('neuroFeedback').innerText = "🎯 Stroop-Modus: Ne a színre, csak a vízsugár magasságára koncentrálj!";
+    }
+
+    function renderAbacus() {
+        const container = document.getElementById('abacusContainer');
+        if (!container) return;
+        container.innerHTML = '';
+        neuroVector.forEach((val, i) => {
+            const col = document.createElement('div');
+            col.style.cssText = "width: 35px; background: #fef3c7; height: 120px; border-radius: 4px; position: relative; display: flex; flex-direction: column; justify-content: space-between; align-items: center; padding: 4px 0;";
+            col.innerHTML = `
+                <div style="width: 25px; height: 15px; background: #d97706; border-radius: 10px; cursor: pointer;" onclick="moveBead(${i})"></div>
+                <div style="width: 2px; height: 100%; background: #78350f; position: absolute; z-index: 0;"></div>
+                <span style="z-index: 1; font-weight: bold; font-size: 0.8rem;">${val}</span>
+            `;
+            container.appendChild(col);
+        });
+    }
+
+    function moveBead(i) {
+        neuroVector[i] = (neuroVector[i] + 10) % 110;
+        playBinauralTone(200 + neuroVector[i] * 4);
+        renderAbacus();
+        drawNeuroCanvas();
+    }
+
+    // --- 1. MODUL: FINOMMOTORIKA ---
+    let ballX = 80, ballY = 75;
+    let isDragging = false;
+    const targetX = 500, targetY = 75;
+
+    const cMotor = document.getElementById('cMotor');
+    if (cMotor) {
+        cMotor.addEventListener('pointerdown', (e) => {
+            const rect = cMotor.getBoundingClientRect();
+            const x = (e.clientX - rect.left) * (cMotor.width / rect.width);
+            const y = (e.clientY - rect.top) * (cMotor.height / rect.height);
+            if (Math.hypot(x - ballX, y - ballY) < 30) {
+                isDragging = true;
+                triggerHaptic(20);
+            }
+        });
+
+        cMotor.addEventListener('pointermove', (e) => {
+            if (isDragging) {
+                const rect = cMotor.getBoundingClientRect();
+                ballX = (e.clientX - rect.left) * (cMotor.width / rect.width);
+                ballY = (e.clientY - rect.top) * (cMotor.height / rect.height);
+            }
+        });
+
+        cMotor.addEventListener('pointerup', () => {
+            if (isDragging) {
+                isDragging = false;
+                const dist = Math.hypot(ballX - targetX, ballY - targetY);
+                const st = document.getElementById('stMotor');
+                if (dist < 25) {
+                    ballX = targetX; ballY = targetY;
+                    st.style.color = '#10b981'; st.innerText = '🎉 Kiváló motoros pontosság!';
+                    playSound(523.25, 'sine', 0.3);
+                    triggerHaptic([40, 60, 40]);
+                } else {
+                    st.style.color = '#ef4444'; st.innerText = 'Próbáld pontosabban a célkeresztbe húzni!';
+                    playSound(150, 'sawtooth', 0.2);
+                }
+            }
+        });
+    }
+
+    // --- 2. MODUL: AUDITÍV MEMÓRIA ---
+    let currentTargetTone = 440;
+    function playTargetTone() {
+        const tones = [261.63, 440, 880];
+        currentTargetTone = tones[Math.floor(Math.random() * tones.length)];
+        playSound(currentTargetTone, 'sine', 0.6);
+        document.getElementById('stAudio').innerText = 'Hang lejátszva, válaszd ki a magasságát!';
+    }
+
+    function checkTone(freq) {
+        const st = document.getElementById('stAudio');
+        if (freq === currentTargetTone) {
+            st.style.color = '#10b981'; st.innerText = '🎉 Helyes auditív felismerés!';
+            playSound(659.25, 'sine', 0.2);
+            triggerHaptic(50);
+        } else {
+            st.style.color = '#ef4444'; st.innerText = '❌ Nem ez volt a lejátszott hang.';
+            playSound(180, 'square', 0.2);
+        }
+    }
+
+    // --- 3. MODUL: LOGIKAI AND KAPU ---
+    let switchA = false;
+    let switchB = false;
+
+    function click2(e) {
+        const rect = e.target.getBoundingClientRect();
+        const scaleX = e.target.width / rect.width;
+        const x = (e.clientX - rect.left) * scaleX;
+
+        if (x >= 50 && x <= 130) { switchA = !switchA; triggerHaptic(30); playSound(440, 'sine', 0.1); }
+        if (x >= 180 && x <= 260) { switchB = !switchB; triggerHaptic(30); playSound(480, 'sine', 0.1); }
+
+        const st = document.getElementById('st2');
+        if (switchA && switchB) {
+            st.style.color = '#10b981'; st.innerText = '🎉 Áramkör nyitva, a lámpa világít!';
+            playSound(523.25, 'sine', 0.3);
+            triggerHaptic([40, 60, 40]);
+        } else {
+            st.style.color = '#64748b'; st.innerText = 'Mindkét kapcsolónak BE kell lennie!';
+        }
+    }
+
+    // --- 4. MODUL: FORGATÁS ---
+    let currentAngle = 270, targetAngle = 270;
+    const CROSS_COLORS = { top: '#ef4444', right: '#3b82f6', bottom: '#10b981', left: '#f59e0b' };
+
+    function drawColorCross(ctx, cx, cy, angle, isGlowing) {
+        ctx.save();
+        ctx.translate(cx, cy);
+        ctx.rotate((angle * Math.PI) / 180);
+        if (isGlowing) {
+            ctx.strokeStyle = '#10b981'; ctx.lineWidth = 5 + Math.sin(t * 6) * 3;
+            ctx.strokeRect(-35, -35, 70, 70);
+        }
+        ctx.fillStyle = CROSS_COLORS.top; ctx.fillRect(-10, -30, 20, 30);
+        ctx.fillStyle = CROSS_COLORS.right; ctx.fillRect(0, -10, 30, 20);
+        ctx.fillStyle = CROSS_COLORS.bottom; ctx.fillRect(-10, 0, 20, 30);
+        ctx.fillStyle = CROSS_COLORS.left; ctx.fillRect(-30, -10, 30, 20);
+        ctx.fillStyle = '#0f172a'; ctx.fillRect(-10, -10, 20, 20);
+        ctx.restore();
+    }
+
+    function rotate3() {
+        targetAngle += 90;
+        playSound(330, 'sine', 0.1);
+        triggerHaptic(25);
+        setTimeout(() => {
+            const normAngle = Math.round(targetAngle) % 360;
+            const st = document.getElementById('st3');
+            if (normAngle === 90) {
+                st.style.color = '#10b981'; st.innerText = '🎉 Helyes illeszkedés!';
+                playSound(523.25, 'sine', 0.3);
+                triggerHaptic([40, 60, 40]);
+            } else {
+                st.style.color = '#ef4444'; st.innerText = 'Forgasd tovább!';
+            }
+        }, 300);
+    }
+
+    // --- 5. MODUL: LOGIKAI SZÍNSORREND ---
+    let ansMinta = '';
+    function checkMinta(val) {
+        ansMinta = val;
+        const st = document.getElementById('stMinta');
+        if (val === 'zöld') {
+            st.style.color = '#10b981'; st.innerText = '🎉 Helyes! A zöld szín következik a sorban!';
+            playSound(523.25, 'sine', 0.3);
+            triggerHaptic([40, 60, 40]);
+        } else {
+            st.style.color = '#ef4444'; st.innerText = '❌ Próbáld újra!';
+            playSound(150, 'sawtooth', 0.2);
+            triggerHaptic(100);
+        }
+    }
+
+    // --- 6. MODUL: HIÁNYZÓ ALAKZAT ---
+    let ans1 = '';
+    function check1(val) {
+        ans1 = val;
+        const st = document.getElementById('st1');
+        if (val === 'kör') {
+            st.style.color = '#10b981'; st.innerText = '🎉 Helyes válasz!';
+            playSound(523.25, 'sine', 0.3);
+            triggerHaptic([40, 60, 40]);
+        } else {
+            st.style.color = '#ef4444'; st.innerText = '❌ Próbáld újra!';
+            playSound(150, 'sawtooth', 0.2);
+            triggerHaptic(100);
+        }
+    }
+
+    // --- FŐ RENDER HUROK ---
+    function render() {
+        t += 0.05;
+
+        // 1. MOTOR
+        if (cMotor) {
+            const ctx = cMotor.getContext('2d');
+            ctx.clearRect(0, 0, cMotor.width, cMotor.height);
+            ctx.strokeStyle = '#2563eb'; ctx.lineWidth = 2; ctx.setLineDash([6, 6]);
+            ctx.beginPath(); ctx.arc(targetX, targetY, 25, 0, Math.PI * 2); ctx.stroke();
+            ctx.setLineDash([]);
+            ctx.fillStyle = '#f59e0b';
+            ctx.beginPath(); ctx.arc(ballX, ballY, 20, 0, Math.PI * 2); ctx.fill();
+        }
+
+        // 2. AUDIO CANVAS VISUALIZER
+        const cAudio = document.getElementById('cAudio');
+        if (cAudio) {
+            const ctx = cAudio.getContext('2d');
+            ctx.clearRect(0, 0, cAudio.width, cAudio.height);
+            ctx.strokeStyle = '#7c3aed'; ctx.lineWidth = 3;
+            ctx.beginPath();
+            for (let x = 0; x < cAudio.width; x += 10) {
+                let y = 50 + Math.sin(x * 0.05 + t * 2) * 15;
+                if (x === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+            }
+            ctx.stroke();
+        }
+
+        // 3. LOGIKAI AND KAPU CANVAS
+        const c2 = document.getElementById('c2');
+        if (c2) {
+            const ctx = c2.getContext('2d');
+            ctx.clearRect(0, 0, c2.width, c2.height);
+
+            ctx.fillStyle = switchA ? '#10b981' : '#f87171';
+            ctx.fillRect(50, 35, 80, 50);
+            ctx.fillStyle = '#fff'; ctx.font = 'bold 16px sans-serif';
+            ctx.fillText('A: ' + (switchA ? 'BE' : 'KI'), 65, 65);
+
+            ctx.fillStyle = switchB ? '#10b981' : '#f87171';
+            ctx.fillRect(180, 35, 80, 50);
+            ctx.fillStyle = '#fff';
+            ctx.fillText('B: ' + (switchB ? 'BE' : 'KI'), 195, 65);
+
+            let active = switchA && switchB;
+            ctx.fillStyle = '#1e293b'; ctx.fillRect(320, 35, 80, 50);
+            ctx.fillStyle = '#fff'; ctx.fillText('AND', 340, 65);
+
+            let glow = active ? Math.sin(t * 8) * 4 : 0;
+            ctx.fillStyle = active ? '#10b981' : '#cbd5e1';
+            ctx.beginPath(); ctx.arc(500, 60, 22 + glow, 0, Math.PI*2); ctx.fill();
+        }
+
+        // 4. FORGATÁS
+        const c3 = document.getElementById('c3');
+        if (c3) {
+            const ctx = c3.getContext('2d');
+            ctx.clearRect(0, 0, c3.width, c3.height);
+
+            currentAngle += (targetAngle - currentAngle) * 0.1;
+            const normAngle = Math.round(currentAngle) % 360;
+            const isMatched = (normAngle === 90);
+
+            const cx = 150, cy = 100;
+            ctx.strokeStyle = '#e2e8f0'; ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.moveTo(cx - 60, cy); ctx.lineTo(cx + 60, cy);
+            ctx.moveTo(cx, cy - 60); ctx.lineTo(cx, cy + 60);
+            ctx.stroke();
+
+            ctx.fillStyle = '#94a3b8'; ctx.font = '11px sans-serif';
+            ctx.fillText('0°', cx + 65, cy + 4);
+            ctx.fillText('90°', cx - 8, cy + 75);
+            ctx.fillText('180°', cx - 85, cy + 4);
+            ctx.fillText('270°', cx - 10, cy - 65);
+
+            drawColorCross(ctx, cx, cy, currentAngle, isMatched);
+
+            ctx.fillStyle = isMatched ? '#10b981' : '#0f172a';
+            ctx.font = 'bold 14px sans-serif';
+            ctx.fillText('Jelenlegi szög: ' + normAngle + '°', cx - 55, cy + 95);
+
+            const targetCx = 450, targetCy = 100;
+            ctx.strokeStyle = '#e2e8f0'; ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.moveTo(targetCx - 60, targetCy); ctx.lineTo(targetCx + 60, targetCy);
+            ctx.moveTo(targetCx, targetCy - 60); ctx.lineTo(targetCx, targetCy + 60);
+            ctx.stroke();
+
+            drawColorCross(ctx, targetCx, targetCy, 90, false);
+
+            ctx.fillStyle = '#0f172a'; ctx.font = 'bold 14px sans-serif';
+            ctx.fillText('Cél pozíció (90°)', targetCx - 45, targetCy + 95);
+        }
+
+        // 5. SZÍNSORREND CANVAS
+        const cMinta = document.getElementById('cMinta');
+        if (cMinta) {
+            const ctx = cMinta.getContext('2d');
+            ctx.clearRect(0, 0, cMinta.width, cMinta.height);
+            let dy = Math.sin(t * 1.5) * 5;
+
+            const colors = ['#ef4444', '#2563eb', '#10b981', '#ef4444', '#2563eb'];
+            const xPositions = [60, 140, 220, 300, 380];
+
+            for (let i = 0; i < colors.length; i++) {
+                ctx.fillStyle = colors[i];
+                ctx.beginPath();
+                ctx.arc(xPositions[i], 60 + (i % 2 === 0 ? dy : -dy), 22, 0, Math.PI * 2);
+                ctx.fill();
+            }
+
+            ctx.strokeStyle = '#94a3b8'; ctx.lineWidth = 3;
+            ctx.strokeRect(440, 35, 50, 50);
+
+            if (ansMinta === 'zöld') {
+                ctx.fillStyle = '#10b981';
+                ctx.beginPath(); ctx.arc(465, 60, 20, 0, Math.PI * 2); ctx.fill();
+            } else if (ansMinta !== '') {
+                ctx.fillStyle = '#ef4444'; ctx.font = 'bold 30px sans-serif';
+                ctx.fillText('❌', 452, 72);
+            } else {
+                ctx.fillStyle = '#64748b'; ctx.font = 'bold 30px sans-serif';
+                ctx.fillText('?', 457, 72);
+            }
+        }
+
+        // 6. MÁTRIX
+        const c1 = document.getElementById('c1');
+        if (c1) {
+            const ctx = c1.getContext('2d');
+            ctx.clearRect(0, 0, c1.width, c1.height);
+            let dy = Math.sin(t) * 6;
+            ctx.fillStyle = '#2563eb'; ctx.fillRect(60, 40 - dy, 40, 40);
+            ctx.fillStyle = '#7c3aed'; ctx.beginPath(); ctx.moveTo(190, 80 + dy); ctx.lineTo(210, 40 + dy); ctx.lineTo(230, 80 + dy); ctx.fill();
+            ctx.fillStyle = '#2563eb'; ctx.fillRect(320, 40 - dy, 40, 40);
+            ctx.strokeStyle = '#94a3b8'; ctx.lineWidth = 3; ctx.strokeRect(460, 35, 50, 50);
+            if (ans1 === 'kör') {
+                ctx.fillStyle = '#10b981'; ctx.beginPath(); ctx.arc(485, 60, 20, 0, Math.PI*2); ctx.fill();
+            } else if (ans1 !== '') {
+                ctx.fillStyle = '#ef4444'; ctx.font = 'bold 30px sans-serif';
+                ctx.fillText('❌', 472, 72);
+            } else {
+                ctx.fillStyle = '#64748b'; ctx.font = 'bold 30px sans-serif';
+                ctx.fillText('?', 477, 72);
+            }
+        }
+
+        requestAnimationFrame(render);
+    }
+
+    window.onload = () => { 
+        drawNeuroCanvas();
+        renderAbacus();
+        render(); 
+    };
+</script>
+
+
+</body></html>
