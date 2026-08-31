@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<!-- saved from url=(0068)file:///C:/Users/Utilizator/Downloads/gemini-code-1787582090704.html -->
+<html lang="hu"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <title>Margitszigeti Vízfüggöny Szimuláció és Elméleti Magyarázat</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: #05050a;
+            color: #e2e8f0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            color: #a855f7;
+            font-size: 24px;
+            margin-bottom: 6px;
+        }
+
+        header p {
+            color: #94a3b8;
+            font-size: 14px;
+        }
+
+        /* Fő elrendezés: 2 oszlopos Dashboard */
+        .dashboard {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            max-width: 1200px;
+            width: 100%;
+            justify-content: center;
+        }
+
+        /* Bal oszlop: Animáció */
+        .simulation-column {
+            flex: 1 1 550px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: #0f172a;
+            border: 1px solid #1e293b;
+            border-radius: 12px;
+            padding: 15px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
+        }
+
+        .controls {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 12px;
+            width: 100%;
+            justify-content: center;
+        }
+
+        button {
+            padding: 8px 12px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            border: 1px solid #a855f7;
+            border-radius: 6px;
+            background-color: #1e1b4b;
+            color: #d8b4fe;
+            transition: all 0.2s ease;
+        }
+
+        button:hover {
+            background-color: #a855f7;
+            color: #ffffff;
+        }
+
+        .canvas-wrapper {
+            border: 2px solid #a855f7;
+            border-radius: 8px;
+            overflow: hidden;
+            background: #000;
+            box-shadow: 0 0 20px rgba(168, 85, 247, 0.2);
+            width: 100%;
+            max-width: 550px;
+        }
+
+        canvas {
+            display: block;
+            width: 100%;
+            height: auto;
+        }
+
+        /* Jobb oszlop: Elméleti magyarázat */
+        .theory-column {
+            flex: 1 1 450px;
+            background: #0f172a;
+            border: 1px solid #1e293b;
+            border-radius: 12px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .theory-title {
+            color: #38bdf8;
+            font-size: 18px;
+            border-bottom: 1px solid #334155;
+            padding-bottom: 8px;
+        }
+
+        .section-header {
+            color: #a855f7;
+            font-size: 14px;
+            font-weight: bold;
+            margin-top: 5px;
+        }
+
+        .theory-text {
+            font-size: 13px;
+            line-height: 1.6;
+            color: #cbd5e1;
+        }
+
+        ul {
+            padding-left: 18px;
+            font-size: 13px;
+            line-height: 1.5;
+            color: #cbd5e1;
+        }
+
+        li {
+            margin-bottom: 6px;
+        }
+
+        .code-snippet {
+            background: #020617;
+            border: 1px solid #1e293b;
+            border-radius: 6px;
+            padding: 10px;
+            font-family: 'Consolas', 'Courier New', monospace;
+            font-size: 12px;
+            color: #4ade80;
+            overflow-x: auto;
+        }
+
+        .highlight {
+            color: #facc15;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Margitszigeti Vízfüggöny &amp; Vektormátrix Szimuláció</h1>
+        <p>Informatikai és fizikai háttérmodell interaktív vizualizációval</p>
+    </header>
+
+    <div class="dashboard">
+        <!-- BAL OSZLOP: ANIMÁCIÓ -->
+        <div class="simulation-column">
+            <div class="controls">
+                <button onclick="setPortrait(0)">1. Lézer Portré</button>
+                <button onclick="setPortrait(1)">2. Puskás / Sportoló</button>
+                <button onclick="setPortrait(2)">3. Hologram Mátrix</button>
+            </div>
+            
+            <div class="canvas-wrapper">
+                <canvas id="portraitCanvas" width="550" height="380"></canvas>
+            </div>
+        </div>
+
+        <!-- JOBB OSZLOP: ELMÉLETI MAGYARÁZAT -->
+        <div class="theory-column">
+            <div class="theory-title">Informatikai &amp; Fizikai Elmélet</div>
+
+            <div class="theory-text">
+                A képeken látható margitszigeti vízfüggöny-vetítés nem egy hagyományos vászon, hanem egy 
+                <span class="highlight">dinamikus fizikai képpont-mátrix</span>. A fénycsóva a vízcseppeken szóródik szét, amit a számítógépes grafikában az alábbi elvekkel írunk le:
+            </div>
+
+            <div class="section-header">1. Tömbstruktúrák (Arrays of Objects)</div>
+            <div class="theory-text">
+                A rendszer a fúvókák állapotát és a vízköd részecskéit egy-egy tömbben tárolja. A szimulációban a vízpára mikroszkopikus cseppjeit egy tömb frissíti képkockáról képkockára:
+            </div>
+            <div class="code-snippet">
+particles[i] = {<br>
+&nbsp;&nbsp;x: Math.random() * width,<br>
+&nbsp;&nbsp;y: currentY - speed,<br>
+&nbsp;&nbsp;alpha: opacityVal<br>
+};
+            </div>
+
+            <div class="section-header">2. Vektorgrafika &amp; Transzformációk</div>
+            <ul style="list-style-type: square;">
+                <li><strong>Skálázhatóság:</strong> A portré nem raszterképként (pixelekként), hanem <span class="highlight">matematikai vektorgörbékként</span> van eltárolva, így felbontásromlás nélkül nagyítható.</li>
+                <li><strong>Transzformációs Mátrix:</strong> A <code>translate()</code> és <code>scale()</code> függvények segítségével a vetített alakzatok a vízfüggöny mozgását követve pulzálnak.</li>
+            </ul>
+
+            <div class="section-header">3. Fizikai Fényreflexió &amp; Diffúzió</div>
+            <div class="theory-text">
+                A vetítőből érkező lézersugarak a sötét háttérben láthatatlanok. A kép csak ott jön létre, ahol a sugár <span class="highlight">vízcseppbe ütközik</span> és elszóródik (Mie-szórás). Ezt a szimulációban a sugárútvonalak és a részecsketömb metszéspontjában kirajzolt ragyogás (glow effect) képezi le.
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById("portraitCanvas");
+        const ctx = canvas.getContext("2d");
+
+        let currentPortrait = 0;
+        let time = 0;
+
+        // Vízpára részecskék tömbje (Particle array)
+        const particles = [];
+        for (let i = 0; i < 200; i++) {
+            particles.push({
+                x: Math.random() * canvas.width,
+                y: 40 + Math.random() * 240,
+                radius: Math.random() * 2.5 + 1,
+                alpha: Math.random() * 0.5 + 0.2,
+                speedY: -Math.random() * 0.4 - 0.2
+            });
+        }
+
+        function setPortrait(id) {
+            currentPortrait = id;
+        }
+
+        // Vektoriális Arc Kirajzoló Rutin
+        function drawVectorFace(centerX, centerY, scale, primaryColor, secondaryColor) {
+            ctx.save();
+            ctx.translate(centerX, centerY);
+            ctx.scale(scale, scale);
+
+            ctx.shadowBlur = 18;
+            ctx.shadowColor = primaryColor;
+
+            // Fej & Haj
+            ctx.strokeStyle = primaryColor;
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+            ctx.ellipse(0, 0, 50, 70, 0, 0, Math.PI * 2);
+            ctx.stroke();
+
+            ctx.fillStyle = primaryColor;
+            ctx.beginPath();
+            ctx.arc(0, -28, 55, Math.PI, 0);
+            ctx.fill();
+
+            // Szemek
+            ctx.lineWidth = 2;
+            ctx.strokeStyle = "#ffffff";
+            ctx.beginPath(); ctx.arc(-20, -10, 9, 0.2, Math.PI - 0.2); ctx.stroke();
+            ctx.beginPath(); ctx.arc(20, -10, 9, 0.2, Math.PI - 0.2); ctx.stroke();
+
+            // Pupillák
+            ctx.fillStyle = secondaryColor;
+            ctx.beginPath(); ctx.arc(-20, -8, 4, 0, Math.PI * 2); ctx.fill();
+            ctx.beginPath(); ctx.arc(20, -8, 4, 0, Math.PI * 2); ctx.fill();
+
+            // Orr & Száj
+            ctx.strokeStyle = primaryColor;
+            ctx.beginPath();
+            ctx.moveTo(0, -8);
+            ctx.lineTo(-4, 12);
+            ctx.lineTo(4, 12);
+            ctx.stroke();
+
+            ctx.beginPath();
+            ctx.arc(0, 22, 20, 0.1, Math.PI - 0.1);
+            ctx.stroke();
+
+            ctx.restore();
+        }
+
+        // Háttérben lévő lézernyalábok
+        function drawBackgroundRays(primaryColor, secondaryColor) {
+            ctx.save();
+            ctx.lineWidth = 1.2;
+            const centerX = canvas.width / 2;
+            const baseY = canvas.height - 40;
+
+            for (let angle = -Math.PI / 3; angle <= Math.PI / 3; angle += 0.09) {
+                let rayAngle = angle + Math.sin(time + angle) * 0.05;
+                ctx.strokeStyle = (Math.random() > 0.5) ? primaryColor : secondaryColor;
+                ctx.beginPath();
+                ctx.moveTo(centerX, baseY);
+                ctx.lineTo(centerX + Math.sin(rayAngle) * 320, baseY - Math.cos(rayAngle) * 280);
+                ctx.stroke();
+            }
+            ctx.restore();
+        }
+
+        // Nézők sziluettje
+        function drawAudience() {
+            ctx.fillStyle = "#000000";
+            ctx.beginPath(); ctx.arc(100, 350, 20, 0, Math.PI * 2); ctx.fill();
+            ctx.fillRect(80, 365, 40, 30);
+
+            ctx.beginPath(); ctx.arc(275, 340, 24, 0, Math.PI * 2); ctx.fill();
+            ctx.fillRect(250, 358, 50, 30);
+
+            ctx.beginPath(); ctx.arc(440, 345, 22, 0, Math.PI * 2); ctx.fill();
+            ctx.fillRect(415, 362, 50, 30);
+        }
+
+        function draw() {
+            time += 0.03;
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            ctx.fillStyle = "#030308";
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            let primary, secondary;
+            if (currentPortrait === 0) { primary = "#c084fc"; secondary = "#38bdf8"; }
+            else if (currentPortrait === 1) { primary = "#facc15"; secondary = "#a855f7"; }
+            else { primary = "#22c55e"; secondary = "#06b6d4"; }
+
+            // 1. Lézersugarak
+            drawBackgroundRays(primary, secondary);
+
+            // 2. Vízköd részecskék frissítése & kirajzolása
+            particles.forEach(p => {
+                p.y += p.speedY;
+                if (p.y < 40) p.y = 280;
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(200, 230, 255, ${p.alpha})`;
+                ctx.fill();
+            });
+
+            // 3. Portré vetítés
+            const faceY = 150 + Math.sin(time) * 4;
+            drawVectorFace(canvas.width / 2, faceY, 1.0, primary, secondary);
+
+            // 4. Ragyogás effektus alul
+            let glowGrad = ctx.createRadialGradient(canvas.width/2, 260, 20, canvas.width/2, 260, 160);
+            glowGrad.addColorStop(0, primary);
+            glowGrad.addColorStop(1, "transparent");
+            ctx.fillStyle = glowGrad;
+            ctx.globalAlpha = 0.2;
+            ctx.fillRect(0, 80, canvas.width, 240);
+            ctx.globalAlpha = 1.0;
+
+            // 5. Medence aljzat
+            ctx.fillStyle = "#090910";
+            ctx.fillRect(0, 320, canvas.width, 60);
+            ctx.strokeStyle = primary;
+            ctx.lineWidth = 1;
+            ctx.strokeRect(0, 320, canvas.width, 2);
+
+            // 6. Nézők
+            drawAudience();
+
+            requestAnimationFrame(draw);
+        }
+
+        draw();
+    </script>
+
+</body></html>

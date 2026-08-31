@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<!-- saved from url=(0068)file:///C:/Users/Utilizator/Downloads/gemini-code-1787590152420.html -->
+<html lang="hu"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <title>Interaktív Tömbműveletek - Dinamikus Beszúrás Animációval</title>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; background: #0f172a; color: #f8fafc; padding: 20px; display: flex; flex-direction: column; align-items: center; }
+        .paper { background: #1e293b; padding: 30px; max-width: 720px; width: 100%; border-radius: 16px; border: 2px solid #334155; }
+        .title { color: #38bdf8; text-align: center; margin-top: 0; text-transform: uppercase; letter-spacing: 1px; }
+        
+        /* Dinamikus vezérlőpult */
+        .control-panel { background: #0f172a; border: 2px solid #0284c7; border-radius: 12px; padding: 18px; margin-bottom: 20px; }
+        .panel-title { color: #38bdf8; font-weight: bold; margin-bottom: 12px; font-size: 15px; text-transform: uppercase; }
+        .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; margin-bottom: 15px; }
+        .form-group { display: flex; flex-direction: column; gap: 4px; }
+        .form-group label { font-size: 12px; color: #94a3b8; font-weight: 600; }
+        .form-group input, .form-group select { background: #1e293b; border: 1px solid #38bdf8; color: #fff; padding: 6px 10px; border-radius: 6px; font-size: 14px; font-weight: bold; }
+        
+        canvas { background: #090d16; border-radius: 8px; display: block; margin: 0 auto 15px; border: 1px solid #334155; }
+        
+        .status-msg { background: #0c4a6e; color: #bae6fd; padding: 10px 14px; border-radius: 6px; font-family: monospace; font-size: 13px; text-align: center; margin-bottom: 20px; border-left: 4px solid #38bdf8; min-height: 20px; }
+        
+        .anim-btn { background: #10b981; color: #022c22; border: none; padding: 10px 20px; border-radius: 8px; font-weight: bold; cursor: pointer; width: 100%; font-size: 15px; transition: 0.2s; }
+        .anim-btn:hover { background: #34d399; }
+        
+        .q-card { background: #0f172a; border: 1px solid #334155; border-radius: 10px; padding: 16px; margin-bottom: 15px; }
+        .q-title { font-size: 14.5px; font-weight: 600; margin-bottom: 10px; }
+        .input-group { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+        input.box { border: 2px solid #38bdf8; background: #1e293b; color: #fff; border-radius: 6px; text-align: center; font-weight: bold; width: 60px; height: 32px; font-size: 15px; }
+        .box.correct { background: #15803d !important; border-color: #22c55e !important; }
+        .box.incorrect { background: #991b1b !important; border-color: #ef4444 !important; }
+        .btn-sm { border: none; padding: 6px 12px; border-radius: 6px; font-size: 12px; font-weight: bold; cursor: pointer; }
+        .btn-hint { background: #334155; color: #fde047; }
+        .btn-sol { background: #4338ca; color: #c7d2fe; }
+        .info-box { display: none; margin-top: 10px; padding: 10px 14px; border-radius: 6px; font-size: 13px; }
+        .hint-box { background: #1e1b4b; border-left: 4px solid #fde047; color: #fef08a; }
+        .sol-box { background: #064e3b; border-left: 4px solid #34d399; color: #a7f3d0; }
+        .footer-panel { text-align: center; margin-top: 25px; padding-top: 15px; border-top: 1px solid #334155; }
+        .btn-submit { background: #0284c7; color: white; border: none; padding: 10px 24px; border-radius: 8px; font-weight: bold; cursor: pointer; }
+        #score-board { margin-top: 12px; font-size: 16px; font-weight: bold; }
+    </style>
+</head>
+<body>
+<div class="paper">
+    <h2 class="title">Dinamikus Tömbbeszúrás Animációval</h2>
+    
+    <!-- Vezérlőpult a diák számára -->
+    <div class="control-panel">
+        <div class="panel-title">⚙️ Beszúrás Paraméterei</div>
+        <div class="form-grid">
+            <div class="form-group">
+                <label for="elem-count">Hány elemet?</label>
+                <input type="number" id="elem-count" min="1" max="3" value="2" onchange="updateDynamicQuestions()">
+            </div>
+            <div class="form-group">
+                <label for="target-pos">Pozíció indexe:</label>
+                <input type="number" id="target-pos" min="0" max="3" value="1" onchange="updateDynamicQuestions()">
+            </div>
+            <div class="form-group">
+                <label for="insert-mode">Elé vagy Után?</label>
+                <select id="insert-mode" onchange="updateDynamicQuestions()">
+                    <option value="before">Elé (előtt)</option>
+                    <option value="after">Után (mögé)</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="new-vals">Új értékek (vesszővel):</label>
+                <input type="text" id="new-vals" value="25, 35" onchange="updateDynamicQuestions()">
+            </div>
+        </div>
+        <button class="anim-btn" onclick="runInsertionAnimation()">▶ Animáció Indítása és Vizualizáció</button>
+    </div>
+
+    <!-- Animációs vászon és állapotjelző -->
+    <canvas id="cv" width="660" height="150"></canvas>
+    <div class="status-msg" id="status-text">Kattints az "Animáció Indítása" gombra a művelet lekövetéséhez!</div>
+
+    <!-- Dinamikusan frissülő kérdések a diák beállításai alapján -->
+    <div class="q-card">
+        <div class="q-title" id="q1-text">1. Hány eleme lesz a tömbnek a beszúrási művelet elvégzése után?</div>
+        <div class="input-group">
+            <input type="text" class="box" id="q1-box" data-ans="6">
+            <button class="btn-sm btn-hint" onclick="toggleBox(this, &#39;hint&#39;)">💡 Tipp</button>
+            <button class="btn-sm btn-sol" onclick="toggleBox(this, &#39;sol&#39;)">🔍 Megoldás</button>
+        </div>
+        <div class="info-box hint-box">💡 Adja hozzá az eredeti elemek számához (4) a beszúrni kívánt elemek számát!</div>
+        <div class="info-box sol-box" id="q1-sol">🔍 Az eredeti 4 elemhez hozzáadva az 2 új elemet, a végső hossz: <b>6</b>.</div>
+    </div>
+
+    <div class="q-card">
+        <div class="q-title" id="q2-text">2. Melyik lesz az az pontos index (0-tól számolva), ahová az ELSŐ új elem beékelődik?</div>
+        <div class="input-group">
+            <input type="text" class="box" id="q2-box" data-ans="1">
+            <button class="btn-sm btn-hint" onclick="toggleBox(this, &#39;hint&#39;)">💡 Tipp</button>
+            <button class="btn-sm btn-sol" onclick="toggleBox(this, &#39;sol&#39;)">🔍 Megoldás</button>
+        </div>
+        <div class="info-box hint-box">💡 Ha 'Elé' választottál, a megadott indexre kerül. Ha 'Után', akkor az azutáni (index + 1) helyre!</div>
+        <div class="info-box sol-box" id="q2-sol">🔍 A 1. indexű elem előtt a beszúrási index pontosan: <b>1</b>.</div>
+    </div>
+
+    <div class="q-card">
+        <div class="q-title" id="q3-text">3. Hány meglévő elemet kell jobbra léptetni a tömbben, hogy elegendő hely szabaduljon fel?</div>
+        <div class="input-group">
+            <input type="text" class="box" id="q3-box" data-ans="3">
+            <button class="btn-sm btn-hint" onclick="toggleBox(this, &#39;hint&#39;)">💡 Tipp</button>
+            <button class="btn-sm btn-sol" onclick="toggleBox(this, &#39;sol&#39;)">🔍 Megoldás</button>
+        </div>
+        <div class="info-box hint-box">💡 Minden olyan elem eltolódik jobbra, amely a beszúrási ponton vagy az után található.</div>
+        <div class="info-box sol-box" id="q3-sol">🔍 A beszúrási ponttól (1. index) a tömb végéig <b>3</b> elemet kell jobbra tolni.</div>
+    </div>
+
+    <div class="footer-panel">
+        <button class="btn-submit" onclick="checkAll()">Munkalap Ellenőrzése</button>
+        <div id="score-board"></div>
+    </div>
+</div>
+
+<script>
+// Kezdő alaptömb
+const baseArray = [10, 20, 30, 40];
+let isAnimating = false;
+
+const cv = document.getElementById('cv');
+const ctx = cv.getContext('2d');
+
+function getParams() {
+    let count = parseInt(document.getElementById('elem-count').value) || 1;
+    let pos = parseInt(document.getElementById('target-pos').value) || 0;
+    let mode = document.getElementById('insert-mode').value;
+    let valsRaw = document.getElementById('new-vals').value.split(',').map(v => parseInt(v.trim()) || 0);
+    
+    // Biztosítjuk, hogy a beszúrandó elemek tömbje egyezzen a megadott darabszámmal
+    let newVals = [];
+    for(let i=0; i<count; i++) {
+        newVals.push(valsRaw[i] !== undefined ? valsRaw[i] : 25 + i*5);
+    }
+
+    let insertIndex = mode === 'before' ? pos : pos + 1;
+    if (insertIndex > baseArray.length) insertIndex = baseArray.length;
+    if (insertIndex < 0) insertIndex = 0;
+
+    return { count, pos, mode, newVals, insertIndex };
+}
+
+function updateDynamicQuestions() {
+    let p = getParams();
+    let totalLength = baseArray.length + p.count;
+    let shiftedCount = baseArray.length - p.insertIndex;
+
+    // Kérdések és válaszok dinamikus frissítése
+    document.getElementById('q1-box').dataset.ans = totalLength;
+    document.getElementById('q1-sol').innerHTML = `🔍 Az eredeti 4 elemhez hozzáadva az ${p.count} új elemet, a végső hossz: <b>${totalLength}</b>.`;
+
+    document.getElementById('q2-box').dataset.ans = p.insertIndex;
+    let modeText = p.mode === 'before' ? 'előtt' : 'mögé (után)';
+    document.getElementById('q2-sol').innerHTML = `🔍 A ${p.pos}. indexű elem ${modeText} a beszúrási index pontosan: <b>${p.insertIndex}</b>.`;
+
+    document.getElementById('q3-box').dataset.ans = shiftedCount;
+    document.getElementById('q3-sol').innerHTML = `🔍 A beszúrási ponttól (${p.insertIndex}. index) a tömb végéig <b>${shiftedCount}</b> elemet kell jobbra tolni.`;
+
+    // Reset visszajelzés
+    document.querySelectorAll('.box').forEach(b => {
+        b.className = 'box';
+        b.value = '';
+    });
+    document.getElementById('score-board').textContent = '';
+
+    drawStaticState();
+}
+
+function drawBar(x, val, color, label, yOffset = 0, opacity = 1.0) {
+    let baseY = 100 + yOffset;
+    ctx.save();
+    ctx.globalAlpha = opacity;
+    ctx.fillStyle = color;
+    ctx.fillRect(x, baseY - val * 1.5, 45, val * 1.5);
+    
+    ctx.fillStyle = '#fff';
+    ctx.font = '12px monospace';
+    ctx.fillText(val, x + 14, baseY - val * 1.5 - 5);
+
+    ctx.fillStyle = '#38bdf8';
+    ctx.font = '12px monospace';
+    ctx.fillText(label, x + 12, baseY + 18);
+    ctx.restore();
+}
+
+function drawStaticState() {
+    ctx.clearRect(0, 0, cv.width, cv.height);
+    let p = getParams();
+
+    for (let i = 0; i < baseArray.length; i++) {
+        let x = 30 + i * 65;
+        let color = (i === p.pos) ? '#f59e0b' : '#0284c7';
+        drawBar(x, baseArray[i], color, `[${i}]`);
+    }
+
+    // Kijelölő nyíl a megadott pozíció felett
+    let targetX = 30 + p.pos * 65 + 22;
+    ctx.fillStyle = '#f59e0b';
+    ctx.font = '16px bold';
+    ctx.fillText('▼', targetX - 6, 25);
+}
+
+function runInsertionAnimation() {
+    if (isAnimating) return;
+    isAnimating = true;
+
+    let p = getParams();
+    let status = document.getElementById('status-text');
+    let startTime = null;
+    let step1Duration = 1200; // Eltolás animálása
+    let step2Duration = 1200; // Új elemek beejtése
+
+    function animate(timestamp) {
+        if (!startTime) startTime = timestamp;
+        let elapsed = timestamp - startTime;
+
+        ctx.clearRect(0, 0, cv.width, cv.height);
+
+        if (elapsed < step1Duration) {
+            // 1. FÁZIS: Meglévő elemek jobbra léptetése
+            let progress = elapsed / step1Duration;
+            status.textContent = `1. LÉPÉS: A ${p.insertIndex}. indexen lévő és az utáni elemek jobbra tolása (${p.count} hellyel)...`;
+
+            for (let i = 0; i < baseArray.length; i++) {
+                let startX = 30 + i * 65;
+                let endX = i >= p.insertIndex ? startX + p.count * 65 : startX;
+                let currentX = startX + (endX - startX) * progress;
+                let currentIdxLabel = i >= p.insertIndex ? `[${i}→${i+p.count}]` : `[${i}]`;
+
+                drawBar(currentX, baseArray[i], '#0284c7', currentIdxLabel);
+            }
+
+            requestAnimationFrame(animate);
+        } else if (elapsed < step1Duration + step2Duration) {
+            // 2. FÁZIS: Új elemek beejtése fentről az üres helyekre
+            let progress = (elapsed - step1Duration) / step2Duration;
+            status.textContent = `2. LÉPÉS: Az új elemek [${p.newVals.join(', ')}] beékelése a felszabadított helyekre...`;
+
+            // Meglévő elemek végleges eltolt helyükön
+            for (let i = 0; i < baseArray.length; i++) {
+                let x = i >= p.insertIndex ? 30 + (i + p.count) * 65 : 30 + i * 65;
+                let finalIdx = i >= p.insertIndex ? i + p.count : i;
+                drawBar(x, baseArray[i], '#0284c7', `[${finalIdx}]`);
+            }
+
+            // Új elemek beesése
+            for (let k = 0; k < p.count; k++) {
+                let targetX = 30 + (p.insertIndex + k) * 65;
+                let yOffset = -50 * (1 - progress);
+                let opacity = progress;
+
+                drawBar(targetX, p.newVals[k], '#22c55e', `[${p.insertIndex + k}]`, yOffset, opacity);
+            }
+
+            requestAnimationFrame(animate);
+        } else {
+            // FINÁLÉ: Végső állapot kirajzolása
+            status.textContent = `KÉSZ! A beszúrás sikeresen megtörtént. Új tömbméret: ${baseArray.length + p.count} elem.`;
+
+            // Teljes új tömb kirajzolása összefüggően
+            let finalArray = [...baseArray];
+            finalArray.splice(p.insertIndex, 0, ...p.newVals);
+
+            ctx.clearRect(0, 0, cv.width, cv.height);
+            for (let i = 0; i < finalArray.length; i++) {
+                let x = 30 + i * 65;
+                let isNew = i >= p.insertIndex && i < p.insertIndex + p.count;
+                drawBar(x, finalArray[i], isNew ? '#22c55e' : '#0284c7', `[${i}]`);
+            }
+
+            isAnimating = false;
+        }
+    }
+
+    requestAnimationFrame(animate);
+}
+
+// Bemeneti mezők automatikus ellenőrző színezése
+document.querySelectorAll('.box').forEach(i => {
+    i.addEventListener('input', function() {
+        let v = this.value.trim();
+        this.className = v === '' ? 'box' : (v === this.dataset.ans ? 'box correct' : 'box incorrect');
+    });
+});
+
+function toggleBox(btn, type) {
+    const card = btn.closest('.q-card');
+    const box = type === 'hint' ? card.querySelector('.hint-box') : card.querySelector('.sol-box');
+    box.style.display = box.style.display === 'block' ? 'none' : 'block';
+}
+
+function checkAll() {
+    let inputs = document.querySelectorAll('.box'), c = 0;
+    inputs.forEach(i => { 
+        if(i.value.trim() === i.dataset.ans) { 
+            i.className = 'box correct'; 
+            c++; 
+        } else {
+            i.className = 'box incorrect'; 
+        }
+    });
+    document.getElementById('score-board').textContent = `Eredmény: ${c} / ${inputs.length}`;
+}
+
+// Kezdő inicializálás
+updateDynamicQuestions();
+</script>
+
+</body></html>

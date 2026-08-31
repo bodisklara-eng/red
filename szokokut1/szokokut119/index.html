@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<!-- saved from url=(0068)file:///C:/Users/Utilizator/Downloads/gemini-code-1787590699075.html -->
+<html lang="hu"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <title>Profi Python Tömbművelet - Elem Törlése Szimulátor</title>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; background: #0f172a; color: #f8fafc; padding: 20px; display: flex; flex-direction: column; align-items: center; }
+        .paper { background: #1e293b; padding: 25px; max-width: 900px; width: 100%; border-radius: 16px; border: 2px solid #334155; }
+        .title { color: #ef4444; text-align: center; margin-top: 0; text-transform: uppercase; letter-spacing: 1px; }
+        
+        /* Vezérlőpult */
+        .control-panel { background: #0f172a; border: 2px solid #dc2626; border-radius: 12px; padding: 15px; margin-bottom: 20px; }
+        .panel-title { color: #f87171; font-weight: bold; margin-bottom: 10px; font-size: 14px; text-transform: uppercase; }
+        .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; margin-bottom: 12px; }
+        .form-group { display: flex; flex-direction: column; gap: 4px; }
+        .form-group label { font-size: 11px; color: #94a3b8; font-weight: 600; }
+        .form-group input { background: #1e293b; border: 1px solid #ef4444; color: #fff; padding: 5px 8px; border-radius: 6px; font-size: 13px; font-weight: bold; }
+        
+        /* Gombok */
+        .btn-group { display: flex; gap: 10px; flex-wrap: wrap; }
+        .anim-btn { flex: 1; min-width: 140px; background: #10b981; color: #022c22; border: none; padding: 10px; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 13px; transition: 0.2s; }
+        .anim-btn:hover { background: #34d399; }
+        .step-btn { background: #f59e0b; color: #451a03; }
+        .step-btn:hover { background: #fbbf24; }
+        .reset-btn { background: #ef4444; color: #fff; }
+        .reset-btn:hover { background: #f87171; }
+
+        /* Munkaterület */
+        .workspace-grid { display: grid; grid-template-columns: 1fr; gap: 15px; margin-bottom: 15px; }
+        @media (min-width: 750px) { .workspace-grid { grid-template-columns: 320px 1fr; } }
+
+        .code-box { background: #090d16; border: 1px solid #334155; border-radius: 8px; padding: 10px; font-family: 'Consolas', monospace; font-size: 12px; line-height: 1.6; }
+        .code-title { color: #fde047; font-weight: bold; margin-bottom: 6px; font-size: 11px; text-transform: uppercase; border-bottom: 1px solid #334155; padding-bottom: 4px; }
+        .code-line { padding: 2px 6px; border-radius: 4px; transition: background 0.2s, color 0.2s; color: #94a3b8; }
+        .code-line.active { background: #eab308; color: #0f172a; font-weight: bold; border-left: 4px solid #fef08a; }
+
+        /* Memória Monitor */
+        .memory-card { background: #090d16; border: 1px solid #ef4444; border-radius: 8px; padding: 10px; margin-top: 10px; font-family: monospace; font-size: 12px; }
+        .mem-item { display: flex; justify-content: space-between; margin-bottom: 4px; border-bottom: 1px dashed #334155; padding-bottom: 2px; }
+        .mem-var { color: #f87171; font-weight: bold; }
+        .mem-val { color: #fde047; font-weight: bold; }
+
+        canvas { background: #090d16; border-radius: 8px; display: block; width: 100%; border: 1px solid #334155; }
+        
+        .status-msg { background: #450a0a; color: #fca5a5; padding: 8px 12px; border-radius: 6px; font-family: monospace; font-size: 12px; text-align: center; margin-bottom: 15px; border-left: 4px solid #ef4444; min-height: 18px; }
+        
+        /* Kérdések */
+        .q-card { background: #0f172a; border: 1px solid #334155; border-radius: 10px; padding: 14px; margin-bottom: 12px; }
+        .q-title { font-size: 13.5px; font-weight: 600; margin-bottom: 8px; }
+        .input-group { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+        input.box { border: 2px solid #ef4444; background: #1e293b; color: #fff; border-radius: 6px; text-align: center; font-weight: bold; width: 60px; height: 30px; font-size: 14px; }
+        .box.correct { background: #15803d !important; border-color: #22c55e !important; }
+        .box.incorrect { background: #991b1b !important; border-color: #ef4444 !important; }
+        .btn-sm { border: none; padding: 5px 10px; border-radius: 6px; font-size: 11px; font-weight: bold; cursor: pointer; }
+        .btn-hint { background: #334155; color: #fde047; }
+        .btn-sol { background: #4338ca; color: #c7d2fe; }
+        .info-box { display: none; margin-top: 8px; padding: 8px 12px; border-radius: 6px; font-size: 12px; }
+        .hint-box { background: #1e1b4b; border-left: 4px solid #fde047; color: #fef08a; }
+        .sol-box { background: #064e3b; border-left: 4px solid #34d399; color: #a7f3d0; }
+        .footer-panel { text-align: center; margin-top: 20px; padding-top: 10px; border-top: 1px solid #334155; }
+        .btn-submit { background: #dc2626; color: white; border: none; padding: 8px 20px; border-radius: 8px; font-weight: bold; cursor: pointer; }
+        #score-board { margin-top: 10px; font-size: 15px; font-weight: bold; }
+    </style>
+</head>
+<body>
+<div class="paper">
+    <h2 class="title">Elem Törlése a Tömbből &amp; Balra Tolás (Shift Left)</h2>
+    
+    <div class="control-panel">
+        <div class="panel-title">⚙️ Törlés Beállításai</div>
+        <div class="form-grid">
+            <div class="form-group">
+                <label for="delete-idx">Törlendő index (0-4):</label>
+                <input type="number" id="delete-idx" min="0" max="4" value="1" onchange="resetAll()">
+            </div>
+        </div>
+        <div class="btn-group">
+            <button class="anim-btn" onclick="runAutoAnimation()">▶ Folyamatos Lejátszás</button>
+            <button class="anim-btn step-btn" onclick="executeNextStep()">⏭ Következő Lépés (Step)</button>
+            <button class="anim-btn reset-btn" onclick="resetAll()">🔄 Visszaállítás</button>
+        </div>
+    </div>
+
+    <!-- Munkaterület -->
+    <div class="workspace-grid">
+        <div>
+            <div class="code-box">
+                <div class="code-title">🐍 Python Törlő Algoritmus</div>
+                <div class="code-line" id="py-1">arr = [10, 20, 30, 40, 50]</div>
+                <div class="code-line" id="py-2">del_idx = 1</div>
+                <div class="code-line" id="py-3">removed_val = arr[del_idx]</div>
+                <div class="code-line" id="py-4">for j in range(del_idx, len(arr)-1):</div>
+                <div class="code-line" id="py-5">  arr[j] = arr[j + 1] # balra léptetés</div>
+                <div class="code-line" id="py-6">arr.pop() # utolsó felesleges elem törlése</div>
+            </div>
+
+            <!-- Memória Monitor -->
+            <div class="memory-card">
+                <div style="color:#f87171; font-weight:bold; margin-bottom:5px;">🧠 Memória / Változók</div>
+                <div class="mem-item"><span class="mem-var">del_idx:</span> <span class="mem-val" id="mem-del">1</span></div>
+                <div class="mem-item"><span class="mem-var">removed_val:</span> <span class="mem-val" id="mem-rem">-</span></div>
+                <div class="mem-item"><span class="mem-var">j:</span> <span class="mem-val" id="mem-j">-</span></div>
+                <div class="mem-item"><span class="mem-var">Másolások száma:</span> <span class="mem-val" id="mem-ops">0</span></div>
+            </div>
+        </div>
+
+        <div>
+            <canvas id="cv" width="500" height="230"></canvas>
+        </div>
+    </div>
+
+    <div class="status-msg" id="status-text">Rendszer alaphelyzetbe állítva.</div>
+
+    <!-- Kérdések -->
+    <div class="q-card">
+        <div class="q-title">1. Hány elemet kell balra tolni a tömb tömörítéséhez a megadott törlési index esetén?</div>
+        <div class="input-group">
+            <input type="text" class="box" id="q1-box" data-ans="3">
+            <button class="btn-sm btn-hint" onclick="toggleBox(this, &#39;hint&#39;)">💡 Tipp</button>
+            <button class="btn-sm btn-sol" onclick="toggleBox(this, &#39;sol&#39;)">🔍 Megoldás</button>
+        </div>
+        <div class="info-box hint-box">💡 Minden elemet balra kell tolni, amely a törölt elem Mögött található.</div>
+        <div class="info-box sol-box" id="q1-sol">🔍 A törlési index (1) mögött lévő <b>3</b> elemet kell balra tolni.</div>
+    </div>
+
+    <div class="q-card">
+        <div class="q-title">2. Mi történik az utolsó indexen lévő értékkel az `arr.pop()` sor lefutása előtt?</div>
+        <div class="input-group">
+            <input type="text" class="box" id="q2-box" data-ans="50">
+            <button class="btn-sm btn-hint" onclick="toggleBox(this, &#39;hint&#39;)">💡 Tipp</button>
+            <button class="btn-sm btn-sol" onclick="toggleBox(this, &#39;sol&#39;)">🔍 Megoldás</button>
+        </div>
+        <div class="info-box hint-box">💡 Mivel az utolsó elemet is balra másoltuk, az utolsó helyen még ott marad a másolata (duplikálódik).</div>
+        <div class="info-box sol-box" id="q2-sol">🔍 Az utolsó elem értéke (<b>50</b>) még a tömb végén marad a pop() előtt.</div>
+    </div>
+
+    <div class="footer-panel">
+        <button class="btn-submit" onclick="checkAll()">Munkalap Ellenőrzése</button>
+        <div id="score-board"></div>
+    </div>
+</div>
+
+<script>
+const baseArray = [10, 20, 30, 40, 50];
+let isAutoRunning = false;
+let autoTimer = null;
+
+let state = {
+    step: 0,
+    arr: [...baseArray],
+    delIdx: 1,
+    removedVal: null,
+    j: null,
+    operations: 0
+};
+
+const cv = document.getElementById('cv');
+const ctx = cv.getContext('2d');
+
+function resetAll() {
+    clearTimeout(autoTimer);
+    isAutoRunning = false;
+    let delIdx = parseInt(document.getElementById('delete-idx').value);
+    if (isNaN(delIdx) || delIdx < 0) delIdx = 0;
+    if (delIdx >= baseArray.length) delIdx = baseArray.length - 1;
+
+    state = {
+        step: 0,
+        arr: [...baseArray],
+        delIdx: delIdx,
+        removedVal: null,
+        j: null,
+        operations: 0
+    };
+
+    let shiftCount = baseArray.length - 1 - delIdx;
+    document.getElementById('q1-box').dataset.ans = shiftCount;
+    document.getElementById('q1-sol').innerHTML = `🔍 A törlési index (${delIdx}) mögött lévő <b>${shiftCount}</b> elemet kell balra tolni.`;
+
+    document.getElementById('q2-box').dataset.ans = baseArray[baseArray.length - 1];
+    document.getElementById('q2-sol').innerHTML = `🔍 Az utolsó elem értéke (<b>${baseArray[baseArray.length - 1]}</b>) még a tömb végén marad a pop() előtt.`;
+
+    document.getElementById('py-2').textContent = `del_idx = ${delIdx}`;
+
+    updateUI(null, "Rendszer alaphelyzetbe állítva.");
+}
+
+function highlightPythonLine(lineNum) {
+    document.querySelectorAll('.code-line').forEach(el => el.classList.remove('active'));
+    if(lineNum) {
+        const activeEl = document.getElementById(`py-${lineNum}`);
+        if(activeEl) activeEl.classList.add('active');
+    }
+}
+
+function updateUI(lineNum, statusText) {
+    highlightPythonLine(lineNum);
+    document.getElementById('status-text').textContent = statusText;
+    
+    document.getElementById('mem-del').textContent = state.delIdx;
+    document.getElementById('mem-rem').textContent = state.removedVal !== null ? state.removedVal : '-';
+    document.getElementById('mem-j').textContent = state.j !== null ? state.j : '-';
+    document.getElementById('mem-ops').textContent = state.operations;
+
+    drawCanvas();
+}
+
+function drawCanvas() {
+    ctx.clearRect(0, 0, cv.width, cv.height);
+    let startX = 30;
+    let boxWidth = 45;
+    let gap = 12;
+
+    for (let i = 0; i < state.arr.length; i++) {
+        let x = startX + i * (boxWidth + gap);
+        let y = 140;
+        let val = state.arr[i];
+
+        let color = '#0284c7';
+        if (i === state.delIdx && state.step <= 3) color = '#ef4444'; // Törlendő elem piros
+        if (i === state.j) color = '#f59e0b'; // Éppen másolt hely sárga
+
+        ctx.fillStyle = color;
+        ctx.fillRect(x, y - val * 1.2, boxWidth, val * 1.2);
+        
+        ctx.fillStyle = '#fff';
+        ctx.font = '12px monospace';
+        ctx.fillText(val, x + 12, y - val * 1.2 - 5);
+
+        ctx.fillStyle = '#38bdf8';
+        ctx.font = '11px monospace';
+        ctx.fillText(`[${i}]`, x + 10, y + 18);
+
+        // Nyilak / Mutatók
+        if (i === state.j) {
+            ctx.fillStyle = '#f59e0b';
+            ctx.fillText('j ▲', x + 12, y + 34);
+        }
+        if (i === state.delIdx && state.step <= 3) {
+            ctx.fillStyle = '#ef4444';
+            ctx.fillText('del ▲', x + 6, y + 48);
+        }
+    }
+}
+
+function stepAlgorithm() {
+    switch(state.step) {
+        case 0:
+            updateUI(1, "1. Sor: Kezdő tömb inicializálása");
+            state.step = 1;
+            break;
+        case 1:
+            updateUI(2, `2. Sor: Törlési célindex rögzítése: del_idx = ${state.delIdx}`);
+            state.step = 2;
+            break;
+        case 2:
+            state.removedVal = state.arr[state.delIdx];
+            updateUI(3, `3. Sor: Törlendő érték kimentése: removed_val = ${state.removedVal}`);
+            state.j = state.delIdx;
+            state.step = 3;
+            break;
+        case 3: // Ciklus feltétel
+            if (state.j < state.arr.length - 1) {
+                updateUI(4, `4. Sor: Balra léptető ciklus: j = ${state.j}`);
+                state.step = 4;
+            } else {
+                state.step = 5; // Ciklus vége, felugrás a pop-ra
+                stepAlgorithm();
+            }
+            break;
+        case 4: // arr[j] = arr[j+1]
+            state.arr[state.j] = state.arr[state.j + 1];
+            state.operations++;
+            updateUI(5, `5. Sor: arr[${state.j}] = arr[${state.j + 1}] (${state.arr[state.j]} felülírta a balra lévő helyet)`);
+            state.j++;
+            state.step = 3; // Ciklus visszalépés
+            break;
+        case 5: // arr.pop()
+            state.j = null;
+            let popped = state.arr.pop();
+            updateUI(6, `6. Sor: arr.pop() -> Az utolsó duplikált elem (${popped}) törölve. Tömb mérete lecsökkent!`);
+            state.step = 6;
+            break;
+        case 6:
+            updateUI(null, `KÉSZ! Az elem sikeresen törölve. Végső tömb: [${state.arr.join(', ')}]`);
+            isAutoRunning = false;
+            break;
+    }
+}
+
+function executeNextStep() {
+    if (isAutoRunning) {
+        clearTimeout(autoTimer);
+        isAutoRunning = false;
+    }
+    stepAlgorithm();
+}
+
+function runAutoAnimation() {
+    if (isAutoRunning) return;
+    isAutoRunning = true;
+    
+    function autoStep() {
+        if (!isAutoRunning) return;
+        stepAlgorithm();
+        if (state.step < 6) {
+            autoTimer = setTimeout(autoStep, 900);
+        }
+    }
+    autoStep();
+}
+
+document.querySelectorAll('.box').forEach(i => {
+    i.addEventListener('input', function() {
+        let v = this.value.trim();
+        this.className = v === '' ? 'box' : (v === this.dataset.ans ? 'box correct' : 'box incorrect');
+    });
+});
+
+function toggleBox(btn, type) {
+    const card = btn.closest('.q-card');
+    const box = type === 'hint' ? card.querySelector('.hint-box') : card.querySelector('.sol-box');
+    box.style.display = box.style.display === 'block' ? 'none' : 'block';
+}
+
+function checkAll() {
+    let inputs = document.querySelectorAll('.box'), c = 0;
+    inputs.forEach(i => { 
+        if(i.value.trim() === i.dataset.ans) { 
+            i.className = 'box correct'; 
+            c++; 
+        } else {
+            i.className = 'box incorrect'; 
+        }
+    });
+    document.getElementById('score-board').textContent = `Eredmény: ${c} / ${inputs.length}`;
+}
+
+resetAll();
+</script>
+
+</body></html>

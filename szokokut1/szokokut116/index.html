@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<!-- saved from url=(0068)file:///C:/Users/Utilizator/Downloads/gemini-code-1787591329171.html -->
+<html lang="hu"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <title>Olimpiás Egydimenziós Tömbök - Interaktív Tananyag</title>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; background: #0f172a; color: #f8fafc; padding: 20px; display: flex; flex-direction: column; align-items: center; margin: 0; }
+        .paper { background: #1e293b; padding: 25px; max-width: 950px; width: 100%; border-radius: 16px; border: 2px solid #334155; box-shadow: 0 10px 25px rgba(0,0,0,0.5); }
+        .title { color: #38bdf8; text-align: center; margin-top: 0; text-transform: uppercase; letter-spacing: 1px; font-size: 22px; }
+        
+        /* Főmenü (Tabok) */
+        .tab-menu { display: flex; gap: 8px; margin-bottom: 20px; border-bottom: 2px solid #334155; padding-bottom: 10px; flex-wrap: wrap; }
+        .tab-btn { background: #0f172a; color: #94a3b8; border: 1px solid #334155; padding: 10px 16px; border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.2s; font-size: 13px; }
+        .tab-btn:hover { background: #1e293b; color: #fff; }
+        .tab-btn.active { background: #0284c7; color: #fff; border-color: #38bdf8; }
+
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+
+        /* Szekció kártyák */
+        .section-card { background: #0f172a; border: 1px solid #334155; border-radius: 10px; padding: 15px; margin-bottom: 15px; }
+        .section-title { font-weight: bold; color: #fde047; margin-bottom: 8px; font-size: 14px; text-transform: uppercase; border-bottom: 1px solid #334155; padding-bottom: 4px; }
+
+        /* Szimulátor Vezérlőpult */
+        .control-panel { background: #0f172a; border: 1px solid #0284c7; border-radius: 10px; padding: 12px; margin-bottom: 15px; }
+        .btn-group { display: flex; gap: 8px; flex-wrap: wrap; }
+        .anim-btn { flex: 1; min-width: 120px; background: #10b981; color: #022c22; border: none; padding: 8px; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 12px; }
+        .anim-btn:hover { background: #34d399; }
+        .step-btn { background: #f59e0b; color: #451a03; }
+        .step-btn:hover { background: #fbbf24; }
+        .reset-btn { background: #ef4444; color: #fff; }
+        .reset-btn:hover { background: #f87171; }
+
+        /* Munkaterület Grid */
+        .workspace-grid { display: grid; grid-template-columns: 1fr; gap: 15px; margin-bottom: 15px; }
+        @media (min-width: 750px) { .workspace-grid { grid-template-columns: 320px 1fr; } }
+
+        .code-box { background: #090d16; border: 1px solid #334155; border-radius: 8px; padding: 10px; font-family: 'Consolas', monospace; font-size: 11.5px; line-height: 1.5; }
+        .code-line { padding: 2px 4px; border-radius: 4px; color: #94a3b8; }
+        .code-line.active { background: #eab308; color: #0f172a; font-weight: bold; }
+
+        .memory-card { background: #090d16; border: 1px solid #0284c7; border-radius: 8px; padding: 10px; margin-top: 10px; font-family: monospace; font-size: 11.5px; }
+        .mem-item { display: flex; justify-content: space-between; margin-bottom: 3px; border-bottom: 1px dashed #334155; padding-bottom: 2px; }
+        .mem-var { color: #38bdf8; font-weight: bold; }
+        .mem-val { color: #fde047; font-weight: bold; }
+
+        canvas { background: #090d16; border-radius: 8px; display: block; width: 100%; border: 1px solid #334155; }
+        
+        .status-msg { background: #0c4a6e; color: #bae6fd; padding: 8px; border-radius: 6px; font-family: monospace; font-size: 12px; text-align: center; margin-bottom: 15px; border-left: 4px solid #38bdf8; }
+
+        /* Teszt / Kérdések */
+        .q-card { background: #0f172a; border: 1px solid #334155; border-radius: 8px; padding: 12px; margin-bottom: 10px; }
+        .q-title { font-size: 13px; font-weight: 600; margin-bottom: 6px; }
+        .input-group { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+        input.box { border: 2px solid #38bdf8; background: #1e293b; color: #fff; border-radius: 6px; text-align: center; font-weight: bold; width: 60px; height: 28px; font-size: 13px; }
+        .box.correct { background: #15803d !important; border-color: #22c55e !important; }
+        .box.incorrect { background: #991b1b !important; border-color: #ef4444 !important; }
+        .btn-sm { border: none; padding: 4px 8px; border-radius: 4px; font-size: 11px; font-weight: bold; cursor: pointer; }
+        .btn-hint { background: #334155; color: #fde047; }
+        .btn-sol { background: #4338ca; color: #c7d2fe; }
+        .info-box { display: none; margin-top: 6px; padding: 6px 10px; border-radius: 6px; font-size: 11.5px; }
+        .hint-box { background: #1e1b4b; border-left: 4px solid #fde047; color: #fef08a; }
+        .sol-box { background: #064e3b; border-left: 4px solid #34d399; color: #a7f3d0; }
+        
+        .footer-panel { text-align: center; margin-top: 15px; padding-top: 10px; border-top: 1px solid #334155; }
+        .btn-submit { background: #0284c7; color: white; border: none; padding: 8px 18px; border-radius: 6px; font-weight: bold; cursor: pointer; }
+        .score-board { margin-top: 8px; font-size: 14px; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+<div class="paper">
+    <h2 class="title">🇷🇴 Olimpiás Algoritmusok: Egydimenziós Tömbök</h2>
+    
+    <!-- Főmenü Tabok -->
+    <div class="tab-menu">
+        <button class="tab-btn active" onclick="switchTab(0)">1. Elem Törlése &amp; Shift Left</button>
+        <button class="tab-btn" onclick="switchTab(1)">2. Max Részösszeg (Kadane)</button>
+        <button class="tab-btn" onclick="switchTab(2)">3. Two Pointers (Megfordítás)</button>
+    </div>
+
+    <!-- ================= TAB 1: SHIFT LEFT ================= -->
+    <div id="tab-0" class="tab-content active">
+        <div class="section-card">
+            <div class="section-title">📚 Elmélet: Törlés és Balra Tolás (Ștergere și Compresie)</div>
+            <p style="font-size:12.5px; line-height:1.5; color:#cbd5e1; margin:0;">
+                Tömbökben egy elem törlésekor a keletkező üres helyet be kell tölteni. Mivel a tömb elemei folytonos memóriaterületen helyezkednek el, a törölt elemtől jobbra lévő összes értéket egy pozícióval <b>balra kell léptetni (Shift Left)</b>. Ez $O(N)$ időkomplexitást igényel.
+            </p>
+        </div>
+
+        <div class="section-card">
+            <div class="section-title">🎯 Olimpiás Feladatleírás</div>
+            <p style="font-size:12.5px; line-height:1.5; color:#cbd5e1; margin:0;">
+                <b>Feladat:</b> Adott egy $N$ elemű $A$ tömb és egy $K$ index. Távolítsd el az $A[K]$ elemet úgy, hogy a tömb tömörítve maradjon, majd csökkentsd a tömb fizikai méretét 1-gyel!
+            </p>
+        </div>
+
+        <!-- Szimulátor 1 -->
+        <div class="control-panel">
+            <div class="btn-group">
+                <button class="anim-btn" onclick="runAuto(0)">▶ Lejátszás</button>
+                <button class="anim-btn step-btn" onclick="step(0)">⏭ Lépés</button>
+                <button class="anim-btn reset-btn" onclick="resetTab(0)">🔄 Alaphelyzet</button>
+            </div>
+        </div>
+        <div class="workspace-grid">
+            <div>
+                <div class="code-box">
+                    <div class="code-line" id="t0-code-1">del_idx = 1 # törlendő index</div>
+                    <div class="code-line" id="t0-code-2">for j in range(del_idx, len(arr)-1):</div>
+                    <div class="code-line" id="t0-code-3">  arr[j] = arr[j + 1] # léptetés</div>
+                    <div class="code-line" id="t0-code-4">arr.pop() # méret csökkentés</div>
+                </div>
+                <div class="memory-card">
+                    <div class="mem-item"><span class="mem-var">del_idx:</span> <span class="mem-val" id="t0-m-del">1</span></div>
+                    <div class="mem-item"><span class="mem-var">j (Index):</span> <span class="mem-val" id="t0-m-j">-</span></div>
+                    <div class="mem-item"><span class="mem-var">Cserék:</span> <span class="mem-val" id="t0-m-ops">0</span></div>
+                </div>
+            </div>
+            <div><canvas id="cv0" width="500" height="180"></canvas></div>
+        </div>
+        <div class="status-msg" id="t0-status">Alaphelyzetbe állítva.</div>
+
+        <!-- Teszt 1 -->
+        <div class="section-card">
+            <div class="section-title">📝 Teszt &amp; Munkalap</div>
+            <div class="q-card">
+                <div class="q-title">1. Hány elemet kell elmozdítani, ha az 5 elemű tömb 1-es indexű elemét töröljük?</div>
+                <div class="input-group">
+                    <input type="text" class="box" data-ans="3">
+                    <button class="btn-sm btn-hint" onclick="toggleBox(this, &#39;hint&#39;)">💡 Tipp</button>
+                    <button class="btn-sm btn-sol" onclick="toggleBox(this, &#39;sol&#39;)">🔍 Megoldás</button>
+                </div>
+                <div class="info-box hint-box">💡 Az 1-es index mögött lévő 2., 3. és 4. indexű elemeket kell balra tolni.</div>
+                <div class="info-box sol-box">🔍 Pontosan 3 elemet (indexek: 2, 3, 4).</div>
+            </div>
+        </div>
+        <div class="footer-panel">
+            <button class="btn-submit" onclick="checkAnswers(0)">Teszt Ellenőrzése</button>
+            <div class="score-board" id="t0-score"></div>
+        </div>
+    </div>
+
+    <!-- ================= TAB 2: KADANE ================= -->
+    <div id="tab-1" class="tab-content">
+        <div class="section-card">
+            <div class="section-title">📚 Elmélet: Kadane Algoritmus (Suma Maximă de Subsecvență)</div>
+            <p style="font-size:12.5px; line-height:1.5; color:#cbd5e1; margin:0;">
+                Az algoritmus egyetlen $O(N)$ idejű áthaladással megtalálja a leghosszabb/legnagyobb összegű egybefüggő részvektort. Ha az eddigi részösszeg negatívvá válik, eldobja azt, mert csak rontaná a rákövetkező elemek összegét.
+            </p>
+        </div>
+
+        <div class="section-card">
+            <div class="section-title">🎯 Olimpiás Feladatleírás</div>
+            <p style="font-size:12.5px; line-height:1.5; color:#cbd5e1; margin:0;">
+                <b>Feladat (ONI):</b> Adott egy $N$ egész számból álló tömb. Határozd meg a maximális összeget, amit egy folytonos részszekvencia elemei képezhetnek!
+            </p>
+        </div>
+
+        <!-- Szimulátor 2 -->
+        <div class="control-panel">
+            <div class="btn-group">
+                <button class="anim-btn" onclick="runAuto(1)">▶ Lejátszás</button>
+                <button class="anim-btn step-btn" onclick="step(1)">⏭ Lépés</button>
+                <button class="anim-btn reset-btn" onclick="resetTab(1)">🔄 Alaphelyzet</button>
+            </div>
+        </div>
+        <div class="workspace-grid">
+            <div>
+                <div class="code-box">
+                    <div class="code-line" id="t1-code-1">curr_max = max_so_far = arr[0]</div>
+                    <div class="code-line" id="t1-code-2">for i in range(1, len(arr)):</div>
+                    <div class="code-line" id="t1-code-3">  curr_max = max(arr[i], curr_max + arr[i])</div>
+                    <div class="code-line" id="t1-code-4">  max_so_far = max(max_so_far, curr_max)</div>
+                </div>
+                <div class="memory-card">
+                    <div class="mem-item"><span class="mem-var">i (Index):</span> <span class="mem-val" id="t1-m-i">-</span></div>
+                    <div class="mem-item"><span class="mem-var">curr_max:</span> <span class="mem-val" id="t1-m-curr">-2</span></div>
+                    <div class="mem-item"><span class="mem-var">max_so_far:</span> <span class="mem-val" id="t1-m-max">-2</span></div>
+                </div>
+            </div>
+            <div><canvas id="cv1" width="500" height="180"></canvas></div>
+        </div>
+        <div class="status-msg" id="t1-status">Alaphelyzetbe állítva.</div>
+
+        <!-- Teszt 2 -->
+        <div class="section-card">
+            <div class="section-title">📝 Teszt &amp; Munkalap</div>
+            <div class="q-card">
+                <div class="q-title">1. Mennyi a maximális részösszeg a [-2, 1, -3, 4, -1, 2, 1, -5, 4] tömbben?</div>
+                <div class="input-group">
+                    <input type="text" class="box" data-ans="6">
+                    <button class="btn-sm btn-hint" onclick="toggleBox(this, &#39;hint&#39;)">💡 Tipp</button>
+                    <button class="btn-sm btn-sol" onclick="toggleBox(this, &#39;sol&#39;)">🔍 Megoldás</button>
+                </div>
+                <div class="info-box hint-box">💡 A [4, -1, 2, 1] részsorozat adja a legnagyobb értéket.</div>
+                <div class="info-box sol-box">🔍 A válasz: 6.</div>
+            </div>
+        </div>
+        <div class="footer-panel">
+            <button class="btn-submit" onclick="checkAnswers(1)">Teszt Ellenőrzése</button>
+            <div class="score-board" id="t1-score"></div>
+        </div>
+    </div>
+
+    <!-- ================= TAB 3: TWO POINTERS ================= -->
+    <div id="tab-2" class="tab-content">
+        <div class="section-card">
+            <div class="section-title">📚 Elmélet: Kétmutatós Technika (Tehnica celor doi pointeri)</div>
+            <p style="font-size:12.5px; line-height:1.5; color:#cbd5e1; margin:0;">
+                A kétmutatós technika során két indexet (`left` és `right`) indítunk a tömb két ellentétes végétől. Egymás felé léptetve őket memóriahatékony $O(1)$ tárhelyű és $O(N)$ idejű algoritmusokat kapunk.
+            </p>
+        </div>
+
+        <div class="section-card">
+            <div class="section-title">🎯 Olimpiás Feladatleírás</div>
+            <p style="font-size:12.5px; line-height:1.5; color:#cbd5e1; margin:0;">
+                <b>Feladat:</b> Fordíts meg egy $N$ elemű tömböt helyben (in-place), segédtömb használata nélkül!
+            </p>
+        </div>
+
+        <!-- Szimulátor 3 -->
+        <div class="control-panel">
+            <div class="btn-group">
+                <button class="anim-btn" onclick="runAuto(2)">▶ Lejátszás</button>
+                <button class="anim-btn step-btn" onclick="step(2)">⏭ Lépés</button>
+                <button class="anim-btn reset-btn" onclick="resetTab(2)">🔄 Alaphelyzet</button>
+            </div>
+        </div>
+        <div class="workspace-grid">
+            <div>
+                <div class="code-box">
+                    <div class="code-line" id="t2-code-1">left, right = 0, len(arr)-1</div>
+                    <div class="code-line" id="t2-code-2">while left &lt; right:</div>
+                    <div class="code-line" id="t2-code-3">  arr[left], arr[right] = arr[right], arr[left]</div>
+                    <div class="code-line" id="t2-code-4">  left += 1; right -= 1</div>
+                </div>
+                <div class="memory-card">
+                    <div class="mem-item"><span class="mem-var">left Index:</span> <span class="mem-val" id="t2-m-left">0</span></div>
+                    <div class="mem-item"><span class="mem-var">right Index:</span> <span class="mem-val" id="t2-m-right">5</span></div>
+                    <div class="mem-item"><span class="mem-var">Cserék száma:</span> <span class="mem-val" id="t2-m-swaps">0</span></div>
+                </div>
+            </div>
+            <div><canvas id="cv2" width="500" height="180"></canvas></div>
+        </div>
+        <div class="status-msg" id="t2-status">Alaphelyzetbe állítva.</div>
+
+        <!-- Teszt 3 -->
+        <div class="section-card">
+            <div class="section-title">📝 Teszt &amp; Munkalap</div>
+            <div class="q-card">
+                <div class="q-title">1. Hány cserét hajt végre az algoritmus egy 6 elemű tömb esetén?</div>
+                <div class="input-group">
+                    <input type="text" class="box" data-ans="3">
+                    <button class="btn-sm btn-hint" onclick="toggleBox(this, &#39;hint&#39;)">💡 Tipp</button>
+                    <button class="btn-sm btn-sol" onclick="toggleBox(this, &#39;sol&#39;)">🔍 Megoldás</button>
+                </div>
+                <div class="info-box hint-box">💡 $N // 2$ cserére van szükség.</div>
+                <div class="info-box sol-box">🔍 6 / 2 = 3 csere.</div>
+            </div>
+        </div>
+        <div class="footer-panel">
+            <button class="btn-submit" onclick="checkAnswers(2)">Teszt Ellenőrzése</button>
+            <div class="score-board" id="t2-score"></div>
+        </div>
+    </div>
+
+</div>
+
+<script>
+// Tab váltó logika
+let currentTab = 0;
+function switchTab(idx) {
+    currentTab = idx;
+    document.querySelectorAll('.tab-btn').forEach((b, i) => b.classList.toggle('active', i === idx));
+    document.querySelectorAll('.tab-content').forEach((c, i) => c.classList.toggle('active', i === idx));
+    resetTab(idx);
+}
+
+// Global Állapotok
+let timers = [null, null, null];
+let autoRunning = [false, false, false];
+
+let states = [
+    { arr: [10, 20, 30, 40, 50], delIdx: 1, j: null, step: 0, ops: 0 },
+    { arr: [-2, 1, -3, 4, -1, 2, 1, -5, 4], i: 1, curr: -2, max: -2, step: 0, start:0, end:0, bStart:0, bEnd:0 },
+    { arr: [12, 45, 67, 89, 23, 99], left: 0, right: 5, swaps: 0, step: 0 }
+];
+
+function setHighlight(tabIdx, lineNum) {
+    document.querySelectorAll(`#tab-${tabIdx} .code-line`).forEach(l => l.classList.remove('active'));
+    if(lineNum) {
+        let el = document.getElementById(`t${tabIdx}-code-${lineNum}`);
+        if(el) el.classList.add('active');
+    }
+}
+
+function resetTab(idx) {
+    clearTimeout(timers[idx]);
+    autoRunning[idx] = false;
+    
+    if (idx === 0) {
+        states[0] = { arr: [10, 20, 30, 40, 50], delIdx: 1, j: null, step: 0, ops: 0 };
+        document.getElementById('t0-m-del').textContent = 1;
+        document.getElementById('t0-m-j').textContent = '-';
+        document.getElementById('t0-m-ops').textContent = 0;
+        document.getElementById('t0-status').textContent = 'Alaphelyzetbe állítva.';
+    } else if (idx === 1) {
+        states[1] = { arr: [-2, 1, -3, 4, -1, 2, 1, -5, 4], i: 1, curr: -2, max: -2, step: 0, start:0, end:0, bStart:0, bEnd:0 };
+        document.getElementById('t1-m-i').textContent = '-';
+        document.getElementById('t1-m-curr').textContent = -2;
+        document.getElementById('t1-m-max').textContent = -2;
+        document.getElementById('t1-status').textContent = 'Alaphelyzetbe állítva.';
+    } else if (idx === 2) {
+        states[2] = { arr: [12, 45, 67, 89, 23, 99], left: 0, right: 5, swaps: 0, step: 0 };
+        document.getElementById('t2-m-left').textContent = 0;
+        document.getElementById('t2-m-right').textContent = 5;
+        document.getElementById('t2-m-swaps').textContent = 0;
+        document.getElementById('t2-status').textContent = 'Alaphelyzetbe állítva.';
+    }
+    setHighlight(idx, null);
+    draw(idx);
+}
+
+// Léptető logika tabonként
+function step(idx) {
+    if (idx === 0) { // Shift Left
+        let st = states[0];
+        if (st.step === 0) {
+            setHighlight(0, 1);
+            document.getElementById('t0-status').textContent = "1. Törlési célindex megadva: del_idx = 1";
+            st.step = 1;
+            st.j = st.delIdx;
+        } else if (st.step === 1) {
+            if (st.j < st.arr.length - 1) {
+                setHighlight(0, 2);
+                document.getElementById('t0-status').textContent = `2. Ciklus: j = ${st.j}`;
+                document.getElementById('t0-m-j').textContent = st.j;
+                st.step = 2;
+            } else {
+                st.step = 3;
+                step(0);
+            }
+        } else if (st.step === 2) {
+            st.arr[st.j] = st.arr[st.j + 1];
+            st.ops++;
+            document.getElementById('t0-m-ops').textContent = st.ops;
+            setHighlight(0, 3);
+            document.getElementById('t0-status').textContent = `3. Balra tolás: arr[${st.j}] = arr[${st.j+1}]`;
+            st.j++;
+            st.step = 1;
+        } else if (st.step === 3) {
+            st.arr.pop();
+            st.j = null;
+            document.getElementById('t0-m-j').textContent = '-';
+            setHighlight(0, 4);
+            document.getElementById('t0-status').textContent = "4. arr.pop() -> Felesleges utolsó elem törölve!";
+            st.step = 4;
+            autoRunning[0] = false;
+        }
+    } 
+    else if (idx === 1) { // Kadane
+        let st = states[1];
+        if (st.step === 0) {
+            setHighlight(1, 1);
+            document.getElementById('t1-status').textContent = "1. Kezdőértékek rögzítése: curr_max = max_so_far = arr[0]";
+            st.step = 1;
+        } else if (st.step === 1) {
+            if (st.i < st.arr.length) {
+                setHighlight(1, 2);
+                document.getElementById('t1-m-i').textContent = st.i;
+                document.getElementById('t1-status').textContent = `2. Ciklus lépés: i = ${st.i}, arr[i] = ${st.arr[st.i]}`;
+                st.step = 2;
+            } else {
+                setHighlight(1, null);
+                document.getElementById('t1-status').textContent = `KÉSZ! Maximális összeg = ${st.max}`;
+                autoRunning[1] = false;
+            }
+        } else if (st.step === 2) {
+            let val = st.arr[st.i];
+            if (st.curr + val < val) {
+                st.curr = val;
+                st.start = st.i;
+                st.end = st.i;
+            } else {
+                st.curr += val;
+                st.end = st.i;
+            }
+            document.getElementById('t1-m-curr').textContent = st.curr;
+            setHighlight(1, 3);
+            document.getElementById('t1-status').textContent = `3. Aktuális részösszeg frissítve: curr_max = ${st.curr}`;
+            st.step = 3;
+        } else if (st.step === 3) {
+            if (st.curr > st.max) {
+                st.max = st.curr;
+                st.bStart = st.start;
+                st.bEnd = st.end;
+                document.getElementById('t1-m-max').textContent = st.max;
+                document.getElementById('t1-status').textContent = `4. ÚJ REKORD! max_so_far = ${st.max}`;
+            } else {
+                document.getElementById('t1-status').textContent = `4. Rekord változatlan (${st.max})`;
+            }
+            setHighlight(1, 4);
+            st.i++;
+            st.step = 1;
+        }
+    }
+    else if (idx === 2) { // Two Pointers
+        let st = states[2];
+        if (st.step === 0) {
+            setHighlight(2, 1);
+            document.getElementById('t2-status').textContent = "1. Mutatók inicializálása: left=0, right=" + st.right;
+            st.step = 1;
+        } else if (st.step === 1) {
+            if (st.left < st.right) {
+                setHighlight(2, 2);
+                document.getElementById('t2-status').textContent = `2. Feltétel ellenőrzése (${st.left} < ${st.right}) -> IGAZ`;
+                st.step = 2;
+            } else {
+                setHighlight(2, null);
+                document.getElementById('t2-status').textContent = "KÉSZ! Tömb sikeresen megfordítva.";
+                autoRunning[2] = false;
+            }
+        } else if (st.step === 2) {
+            let tmp = st.arr[st.left];
+            st.arr[st.left] = st.arr[st.right];
+            st.arr[st.right] = tmp;
+            st.swaps++;
+            document.getElementById('t2-m-swaps').textContent = st.swaps;
+            setHighlight(2, 3);
+            document.getElementById('t2-status').textContent = `3. CSERE! arr[${st.left}] <-> arr[${st.right}]`;
+            st.step = 3;
+        } else if (st.step === 3) {
+            st.left++;
+            st.right--;
+            document.getElementById('t2-m-left').textContent = st.left;
+            document.getElementById('t2-m-right').textContent = st.right;
+            setHighlight(2, 4);
+            document.getElementById('t2-status').textContent = "4. Mutatók léptetése beljebb.";
+            st.step = 1;
+        }
+    }
+    draw(idx);
+}
+
+function runAuto(idx) {
+    if (autoRunning[idx]) return;
+    autoRunning[idx] = true;
+    function loop() {
+        if (!autoRunning[idx]) return;
+        step(idx);
+        timers[idx] = setTimeout(loop, 900);
+    }
+    loop();
+}
+
+// Canvas Rajzolás
+function draw(idx) {
+    let cv = document.getElementById(`cv${idx}`);
+    let ctx = cv.getContext('2d');
+    ctx.clearRect(0, 0, cv.width, cv.height);
+
+    let st = states[idx];
+    let startX = 30, boxW = 40, gap = 10;
+
+    if (idx === 0) {
+        for (let i = 0; i < st.arr.length; i++) {
+            let x = startX + i * (boxW + gap);
+            let val = st.arr[i];
+            let color = '#0284c7';
+            if (i === st.delIdx && st.step < 3) color = '#ef4444';
+            if (i === st.j) color = '#f59e0b';
+
+            ctx.fillStyle = color;
+            ctx.fillRect(x, 100 - val, boxW, val);
+            ctx.fillStyle = '#fff';
+            ctx.font = '11px monospace';
+            ctx.fillText(val, x + 10, 95 - val);
+            ctx.fillStyle = '#94a3b8';
+            ctx.fillText(`[${i}]`, x + 10, 115);
+        }
+    } else if (idx === 1) {
+        let zeroY = 100;
+        for (let k = 0; k < st.arr.length; k++) {
+            let x = startX + k * (boxW + gap);
+            let val = st.arr[k];
+            let h = Math.abs(val) * 8;
+            let y = val >= 0 ? zeroY - h : zeroY;
+
+            ctx.fillStyle = val >= 0 ? '#0284c7' : '#ef4444';
+            ctx.fillRect(x, y, boxW, h);
+            ctx.fillStyle = '#fff';
+            ctx.font = '11px monospace';
+            ctx.fillText(val, x + 10, val >= 0 ? y - 4 : y + h + 10);
+        }
+        // Keretek
+        if (st.step > 0) {
+            let bx1 = startX + st.bStart * (boxW + gap) - 2;
+            let bx2 = startX + st.bEnd * (boxW + gap) + boxW + 2;
+            ctx.strokeStyle = '#f59e0b';
+            ctx.lineWidth = 2;
+            ctx.strokeRect(bx1, 15, bx2 - bx1, 140);
+        }
+    } else if (idx === 2) {
+        for (let i = 0; i < st.arr.length; i++) {
+            let x = startX + i * (boxW + gap);
+            let val = st.arr[i];
+            let color = '#0284c7';
+            if (i === st.left) color = '#a855f7';
+            if (i === st.right) color = '#ec4899';
+
+            ctx.fillStyle = color;
+            ctx.fillRect(x, 110 - val * 0.8, boxW, val * 0.8);
+            ctx.fillStyle = '#fff';
+            ctx.font = '11px monospace';
+            ctx.fillText(val, x + 10, 105 - val * 0.8);
+            ctx.fillStyle = '#94a3b8';
+            ctx.fillText(`[${i}]`, x + 10, 125);
+        }
+    }
+}
+
+// Segédfunkciók tesztekhez
+function toggleBox(btn, type) {
+    let card = btn.closest('.q-card');
+    let box = card.querySelector('.' + type + '-box');
+    box.style.display = box.style.display === 'block' ? 'none' : 'block';
+}
+
+function checkAnswers(tabIdx) {
+    let inputs = document.querySelectorAll(`#tab-${tabIdx} .box`);
+    let correct = 0;
+    inputs.forEach(input => {
+        let val = input.value.trim();
+        let ans = input.dataset.ans;
+        if (val === ans) {
+            input.className = 'box correct';
+            correct++;
+        } else {
+            input.className = 'box incorrect';
+        }
+    });
+    document.getElementById(`t${tabIdx}-score`).textContent = `Eredmény: ${correct} / ${inputs.length}`;
+}
+
+// Kezdő inicializálás
+resetTab(0);
+</script>
+
+
+</body></html>

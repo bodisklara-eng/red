@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<!-- saved from url=(0068)file:///C:/Users/Utilizator/Downloads/gemini-code-1787569438537.html -->
+<html lang="hu"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <title>Matematika Tábla Animáció</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #1a1a1a;
+            margin: 0;
+        }
+
+        .board-wrapper {
+            position: relative;
+            display: inline-block;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            border-radius: 8px;
+            overflow: hidden;
+            border: 4px solid #444;
+        }
+
+        .board-wrapper img {
+            display: block;
+            max-width: 90vw;
+            max-height: 85vh;
+            height: auto;
+        }
+
+        /* Mozgó kiemelés (Spotlight) */
+        .spotlight {
+            position: absolute;
+            width: 130px;
+            height: 130px;
+            margin-top: -65px;
+            margin-left: -65px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(255,235,59,0.4) 0%, rgba(255,235,59,0.1) 70%, rgba(255,235,59,0) 100%);
+            border: 2px solid rgba(255, 235, 59, 0.8);
+            box-shadow: 0 0 20px rgba(255, 235, 59, 0.6);
+            pointer-events: none;
+            animation: scanBoard 10s infinite ease-in-out;
+        }
+
+        /* Pásztázó animáció az egyenleteken */
+        @keyframes scanBoard {
+            0%   { top: 20%; left: 30%; transform: scale(1); }
+            20%  { top: 20%; left: 65%; transform: scale(1.2); }
+            40%  { top: 45%; left: 50%; transform: scale(0.9); }
+            60%  { top: 70%; left: 35%; transform: scale(1.1); }
+            80%  { top: 75%; left: 65%; transform: scale(1); }
+            100% { top: 20%; left: 30%; transform: scale(1); }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="board-wrapper">
+        <img src="data:image/svg+xml;utf8,&lt;svg xmlns=&#39;http://www.w3.org/2000/svg&#39; width=&#39;800&#39; height=&#39;500&#39; viewBox=&#39;0 0 800 500&#39;&gt;&lt;rect width=&#39;800&#39; height=&#39;500&#39; fill=&#39;%232b3a2a&#39;/&gt;&lt;g stroke=&#39;%23e0e0e0&#39; stroke-width=&#39;2&#39; fill=&#39;none&#39; opacity=&#39;0.85&#39; font-family=&#39;serif&#39; font-style=&#39;italic&#39;&gt;&lt;text x=&#39;30&#39; y=&#39;60&#39; font-size=&#39;22&#39;&gt;dx / %E2%88%9A(x%C2%B2 - a%C2%B2) = ln|x + %E2%88%9A(x%C2%B2 - a%C2%B2)| + C&lt;/text&gt;&lt;text x=&#39;480&#39; y=&#39;70&#39; font-size=&#39;20&#39;&gt;%E2%88%AB x%E2%81%BF dx = (x%E2%81%BF%E2%81%BA%C2%B9)/(n+1) + C&lt;/text&gt;&lt;text x=&#39;300&#39; y=&#39;200&#39; font-size=&#39;26&#39;&gt;%E2%88%AB (t%C2%B3 + 1)/(t - 1) dt = 6 (t%C2%B2 - t + 1) + C&lt;/text&gt;&lt;text x=&#39;250&#39; y=&#39;360&#39; font-size=&#39;24&#39;&gt;%E2%88%9Ax + %E2%88%9A(x - %E2%88%9A(x - 1)) + C&lt;/text&gt;&lt;path d=&#39;M 50 120 Q 200 150 350 120 T 650 140&#39; stroke-dasharray=&#39;5,5&#39;/&gt;&lt;/g&gt;&lt;path d=&#39;M 120 480 C 100 350, 150 200, 220 150 C 260 250, 200 400, 260 480 Z&#39; fill=&#39;%23d8c2a8&#39;/&gt;&lt;circle cx=&#39;200&#39; cy=&#39;180&#39; r=&#39;35&#39; fill=&#39;%233a2518&#39;/&gt;&lt;/svg&gt;" alt="Matematika tábla animáció">
+        <div class="spotlight"></div>
+    </div>
+
+
+</body></html>

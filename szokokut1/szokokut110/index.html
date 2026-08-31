@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<!-- saved from url=(0068)file:///C:/Users/Utilizator/Downloads/gemini-code-1787586619890.html -->
+<html lang="hu"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <title>Interaktív Exponenciális Munkalap</title>
+    <style>
+        body {
+            font-family: 'Comic Sans MS', 'Segoe UI', Tahoma, sans-serif;
+            background-color: #f8fafc;
+            color: #1e293b;
+            padding: 30px;
+            display: flex;
+            justify-content: center;
+        }
+        .worksheet {
+            background: #ffffff;
+            width: 100%;
+            max-width: 650px;
+            padding: 40px;
+            border-radius: 4px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            border: 1px solid #e2e8f0;
+        }
+        .task { margin-bottom: 45px; }
+        .task-title { font-size: 18px; font-weight: bold; margin-bottom: 15px; }
+        .equation { font-size: 22px; font-weight: bold; color: #3b5998; margin-bottom: 15px; text-align: center; }
+        
+        /* Interaktív beviteli mezők stílusa (a kép rózsaszín dobozai) */
+        input.pink-box {
+            background-color: #ffb3ba;
+            border: 1px solid #d47a82;
+            border-radius: 4px;
+            text-align: center;
+            font-size: 16px;
+            font-weight: bold;
+            color: #000;
+            outline: none;
+            padding: 2px;
+        }
+        input.pink-box:focus { background-color: #ffccd0; border-color: #a855f7; }
+        
+        /* Dinamikus visszajelzés színei */
+        input.correct { background-color: #86efac !important; border-color: #16a34a !important; }
+        input.incorrect { background-color: #fca5a5 !important; border-color: #dc2626 !important; }
+
+        /* Tört számláló/nevező elrendezés */
+        .fraction {
+            display: inline-flex;
+            flex-direction: column;
+            vertical-align: middle;
+            text-align: center;
+            margin: 0 4px;
+        }
+        .fraction-line { border-bottom: 2px solid #000; margin: 2px 0; }
+
+        .row { display: flex; align-items: center; justify-content: center; gap: 8px; margin: 12px 0; font-size: 18px; }
+        .exponent-wrap { position: relative; display: inline-block; }
+        .exponent-wrap input { position: absolute; top: -12px; right: -25px; }
+
+        .btn-check {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            background-color: #3b82f6;
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-top: 30px;
+        }
+        .btn-check:hover { background-color: #2563eb; }
+        #score { text-align: center; font-size: 18px; font-weight: bold; margin-top: 15px; }
+    </style>
+</head>
+<body>
+
+<div class="worksheet">
+    <!-- 1. FELADAT -->
+    <div class="task">
+        <div class="task-title">1. Oldd meg a következő egyenletet!</div>
+        <div class="equation">4<sup>x</sup> - 9 · 2<sup>x</sup> + 8 = 0</div>
+        
+        <div class="row" style="font-size: 16px;">
+            új ismeretlen bevezetése: 
+            <span style="border:1px solid #22c55e; background:#dcfce7; padding:2px 6px; border-radius:3px;">y</span>
+            <span style="border:1px solid #94a3b8; padding:2px 6px; border-radius:3px;">=</span>
+            <span style="border:1px solid #22c55e; background:#dcfce7; padding:2px 6px; border-radius:3px;">2<sup>x</sup></span>
+        </div>
+
+        <div style="font-size: 15px; font-weight: bold; margin: 15px 0 25px 0;">A másodfokú egyenlet két megoldása:</div>
+
+        <div style="display: flex; justify-content: space-around; align-items: center;">
+            <div class="row">
+                <input type="text" class="pink-box" id="q1_y1" style="width: 70px; height: 35px;" data-ans="8|1">
+                <span>Ebből x:</span>
+                <input type="text" class="pink-box" id="q1_x1" style="width: 40px; height: 30px;" data-ans="3|0">
+            </div>
+            <div class="row">
+                <input type="text" class="pink-box" id="q1_y2" style="width: 70px; height: 35px;" data-ans="1|8">
+                <span>Ebből x:</span>
+                <input type="text" class="pink-box" id="q1_x2" style="width: 40px; height: 30px;" data-ans="0|3">
+            </div>
+        </div>
+    </div>
+
+    <!-- 2. FELADAT -->
+    <div class="task">
+        <div class="task-title">2. Oldd meg a következő egyenletet!</div>
+        <div class="equation"><sup>3</sup>√<span style="border-top:2px solid #3b5998; padding-top:1px;">2<sup>x</sup></span> = 2<sup>x</sup> · 8<sup>x+1</sup></div>
+
+        <!-- Lépés 1 -->
+        <div class="row">
+            <span>2</span>
+            <div class="fraction">
+                <input type="text" class="pink-box" id="q2_l1_num" style="width: 35px; height: 25px;" data-ans="x">
+                <div class="fraction-line"></div>
+                <input type="text" class="pink-box" id="q2_l1_den" style="width: 35px; height: 25px;" data-ans="3">
+            </div>
+            <span>= 2</span><sup>x</sup>
+            <span>· 2</span>
+            <div style="position:relative; display:inline-block;">
+                <input type="text" class="pink-box" id="q2_l1_exp1" style="width: 25px; height: 20px; font-size:12px;" data-ans="3">
+                <input type="text" class="pink-box" id="q2_l1_exp2" style="width: 60px; height: 25px;" data-ans="(x+1)|3x+3">
+            </div>
+        </div>
+
+        <!-- Lépés 2 -->
+        <div class="row" style="margin-top:20px;">
+            <span>2</span>
+            <div class="fraction">
+                <input type="text" class="pink-box" id="q2_l2_num" style="width: 35px; height: 25px;" data-ans="x">
+                <div class="fraction-line"></div>
+                <input type="text" class="pink-box" id="q2_l2_den" style="width: 35px; height: 25px;" data-ans="3">
+            </div>
+            <span>= 2</span>
+            <input type="text" class="pink-box" id="q2_l2_exp" style="width: 90px; height: 30px;" data-ans="4x+3|x+3x+3">
+        </div>
+
+        <!-- Lépés 3 -->
+        <div class="row" style="margin-top:20px;">
+            <div class="fraction">
+                <input type="text" class="pink-box" id="q2_l3_num" style="width: 35px; height: 25px;" data-ans="x">
+                <div class="fraction-line"></div>
+                <input type="text" class="pink-box" id="q2_l3_den" style="width: 35px; height: 25px;" data-ans="3">
+            </div>
+            <span>=</span>
+            <input type="text" class="pink-box" id="q2_l3_exp" style="width: 100px; height: 30px;" data-ans="4x+3">
+        </div>
+
+        <!-- Lépés 4 -->
+        <div class="row" style="margin-top:20px;">
+            <input type="text" class="pink-box" id="q2_l4_left" style="width: 80px; height: 30px;" data-ans="x">
+            <span>=</span>
+            <input type="text" class="pink-box" id="q2_l4_right" style="width: 100px; height: 30px;" data-ans="12x+9">
+        </div>
+
+        <!-- Végeredmény -->
+        <div class="row" style="margin-top:25px; font-size:22px;">
+            <span>x =</span>
+            <div class="fraction">
+                <input type="text" class="pink-box" id="q2_res_num" style="width: 40px; height: 28px;" data-ans="-9">
+                <div class="fraction-line"></div>
+                <input type="text" class="pink-box" id="q2_res_den" style="width: 40px; height: 28px;" data-ans="11">
+            </div>
+        </div>
+    </div>
+
+    <button class="btn-check" onclick="checkAnswers()">Ellenőrzés</button>
+    <div id="score"></div>
+</div>
+
+<script>
+function checkAnswers() {
+    const inputs = document.querySelectorAll('input.pink-box');
+    let correctCount = 0;
+
+    inputs.forEach(input => {
+        const userAns = input.value.trim().replace(/\s+/g, '');
+        const validAnswers = input.getAttribute('data-ans').split('|');
+
+        if (userAns !== "" && validAnswers.includes(userAns)) {
+            input.classList.remove('incorrect');
+            input.classList.add('correct');
+            correctCount++;
+        } else {
+            input.classList.remove('correct');
+            input.classList.add('incorrect');
+        }
+    });
+
+    const scoreDiv = document.getElementById('score');
+    scoreDiv.innerHTML = `Eredmény: ${correctCount} / ${inputs.length} mező helyes.`;
+    scoreDiv.style.color = correctCount === inputs.length ? '#16a34a' : '#dc2626';
+}
+</script>
+
+
+</body></html>

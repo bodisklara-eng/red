@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<!-- saved from url=(0068)file:///C:/Users/Utilizator/Downloads/gemini-code-1787590841668.html -->
+<html lang="hu"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <title>Olimpiás Tömbművelet - Kadane Algoritmus Szimulátor</title>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; background: #0f172a; color: #f8fafc; padding: 20px; display: flex; flex-direction: column; align-items: center; }
+        .paper { background: #1e293b; padding: 25px; max-width: 900px; width: 100%; border-radius: 16px; border: 2px solid #334155; }
+        .title { color: #38bdf8; text-align: center; margin-top: 0; text-transform: uppercase; letter-spacing: 1px; }
+        
+        .control-panel { background: #0f172a; border: 2px solid #0284c7; border-radius: 12px; padding: 15px; margin-bottom: 20px; }
+        .panel-title { color: #38bdf8; font-weight: bold; margin-bottom: 10px; font-size: 14px; text-transform: uppercase; }
+        .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin-bottom: 12px; }
+        .form-group { display: flex; flex-direction: column; gap: 4px; }
+        .form-group label { font-size: 11px; color: #94a3b8; font-weight: 600; }
+        .form-group input { background: #1e293b; border: 1px solid #0284c7; color: #fff; padding: 5px 8px; border-radius: 6px; font-size: 13px; font-weight: bold; }
+        
+        .btn-group { display: flex; gap: 10px; flex-wrap: wrap; }
+        .anim-btn { flex: 1; min-width: 140px; background: #10b981; color: #022c22; border: none; padding: 10px; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 13px; transition: 0.2s; }
+        .anim-btn:hover { background: #34d399; }
+        .step-btn { background: #f59e0b; color: #451a03; }
+        .step-btn:hover { background: #fbbf24; }
+        .reset-btn { background: #ef4444; color: #fff; }
+        .reset-btn:hover { background: #f87171; }
+
+        .workspace-grid { display: grid; grid-template-columns: 1fr; gap: 15px; margin-bottom: 15px; }
+        @media (min-width: 750px) { .workspace-grid { grid-template-columns: 320px 1fr; } }
+
+        .code-box { background: #090d16; border: 1px solid #334155; border-radius: 8px; padding: 10px; font-family: 'Consolas', monospace; font-size: 12px; line-height: 1.6; }
+        .code-title { color: #fde047; font-weight: bold; margin-bottom: 6px; font-size: 11px; text-transform: uppercase; border-bottom: 1px solid #334155; padding-bottom: 4px; }
+        .code-line { padding: 2px 6px; border-radius: 4px; transition: background 0.2s, color 0.2s; color: #94a3b8; }
+        .code-line.active { background: #eab308; color: #0f172a; font-weight: bold; border-left: 4px solid #fef08a; }
+
+        .memory-card { background: #090d16; border: 1px solid #0284c7; border-radius: 8px; padding: 10px; margin-top: 10px; font-family: monospace; font-size: 12px; }
+        .mem-item { display: flex; justify-content: space-between; margin-bottom: 4px; border-bottom: 1px dashed #334155; padding-bottom: 2px; }
+        .mem-var { color: #38bdf8; font-weight: bold; }
+        .mem-val { color: #fde047; font-weight: bold; }
+
+        canvas { background: #090d16; border-radius: 8px; display: block; width: 100%; border: 1px solid #334155; }
+        
+        .status-msg { background: #0c4a6e; color: #bae6fd; padding: 8px 12px; border-radius: 6px; font-family: monospace; font-size: 12px; text-align: center; margin-bottom: 15px; border-left: 4px solid #38bdf8; min-height: 18px; }
+        
+        .q-card { background: #0f172a; border: 1px solid #334155; border-radius: 10px; padding: 14px; margin-bottom: 12px; }
+        .q-title { font-size: 13.5px; font-weight: 600; margin-bottom: 8px; }
+        .input-group { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+        input.box { border: 2px solid #38bdf8; background: #1e293b; color: #fff; border-radius: 6px; text-align: center; font-weight: bold; width: 60px; height: 30px; font-size: 14px; }
+        .box.correct { background: #15803d !important; border-color: #22c55e !important; }
+        .box.incorrect { background: #991b1b !important; border-color: #ef4444 !important; }
+        .btn-sm { border: none; padding: 5px 10px; border-radius: 6px; font-size: 11px; font-weight: bold; cursor: pointer; }
+        .btn-hint { background: #334155; color: #fde047; }
+        .btn-sol { background: #4338ca; color: #c7d2fe; }
+        .info-box { display: none; margin-top: 8px; padding: 8px 12px; border-radius: 6px; font-size: 12px; }
+        .hint-box { background: #1e1b4b; border-left: 4px solid #fde047; color: #fef08a; }
+        .sol-box { background: #064e3b; border-left: 4px solid #34d399; color: #a7f3d0; }
+        .footer-panel { text-align: center; margin-top: 20px; padding-top: 10px; border-top: 1px solid #334155; }
+        .btn-submit { background: #0284c7; color: white; border: none; padding: 8px 20px; border-radius: 8px; font-weight: bold; cursor: pointer; }
+        #score-board { margin-top: 10px; font-size: 15px; font-weight: bold; }
+    </style>
+</head>
+<body>
+<div class="paper">
+    <h2 class="title">Olimpiás Feladat: Max Összegű Részvektor (Kadane)</h2>
+    
+    <div class="control-panel">
+        <div class="panel-title">⚙️ Adatsor Beállítása</div>
+        <div class="form-grid">
+            <div class="form-group" style="grid-column: span 2;">
+                <label for="array-input">Tömb elemei (vesszővel elválasztva):</label>
+                <input type="text" id="array-input" value="-2, 1, -3, 4, -1, 2, 1, -5, 4" onchange="resetAll()">
+            </div>
+        </div>
+        <div class="btn-group">
+            <button class="anim-btn" onclick="runAutoAnimation()">▶ Folyamatos Lejátszás</button>
+            <button class="anim-btn step-btn" onclick="executeNextStep()">⏭ Következő Lépés (Step)</button>
+            <button class="anim-btn reset-btn" onclick="resetAll()">🔄 Visszaállítás</button>
+        </div>
+    </div>
+
+    <!-- Munkaterület -->
+    <div class="workspace-grid">
+        <div>
+            <div class="code-box">
+                <div class="code-title">🐍 Kadane Algoritmus</div>
+                <div class="code-line" id="py-1">max_so_far = arr[0]</div>
+                <div class="code-line" id="py-2">curr_max = arr[0]</div>
+                <div class="code-line" id="py-3">for i in range(1, len(arr)):</div>
+                <div class="code-line" id="py-4">  if curr_max + arr[i] &lt; arr[i]:</div>
+                <div class="code-line" id="py-5">    curr_max = arr[i] # új kezdőpont</div>
+                <div class="code-line" id="py-6">  else:</div>
+                <div class="code-line" id="py-7">    curr_max += arr[i] # bővítés</div>
+                <div class="code-line active" id="py-8">  max_so_far = max(max_so_far, curr_max)</div>
+            </div>
+
+            <!-- Memória Monitor -->
+            <div class="memory-card">
+                <div style="color:#38bdf8; font-weight:bold; margin-bottom:5px;">🧠 Memória / Változók</div>
+                <div class="mem-item"><span class="mem-var">i (Index):</span> <span class="mem-val" id="mem-i">8</span></div>
+                <div class="mem-item"><span class="mem-var">arr[i]:</span> <span class="mem-val" id="mem-val">4</span></div>
+                <div class="mem-item"><span class="mem-var">curr_max (Aktuális összeg):</span> <span class="mem-val" id="mem-curr">5</span></div>
+                <div class="mem-item"><span class="mem-var">max_so_far (Rekord összeg):</span> <span class="mem-val" id="mem-max">6</span></div>
+            </div>
+        </div>
+
+        <div>
+            <canvas id="cv" width="500" height="240"></canvas>
+        </div>
+    </div>
+
+    <div class="status-msg" id="status-text">8. Sor: max_so_far változatlan (6)</div>
+
+    <!-- Kérdések -->
+    <div class="q-card">
+        <div class="q-title">1. Mennyi a maximális egybefüggő részösszeg a megadott tömbben?</div>
+        <div class="input-group">
+            <input type="text" class="box incorrect" id="q1-box" data-ans="6">
+            <button class="btn-sm btn-hint" onclick="toggleBox(this, &#39;hint&#39;)">💡 Tipp</button>
+            <button class="btn-sm btn-sol" onclick="toggleBox(this, &#39;sol&#39;)">🔍 Megoldás</button>
+        </div>
+        <div class="info-box hint-box" style="display: block;">💡 Nézd meg a szimuláció végén a `max_so_far` változó értékét!</div>
+        <div class="info-box sol-box" id="q1-sol" style="display: block;">🔍 A tömbben elérhető maximális egybefüggő összeg: <b>6</b>.</div>
+    </div>
+
+    <div class="q-card">
+        <div class="q-title">2. Miért dobja el az algoritmus az korábbi részsorozatot, ha a `curr_max` negatívvá válik?</div>
+        <div class="input-group">
+            <input type="text" class="box" id="q2-box" placeholder="Válasz...">
+            <button class="btn-sm btn-hint" onclick="toggleBox(this, &#39;hint&#39;)">💡 Tipp</button>
+            <button class="btn-sm btn-sol" onclick="toggleBox(this, &#39;sol&#39;)">🔍 Megoldás</button>
+        </div>
+        <div class="info-box hint-box">💡 Egy negatív összegű előtag csak Csökkentené a rákövetkező elemek értékét.</div>
+        <div class="info-box sol-box" id="q2-sol">🔍 Mert a negatív előtag lerontja a rákövetkező részsorozat összegét, így jobb új kezdőpontot nyitni!</div>
+    </div>
+
+    <div class="footer-panel">
+        <button class="btn-submit" onclick="checkAll()">Munkalap Ellenőrzése</button>
+        <div id="score-board"></div>
+    </div>
+</div>
+
+<script>
+let isAutoRunning = false;
+let autoTimer = null;
+
+let arr = [-2, 1, -3, 4, -1, 2, 1, -5, 4];
+
+let state = {
+    step: 0,
+    i: 1,
+    currMax: 0,
+    maxSoFar: 0,
+    currStart: 0,
+    currEnd: 0,
+    bestStart: 0,
+    bestEnd: 0
+};
+
+const cv = document.getElementById('cv');
+const ctx = cv.getContext('2d');
+
+function parseArray() {
+    let raw = document.getElementById('array-input').value;
+    let parsed = raw.split(',').map(x => parseInt(x.trim())).filter(x => !isNaN(x));
+    return parsed.length > 0 ? parsed : [-2, 1, -3, 4, -1, 2, 1, -5, 4];
+}
+
+function resetAll() {
+    clearTimeout(autoTimer);
+    isAutoRunning = false;
+    arr = parseArray();
+
+    state = {
+        step: 0,
+        i: 1,
+        currMax: arr[0],
+        maxSoFar: arr[0],
+        currStart: 0,
+        currEnd: 0,
+        bestStart: 0,
+        bestEnd: 0
+    };
+
+    // Dinamikus válasz kiszámítása
+    let cMax = arr[0], mMax = arr[0];
+    for (let k = 1; k < arr.length; k++) {
+        cMax = Math.max(arr[k], cMax + arr[k]);
+        mMax = Math.max(mMax, cMax);
+    }
+    document.getElementById('q1-box').dataset.ans = mMax;
+    document.getElementById('q1-sol').innerHTML = `🔍 A tömbben elérhető maximális egybefüggő összeg: <b>${mMax}</b>.`;
+
+    updateUI(null, "Rendszer alaphelyzetbe állítva.");
+}
+
+function highlightPythonLine(lineNum) {
+    document.querySelectorAll('.code-line').forEach(el => el.classList.remove('active'));
+    if(lineNum) {
+        const activeEl = document.getElementById(`py-${lineNum}`);
+        if(activeEl) activeEl.classList.add('active');
+    }
+}
+
+function updateUI(lineNum, statusText) {
+    highlightPythonLine(lineNum);
+    document.getElementById('status-text').textContent = statusText;
+    
+    document.getElementById('mem-i').textContent = state.i < arr.length ? state.i : 'Kész';
+    document.getElementById('mem-val').textContent = state.i < arr.length ? arr[state.i] : '-';
+    document.getElementById('mem-curr').textContent = state.currMax;
+    document.getElementById('mem-max').textContent = state.maxSoFar;
+
+    drawCanvas();
+}
+
+function drawCanvas() {
+    ctx.clearRect(0, 0, cv.width, cv.height);
+    let startX = 25;
+    let boxWidth = 42;
+    let gap = 10;
+    let zeroY = 130;
+
+    // Nullvonal
+    ctx.strokeStyle = '#475569';
+    ctx.beginPath();
+    ctx.moveTo(10, zeroY);
+    ctx.lineTo(cv.width - 10, zeroY);
+    ctx.stroke();
+
+    for (let k = 0; k < arr.length; k++) {
+        let x = startX + k * (boxWidth + gap);
+        let val = arr[k];
+        let height = Math.abs(val) * 12;
+        let y = val >= 0 ? zeroY - height : zeroY;
+
+        ctx.fillStyle = val >= 0 ? '#0284c7' : '#ef4444';
+        ctx.fillRect(x, y, boxWidth, height);
+
+        ctx.fillStyle = '#fff';
+        ctx.font = '11px monospace';
+        ctx.fillText(val, x + 12, val >= 0 ? y - 5 : y + height + 12);
+
+        ctx.fillStyle = '#64748b';
+        ctx.fillText(`[${k}]`, x + 10, zeroY + (val >= 0 ? 15 : -5));
+    }
+
+    // Aktuális vizsgált részsorozat keretezése (Zöld)
+    if (state.currStart <= state.currEnd && state.step > 0) {
+        let x1 = startX + state.currStart * (boxWidth + gap) - 4;
+        let x2 = startX + state.currEnd * (boxWidth + gap) + boxWidth + 4;
+        ctx.strokeStyle = '#22c55e';
+        ctx.lineWidth = 3;
+        ctx.strokeRect(x1, 20, x2 - x1, 180);
+        ctx.fillStyle = '#22c55e';
+        ctx.font = '11px bold monospace';
+        ctx.fillText('AKTUÁLIS RÉSZSOROZAT', x1 + 5, 35);
+    }
+
+    // Rekord (Legjobb) részsorozat keretezése (Sárga)
+    if (state.step > 0) {
+        let bx1 = startX + state.bestStart * (boxWidth + gap) - 2;
+        let bx2 = startX + state.bestEnd * (boxWidth + gap) + boxWidth + 2;
+        ctx.strokeStyle = '#f59e0b';
+        ctx.lineWidth = 2;
+        ctx.setLineDash([4, 4]);
+        ctx.strokeRect(bx1, 15, bx2 - bx1, 190);
+        ctx.setLineDash([]);
+        ctx.fillStyle = '#f59e0b';
+        ctx.font = '11px bold monospace';
+        ctx.fillText('REKORD', bx1 + 5, 212);
+    }
+}
+
+function stepAlgorithm() {
+    switch(state.step) {
+        case 0:
+            updateUI(1, `1. Sor: max_so_far = arr[0] (${arr[0]})`);
+            state.step = 1;
+            break;
+        case 1:
+            updateUI(2, `2. Sor: curr_max = arr[0] (${arr[0]})`);
+            state.step = 2;
+            break;
+        case 2:
+            if (state.i < arr.length) {
+                updateUI(3, `3. Ciklus lépés: i = ${state.i}, arr[i] = ${arr[state.i]}`);
+                state.step = 3;
+            } else {
+                updateUI(null, `KÉSZ! Maximális részösszeg = ${state.maxSoFar}`);
+                isAutoRunning = false;
+            }
+            break;
+        case 3:
+            let val = arr[state.i];
+            updateUI(4, `4. Sor: Feltétel ellenőrzése: curr_max + arr[i] (${state.currMax + val}) < arr[i] (${val})?`);
+            if (state.currMax + val < val) {
+                state.step = 4; // Új kezdőpont
+            } else {
+                state.step = 5; // Bővítés
+            }
+            break;
+        case 4: // Új kezdőpont nyitása
+            state.currMax = arr[state.i];
+            state.currStart = state.i;
+            state.currEnd = state.i;
+            updateUI(5, `5. Sor: curr_max negatív volt, ezért új részsorozatot indítunk a ${state.i}. indexről!`);
+            state.step = 6;
+            break;
+        case 5: // Bővítés
+            state.currMax += arr[state.i];
+            state.currEnd = state.i;
+            updateUI(7, `7. Sor: Hozzáadjuk a rákövetkező elemet. Új curr_max = ${state.currMax}`);
+            state.step = 6;
+            break;
+        case 6: // Max frissítése
+            if (state.currMax > state.maxSoFar) {
+                state.maxSoFar = state.currMax;
+                state.bestStart = state.currStart;
+                state.bestEnd = state.currEnd;
+                updateUI(8, `8. Sor: ÚJ REKORD! max_so_far = ${state.maxSoFar}`);
+            } else {
+                updateUI(8, `8. Sor: max_so_far változatlan (${state.maxSoFar})`);
+            }
+            state.i++;
+            state.step = 2;
+            break;
+    }
+}
+
+function executeNextStep() {
+    if (isAutoRunning) {
+        clearTimeout(autoTimer);
+        isAutoRunning = false;
+    }
+    stepAlgorithm();
+}
+
+function runAutoAnimation() {
+    if (isAutoRunning) return;
+    isAutoRunning = true;
+    
+    function autoStep() {
+        if (!isAutoRunning) return;
+        stepAlgorithm();
+        if (state.i < arr.length || state.step !== 2) {
+            autoTimer = setTimeout(autoStep, 900);
+        }
+    }
+    autoStep();
+}
+
+document.querySelectorAll('.box').forEach(i => {
+    i.addEventListener('input', function() {
+        let v = this.value.trim();
+        this.className = v === '' ? 'box' : (v === this.dataset.ans ? 'box correct' : 'box incorrect');
+    });
+});
+
+function toggleBox(btn, type) {
+    const card = btn.closest('.q-card');
+    const box = type === 'hint' ? card.querySelector('.hint-box') : card.querySelector('.sol-box');
+    box.style.display = box.style.display === 'block' ? 'none' : 'block';
+}
+
+function checkAll() {
+    let inputs = document.querySelectorAll('.box'), c = 0;
+    inputs.forEach(i => { 
+        if(i.value.trim().toLowerCase() === i.dataset.ans.toString().toLowerCase() || i.id === 'q2-box' && i.value.trim().length > 3) { 
+            i.className = 'box correct'; 
+            c++; 
+        } else {
+            i.className = 'box incorrect'; 
+        }
+    });
+    document.getElementById('score-board').textContent = `Eredmény: ${c} / ${inputs.length}`;
+}
+
+resetAll();
+</script>
+
+</body></html>

@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<!-- saved from url=(0068)file:///C:/Users/Utilizator/Downloads/gemini-code-1787589407356.html -->
+<html lang="hu"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <title>1. Tömbműveletek - Összegzés és Átlag</title>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; background: #0f172a; color: #f8fafc; padding: 20px; display: flex; flex-direction: column; align-items: center; }
+        .paper { background: #1e293b; padding: 30px; max-width: 680px; width: 100%; border-radius: 16px; border: 2px solid #334155; }
+        .title { color: #38bdf8; text-align: center; margin-top: 0; text-transform: uppercase; }
+        .tv-frame { background: #0f172a; border: 3px solid #0284c7; border-radius: 12px; padding: 15px; margin-bottom: 20px; }
+        .tv-screen { background: #0c4a6e; color: #bae6fd; padding: 12px; border-radius: 6px; font-family: monospace; font-size: 13px; }
+        canvas { background: #090d16; border-radius: 8px; display: block; margin: 0 auto 20px; border: 1px solid #334155; }
+        .q-card { background: #0f172a; border: 1px solid #334155; border-radius: 10px; padding: 16px; margin-bottom: 15px; }
+        .q-title { font-size: 14.5px; font-weight: 600; margin-bottom: 10px; }
+        .input-group { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+        input.box { border: 2px solid #38bdf8; background: #1e293b; color: #fff; border-radius: 6px; text-align: center; font-weight: bold; width: 60px; height: 32px; font-size: 15px; }
+        .box.correct { background: #15803d !important; border-color: #22c55e !important; }
+        .box.incorrect { background: #991b1b !important; border-color: #ef4444 !important; }
+        .btn-sm { border: none; padding: 6px 12px; border-radius: 6px; font-size: 12px; font-weight: bold; cursor: pointer; }
+        .btn-hint { background: #334155; color: #fde047; }
+        .btn-sol { background: #4338ca; color: #c7d2fe; }
+        .info-box { display: none; margin-top: 10px; padding: 10px 14px; border-radius: 6px; font-size: 13px; }
+        .hint-box { background: #1e1b4b; border-left: 4px solid #fde047; color: #fef08a; }
+        .sol-box { background: #064e3b; border-left: 4px solid #34d399; color: #a7f3d0; }
+        .footer-panel { text-align: center; margin-top: 25px; padding-top: 15px; border-top: 1px solid #334155; }
+        .btn-submit { background: #0284c7; color: white; border: none; padding: 10px 24px; border-radius: 8px; font-weight: bold; cursor: pointer; }
+        #score-board { margin-top: 12px; font-size: 16px; font-weight: bold; }
+    </style>
+</head>
+<body>
+<div class="paper">
+    <h2 class="title">Összegzés és Átlagszámítás</h2>
+    <div class="tv-frame">
+        <div class="tv-screen">
+            📺 <strong>KÓD: ÖSSZEGZÉS ALGORITMUS</strong><br>
+            <code>osszeg = 0</code><br>
+            <code>ciklus i = 0-tól hosszig:</code><br>
+            <code>&nbsp;&nbsp;osszeg = osszeg + tomb[i]</code><br>
+            <code>atlag = osszeg / tomb.hossz</code>
+        </div>
+    </div>
+    <canvas id="cv" width="360" height="120"></canvas>
+
+    <!-- Q1 -->
+    <div class="q-card">
+        <div class="q-title"> Adott a <code>pontok = [10, 20, 30]</code> tömb. Mennyi az <code>osszeg</code> kezdőértéke a ciklus előtt?</div>
+        <div class="input-group">
+            <input type="text" class="box" data-ans="0">
+            <button class="btn-sm btn-hint" onclick="toggleBox(this, &#39;hint&#39;)">💡 Tipp</button>
+            <button class="btn-sm btn-sol" onclick="toggleBox(this, &#39;sol&#39;)">🔍 Megoldás</button>
+        </div>
+        <div class="info-box hint-box">💡 Mielőtt elkezdenénk az adatok összeadását, a gyűjtőváltozónak üresnek (nullának) kell lennie.</div>
+        <div class="info-box sol-box">🔍 Az összegző változókat <b>0</b> értékkel inicializáljuk.</div>
+    </div>
+
+    <!-- Q2 -->
+    <div class="q-card">
+        <div class="q-title">Mi az <code>osszeg</code> értéke az első cikluslépés (<code>pontok[0]</code> hozzáadása) után?</div>
+        <div class="input-group">
+            <input type="text" class="box" data-ans="10">
+            <button class="btn-sm btn-hint" onclick="toggleBox(this, &#39;hint&#39;)">💡 Tipp</button>
+            <button class="btn-sm btn-sol" onclick="toggleBox(this, &#39;sol&#39;)">🔍 Megoldás</button>
+        </div>
+        <div class="info-box hint-box">💡 Adj a 0-hoz a tömb 0. elemét (10)!</div>
+        <div class="info-box sol-box">🔍 0 + 10 = <b>10</b>.</div>
+    </div>
+
+    <!-- Q3 -->
+    <div class="q-card">
+        <div class="q-title">Mennyi a tömb elemeinek teljes összege (<code>osszeg</code> a ciklus végén)?</div>
+        <div class="input-group">
+            <input type="text" class="box" data-ans="60">
+            <button class="btn-sm btn-hint" onclick="toggleBox(this, &#39;hint&#39;)">💡 Tipp</button>
+            <button class="btn-sm btn-sol" onclick="toggleBox(this, &#39;sol&#39;)">🔍 Megoldás</button>
+        </div>
+        <div class="info-box hint-box">💡 Adja össze az összes elemet: 10 + 20 + 30.</div>
+        <div class="info-box sol-box">🔍 10 + 20 + 30 = <b>60</b>.</div>
+    </div>
+
+    <!-- Q4 -->
+    <div class="q-card">
+        <div class="q-title">Mennyi a tömb elemeinek átlaga (<code>atlag</code>)?</div>
+        <div class="input-group">
+            <input type="text" class="box" data-ans="20">
+            <button class="btn-sm btn-hint" onclick="toggleBox(this, &#39;hint&#39;)">💡 Tipp</button>
+            <button class="btn-sm btn-sol" onclick="toggleBox(this, &#39;sol&#39;)">🔍 Megoldás</button>
+        </div>
+        <div class="info-box hint-box">💡 Oszd el a teljes összeget az elemek számával (3)!</div>
+        <div class="info-box sol-box">🔍 Átlag = 60 / 3 = <b>20</b>.</div>
+    </div>
+
+    <div class="footer-panel">
+        <button class="btn-submit" onclick="checkAll()">Munkalap Ellenőrzése</button>
+        <div id="score-board"></div>
+    </div>
+</div>
+
+<script>
+const ctx = document.getElementById('cv').getContext('2d');
+let vals = [10, 20, 30];
+function draw() {
+    ctx.clearRect(0, 0, 360, 120);
+    for(let i=0; i<3; i++) {
+        let x = 60 + i * 100;
+        ctx.fillStyle = '#0284c7'; ctx.fillRect(x, 100 - vals[i]*2, 40, vals[i]*2);
+        ctx.fillStyle = '#fff'; ctx.font = '14px monospace'; ctx.fillText(vals[i], x+12, 90 - vals[i]*2);
+        ctx.fillStyle = '#38bdf8'; ctx.fillText("["+i+"]", x+10, 115);
+    }
+}
+draw();
+
+document.querySelectorAll('.box').forEach(i => {
+    i.addEventListener('input', function() {
+        let v = this.value.trim();
+        this.className = v === '' ? 'box' : (v === this.dataset.ans ? 'box correct' : 'box incorrect');
+    });
+});
+
+function toggleBox(btn, type) {
+    const card = btn.closest('.q-card');
+    const box = type === 'hint' ? card.querySelector('.hint-box') : card.querySelector('.sol-box');
+    box.style.display = box.style.display === 'block' ? 'none' : 'block';
+}
+
+function checkAll() {
+    let inputs = document.querySelectorAll('.box'), c = 0;
+    inputs.forEach(i => { if(i.value.trim() === i.dataset.ans) { i.className = 'box correct'; c++; } else i.className = 'box incorrect'; });
+    document.getElementById('score-board').textContent = `Eredmény: ${c} / ${inputs.length}`;
+}
+</script>
+
+</body></html>
