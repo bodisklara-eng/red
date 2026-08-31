@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<!-- saved from url=(0068)file:///C:/Users/Utilizator/Downloads/gemini-code-1787743378220.html -->
+<html lang="hu"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Komplex Lakberendezési Tervező Projekt</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f0f4f8; margin: 0; padding: 20px; color: #333; }
+        .container { max-width: 1000px; margin: 0 auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); }
+        h2 { margin-top: 0; color: #2c3e50; display: flex; justify-content: space-between; align-items: center; }
+        
+        .dashboard { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; background: #eef2f7; padding: 15px; border-radius: 8px; margin-bottom: 20px; font-weight: bold; font-size: 13px; text-align: center; }
+        .budget-ok { color: #27ae60; }
+        .budget-over { color: #c0392b; }
+        .score-box { color: #8e44ad; font-size: 15px; }
+
+        .main-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        @media(max-width: 768px) { .main-layout { grid-template-columns: 1fr; } }
+
+        .canvas-box { background: #fafbfc; border: 2px dashed #cbd5e1; border-radius: 8px; height: 320px; position: relative; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+        .canvas-item { position: absolute; font-size: 55px; transition: all 0.4s ease; filter: drop-shadow(0px 8px 8px rgba(0,0,0,0.15)); }
+
+        ul { list-style: none; padding: 0; margin: 0; }
+        li { background: #fff; border: 1px solid #e2e8f0; padding: 10px 12px; margin-bottom: 8px; border-radius: 6px; display: flex; justify-content: space-between; align-items: center; cursor: grab; user-select: none; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
+        li.dragging { opacity: 0.4; background: #e2e8f0; }
+        .controls-btn { display: flex; gap: 4px; }
+        
+        button { background: #3498db; color: white; border: none; padding: 6px 10px; border-radius: 4px; cursor: pointer; font-size: 13px; font-weight: bold; }
+        button:hover { background: #2980b9; }
+        button.danger { background: #e74c3c; }
+        button.danger:hover { background: #c0392b; }
+        button.success { background: #27ae60; }
+        button.success:hover { background: #219653; }
+
+        .form-group, .action-group { margin-top: 15px; background: #f8fafc; padding: 12px; border-radius: 8px; border: 1px solid #e2e8f0; }
+        .form-group input, .form-group select { padding: 8px; width: calc(50% - 10px); margin-right: 5px; margin-bottom: 8px; border: 1px solid #cbd5e1; border-radius: 4px; }
+        .add-btn { background: #2ecc71; width: 100%; padding: 10px; font-weight: bold; color: white; border: none; border-radius: 4px; cursor: pointer; margin-top: 5px; }
+        .add-btn:hover { background: #27ae60; }
+
+        .alert-box { background: #fee2e2; color: #991b1b; padding: 10px; border-radius: 6px; margin-top: 15px; font-weight: bold; display: none; border-left: 5px solid #dc2626; font-size: 14px; }
+        .success-box { background: #d1fae5; color: #065f46; padding: 10px; border-radius: 6px; margin-top: 15px; font-weight: bold; border-left: 5px solid #10b981; font-size: 14px; }
+        .level-badge { background: #3b82f6; color: white; padding: 3px 8px; border-radius: 12px; font-size: 12px; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>
+        <span>🛋️ Lakberendezési Tervező Projekt</span>
+        <span id="szintCimke" class="level-badge">1. Alapozó Szint</span>
+    </h2>
+    
+    <div class="dashboard">
+        <div>Keret: <span id="keret">5.000</span> RON</div>
+        <div>Részösszeg: <span id="reszosszeg" class="budget-ok">3.550</span> RON</div>
+        <div>Összpontszám: <span id="pontszam" class="score-box">440</span> pont</div>
+        <div>Állapot: <span id="statuszTxt" class="budget-ok">Kiváló</span></div>
+    </div>
+
+    <div class="main-layout">
+        <div>
+            <p><strong>Vizuális Kompozíció (Rétegrend):</strong></p>
+            <div class="canvas-box" id="vaszon"><div class="canvas-item" style="z-index: 1; transform: scale(1) translateY(0px);">🧶</div><div class="canvas-item" style="z-index: 2; transform: scale(1.08) translateY(5px);">🛋️</div><div class="canvas-item" style="z-index: 3; transform: scale(1.16) translateY(10px);">🪵</div></div>
+            <div id="figyelmeztetes" class="alert-box" style="display: none;"></div>
+            <div id="sikeruzenet" class="success-box" style="display: block;">🏆 Tökéletes munka! <br><small>Alap: 300p | Spórolás (+140p) | Saját elem (+0p)</small></div>
+
+            <div class="action-group">
+                <p style="margin: 0 0 8px 0; font-size: 13px; font-weight: bold;">Projekt Kezelés:</p>
+                <div style="display: flex; gap: 8px;">
+                    <button class="success" onclick="projektMentese()" style="flex: 1;">💾 Projekt Mentése</button>
+                    <button onclick="projektBetolteseDialog()" style="flex: 1;">📂 Betöltés</button>
+                </div>
+            </div>
+        </div>
+
+        <div>
+            <p><strong>1D Tömb &amp; Sorrend (Húzható elemek):</strong></p>
+            <ul id="butor-lista"><li draggable="true" data-index="0"><span><strong>1.</strong> Szőnyeg (600 RON) </span>
+                <div class="controls-btn">
+                    <button onclick="event.stopPropagation(); elemMozgat(0, -1)">⬆️</button>
+                    <button onclick="event.stopPropagation(); elemMozgat(0, 1)">⬇️</button>
+                    <button class="danger" onclick="event.stopPropagation(); elemTörlése(0)">🗑️</button>
+                </div></li><li draggable="true" data-index="1"><span><strong>2.</strong> Sarokülő (2500 RON) </span>
+                <div class="controls-btn">
+                    <button onclick="event.stopPropagation(); elemMozgat(1, -1)">⬆️</button>
+                    <button onclick="event.stopPropagation(); elemMozgat(1, 1)">⬇️</button>
+                    <button class="danger" onclick="event.stopPropagation(); elemTörlése(1)">🗑️</button>
+                </div></li><li draggable="true" data-index="2"><span><strong>3.</strong> Dohányzóasztal (450 RON) </span>
+                <div class="controls-btn">
+                    <button onclick="event.stopPropagation(); elemMozgat(2, -1)">⬆️</button>
+                    <button onclick="event.stopPropagation(); elemMozgat(2, 1)">⬇️</button>
+                    <button class="danger" onclick="event.stopPropagation(); elemTörlése(2)">🗑️</button>
+                </div></li></ul>
+
+            <div class="form-group">
+                <p style="margin: 0 0 8px 0; font-size: 13px; font-weight: bold;">Nehézségi szint:</p>
+                <select id="szintValaszto" onchange="szintetValt()" style="width: 100%; padding: 8px; margin-bottom: 10px; border-radius: 4px; border: 1px solid #cbd5e1;">
+                    <option value="konnyu">1. Alapozó Szint (Nagy keret, 3 elem)</option>
+                    <option value="kozepes">2. Haladó Szint (Szigorúbb keret, 4 elem)</option>
+                    <option value="nehez">3. Mester Szint (Szűkös keret, 5 elem + kihívás)</option>
+                </select>
+
+                <p style="margin: 0 0 8px 0; font-size: 13px; font-weight: bold;">Saját bútor hozzáadása (+50 pont):</p>
+                <input type="text" id="ujNev" placeholder="Tárgy neve (pl. Lámpa)">
+                <input type="number" id="ujAr" placeholder="Ár (RON)">
+                <input type="number" id="ujMeret" placeholder="Méret-súly (1-5)" min="1" max="5">
+                <button class="add-btn" onclick="ujElemHozzaadasa()">➕ Hozzáadás &amp; Bónusz</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const szintek = {
+        konnyu: {
+            nev: "1. Alapozó Szint",
+            keret: 5000,
+            elemek: [
+                { id: 1, nev: "Szőnyeg", meretSuly: 1, ar: 600, emoji: "🧶", sajat: false },
+                { id: 2, nev: "Sarokülő", meretSuly: 2, ar: 2500, emoji: "🛋️", sajat: false },
+                { id: 3, nev: "Dohányzóasztal", meretSuly: 3, ar: 450, emoji: "🪵", sajat: false }
+            ]
+        },
+        kozepes: {
+            nev: "2. Haladó Szint",
+            keret: 4000,
+            elemek: [
+                { id: 1, nev: "Nagy Szőnyeg", meretSuly: 1, ar: 900, emoji: "🧶", sajat: false },
+                { id: 2, nev: "Kanapé", meretSuly: 2, ar: 2000, emoji: "🛋️", sajat: false },
+                { id: 3, nev: "Dohányzóasztal", meretSuly: 3, ar: 500, emoji: "🪵", sajat: false },
+                { id: 4, nev: "Állólámpa", meretSuly: 4, ar: 400, emoji: "💡", sajat: false }
+            ]
+        },
+        nehez: {
+            nev: "3. Mester Szint",
+            keret: 3500,
+            elemek: [
+                { id: 1, nev: "Design Szőnyeg", meretSuly: 1, ar: 1000, emoji: "🧶", sajat: false },
+                { id: 2, nev: "Luxus Kanapé", meretSuly: 2, ar: 2200, emoji: "🛋️", sajat: false },
+                { id: 3, nev: "Üveg Asztal", meretSuly: 3, ar: 600, emoji: "🪵", sajat: false }
+            ]
+        }
+    };
+
+    let aktivSzint = 'konnyu';
+    let butorTomb = JSON.parse(JSON.stringify(szintek.konnyu.elemek));
+    let keretOsszeg = szintek.konnyu.keret;
+    let dragStartIndex = null;
+    let pontszam = 0;
+
+    function emojiValaszto(nev) {
+        let n = nev.toLowerCase();
+        if (n.includes('szőnyeg')) return '🧶';
+        if (n.includes('asztal')) return '🪵';
+        if (n.includes('fotel') || n.includes('szék') || n.includes('kanapé')) return '🛋️';
+        if (n.includes('lámpa')) return '💡';
+        if (n.includes('virág') || n.includes('növény')) return '🪴';
+        return '📦';
+    }
+
+    function renderUI() {
+        const listaEl = document.getElementById('butor-lista');
+        const vaszonEl = document.getElementById('vaszon');
+        const reszosszegEl = document.getElementById('reszosszeg');
+        const keretEl = document.getElementById('keret');
+        const figyelmeztetesEl = document.getElementById('figyelmeztetes');
+        const sikerEl = document.getElementById('sikeruzenet');
+        const pontszamEl = document.getElementById('pontszam');
+        const statuszTxt = document.getElementById('statuszTxt');
+
+        listaEl.innerHTML = '';
+        vaszonEl.innerHTML = '';
+        let osszAr = 0;
+        let hibaVan = false;
+
+        butorTomb.forEach((elem, index) => {
+            osszAr += elem.ar;
+            
+            let li = document.createElement('li');
+            li.setAttribute('draggable', 'true');
+            li.dataset.index = index;
+            li.innerHTML = `<span><strong>${index + 1}.</strong> ${elem.nev} (${elem.ar} RON) ${elem.sajat ? '⭐' : ''}</span>
+                <div class="controls-btn">
+                    <button onclick="event.stopPropagation(); elemMozgat(${index}, -1)">⬆️</button>
+                    <button onclick="event.stopPropagation(); elemMozgat(${index}, 1)">⬇️</button>
+                    <button class="danger" onclick="event.stopPropagation(); elemTörlése(${index})">🗑️</button>
+                </div>`;
+            
+            li.addEventListener('dragstart', () => { dragStartIndex = index; li.classList.add('dragging'); });
+            li.addEventListener('dragover', e => e.preventDefault());
+            li.addEventListener('drop', function() {
+                const temp = butorTomb[dragStartIndex];
+                butorTomb.splice(dragStartIndex, 1);
+                butorTomb.splice(index, 0, temp);
+                renderUI();
+            });
+            li.addEventListener('dragend', () => li.classList.remove('dragging'));
+            listaEl.appendChild(li);
+
+            let div = document.createElement('div');
+            div.className = 'canvas-item';
+            div.style.zIndex = index + 1;
+            div.style.transform = `scale(${1 + index * 0.08}) translateY(${index * 5}px)`;
+            div.innerText = elem.emoji;
+            vaszonEl.appendChild(div);
+
+            if (index > 0 && butorTomb[index - 1].meretSuly > elem.meretSuly) {
+                hibaVan = true;
+            }
+        });
+
+        reszosszegEl.innerText = osszAr.toLocaleString();
+        keretEl.innerText = keretOsszeg.toLocaleString();
+
+        let tulkoltseg = osszAr > keretOsszeg;
+        reszosszegEl.className = tulkoltseg ? "budget-over" : "budget-ok";
+
+        // Pontozási logika (Alappont + Pénzügyi spórolási bónusz + Kreativitási bónusz)
+        if (!hibaVan && !tulkoltseg) {
+            let alappont = butorTomb.length * 100;
+            let megsporoltPenz = keretOsszeg - osszAr;
+            let sporalasiBonusz = Math.floor(megsporoltPenz / 100) * 10; // minden megspórolt 100 RON után +10 pont
+            let kreativitasiBonusz = butorTomb.filter(e => e.sajat).length * 50; // saját elemekért elemenként +50 pont
+
+            pontszam = alappont + sporalasiBonusz + kreativitasiBonusz;
+
+            figyelmeztetesEl.style.display = 'none';
+            sikerEl.style.display = 'block';
+            sikerEl.innerHTML = `🏆 Tökéletes munka! <br><small>Alap: ${alappont}p | Spórolás (+${sporalasiBonusz}p) | Saját elem (+${kreativitasiBonusz}p)</small>`;
+            statuszTxt.innerText = "Kiváló";
+            statuszTxt.className = "budget-ok";
+        } else {
+            pontszam = 0;
+            if (tulkoltseg) {
+                figyelmeztetesEl.style.display = 'block';
+                figyelmeztetesEl.innerText = "🛑 Keretösszeg túllépés! Csökkentsd a költségeket.";
+                statuszTxt.innerText = "Túllépés";
+                statuszTxt.className = "budget-over";
+            } else if (hibaVan) {
+                figyelmeztetesEl.style.display = 'block';
+                figyelmeztetesEl.innerText = "🛑 Fedési ütközés! A rétegrend logikája hibás.";
+                statuszTxt.innerText = "Hibás rétegrend";
+                statuszTxt.className = "budget-over";
+            }
+            sikerEl.style.display = 'none';
+        }
+
+        pontszamEl.innerText = pontszam;
+    }
+
+    function szintetValt() {
+        let valasztott = document.getElementById('szintValaszto').value;
+        aktivSzint = valasztott;
+        keretOsszeg = szintek[valasztott].keret;
+        butorTomb = JSON.parse(JSON.stringify(szintek[valasztott].elemek));
+        
+        document.getElementById('szintCimke').innerText = szintek[valasztott].nev;
+        renderUI();
+    }
+
+    function elemMozgat(i, dir) {
+        let ni = i + dir;
+        if (ni >= 0 && ni < butorTomb.length) {
+            let t = butorTomb[i]; butorTomb[i] = butorTomb[ni]; butorTomb[ni] = t;
+            renderUI();
+        }
+    }
+
+    function elemTörlése(i) {
+        butorTomb.splice(i, 1);
+        renderUI();
+    }
+
+    function ujElemHozzaadasa() {
+        let nev = document.getElementById('ujNev').value.trim();
+        let ar = parseInt(document.getElementById('ujAr').value);
+        let meret = parseInt(document.getElementById('ujMeret').value);
+
+        if (!nev || isNaN(ar) || isNaN(meret)) {
+            alert("Kérlek tölts ki minden mezőt helyesen!");
+            return;
+        }
+
+        butorTomb.push({
+            id: butorTomb.length + 1,
+            nev: nev,
+            meretSuly: meret,
+            ar: ar,
+            emoji: emojiValaszto(nev),
+            sajat: true
+        });
+
+        document.getElementById('ujNev').value = '';
+        document.getElementById('ujAr').value = '';
+        document.getElementById('ujMeret').value = '';
+        renderUI();
+    }
+
+    function projektMentese() {
+        const adat = {
+            szint: aktivSzint,
+            keret: keretOsszeg,
+            pontszam: pontszam,
+            elemek: butorTomb
+        };
+        const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(adat, null, 2));
+        const downloadAnchor = document.createElement('a');
+        downloadAnchor.setAttribute("href", dataStr);
+        downloadAnchor.setAttribute("download", "lakberendezes_projekt.json");
+        document.body.appendChild(downloadAnchor);
+        downloadAnchor.click();
+        downloadAnchor.remove();
+    }
+
+    function projektBetolteseDialog() {
+        const input = document.createElement('input');
+        input.type = 'file';
+        input.accept = '.json';
+        input.onchange = e => {
+            const file = e.target.files[0];
+            const reader = new FileReader();
+            reader.readAsText(file, 'UTF-8');
+            reader.onload = readerEvent => {
+                try {
+                    const tartalom = JSON.parse(readerEvent.target.result);
+                    if (tartalom.elemek && tartalom.keret) {
+                        butorTomb = tartalom.elemek;
+                        keretOsszeg = tartalom.keret;
+                        aktivSzint = tartalom.szint || 'konnyu';
+                        document.getElementById('szintValaszto').value = aktivSzint;
+                        document.getElementById('szintCimke').innerText = szintek[aktivSzint] ? szintek[aktivSzint].nev : "Betöltött Projekt";
+                        renderUI();
+                        alert("Projekt sikeresen betöltve!");
+                    } else {
+                        alert("Hibás fájlformátum!");
+                    }
+                } catch (err) {
+                    alert("Nem sikerült beolvasni a fájlt!");
+                }
+            }
+        };
+        input.click();
+    }
+
+    renderUI();
+</script>
+
+
+</body></html>
