@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<!-- saved from url=(0068)file:///C:/Users/Utilizator/Downloads/gemini-code-1788079198460.html -->
+<html lang="hu"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Logikai Gondolattérkép és Folyamatábra</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            background-color: #0f172a;
+            color: #f8fafc;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+        #canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            pointer-events: none;
+        }
+        .header {
+            text-align: center;
+            padding: 2rem 1rem;
+            position: relative;
+            z-index: 2;
+        }
+        .header h1 {
+            color: #38bdf8;
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+        .header p {
+            color: #94a3b8;
+            font-size: 1rem;
+        }
+        .container {
+            position: relative;
+            z-index: 2;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 3rem;
+        }
+        .node-card {
+            background: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s ease, border-color 0.3s ease;
+            position: relative;
+        }
+        .node-card:hover {
+            transform: translateY(-5px);
+            border-color: #38bdf8;
+        }
+        .node-card h3 {
+            color: #38bdf8;
+            font-size: 1.25rem;
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .node-card p {
+            color: #cbd5e1;
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+        .tag {
+            display: inline-block;
+            background: #0369a1;
+            color: #e0f2fe;
+            font-size: 0.75rem;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <canvas id="canvas" width="1528" height="740"></canvas>
+
+    <div class="header">
+        <h1>Gondolattérkép &amp; Logikai Folyamat</h1>
+        <p>UX/UI rendezéstől a Kombinatorikán át Annácska Szivattyújáig</p>
+    </div>
+
+    <div class="container" id="nodes-container">
+        <div class="node-card" id="node-galeria">
+                <span class="tag">UX / UI Design</span>
+                <h3>1. Képgalériák Hibái</h3>
+                <p>Pazarló helykihasználás, eltérő méretek és nem azonos számosság. Az ismétlődő, tartalom nélküli képek monotóniát és zavart okoznak.</p>
+            </div><div class="node-card" id="node-kontextus">
+                <span class="tag">Értelmezés</span>
+                <h3>2. Kontextus Párhuzam</h3>
+                <p>A képeknél a redundancia rontja az élményt. Ezzel szemben a naplóban lévő 10-es osztályzatok ismétlődése örömet és stabilitást jelent.</p>
+            </div><div class="node-card" id="node-szeparacio">
+                <span class="tag">Struktúra</span>
+                <h3>3. Történet &amp; Ruhák Szétválasztása</h3>
+                <p>Annácska ruháinak csoportosítása: Szín, méret, stílus és funkció alapján. A rendezési elv határozza meg a vizuális ritmust.</p>
+            </div><div class="node-card" id="node-kombinatorika">
+                <span class="tag">Matematika</span>
+                <h3>4. Kombinatorika &amp; Döntés</h3>
+                <p>A csibék kikelése és a ruhák szárítása: Permutációk n! és elhelyezési lehetőségek (n+1)(n+2). A sorrend határozza meg Anna döntéseit.</p>
+            </div><div class="node-card" id="node-szivattyu">
+                <span class="tag">Fizika &amp; Alkalmazás</span>
+                <h3>5. Annácska Szivattyúja</h3>
+                <p>Iskolakezdés és mosási rutin víz nélkül. PVC csövekből és flakonokból épített visszacsapó szelepes kézi pumpa a kút kiemeléséhez.</p>
+            </div><div class="node-card" id="node-szokokut">
+                <span class="tag">Kreativitás</span>
+                <h3>6. Az Erdei Szökőkút</h3>
+                <p>Herón-szökőkút elve: Zárt flakonok és közlekedőedények nyomáskülönbsége. A fizika törvényei és a játékosság szép találkozása.</p>
+            </div></div>
+
+    <script>
+        // 1. GONDOLATCSOMÓPONTOK ADATAI ÉS LOGIKAI KAPCSOLATAI
+        const nodesData = [
+            {
+                id: "galeria",
+                category: "UX / UI Design",
+                title: "1. Képgalériák Hibái",
+                text: "Pazarló helykihasználás, eltérő méretek és nem azonos számosság. Az ismétlődő, tartalom nélküli képek monotóniát és zavart okoznak.",
+                connectsTo: ["kontextus", "szeparacio"]
+            },
+            {
+                id: "kontextus",
+                category: "Értelmezés",
+                title: "2. Kontextus Párhuzam",
+                text: "A képeknél a redundancia rontja az élményt. Ezzel szemben a naplóban lévő 10-es osztályzatok ismétlődése örömet és stabilitást jelent.",
+                connectsTo: ["kombinatorika"]
+            },
+            {
+                id: "szeparacio",
+                category: "Struktúra",
+                title: "3. Történet & Ruhák Szétválasztása",
+                text: "Annácska ruháinak csoportosítása: Szín, méret, stílus és funkció alapján. A rendezési elv határozza meg a vizuális ritmust.",
+                connectsTo: ["kombinatorika"]
+            },
+            {
+                id: "kombinatorika",
+                category: "Matematika",
+                title: "4. Kombinatorika & Döntés",
+                text: "A csibék kikelése és a ruhák szárítása: Permutációk n! és elhelyezési lehetőségek (n+1)(n+2). A sorrend határozza meg Anna döntéseit.",
+                connectsTo: ["szivattyu"]
+            },
+            {
+                id: "szivattyu",
+                category: "Fizika & Alkalmazás",
+                title: "5. Annácska Szivattyúja",
+                text: "Iskolakezdés és mosási rutin víz nélkül. PVC csövekből és flakonokból épített visszacsapó szelepes kézi pumpa a kút kiemeléséhez.",
+                connectsTo: ["szokokut"]
+            },
+            {
+                id: "szokokut",
+                category: "Kreativitás",
+                title: "6. Az Erdei Szökőkút",
+                text: "Herón-szökőkút elve: Zárt flakonok és közlekedőedények nyomáskülönbsége. A fizika törvényei és a játékosság szép találkozása.",
+                connectsTo: []
+            }
+        ];
+
+        const container = document.getElementById('nodes-container');
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+
+        // CSOMÓPONTOK KIRAJZOLÁSA A DOM-BA
+        const cardElements = {};
+        nodesData.forEach(node => {
+            const card = document.createElement('div');
+            card.className = 'node-card';
+            card.id = `node-${node.id}`;
+            card.innerHTML = `
+                <span class="tag">${node.category}</span>
+                <h3>${node.title}</h3>
+                <p>${node.text}</p>
+            `;
+            container.appendChild(card);
+            cardElements[node.id] = card;
+        });
+
+        // CANVAS MÉRETEZÉS
+        function resizeCanvas() {
+            canvas.width = document.body.scrollWidth;
+            canvas.height = document.body.scrollHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        // ANIMÁCIÓS VÁLTOZÓK
+        let offset = 0;
+
+        // VONALAK ÉS ANIMÁCIÓ KIRAJZOLÁSA
+        function drawConnections() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            nodesData.forEach(sourceNode => {
+                const sourceEl = cardElements[sourceNode.id];
+                const sourceRect = sourceEl.getBoundingClientRect();
+                
+                // Középpontok kiszámítása a dokumentumhoz képest
+                const startX = sourceRect.left + sourceRect.width / 2 + window.scrollX;
+                const startY = sourceRect.top + sourceRect.height / 2 + window.scrollY;
+
+                sourceNode.connectsTo.forEach(targetId => {
+                    const targetEl = cardElements[targetId];
+                    if (!targetEl) return;
+                    
+                    const targetRect = targetEl.getBoundingClientRect();
+                    const endX = targetRect.left + targetRect.width / 2 + window.scrollX;
+                    const endY = targetRect.top + targetRect.height / 2 + window.scrollY;
+
+                    // Görbe vonal rajzolása (Bézier curve)
+                    ctx.beginPath();
+                    ctx.moveTo(startX, startY);
+
+                    const controlY = (startY + endY) / 2;
+                    ctx.bezierCurveTo(startX, controlY, endX, controlY, endX, endY);
+
+                    // Alap összekötő vonal stílusa
+                    ctx.strokeStyle = 'rgba(56, 189, 248, 0.25)';
+                    ctx.lineWidth = 3;
+                    ctx.stroke();
+
+                    // Animált pontozott / áramló vonal stílusa
+                    ctx.beginPath();
+                    ctx.moveTo(startX, startY);
+                    ctx.bezierCurveTo(startX, controlY, endX, controlY, endX, endY);
+                    
+                    ctx.strokeStyle = '#38bdf8';
+                    ctx.lineWidth = 2;
+                    ctx.setLineDash([6, 12]);
+                    ctx.lineDashOffset = -offset;
+                    ctx.stroke();
+                    ctx.setLineDash([]); // Visszaállítás
+                });
+            });
+
+            offset += 0.5; // Animáció sebessége
+            requestAnimationFrame(drawConnections);
+        }
+
+        // Összekötés és animáció indítása a betöltés után
+        window.addEventListener('load', () => {
+            resizeCanvas();
+            drawConnections();
+        });
+        window.addEventListener('scroll', resizeCanvas);
+    </script>
+
+</body></html>
