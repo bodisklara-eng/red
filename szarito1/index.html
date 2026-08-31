@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<!-- saved from url=(0067)file:///C:/Users/Utilizator/Downloads/Ruhaszarito-Anna-Vezerli.html -->
+<html lang="hu"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ruhaszárító – Anna vezérli</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;600&family=Patrick+Hand&display=swap');
+:root{--green:#1a3d2e;--paper:#fef9e8;--line:#c8a86a;--amber:#ffbe76}
+*{box-sizing:border-box} body{margin:0;background:#f6f4ef;font-family:Outfit,sans-serif;color:#1a1a1a}
+.hand{font-family:'Patrick Hand',cursive}
+header{background:var(--green);color:#fef9e8;padding:20px;text-align:center}
+.wrap{max-width:1150px;margin:0 auto;padding:18px}
+.rope-scene{background:linear-gradient(#dff0e4,#fef9e8);border:2px solid #1a3d2e;border-radius:20px;padding:18px;position:relative}
+.trees{display:flex;justify-content:space-between;font-size:72px}
+.rope-line{position:absolute;top:56%;left:7%;right:7%;height:3px;background:var(--line);border-radius:2px;z-index:1}
+.rope-line2{position:absolute;top:62%;left:7%;right:7%;height:3px;background:var(--line);border-radius:2px;z-index:1}
+.slots{display:grid;grid-template-columns:repeat(20,1fr);gap:5px;margin-top:36px;position:relative;z-index:2}
+@media(max-width:900px){.slots{grid-template-columns:repeat(10,1fr)}}
+.slot{aspect-ratio:0.75/1.15;background:rgba(255,255,255,0.7);border:1.6px dashed #bbb;border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;transition:all .28s cubic-bezier(.2,.8,.2,1);position:relative}
+.slot.filled{background:white;border-style:solid;border-color:#1a3d2e;box-shadow:0 4px 12px rgba(0,0,0,.14)}
+.slot.selected{outline:3px solid var(--amber);outline-offset:2px;transform:translateY(-4px) scale(1.03);z-index:5}
+.slot.shift-right{animation:shiftR .38s ease}
+@keyframes shiftR{0%{transform:translateX(0)}35%{transform:translateX(26px) rotate(2deg)}100%{transform:translateX(0)}}
+.slot.to-insert{animation:popIn .4s ease}
+@keyframes popIn{0%{transform:scale(0) translateY(20px)}60%{transform:scale(1.15)}100%{transform:scale(1)}}
+.icon{font-size:22px} .lbl{font-size:9px;margin-top:2px;font-weight:600;text-transform:uppercase}
+.controls{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:18px}
+@media(max-width:800px){.controls{grid-template-columns:1fr}}
+.panel{background:white;border:1px solid #e6e6e6;border-radius:16px;padding:14px}
+.panel h3{margin:0 0 10px;font-size:15px;display:flex;align-items:center;gap:6px}
+.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:8px 0}
+input[type=number]{width:90px;padding:8px 10px;border:1px solid #ddd;border-radius:10px;font-weight:600}
+button{border:0;padding:10px 14px;border-radius:999px;font-weight:700;cursor:pointer;transition:.18s}
+.btn-primary{background:var(--green);color:#fef9e8} .btn-primary:hover{background:#122a20;transform:translateY(-1px)}
+.btn-amber{background:var(--amber);color:#1a1a1a} .btn-danger{background:#ff7a7a;color:white}
+.btn-ghost{background:#f3f3f3;border:1px solid #ddd}
+.badge{font-size:10px;padding:3px 8px;border-radius:999px;background:#e8f5e9;border:1px solid #c8e6c9;font-weight:700}
+.log{height:260px;overflow:auto;background:#0f2018;color:#d6f5d6;font-family:monospace;font-size:11.5px;padding:10px;border-radius:12px}
+#anna{position:absolute;right:18px;top:14px;background:white;border:1px solid #ddd;border-radius:12px;padding:6px 10px;font-size:12px;display:flex;gap:8px;align-items:center;box-shadow:0 4px 10px rgba(0,0,0,.08)}
+.dot{width:10px;height:10px;border-radius:50%;background:#22c55e;display:inline-block}
+</style>
+</head>
+<body>
+<header>
+<h1 class="hand">👩‍🌾 Anna szárítókötele – te döntöd el hova!</h1>
+<p>Kattints egy slotra → az lesz a beszúrási pont. Vagy írd be a számot. Bal oldalt tele, jobb oldalt üres – pont mint a képen.</p>
+</header>
+<div class="wrap">
+<div class="rope-scene" id="scene">
+<div id="anna"><span class="dot"></span><b>Anna</b><span id="annaMsg">ide: [12]</span></div>
+<div class="trees"><span>🌳</span><span>🌳</span></div>
+<div class="rope-line"></div><div class="rope-line2"></div>
+<div class="slots" id="slots"><div class="slot filled" title="[0] zokni – kattints hogy ide szúrj" style="background: rgb(206, 224, 243);"><span class="icon">🧦</span><span class="lbl">0</span></div><div class="slot filled" title="[1] ruha – kattints hogy ide szúrj" style="background: rgb(206, 232, 243);"><span class="icon">👗</span><span class="lbl">1</span></div><div class="slot filled" title="[2] polo – kattints hogy ide szúrj" style="background: rgb(206, 234, 243);"><span class="icon">👕</span><span class="lbl">2</span></div><div class="slot filled" title="[3] zokni – kattints hogy ide szúrj" style="background: rgb(206, 220, 243);"><span class="icon">🧦</span><span class="lbl">3</span></div><div class="slot filled" title="[4] zokni – kattints hogy ide szúrj" style="background: rgb(206, 235, 243);"><span class="icon">🧦</span><span class="lbl">4</span></div><div class="slot filled" title="[5] zokni – kattints hogy ide szúrj" style="background: rgb(206, 208, 243);"><span class="icon">🧦</span><span class="lbl">5</span></div><div class="slot filled" title="[6] ruha – kattints hogy ide szúrj" style="background: rgb(206, 221, 243);"><span class="icon">👗</span><span class="lbl">6</span></div><div class="slot " title="[7] üres – kattints hogy ide szúrj"><span style="font-size:10px;color:#aaa">7: üres</span></div><div class="slot filled" title="[8] torolkozo – kattints hogy ide szúrj" style="background: rgb(206, 238, 243);"><span class="icon">🧣</span><span class="lbl">8</span></div><div class="slot filled" title="[9] torolkozo – kattints hogy ide szúrj" style="background: rgb(206, 223, 243);"><span class="icon">🧣</span><span class="lbl">9</span></div><div class="slot filled" title="[10] nadrag – kattints hogy ide szúrj" style="background: rgb(206, 235, 243);"><span class="icon">👖</span><span class="lbl">10</span></div><div class="slot " title="[11] üres – kattints hogy ide szúrj"><span style="font-size:10px;color:#aaa">11: üres</span></div><div class="slot filled selected" title="[12] ruha – kattints hogy ide szúrj" style="background: rgb(206, 215, 243);"><span class="icon">👗</span><span class="lbl">12</span></div><div class="slot filled" title="[13] ruha – kattints hogy ide szúrj" style="background: rgb(206, 237, 243);"><span class="icon">👗</span><span class="lbl">13</span></div><div class="slot " title="[14] üres – kattints hogy ide szúrj"><span style="font-size:10px;color:#aaa">14: üres</span></div><div class="slot " title="[15] üres – kattints hogy ide szúrj"><span style="font-size:10px;color:#aaa">15: üres</span></div><div class="slot " title="[16] üres – kattints hogy ide szúrj"><span style="font-size:10px;color:#aaa">16: üres</span></div><div class="slot " title="[17] üres – kattints hogy ide szúrj"><span style="font-size:10px;color:#aaa">17: üres</span></div><div class="slot " title="[18] üres – kattints hogy ide szúrj"><span style="font-size:10px;color:#aaa">18: üres</span></div><div class="slot " title="[19] üres – kattints hogy ide szúrj"><span style="font-size:10px;color:#aaa">19: üres</span></div></div>
+<div style="margin-top:12px;font-size:12px;display:flex;gap:16px;flex-wrap:wrap"><span>Foglalt: <b id="occ">12/20</b></span><span>Lyukak: <b id="gaps">2</b></span><span>Kiválasztott index: <b id="selIdx" style="color:#b45309">12</b></span></div>
+</div>
+
+<div class="controls">
+<div class="panel">
+<h3>🧺 Beszúrás – Anna megadja</h3>
+<div class="row"><label>Index (0-19):</label><input id="inIdx" type="number" min="0" max="19" value="5"><span class="badge" id="idxHint">0=bal szél</span></div>
+<div class="row"><label>Darab:</label><input id="inCnt" type="number" min="1" max="10" value="1"><button class="btn-amber" onclick="insertAtInput()">Beszúrás ide ➡️</button></div>
+<div class="row"><button class="btn-primary" onclick="insertAtSelected()">📍 Beszúrás a kiválasztott helyre</button><button class="btn-primary" onclick="batchAtSelected()">🧺 Adag (n db) a kiválasztott helyre</button></div>
+<p style="font-size:12px;color:#666;margin:8px 0 0">Ha a kiválasztott helyen foglalt van és van üres jobbra, a ruhák jobbra tolódnak animálva. Ha van belső lyuk, előbb azt tölti (ESET 2/6).</p>
+</div>
+<div class="panel">
+<h3>👋 Levétel – Anna megadja</h3>
+<div class="row"><label>Index:</label><input id="outIdx" type="number" min="0" max="19" value="2"><label>Darab:</label><input id="outCnt" type="number" min="1" max="10" value="1"><button class="btn-danger" onclick="removeAtInput()">Levenni innen</button></div>
+<div class="row"><button class="btn-ghost" onclick="removeAtSelected()">Levenni a kiválasztott helyről</button><button class="btn-ghost" onclick="removeRange()">Tartomány törlése (index-től n db)</button><button class="btn-ghost" onclick="clearAll()">🧹 Mindent leszed</button></div>
+<div class="row" style="margin-top:8px"><button class="btn-ghost" onclick="compress()">📦 Tömörítés balra</button><button class="btn-ghost" onclick="undo()">↩️ Undo</button><button class="btn-ghost" onclick="reset()">🔄 Reset (bal zsúfolt, jobb üres)</button></div>
+</div>
+</div>
+
+<div class="controls" style="margin-top:14px">
+<div class="panel"><h3>📖 Esetek – mi történik kattintáskor?</h3><div id="cases" style="display:grid;gap:8px"><div class="c panel active" id="case-1" style="padding:10px"><div><b>ESET 1</b> <span class="badge">O(k)</span></div><b>Beszúrás foglalt helyre → jobbra tolás</b><div style="font-size:12px;color:#555">Anna pontos indexet mond. Ha foglalt, keresünk első üres jobbra és mindent eltolunk.</div></div><div class="c panel" id="case-3" style="padding:10px"><div><b>ESET 3</b> <span class="badge">O(1)</span></div><b>Beszúrás üresre</b><div style="font-size:12px;color:#555">Ha [i] üres, csak betesszük – nincs tolás.</div></div><div class="c panel" id="case-4" style="padding:10px"><div><b>ESET 4</b> <span class="badge">ERROR</span></div><b>Overflow</b><div style="font-size:12px;color:#555">Nincs üres jobbra – nem fér fel.</div></div><div class="c panel" id="case-5" style="padding:10px"><div><b>ESET 5</b> <span class="badge">O(m)</span></div><b>Levételek – lyuk marad</b><div style="font-size:12px;color:#555">Anna megadja hány darabot és honnan. Nem rendezzük automatikusan.</div></div><div class="c panel" id="case-7" style="padding:10px"><div><b>ESET 7</b> <span class="badge">O(n*k)</span></div><b>Kötegelt beszúrás (n db)</b><div style="font-size:12px;color:#555">Anna: „tegyél fel 3-at ide”. Láncban tolja a többit.</div></div><div class="c panel" id="case-8" style="padding:10px"><div><b>ESET 8</b> <span class="badge">O(n)</span></div><b>Tömörítés</b><div style="font-size:12px;color:#555">Összes lyuk jobbra.</div></div></div></div>
+<div class="panel"><div style="display:flex;justify-content:space-between"><b class="hand">Napló – algoritmus lépései</b><button class="btn-ghost" style="padding:4px 8px;font-size:11px" onclick="logEl.innerHTML=&#39;&#39;">törlés</button></div><div class="log" id="log"><div><span style="color:#8bbd8b">23:31:22</span> ✓ [12] beszúrva 👗, tolás kész</div><div><span style="color:#8bbd8b">23:31:22</span> ESET 1 – [12] foglalt → 1 ruha jobbra tolása 👗 helyének</div><div><span style="color:#8bbd8b">23:31:14</span> ESET 3 – [12] üres volt → 👗 behelyezve tolás nélkül O(1)</div><div><span style="color:#8bbd8b">23:31:03</span> 🔄 Reset – bal tele, jobb üres, 1 lyuk a 7-en</div></div><div style="margin-top:10px"><b>Python + JS kód</b><pre id="code" style="font-size:11px;background:#fafaf7;border:1px solid #eee;border-radius:10px;padding:10px;overflow:auto;max-height:220px"># Python – Anna megadja hova, hányat
+def insert_at(rope,index,count,new_items):
+    for iter in range(count):
+        if all(rope): raise OverflowError('ESET4 teli')
+        item=new_items[iter]
+        if rope[index] is None:
+            rope[index]=item # ESET3
+        else:
+            empty=next((j for j in range(index,len(rope)) if rope[j] is None),-1)
+            if empty==-1: raise OverflowError('nincs üres jobbra')
+            for k in range(empty,index,-1):
+                rope[k]=rope[k-1] # jobbra tolás ESET1
+            rope[index]=item
+        index=min(index+1,len(rope)-1)
+
+def remove_at(rope,index,count):
+    for i in range(count):
+        at=index+i
+        if at &lt; len(rope): rope[at]=None # ESET5 lyuk marad
+</pre></div></div>
+</div>
+</div>
+
+<script>
+const N=20;
+const icons={polo:'👕',nadrag:'👖',torolkozo:'🧣',zokni:'🧦',ruha:'👗'};
+let rope=Array(N).fill(null);
+let history=[];
+let sel=5;
+let idC=1;
+const slotsEl=document.getElementById('slots');
+const logEl=document.getElementById('log');
+function randCloth(){ const ks=Object.keys(icons); const t=ks[Math.floor(Math.random()*ks.length)]; return {id:idC++,type:t,icon:icons[t],color:`hsl(${Math.floor(Math.random()*60+180)},60%,88%)`};}
+function snapshot(){ history.push(JSON.parse(JSON.stringify(rope))); if(history.length>40) history.shift(); }
+function log(m){ const t=new Date().toLocaleTimeString('hu-HU'); logEl.innerHTML=`<div><span style="color:#8bbd8b">${t}</span> ${m}</div>`+logEl.innerHTML; const mm=m.match(/ESET (\d+)/); if(mm) highlightCase(mm[1]); }
+function highlightCase(n){ document.querySelectorAll('#cases .c').forEach(c=>c.classList.remove('active')); const el=document.getElementById('case-'+n); if(el) el.classList.add('active'); }
+function render(){
+  slotsEl.innerHTML='';
+  rope.forEach((c,i)=>{
+    const d=document.createElement('div'); d.className='slot '+(c?'filled':'')+(i===sel?' selected':''); d.onclick=()=>{sel=i; document.getElementById('inIdx').value=i; document.getElementById('outIdx').value=i; document.getElementById('selIdx').textContent=i; document.getElementById('annaMsg').textContent=`ide: [${i}]`; render();};
+    if(c) d.innerHTML=`<span class="icon">${c.icon}</span><span class="lbl">${i}</span>`; else d.innerHTML=`<span style="font-size:10px;color:#aaa">${i}: üres</span>`;
+    if(c) d.style.background=c.color;
+    d.title=`[${i}] ${c?c.type:'üres'} – kattints hogy ide szúrj`;
+    slotsEl.appendChild(d);
+  });
+  document.getElementById('occ').textContent=`${rope.filter(Boolean).length}/${N}`;
+  let gaps=0,right=-1; for(let i=N-1;i>=0;i--) if(rope[i]){right=i;break;} for(let i=0;i<right;i++) if(!rope[i]) gaps++; document.getElementById('gaps').textContent=gaps;
+  document.getElementById('selIdx').textContent=sel;
+}
+function reset(){ rope=Array(N).fill(null); [0,1,2,3,4,5,6,8,9,10].forEach(p=>rope[p]=randCloth()); history=[]; log('🔄 Reset – bal tele, jobb üres, 1 lyuk a 7-en'); render(); }
+function findEmptyRight(from){ for(let j=from;j<N;j++) if(!rope[j]) return j; return -1; }
+
+// MAG – beszúrás adott indexre, jobbra tolással
+async function insertAt(index, count=1){
+  for(let iter=0; iter<count; iter++){
+    if(rope.every(Boolean)){ log(`ESET 4 – Overflow: nincs hely, ${count-iter} ruha nem fér`); break; }
+    snapshot();
+    const item=randCloth();
+    // ha van belső lyuk és nem explicit indexre ragaszkodunk? Itt Anna explicit indexet adott, ezért tiszteletben tartjuk ESET 1-et
+    // DE ha van lyuk bal oldalt és Anna nem ragaszkodik pontos indexhez, ESET 6 opció – itt most pontos indexet implementálunk:
+    let target=index;
+    if(target<0) target=0; if(target>=N) target=N-1;
+    if(!rope[target]){
+      rope[target]=item;
+      log(`ESET 3 – [${target}] üres volt → ${item.icon} behelyezve tolás nélkül O(1)`);
+      render(); await sleep(180);
+    } else {
+      const empty=findEmptyRight(target);
+      if(empty===-1){ log(`ESET 4 – [${target}]-től jobbra nincs üres – overflow`); break; }
+      log(`ESET 1 – [${target}] foglalt → ${empty-target} ruha jobbra tolása ${item.icon} helyének`);
+      // animáció jobbra tolás
+      for(let k=empty;k>target;k--){
+        const el=slotsEl.children[k-1]; if(el) el.classList.add('shift-right');
+        rope[k]=rope[k-1];
+        render(); await sleep(120);
+      }
+      rope[target]=item;
+      log(`✓ [${target}] beszúrva ${item.icon}, tolás kész`);
+      render(); await sleep(200);
+    }
+    // ha Anna többet kért, következő ruha eggyel arrébb (lánc)
+    index = Math.min(target+1, N-1);
+  }
+}
+function sleep(ms){return new Promise(r=>setTimeout(r,ms));}
+function insertAtInput(){ const idx=parseInt(document.getElementById('inIdx').value)||0; const cnt=parseInt(document.getElementById('inCnt').value)||1; sel=idx; insertAt(idx,cnt); }
+function insertAtSelected(){ const cnt=parseInt(document.getElementById('inCnt').value)||1; insertAt(sel,cnt); }
+function batchAtSelected(){ const cnt=parseInt(document.getElementById('inCnt').value)||4; insertAt(sel,cnt); }
+
+function removeAt(index,count=1){
+  for(let i=0;i<count;i++){
+    const at=index+i;
+    if(at>=N) break;
+    if(!rope[at]){ log(`[${at}] már üres – skip`); continue; }
+    if(i===0) snapshot();
+    const c=rope[at]; rope[at]=null;
+    log(`ESET 5 – Levétel [${at}] ${c.icon} → lyuk marad O(1)`);
+  }
+  render();
+}
+function removeAtInput(){ const idx=parseInt(document.getElementById('outIdx').value)||0; const cnt=parseInt(document.getElementById('outCnt').value)||1; removeAt(idx,cnt); }
+function removeAtSelected(){ const cnt=parseInt(document.getElementById('outCnt').value)||1; removeAt(sel,cnt); }
+function removeRange(){ removeAtInput(); }
+function clearAll(){ snapshot(); rope=Array(N).fill(null); log('🧹 Minden ruha leszedve'); render(); }
+function compress(){ snapshot(); const packed=rope.filter(Boolean); const empty=N-packed.length; rope=[...packed,...Array(empty).fill(null)]; log(`ESET 8 – Tömörítés: ${packed.length} ruha balra, ${empty} üres jobbra`); render(); }
+function undo(){ if(!history.length){log('Nincs undo');return;} rope=history.pop(); log('↩️ Undo'); render(); }
+
+function renderCases(){
+  const cs=[
+    {n:1,t:'Beszúrás foglalt helyre → jobbra tolás',d:'Anna pontos indexet mond. Ha foglalt, keresünk első üres jobbra és mindent eltolunk.',b:'O(k)'},
+    {n:3,t:'Beszúrás üresre',d:'Ha [i] üres, csak betesszük – nincs tolás.',b:'O(1)'},
+    {n:4,t:'Overflow',d:'Nincs üres jobbra – nem fér fel.',b:'ERROR'},
+    {n:5,t:'Levételek – lyuk marad',d:'Anna megadja hány darabot és honnan. Nem rendezzük automatikusan.',b:'O(m)'},
+    {n:7,t:'Kötegelt beszúrás (n db)',d:'Anna: „tegyél fel 3-at ide”. Láncban tolja a többit.',b:'O(n*k)'},
+    {n:8,t:'Tömörítés',d:'Összes lyuk jobbra.',b:'O(n)'},
+  ];
+  document.getElementById('cases').innerHTML=cs.map(c=>`<div class="c panel" id="case-${c.n}" style="padding:10px"><div><b>ESET ${c.n}</b> <span class="badge">${c.b}</span></div><b>${c.t}</b><div style="font-size:12px;color:#555">${c.d}</div></div>`).join('');
+}
+document.getElementById('code').textContent=
+`# Python – Anna megadja hova, hányat
+def insert_at(rope,index,count,new_items):
+    for iter in range(count):
+        if all(rope): raise OverflowError('ESET4 teli')
+        item=new_items[iter]
+        if rope[index] is None:
+            rope[index]=item # ESET3
+        else:
+            empty=next((j for j in range(index,len(rope)) if rope[j] is None),-1)
+            if empty==-1: raise OverflowError('nincs üres jobbra')
+            for k in range(empty,index,-1):
+                rope[k]=rope[k-1] # jobbra tolás ESET1
+            rope[index]=item
+        index=min(index+1,len(rope)-1)
+
+def remove_at(rope,index,count):
+    for i in range(count):
+        at=index+i
+        if at < len(rope): rope[at]=None # ESET5 lyuk marad
+`;
+
+renderCases(); reset();
+</script>
+
+
+</body></html>
