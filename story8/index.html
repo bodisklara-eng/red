@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<!-- saved from url=(0068)file:///C:/Users/Utilizator/Downloads/gemini-code-1788038932775.html -->
+<html lang="hu"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ismétléses Kombinatorika Szimulátor — Azonos Színek</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com/">
+    <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin="">
+    <link href="./Ismétléses Kombinatorika Szimulátor — Azonos Színek_files/css2" rel="stylesheet">
+
+    <style>
+        :root {
+            --bg-color: #0a0e17;
+            --panel-bg: #121824;
+            --card-bg: #1a2332;
+            --accent-red: #ff5252;
+            --accent-blue: #448aff;
+            --accent-green: #69f0ae;
+            --accent-purple: #e040fb;
+            --accent-yellow: #ffd740;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --border-color: #1e293b;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            font-family: 'Outfit', sans-serif;
+            padding: 25px 15px;
+            max-width: 1300px;
+            margin: 0 auto;
+            line-height: 1.5;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 25px;
+            background: radial-gradient(circle at top, rgba(224, 64, 251, 0.15) 0%, transparent 70%);
+            border-radius: 20px;
+            border: 1px solid rgba(224, 64, 251, 0.2);
+        }
+
+        h1 {
+            font-size: 2.2rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--accent-purple), var(--accent-yellow), var(--accent-green));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            color: var(--text-muted);
+            font-size: 1rem;
+        }
+
+        /* TAB NAVIGÁCIÓ */
+        .tab-nav {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+            background-color: var(--panel-bg);
+            color: var(--text-muted);
+            border: 2px solid var(--border-color);
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-family: inherit;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .tab-btn:hover {
+            border-color: var(--accent-purple);
+            color: var(--text-main);
+        }
+
+        .tab-btn.active {
+            background-color: var(--card-bg);
+            color: #ffffff;
+            border-color: var(--accent-purple);
+            box-shadow: 0 0 15px rgba(224, 64, 251, 0.4);
+        }
+
+        /* MAGYARÁZÓ KÁRTYA */
+        .info-card {
+            background-color: var(--panel-bg);
+            border: 2px solid var(--border-color);
+            border-radius: 16px;
+            padding: 22px;
+            margin-bottom: 25px;
+        }
+
+        .info-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .info-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--accent-yellow);
+        }
+
+        .formula-badge {
+            font-family: 'Fira Code', monospace;
+            background-color: var(--card-bg);
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border: 1px solid var(--border-color);
+            color: var(--accent-green);
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .info-grid { grid-template-columns: 1fr; }
+        }
+
+        .info-box {
+            background-color: var(--card-bg);
+            padding: 15px;
+            border-radius: 10px;
+            border-left: 4px solid var(--accent-blue);
+        }
+
+        .info-box h4 {
+            margin-bottom: 6px;
+            color: var(--accent-blue);
+            font-size: 0.95rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* INTERAKTÍV MÁTRIX CONTROL */
+        .interactive-container {
+            background-color: var(--panel-bg);
+            border: 2px solid var(--border-color);
+            border-radius: 16px;
+            padding: 25px;
+            margin-bottom: 25px;
+        }
+
+        .controls-bar {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+            background-color: var(--card-bg);
+            padding: 15px;
+            border-radius: 12px;
+        }
+
+        .control-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        label {
+            font-weight: 600;
+            font-size: 0.95rem;
+            color: var(--text-muted);
+        }
+
+        input[type="number"] {
+            width: 55px;
+            padding: 6px;
+            border-radius: 6px;
+            border: 1px solid var(--border-color);
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            font-family: 'Fira Code', monospace;
+            text-align: center;
+        }
+
+        .action-btn {
+            background: linear-gradient(135deg, var(--accent-purple), #ab47bc);
+            color: #ffffff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-family: inherit;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.1s ease, filter 0.2s ease;
+        }
+
+        .action-btn:hover { filter: brightness(1.2); }
+        .action-btn:active { transform: scale(0.96); }
+
+        /* VISUAL STAGE */
+        .visual-stage {
+            min-height: 250px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            background-color: #080b11;
+            border-radius: 12px;
+            padding: 20px;
+            border: 1px inset var(--border-color);
+        }
+
+        .element-pool {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .sphere {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1rem;
+            color: #ffffff;
+            user-select: none;
+            transition: all 0.3s ease;
+        }
+
+        .color-red { background: radial-gradient(circle at 30% 30%, #ff7675, #d63031); box-shadow: 0 0 12px #ff7675; }
+        .color-blue { background: radial-gradient(circle at 30% 30%, #74b9ff, #0984e3); box-shadow: 0 0 12px #74b9ff; }
+        .color-green { background: radial-gradient(circle at 30% 30%, #55efc4, #00b894); box-shadow: 0 0 12px #55efc4; }
+
+        .results-matrix {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            max-height: 220px;
+            overflow-y: auto;
+            width: 100%;
+            justify-content: center;
+            padding: 10px;
+        }
+
+        .combination-group {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            padding: 6px 12px;
+            border-radius: 8px;
+            display: flex;
+            gap: 6px;
+            align-items: center;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.85rem;
+            animation: fadeIn 0.2s ease forwards;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(4px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .mini-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+
+        /* COMPARISON FOOTER */
+        .comparison-panel {
+            background-color: var(--panel-bg);
+            border: 2px solid var(--accent-blue);
+            border-radius: 16px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .comparison-title {
+            color: var(--accent-blue);
+            font-weight: 700;
+            font-size: 1.1rem;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>🎨 Ismétléses Kombinatorika Szimulátor</h1>
+        <div class="subtitle">Mi történik, ha egy színből több azonos golyó is rendelkezésre áll?</div>
+    </header>
+
+    <!-- MÓD VÁLASZTÓ -->
+    <div class="tab-nav">
+        <button class="tab-btn active" data-mode="perm" onclick="setMode(&#39;perm&#39;)">🔀 Ismétléses Permutáció (Ugyanazok a golyók)</button>
+        <button class="tab-btn" data-mode="var" onclick="setMode(&#39;var&#39;)">🎰 Ismétléses Variáció (Korlátlan Készlet)</button>
+        <button class="tab-btn" data-mode="komb" onclick="setMode(&#39;komb&#39;)">🛍️ Ismétléses Kombináció (Golyók zsákból)</button>
+    </div>
+
+    <!-- ELMÉLETI ÉS ANALÓGIAI KÁRTYA -->
+    <div class="info-card">
+        <div class="info-header">
+            <div class="info-title" id="modeTitle">Ismétléses Permutáció (Adott színes golyók sorbarendezése)</div>
+            <div class="formula-badge" id="modeFormula">P = n! / (k₁! · k₂! · k₃!)</div>
+        </div>
+        <div class="info-grid">
+            <div class="info-box">
+                <h4>💡 Intuitív Analógia</h4>
+                <p id="modeAnalogy">Van megadott számú piros, kék és zöld golyód. Mivel az azonos színű golyók teljesen egyformák, egymás közötti felcserélésük nem hoz létre új sorrendet. Ezért az $n!$-t osztjuk az azonosak faktoriálisaival.</p>
+            </div>
+            <div class="info-box" style="border-left-color: var(--accent-green);">
+                <h4>📖 Matematikai Magyarázat</h4>
+                <p id="modeDefinition">Adott elemek összes olyan sorbarendezése, ahol az egyforma elemek felcserélése nem számít új esetnek.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- INTERAKTÍV SZIMULÁTOR -->
+    <div class="interactive-container">
+        <div class="controls-bar" id="controlsBar">
+                    <div class="control-group">
+                        <label>🔴 Piros (k1):</label>
+                        <input type="number" id="inRed" min="0" max="4" value="2" onchange="updateInputs()">
+                    </div>
+                    <div class="control-group">
+                        <label>🔵 Kék (k2):</label>
+                        <input type="number" id="inBlue" min="0" max="4" value="1" onchange="updateInputs()">
+                    </div>
+                    <div class="control-group">
+                        <label>🟢 Zöld (k3):</label>
+                        <input type="number" id="inGreen" min="0" max="4" value="0" onchange="updateInputs()">
+                    </div>
+                    <button class="action-btn" onclick="calculateAndRender()">⚡ Számolás</button>
+                </div>
+
+        <div class="visual-stage">
+            <div class="element-pool" id="elementPool"><div class="sphere color-red"></div><div class="sphere color-red"></div><div class="sphere color-blue"></div></div>
+            <div style="font-size: 0.95rem; color: var(--text-muted); text-align: center;">
+                Megkülönböztethető esetek száma: <strong id="totalCount" style="color: var(--accent-yellow); font-size: 1.4rem;">3</strong>
+            </div>
+            <div class="results-matrix" id="resultsMatrix"><div class="combination-group"><span class="mini-dot color-red"></span><span class="mini-dot color-red"></span><span class="mini-dot color-blue"></span></div><div class="combination-group"><span class="mini-dot color-red"></span><span class="mini-dot color-blue"></span><span class="mini-dot color-red"></span></div><div class="combination-group"><span class="mini-dot color-blue"></span><span class="mini-dot color-red"></span><span class="mini-dot color-red"></span></div></div>
+        </div>
+    </div>
+
+    <!-- MATEMATIKAI ÖSSZEHASONLÍTÁS -->
+    <div class="comparison-panel">
+        <div class="comparison-title">🧠 Összegzés: Mi a különbség az ismétlés nélküli és az ismétléses eset között?</div>
+        <ul style="list-style: none; font-size: 0.92rem; color: var(--text-muted);">
+            <li style="margin-bottom: 8px;">• <strong>Permutáció:</strong> Az ismétlődések (azonos színek) **CSÖKKENTIK** a lehetőségek számát, mert a redundáns cseréket leosztjuk ($n! / k_1!$).</li>
+            <li style="margin-bottom: 8px;">• <strong>Variáció:</strong> Ha egy színt többször is felhasználhatunk választáskor, a lehetőségek száma **NÖVEKSZIK** ($n^k$).</li>
+            <li>• <strong>Kombináció:</strong> Ha a kiválasztott elemek között azonos színek is lehetnek, a képlet módosul: $\binom{n+k-1}{k}$.</li>
+        </ul>
+    </div>
+
+    <script>
+        let currentMode = 'perm';
+
+        // Bemeneti értékek
+        let redCount = 2;
+        let blueCount = 1;
+        let greenCount = 0;
+        let selectK = 3;
+
+        const CONFIG = {
+            perm: {
+                title: 'Ismétléses Permutáció (Adott színes golyók sorbarendezése)',
+                formula: 'P = n! / (k₁! · k₂! · k₃!)',
+                analogy: 'Van megadott számú piros, kék és zöld golyód. Mivel az azonos színű golyók teljesen egyformák, egymás közötti felcserélésük nem hoz létre új sorrendet. Ezért az $n!$-t osztjuk az azonosak faktoriálisaival.',
+                definition: 'Adott elemek összes olyan sorbarendezése, ahol az egyforma elemek felcserélése nem számít új esetnek.'
+            },
+            var: {
+                title: 'Ismétléses Variáció (Korlátlan készletből választás sorrenddel)',
+                formula: 'V = nᵏ',
+                analogy: 'Gondolj egy számkódos lakatra! 3 féle színből választhatsz minden pozícióra egymás után $k$ alkalommal. Mivel a színek nem fogynak el, minden helyen újra választható ugyanaz a szín.',
+                definition: '$n$ különbözik színű készletből $k$ pozíció feltöltése úgy, hogy egy szín többször is szerepelhet és a sorrend számít.'
+            },
+            komb: {
+                title: 'Ismétléses Kombináció (Választás korlátlan készletből sorrend nélkül)',
+                formula: 'C = ⎛n + k - 1⎞ ➔ ⎛n + k - 1⎞! / (k! · (n - 1)!)',
+                analogy: 'Gyümölcskosár elve! 3 féle gyümölcsből (színből) veszel $k$ darabot a szatyorba. Nem számít milyen sorrendben tetted be, csak az a lényeg, melyik színből hány darab van a szatyorban.',
+                definition: '$n$ típusú elemből $k$ elem kiválasztása úgy, hogy egy típusból több is választható, és a sorrend NEM számít.'
+            }
+        };
+
+        function setMode(mode) {
+            currentMode = mode;
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelector(`.tab-btn[data-mode="${mode}"]`).classList.add('active');
+
+            const conf = CONFIG[mode];
+            document.getElementById('modeTitle').innerText = conf.title;
+            document.getElementById('modeFormula').innerText = conf.formula;
+            document.getElementById('modeAnalogy').innerHTML = conf.analogy;
+            document.getElementById('modeDefinition').innerHTML = conf.definition;
+
+            renderControls();
+            calculateAndRender();
+        }
+
+        function renderControls() {
+            const bar = document.getElementById('controlsBar');
+            if (currentMode === 'perm') {
+                bar.innerHTML = `
+                    <div class="control-group">
+                        <label>🔴 Piros (k1):</label>
+                        <input type="number" id="inRed" min="0" max="4" value="${redCount}" onchange="updateInputs()">
+                    </div>
+                    <div class="control-group">
+                        <label>🔵 Kék (k2):</label>
+                        <input type="number" id="inBlue" min="0" max="4" value="${blueCount}" onchange="updateInputs()">
+                    </div>
+                    <div class="control-group">
+                        <label>🟢 Zöld (k3):</label>
+                        <input type="number" id="inGreen" min="0" max="4" value="${greenCount}" onchange="updateInputs()">
+                    </div>
+                    <button class="action-btn" onclick="calculateAndRender()">⚡ Számolás</button>
+                `;
+            } else {
+                bar.innerHTML = `
+                    <div class="control-group">
+                        <label>🎨 Választható színek száma (n):</label>
+                        <input type="number" id="inN" min="1" max="3" value="3" onchange="updateInputs()">
+                    </div>
+                    <div class="control-group">
+                        <label>🎯 Kiválasztott helyek (k):</label>
+                        <input type="number" id="inK" min="1" max="4" value="${selectK}" onchange="updateInputs()">
+                    </div>
+                    <button class="action-btn" onclick="calculateAndRender()">⚡ Számolás</button>
+                `;
+            }
+        }
+
+        function updateInputs() {
+            if (currentMode === 'perm') {
+                redCount = parseInt(document.getElementById('inRed').value) || 0;
+                blueCount = parseInt(document.getElementById('inBlue').value) || 0;
+                greenCount = parseInt(document.getElementById('inGreen').value) || 0;
+            } else {
+                selectK = parseInt(document.getElementById('inK').value) || 1;
+            }
+            calculateAndRender();
+        }
+
+        function calculateAndRender() {
+            const pool = document.getElementById('elementPool');
+            const matrix = document.getElementById('resultsMatrix');
+            pool.innerHTML = '';
+            matrix.innerHTML = '';
+
+            let results = [];
+
+            if (currentMode === 'perm') {
+                // Elemkészlet felépítése
+                let elements = [];
+                for (let i = 0; i < redCount; i++) elements.push('red');
+                for (let i = 0; i < blueCount; i++) elements.push('blue');
+                for (let i = 0; i < greenCount; i++) elements.push('green');
+
+                // Készlet vizualizálása
+                elements.forEach(c => {
+                    const s = document.createElement('div');
+                    s.className = `sphere color-${c}`;
+                    pool.appendChild(s);
+                });
+
+                results = getUniquePermutations(elements);
+            } 
+            else if (currentMode === 'var') {
+                const nVal = parseInt(document.getElementById('inN').value) || 3;
+                const colors = ['red', 'blue', 'green'].slice(0, nVal);
+
+                colors.forEach(c => {
+                    const s = document.createElement('div');
+                    s.className = `sphere color-${c}`;
+                    pool.appendChild(s);
+                });
+
+                results = getRepVariations(colors, selectK);
+            } 
+            else if (currentMode === 'komb') {
+                const nVal = parseInt(document.getElementById('inN').value) || 3;
+                const colors = ['red', 'blue', 'green'].slice(0, nVal);
+
+                colors.forEach(c => {
+                    const s = document.createElement('div');
+                    s.className = `sphere color-${c}`;
+                    pool.appendChild(s);
+                });
+
+                results = getRepCombinations(colors, selectK);
+            }
+
+            document.getElementById('totalCount').innerText = results.length;
+
+            // Eredmények kirajzolása
+            results.forEach((resArr, idx) => {
+                const group = document.createElement('div');
+                group.className = 'combination-group';
+
+                resArr.forEach(color => {
+                    const dot = document.createElement('span');
+                    dot.className = `mini-dot color-${color}`;
+                    group.appendChild(dot);
+                });
+
+                matrix.appendChild(group);
+            });
+        }
+
+        // --- ALGORITMUSOK ---
+
+        // 1. Ismétléses Permutáció (Unique Permutations)
+        function getUniquePermutations(arr) {
+            if (arr.length === 0) return [[]];
+            let res = [];
+            let seen = new Set();
+
+            for (let i = 0; i < arr.length; i++) {
+                if (!seen.has(arr[i])) {
+                    seen.add(arr[i]);
+                    let rest = [...arr.slice(0, i), ...arr.slice(i + 1)];
+                    let inner = getUniquePermutations(rest);
+                    for (let p of inner) {
+                        res.push([arr[i], ...p]);
+                    }
+                }
+            }
+            return res;
+        }
+
+        // 2. Ismétléses Variáció (n^k)
+        function getRepVariations(colors, k) {
+            if (k === 0) return [[]];
+            let res = [];
+            for (let c of colors) {
+                let inner = getRepVariations(colors, k - 1);
+                for (let v of inner) {
+                    res.push([c, ...v]);
+                }
+            }
+            return res;
+        }
+
+        // 3. Ismétléses Kombináció
+        function getRepCombinations(colors, k) {
+            function helper(startIndex, currentK) {
+                if (currentK === 0) return [[]];
+                let res = [];
+                for (let i = startIndex; i < colors.length; i++) {
+                    let inner = helper(i, currentK - 1);
+                    for (let combo of inner) {
+                        res.push([colors[i], ...combo]);
+                    }
+                }
+                return res;
+            }
+            return helper(0, k);
+        }
+
+        window.onload = () => {
+            setMode('perm');
+        };
+    </script>
+
+</body></html>
