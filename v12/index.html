@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interaktív Napelemes Vízsugár Vezérlő</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            user-select: none;
+        }
+
+        body {
+            background-color: #1e222a;
+            color: #eceff4;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1100px;
+            background: #2e3440;
+            border-radius: 16px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.4);
+            padding: 25px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid #3b4252;
+            padding-bottom: 15px;
+        }
+
+        .header h1 {
+            font-size: 22px;
+            color: #88c0d0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .status-badge {
+            background: #4c566a;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+            color: #a3be8c;
+            border: 1px solid #a3be8c;
+        }
+
+        /* CANVAS STYLING */
+        .canvas-container {
+            position: relative;
+            width: 100%;
+            height: 400px;
+            background: linear-gradient(180deg, #181b21 0%, #232831 100%);
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid #434c5e;
+        }
+
+        canvas {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+
+        /* CONTROLS SECTION */
+        .controls-grid {
+            display: grid;
+            grid-template-columns: repeat(8, 1fr);
+            gap: 12px;
+        }
+
+        .channel-card {
+            background: #3b4252;
+            border-radius: 10px;
+            padding: 12px 8px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            border: 1px solid #4c566a;
+            transition: all 0.2s ease;
+        }
+
+        .channel-card:hover {
+            border-color: #88c0d0;
+            transform: translateY(-2px);
+        }
+
+        .channel-title {
+            font-size: 12px;
+            font-weight: bold;
+            color: #d8dee9;
+        }
+
+        .val-display {
+            font-size: 16px;
+            font-weight: bold;
+            color: #81a1c1;
+            background: #2e3440;
+            padding: 4px 8px;
+            border-radius: 6px;
+            width: 100%;
+            text-align: center;
+        }
+
+        /* Vertical Slider */
+        .slider-wrapper {
+            height: 140px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        input[type=range] {
+            -webkit-appearance: none;
+            width: 130px;
+            height: 8px;
+            background: #2e3440;
+            border-radius: 4px;
+            outline: none;
+            transform: rotate(-90deg);
+            cursor: pointer;
+        }
+
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: #88c0d0;
+            cursor: pointer;
+            box-shadow: 0 0 8px rgba(136, 192, 208, 0.6);
+            transition: transform 0.1s ease;
+        }
+
+        input[type=range]::-webkit-slider-thumb:hover {
+            transform: scale(1.2);
+            background: #8fbcbb;
+        }
+
+        /* GLOBAL BUTTONS */
+        .global-actions {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            margin-top: 5px;
+        }
+
+        .btn {
+            background: #434c5e;
+            color: #eceff4;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn:hover {
+            background: #4c566a;
+            color: #88c0d0;
+        }
+
+        .btn-primary {
+            background: #5e81ac;
+        }
+
+        .btn-primary:hover {
+            background: #81a1c1;
+            color: #fff;
+        }
+
+        .btn-danger {
+            background: #bf616a;
+        }
+
+        .btn-danger:hover {
+            background: #d08770;
+            color: #fff;
+        }
+
+        @media (max-width: 768px) {
+            .controls-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <h1>💧 Napelemes Vízsugár Interaktív Vezérlő</h1>
+        <div class="status-badge" id="statusBadge">● Élő Szimuláció</div>
+    </div>
+
+    <!-- VIZUALIZÁCIÓS CANVAS -->
+    <div class="canvas-container">
+        <canvas id="fountainCanvas"></canvas>
+    </div>
+
+    <!-- VEZÉRLŐ CSÚSZKÁK -->
+    <div class="controls-grid" id="controlsGrid"></div>
+
+    <!-- GLOBÁLIS AKCIÓK -->
+    <div class="global-actions">
+        <button class="btn btn-primary" onclick="presetWave()">🌊 Hullám Effekt</button>
+        <button class="btn btn-primary" onclick="presetRandom()">🎲 Véletlenszerű</button>
+        <button class="btn" onclick="presetMax()">⬆️ Mind Max</button>
+        <button class="btn btn-danger" onclick="presetMin()">⬇️ Mind Stop</button>
+    </div>
+</div>
+
+<script>
+    const canvas = document.getElementById('fountainCanvas');
+    const ctx = canvas.getContext('2d');
+    const controlsGrid = document.getElementById('controlsGrid');
+
+    // Vízsugarak értékei %-ban (0 - 100)
+    let sugarEro = [80, 60, 40, 100, 70, 30, 90, 50];
+    let currentHeights = [...sugarEro]; // Simított animációhoz
+    let particles = [];
+    let waveInterval = null;
+    let waveAngle = 0;
+
+    // Canvas méretezés
+    function resizeCanvas() {
+        canvas.width = canvas.parentElement.clientWidth;
+        canvas.height = canvas.parentElement.clientHeight;
+    }
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+
+    // UI Generálás
+    function createControls() {
+        controlsGrid.innerHTML = '';
+        sugarEro.forEach((val, i) => {
+            const card = document.createElement('div');
+            card.className = 'channel-card';
+            card.innerHTML = `
+                <div class="channel-title">Sugár ${i}</div>
+                <div class="val-display" id="val-${i}">${val}%</div>
+                <div class="slider-wrapper">
+                    <input type="range" min="0" max="100" value="${val}" id="slider-${i}" oninput="updateValue(${i}, this.value)">
+                </div>
+            `;
+            controlsGrid.appendChild(card);
+        });
+    }
+
+    function updateValue(index, val) {
+        stopWave();
+        sugarEro[index] = parseInt(val);
+        document.getElementById(`val-${index}`).innerText = `${val}%`;
+    }
+
+    // Segédfüggvény: leállítja a folyamatos hullám animációt
+    function stopWave() {
+        if (waveInterval) {
+            clearInterval(waveInterval);
+            waveInterval = null;
+            const badge = document.getElementById('statusBadge');
+            badge.innerText = "● Élő Szimuláció";
+            badge.style.borderColor = "#a3be8c";
+            badge.style.color = "#a3be8c";
+        }
+    }
+
+    // Presetek - Most már leállítják a hullámot, így tartósan megmarad az eredményük
+    function presetMax() {
+        stopWave();
+        sugarEro = sugarEro.map(() => 100);
+        syncUI();
+    }
+
+    function presetMin() {
+        stopWave();
+        sugarEro = sugarEro.map(() => 0);
+        syncUI();
+    }
+
+    function presetRandom() {
+        stopWave();
+        sugarEro = sugarEro.map(() => Math.floor(Math.random() * 91) + 10);
+        syncUI();
+    }
+
+    function presetWave() {
+        if (waveInterval) {
+            stopWave();
+            return;
+        }
+
+        const badge = document.getElementById('statusBadge');
+        badge.innerText = "🌊 Hullám Mód";
+        badge.style.borderColor = "#88c0d0";
+        badge.style.color = "#88c0d0";
+
+        waveInterval = setInterval(() => {
+            waveAngle += 0.15;
+            sugarEro = sugarEro.map((_, i) => {
+                const v = Math.sin(waveAngle + i * 0.6) * 45 + 50;
+                return Math.round(v);
+            });
+            syncUI();
+        }, 50);
+    }
+
+    function syncUI() {
+        sugarEro.forEach((val, i) => {
+            const slider = document.getElementById(`slider-${i}`);
+            if (slider) slider.value = val;
+            const display = document.getElementById(`val-${i}`);
+            if (display) display.innerText = `${val}%`;
+        });
+    }
+
+    // RÉSZECSKÉK (Cseppek)
+    class Particle {
+        constructor(x, y) {
+            this.x = x + (Math.random() - 0.5) * 16;
+            this.y = y;
+            this.vx = (Math.random() - 0.5) * 1.8;
+            this.vy = -Math.random() * 3 - 1;
+            this.gravity = 0.15;
+            this.radius = Math.random() * 2.5 + 1;
+            this.alpha = 1;
+            this.life = Math.random() * 30 + 20;
+        }
+
+        update() {
+            this.vy += this.gravity;
+            this.x += this.vx;
+            this.y += this.vy;
+            this.alpha -= 1 / this.life;
+        }
+
+        draw(ctx) {
+            ctx.save();
+            ctx.globalAlpha = Math.max(0, this.alpha);
+            ctx.fillStyle = '#88c0d0';
+            ctx.beginPath();
+            ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.restore();
+        }
+    }
+
+    // ANIMÁCIÓS CIKLUS
+    function render() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        const numBars = sugarEro.length;
+        const padding = 60;
+        const availableWidth = canvas.width - (padding * 2);
+        const spacing = availableWidth / (numBars - 1);
+        const baseY = canvas.height - 60;
+        const maxHeight = canvas.height - 140;
+
+        // Háttér rácsvonalak
+        ctx.strokeStyle = '#2e3440';
+        ctx.lineWidth = 1;
+        for (let percent = 25; percent <= 100; percent += 25) {
+            const y = baseY - (maxHeight * (percent / 100));
+            ctx.beginPath();
+            ctx.moveTo(30, y);
+            ctx.lineTo(canvas.width - 30, y);
+            ctx.stroke();
+
+            ctx.fillStyle = '#4c566a';
+            ctx.font = '10px Segoe UI';
+            ctx.fillText(`${percent}%`, 8, y + 3);
+        }
+
+        // Vízsugarak rajzolása
+        sugarEro.forEach((targetVal, i) => {
+            // Finom átmenet (Lerp)
+            currentHeights[i] += (targetVal - currentHeights[i]) * 0.12;
+
+            const x = padding + i * spacing;
+            const h = (currentHeights[i] / 100) * maxHeight;
+            const topY = baseY - h;
+            const width = 24;
+
+            // Alapzat
+            ctx.fillStyle = '#4c566a';
+            ctx.beginPath();
+            ctx.roundRect(x - 22, baseY, 44, 18, 4);
+            ctx.fill();
+
+            if (h > 5) {
+                // Vízsugár test
+                const gradient = ctx.createLinearGradient(x, baseY, x, topY);
+                gradient.addColorStop(0, 'rgba(94, 129, 172, 0.8)');
+                gradient.addColorStop(0.7, 'rgba(136, 192, 208, 0.9)');
+                gradient.addColorStop(1, 'rgba(143, 188, 187, 1)');
+
+                ctx.fillStyle = gradient;
+                ctx.beginPath();
+                ctx.rect(x - width / 2, topY, width, h);
+                ctx.fill();
+
+                // Lekerekített csepp alakzat a tetején
+                ctx.beginPath();
+                ctx.arc(x, topY, width / 2, 0, Math.PI * 2);
+                ctx.fill();
+
+                // Fényes kiemelés
+                ctx.fillStyle = 'rgba(255, 255, 255, 0.4)';
+                ctx.beginPath();
+                ctx.arc(x - 3, topY - 3, 3, 0, Math.PI * 2);
+                ctx.fill();
+
+                // Csepp fröccsenés generálás
+                if (currentHeights[i] > 10 && Math.random() < 0.6) {
+                    particles.push(new Particle(x, topY));
+                }
+            }
+        });
+
+        // Részecskék frissítése
+        for (let i = particles.length - 1; i >= 0; i--) {
+            particles[i].update();
+            particles[i].draw(ctx);
+            if (particles[i].alpha <= 0) {
+                particles.splice(i, 1);
+            }
+        }
+
+        requestAnimationFrame(render);
+    }
+
+    createControls();
+    render();
+</script>
+</body>
+</html>
