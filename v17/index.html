@@ -1,0 +1,2206 @@
+<!DOCTYPE html>
+<!-- saved from url=(0108)file:///D:/projekt%20red/Mese/PEt%20szokokut/A%20Farkas%20%C3%A9s%20a%20Kutya%20-%20Neuro-Mese%20System.html -->
+<html lang="hu"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A Farkas és a Kutya - Neuro-Mese System</title>
+    <style>
+        :root {
+            --primary: #1e3a8a;
+            --primary-light: #2563eb;
+            --accent: #0284c7;
+            --bg-light: #f8fafc;
+            --text-dark: #0f172a;
+            --card-bg: #ffffff;
+            --success: #10b981;
+            --danger: #ef4444;
+            --border: #e2e8f0;
+            --neuro-purple: #7c3aed;
+            --wolf-color: #475569;
+            --dog-color: #d97706;
+        }
+
+        body { 
+            font-family: 'Segoe UI', Roboto, sans-serif; 
+            line-height: 1.6; 
+            color: var(--text-dark); 
+            background-color: #0d0f18; 
+            margin: 0; 
+            padding: 20px; 
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+        }
+
+        /* INTRO / MESE CANVAS STÍLUSOK */
+        #intro-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+        }
+
+        h1.intro-title {
+            margin-bottom: 10px;
+            color: #7aa2f7;
+            font-size: 1.5rem;
+            text-align: center;
+        }
+
+        #game-container {
+            position: relative;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+            border-radius: 12px;
+            overflow: hidden;
+            border: 2px solid #2ac3de;
+            background: #000;
+        }
+
+        canvas.game-canvas {
+            display: block;
+            cursor: pointer;
+        }
+
+        .instruction {
+            margin-top: 12px;
+            color: #a9b1d6;
+            font-size: 0.95rem;
+            text-align: center;
+        }
+
+        /* TESZT / TRÉNING MODUL STÍLUSOK */
+        #test-wrapper {
+            display: none; /* Alapértelmezetten rejtve, amíg a kapu ki nem nyílik */
+            width: 100%;
+            max-width: 1400px;
+            animation: fadeIn 0.8s ease forwards;
+        }
+
+        .container { 
+            width: 100%;
+            box-sizing: border-box;
+            background: var(--card-bg); 
+            padding: 25px; 
+            border-radius: 12px; 
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5); 
+        }
+
+        h1.test-title { 
+            color: var(--primary); 
+            border-bottom: 4px solid var(--primary-light); 
+            padding-bottom: 10px; 
+            margin-top: 0; 
+        }
+
+        h2 {
+            color: var(--primary);
+            border-bottom: 2px solid var(--primary-light);
+            padding-bottom: 5px;
+            margin-top: 30px;
+        }
+
+        .badge-container { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 15px; }
+        .badge { background: #e0e7ff; color: var(--primary); padding: 4px 12px; border-radius: 15px; font-weight: 600; font-size: 0.85rem; }
+        .badge.story { background: #fef3c7; color: #b45309; border: 1px solid #f59e0b; }
+
+        .neuro-timer-box {
+            background: linear-gradient(135deg, #4c1d95 0%, #1e1b4b 100%);
+            color: #fff;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .card { 
+            background: #f8fafc; 
+            border: 2px solid #cbd5e1; 
+            border-radius: 8px; 
+            padding: 15px; 
+            margin-bottom: 20px; 
+        }
+
+        .item-grid {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        .item-left {
+            flex: 1.2;
+            min-width: 320px;
+        }
+        .item-right {
+            flex: 1;
+            min-width: 320px;
+            background: #f1f5f9;
+            border-left: 4px solid #0284c7;
+            padding: 12px 15px;
+            border-radius: 6px;
+            font-size: 0.88rem;
+        }
+
+        .q-box {
+            margin-bottom: 16px;
+            border-bottom: 1px dashed #cbd5e1;
+            padding-bottom: 12px;
+        }
+        .q-box:last-child {
+            border-bottom: none;
+        }
+        .q-box label {
+            font-weight: bold;
+            display: block;
+            margin-bottom: 5px;
+            color: #1e293b;
+        }
+        .q-box input[type="number"], .q-box select, .q-box input[type="text"] {
+            padding: 8px 10px;
+            border: 1px solid #94a3b8;
+            border-radius: 4px;
+            font-size: 0.88rem;
+            width: 100%;
+            box-sizing: border-box;
+            background: #ffffff;
+            cursor: pointer;
+        }
+        .q-inline {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .feedback-container {
+            margin-top: 10px;
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .explanation-popup {
+            padding: 10px 12px;
+            border-radius: 6px;
+            font-size: 0.88rem;
+            font-weight: 500;
+            line-height: 1.4;
+        }
+        .explanation-popup.error-exp {
+            background: #fef2f2;
+            border: 1px solid #ef4444;
+            color: #991b1b;
+        }
+        .explanation-popup.success-exp {
+            background: #f0fdf4;
+            border: 1px solid #10b981;
+            color: #065f46;
+        }
+
+        .anim-canvas {
+            background: #0f172a;
+            border: 1px solid #334155;
+            border-radius: 6px;
+            margin-top: 8px;
+            width: 100%;
+            height: 100px;
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-4px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        canvas.test-canvas { 
+            background: #ffffff; 
+            border: 1px solid #94a3b8; 
+            border-radius: 6px; 
+            width: 100%; 
+            height: auto; 
+            display: block; 
+            margin-top: 10px; 
+            touch-action: none; 
+        }
+
+        .canvas-dark { background: #0a0f19 !important; }
+
+        .btn, .action-btn { 
+            background: #1a2a3a; 
+            color: #50f078; 
+            border: 1px solid #50f078; 
+            padding: 8px 16px; 
+            border-radius: 6px; 
+            font-weight: bold; 
+            cursor: pointer; 
+            margin-right: 8px; 
+            margin-top: 10px; 
+        }
+        .btn:hover, .action-btn:hover { background: #50f078; color: #0a0f19; }
+        .btn-wolf { background: var(--wolf-color); color: white; border: none; }
+        .btn-wolf:hover { background: #334155; }
+        .btn-dog { background: var(--dog-color); color: white; border: none; }
+        .btn-dog:hover { background: #b45309; }
+
+        .view-btn-active {
+            background: #50f078 !important;
+            color: #0a0f19 !important;
+            box-shadow: 0 0 10px rgba(80, 240, 120, 0.5);
+        }
+
+        .status { font-weight: bold; margin-left: 10px; }
+        .item-timer { display: inline-block; font-size: 0.85rem; font-weight: bold; color: #0284c7; background: #e0f2fe; padding: 2px 8px; border-radius: 4px; margin-left: 10px; }
+        .story-text { 
+            background: #fffbe0; 
+            border-left: 4px solid #f59e0b; 
+            padding: 10px; 
+            margin-bottom: 10px; 
+            font-style: italic; 
+            font-size: 0.95rem; 
+        }
+    </style>
+</head>
+<body>
+
+<!-- 1. JELENET: BEVEZETŐ ANIMÁCIÓ (A SUTTOGÓ ERDŐ) -->
+<div id="intro-wrapper" style="display: none;">
+    <h1 class="intro-title">A Suttogó Erdő - Interaktív Nyitójelenet</h1>
+    <div id="game-container">
+        <canvas id="canvas" class="game-canvas" width="800" height="480"></canvas>
+    </div>
+    <p class="instruction">🔑 Kattints a kulcsra a nyitáshoz, vagy vizsgáld meg a régi kőkutat!</p>
+</div>
+
+<!-- 2. JELENET: NEURO-MESE TESZT & TRÉNING SYSTEM -->
+<div id="test-wrapper" style="display: block;">
+    <div class="container">
+        <h1 class="test-title">🐺 A Farkas és a Kutya – Teljes Egyesített Neuro-Mese System</h1>
+        
+        <div class="badge-container">
+            <span class="badge story">📖 Klasszikus Mese &amp; Szimulációk</span>
+            <span class="badge story">🐺 Farkas Üvöltés &amp; 🐶 Kutya Ugatás</span>
+            <span class="badge story">💡 Animált Válasz-Illusztrációk</span>
+            <span class="badge story">🎯 Azonnali Hibajavítás &amp; Magyarázat</span>
+            <span class="badge story">⏱️ 20 Perces Neuro-Tréning</span>
+        </div>
+
+        <!-- NEURO TIMER DOBOZ -->
+        <div class="neuro-timer-box">
+            <div>
+                <h2 style="margin: 0; color: #f3e8ff; border: none;">⏱️ 20 Perces Mesés Neuro-Tréning</h2>
+                <p id="neuroPhaseText" style="margin: 5px 0 0 0; font-size: 0.9rem; color: #ddd6fe;">1. Fejezet: A Találkozás az Erdőszélen (00:00 - 03:00)</p>
+                <div id="totalTimeDisplay" style="margin-top: 5px; font-weight: bold; color: #50f078; font-size: 0.9rem;"></div>
+            </div>
+            <div style="text-align: right;">
+                <div id="neuroTimerDisplay" style="font-size: 1.8rem; font-family: monospace; font-weight: bold;">19:15</div>
+                <button class="action-btn" onclick="start20MinSession()">▶ Edzés Indítása</button>
+            </div>
+        </div>
+
+        <!-- FŐ SZIMULÁCIÓS MODUL -->
+        <div class="card" id="mainSimulationCard" style="background: #0a0f19; border-color: #50f078;">
+            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #1e293b; padding-bottom: 10px; margin-bottom: 15px; flex-wrap: wrap;">
+                <h3 style="color: #50f078; margin: 0;" id="simTitle">⛲ Erdei Forrás Szimuláció</h3>
+                <div>
+                    <button class="action-btn" id="btnViewBar" onclick="setSimMode(&#39;bar&#39;)">📊 Oszlop Nézet</button>
+                    <button class="action-btn view-btn-active" id="btnViewFountain" onclick="setSimMode(&#39;fountain&#39;)">⛲ Vízsugár Nézet</button>
+                </div>
+            </div>
+
+            <div style="display: flex; gap: 20px; flex-wrap: wrap;">
+                <div style="flex: 1; min-width: 300px;">
+                    <canvas id="neuroCanvas" class="test-canvas canvas-dark" width="600" height="280"></canvas>
+                    <div style="margin-top: 10px; display: flex; gap: 10px; flex-wrap: wrap; color: #788ca0; font-size: 0.9rem; align-items: center;">
+                        Hanghatások: 
+                        <button class="action-btn btn-wolf" onclick="playWolfHowl()">🐺 Farkas Üvöltés</button>
+                        <button class="action-btn btn-dog" onclick="playDogBark()">🐶 Kutya Ugatás</button>
+                        <button class="action-btn" onclick="randomize()">[R] Új Értékek</button>
+                    </div>
+                </div>
+                
+                <div style="flex: 1; min-width: 300px; background: #1a2a3a; padding: 15px; border-radius: 8px; border: 1px solid #50f078; color: white;">
+                    <h3 style="color: #50f078; margin-top:0;">🧮 A Tanya Kerítés-Abakusza</h3>
+                    <p style="font-size: 0.85rem; color: #94a3b8;">Kattints a korongokra! Az épp állított vízsugár/oszlop kiemelten villogni fog a bal oldalon.</p>
+                    <div id="abacusContainer" style="display: flex; gap: 8px; justify-content: center; background: #0a0f19; padding: 15px; border-radius: 8px; flex-wrap: wrap;"><div style="width: 26px; background: rgb(26, 42, 58); border: 1px solid rgb(80, 240, 120); height: 110px; border-radius: 4px; position: relative; display: flex; flex-direction: column; justify-content: space-between; align-items: center; padding: 4px 0px;">
+                <div style="width: 18px; height: 12px; background: #d97706; border-radius: 6px; cursor: pointer;" onclick="moveBead(0)"></div>
+                <div style="width: 2px; height: 100%; background: #324650; position: absolute; z-index: 0;"></div>
+                <span style="z-index: 1; font-weight: bold; font-size: 0.7rem; color: white;">80</span>
+            </div><div style="width: 26px; background: rgb(26, 42, 58); border: 1px solid rgb(80, 240, 120); height: 110px; border-radius: 4px; position: relative; display: flex; flex-direction: column; justify-content: space-between; align-items: center; padding: 4px 0px;">
+                <div style="width: 18px; height: 12px; background: #d97706; border-radius: 6px; cursor: pointer;" onclick="moveBead(1)"></div>
+                <div style="width: 2px; height: 100%; background: #324650; position: absolute; z-index: 0;"></div>
+                <span style="z-index: 1; font-weight: bold; font-size: 0.7rem; color: white;">60</span>
+            </div><div style="width: 26px; background: rgb(26, 42, 58); border: 1px solid rgb(80, 240, 120); height: 110px; border-radius: 4px; position: relative; display: flex; flex-direction: column; justify-content: space-between; align-items: center; padding: 4px 0px;">
+                <div style="width: 18px; height: 12px; background: #d97706; border-radius: 6px; cursor: pointer;" onclick="moveBead(2)"></div>
+                <div style="width: 2px; height: 100%; background: #324650; position: absolute; z-index: 0;"></div>
+                <span style="z-index: 1; font-weight: bold; font-size: 0.7rem; color: white;">40</span>
+            </div><div style="width: 26px; background: rgb(26, 42, 58); border: 1px solid rgb(80, 240, 120); height: 110px; border-radius: 4px; position: relative; display: flex; flex-direction: column; justify-content: space-between; align-items: center; padding: 4px 0px;">
+                <div style="width: 18px; height: 12px; background: #d97706; border-radius: 6px; cursor: pointer;" onclick="moveBead(3)"></div>
+                <div style="width: 2px; height: 100%; background: #324650; position: absolute; z-index: 0;"></div>
+                <span style="z-index: 1; font-weight: bold; font-size: 0.7rem; color: white;">100</span>
+            </div><div style="width: 26px; background: rgb(26, 42, 58); border: 1px solid rgb(80, 240, 120); height: 110px; border-radius: 4px; position: relative; display: flex; flex-direction: column; justify-content: space-between; align-items: center; padding: 4px 0px;">
+                <div style="width: 18px; height: 12px; background: #d97706; border-radius: 6px; cursor: pointer;" onclick="moveBead(4)"></div>
+                <div style="width: 2px; height: 100%; background: #324650; position: absolute; z-index: 0;"></div>
+                <span style="z-index: 1; font-weight: bold; font-size: 0.7rem; color: white;">70</span>
+            </div><div style="width: 26px; background: rgb(26, 42, 58); border: 1px solid rgb(80, 240, 120); height: 110px; border-radius: 4px; position: relative; display: flex; flex-direction: column; justify-content: space-between; align-items: center; padding: 4px 0px;">
+                <div style="width: 18px; height: 12px; background: #d97706; border-radius: 6px; cursor: pointer;" onclick="moveBead(5)"></div>
+                <div style="width: 2px; height: 100%; background: #324650; position: absolute; z-index: 0;"></div>
+                <span style="z-index: 1; font-weight: bold; font-size: 0.7rem; color: white;">30</span>
+            </div><div style="width: 26px; background: rgb(26, 42, 58); border: 1px solid rgb(80, 240, 120); height: 110px; border-radius: 4px; position: relative; display: flex; flex-direction: column; justify-content: space-between; align-items: center; padding: 4px 0px;">
+                <div style="width: 18px; height: 12px; background: #d97706; border-radius: 6px; cursor: pointer;" onclick="moveBead(6)"></div>
+                <div style="width: 2px; height: 100%; background: #324650; position: absolute; z-index: 0;"></div>
+                <span style="z-index: 1; font-weight: bold; font-size: 0.7rem; color: white;">90</span>
+            </div><div style="width: 26px; background: rgb(26, 42, 58); border: 1px solid rgb(80, 240, 120); height: 110px; border-radius: 4px; position: relative; display: flex; flex-direction: column; justify-content: space-between; align-items: center; padding: 4px 0px;">
+                <div style="width: 18px; height: 12px; background: #d97706; border-radius: 6px; cursor: pointer;" onclick="moveBead(7)"></div>
+                <div style="width: 2px; height: 100%; background: #324650; position: absolute; z-index: 0;"></div>
+                <span style="z-index: 1; font-weight: bold; font-size: 0.7rem; color: white;">50</span>
+            </div></div>
+                    <div id="neuroFeedback" style="margin-top: 15px; font-weight: bold; font-size: 0.9rem; color: #50f078;"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TESZT MODULOK -->
+        <div id="testModulesContainer">
+            <h2>🧩 Mese-Fejezetek &amp; Interaktív Próbák</h2>
+
+            <!-- 1. PRÓBA -->
+            <div class="card">
+                <div class="story-text">"A lesoványodott farkas és a jól táplált kutya az erdő szélén találkoztak. A kutya büszkén mutatta meg az udvar vízsugaras szökőkútját, a farkas pedig át akart ugrani a kapun..."</div>
+                <h3>1. Próba: Nyomás, Vízsugár Paraméterek &amp; Célozgatás (Finommotorika)</h3>
+                
+                <div class="item-grid">
+                    <div class="item-left">
+                        <p>Húzd a sárga golyót (a farkast) pontosan a szaggatott kapu közepébe!</p>
+                        <canvas id="cMotor" class="test-canvas" width="500" height="150"></canvas>
+                        <div style="margin-top:10px;">
+                            <span id="stMotor" class="status">Húzd a golyót a célba!</span>
+                            <span id="timer1" class="item-timer"></span>
+                        </div>
+                    </div>
+                    
+                    <div class="item-right">
+                        <h4 style="margin-top:0; color:#0284c7;">🌀 Csavaros &amp; Rendszer Paraméter Kérdések</h4>
+                        
+                        <div class="q-box">
+                            <label>Meddig nőhet/csökkenhet az érték egy-egy elem esetén?</label>
+                            <div class="q-inline">
+                                Min: <input type="number" id="i1_min" value="0" style="width:70px;">
+                                Max: <input type="number" id="i1_max" value="100" style="width:70px;">
+                            </div>
+                        </div>
+
+                        <div class="q-box">
+                            <label>Megváltoztathatók-e ezek az értékek, és mitől függ ez? (Összesített nézet)</label>
+                            <select id="sel_q1" onchange="handleAnswer(&#39;q1&#39;, this)">
+                                <option value="" disabled="" selected="">-- Válassz egy választ... --</option>
+                                <option value="wrong1">Nem, ezek fix fizikai állandók / static méretek</option>
+                                <option value="correct">Igen, a fúvóka nyomásától, a csövek átmérőjétől és a gravitációtól</option>
+                                <option value="wrong2">Igen, csak a környezeti hőmérséklettől függ</option>
+                            </select>
+
+                            <div id="box_q1" class="feedback-container" style="display: block;">
+                                <div id="exp_q1" class="explanation-popup success-exp">✅ Helyes! A rendszer paraméterei (vízsugár magasság, nyomás) dinamikusak, a fúvóka nyomásától, a csőátmérőtől és a gravitációtól függően változtathatók.</div>
+                                <canvas id="anim_q1" class="anim-canvas" width="400" height="100"></canvas>
+                            </div>
+                        </div>
+
+                        <div class="q-box">
+                            <label>Mi történik, ha a vízsugarak száma megnő?</label>
+                            <div class="q-inline">
+                                Új vízsugarak száma: 
+                                <input type="number" id="i1_count" value="8" min="1" max="20" style="width:60px;" onchange="updateStreamCount(this.value)">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2. PRÓBA -->
+            <div class="card">
+                <div class="story-text">"A kutya éjjeli ugatása messzire elhallatszik a tó partján. A farkas fülelt: vajon hogyan terjed a hang a vízben és a levegőben? Felismered a házőrző jelzőhangját?"</div>
+                <h3>2. Próba: Akusztika, Fény, Adatátvitel &amp; Auditív Felismerés</h3>
+                
+                <div class="item-grid">
+                    <div class="item-left">
+                        <p>Hallgasd meg a kiadott hangot, majd válaszd ki a megfelelő frekvenciát!</p>
+                        <canvas id="cAudio" class="test-canvas" width="500" height="100"></canvas>
+                        <div style="margin-top:10px;">
+                            <button class="btn btn-dog" onclick="playTargetTone()">🔊 Hang Lejátszása</button>
+                            <button class="btn" onclick="checkTone(261.63)">Mély (Morgás)</button>
+                            <button class="btn" onclick="checkTone(440)">Közepes (Ugatás)</button>
+                            <button class="btn" onclick="checkTone(880)">Magas (Nyüszítés)</button>
+                            <br>
+                            <span id="stAudio" class="status"></span>
+                            <span id="timer2" class="item-timer"></span>
+                        </div>
+                    </div>
+
+                    <div class="item-right">
+                        <h4 style="margin-top:0; color:#0284c7;">🤔 Akusztikai &amp; Optikai Kérdések</h4>
+                        
+                        <div class="q-box">
+                            <label>Hogyan terjed a hang a vízben a levegőhöz képest?</label>
+                            <select id="sel_q2" onchange="handleAnswer(&#39;q2&#39;, this)">
+                                <option value="" disabled="" selected="">-- Válassz egy választ... --</option>
+                                <option value="wrong1">A vízben a hang nem képes terjedni</option>
+                                <option value="correct">A víz sűrűsége miatt a hanghullámok ~4-szer gyorsabban terjednek, mint levegőben</option>
+                                <option value="wrong2">Csak fénysebességgel terjed víz alatt</option>
+                            </select>
+
+                            <div id="box_q2" class="feedback-container" style="display: block;">
+                                <div id="exp_q2" class="explanation-popup success-exp">✅ Helyes! A víz sűrűsége és rugalmassági modulusa jóval nagyobb, mint a levegőé, így a hang ~1480 m/s sebességgel (kb. 4x gyorsabban) terjed benne.</div>
+                                <canvas id="anim_q2" class="anim-canvas" width="400" height="100"></canvas>
+                            </div>
+                        </div>
+
+                        <div class="q-box">
+                            <label>Miért visz információt a fény és hogyan tárolódik a hang?</label>
+                            <select id="sel_q3" onchange="handleAnswer(&#39;q3&#39;, this)">
+                                <option value="" disabled="" selected="">-- Válassz egy választ... --</option>
+                                <option value="wrong1">A fény kizárólag meleget szállít, hangot nem lehet tárolni</option>
+                                <option value="correct">A fotonok modulációjával információ továbbítható, a hang pedig digitális mintavételezéssel tárolható</option>
+                            </select>
+
+                            <div id="box_q3" class="feedback-container" style="display: block;">
+                                <div id="exp_q3" class="explanation-popup error-exp">❌ Helytelen válasz! A fény nem csak meleget szállít (pl. optikai kábelek). A helyes válasz: A fotonok modulációjával információ vihető át, a hang pedig digitálisan rögzíthető.</div>
+                                <canvas id="anim_q3" class="anim-canvas" width="400" height="100"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3. PRÓBA -->
+            <div class="card">
+                <div class="story-text">"Ahhoz, hogy a farkas bejuthasson az élelemhez, az elkerített fészer kapujának két logikai reteszét egyszerre kellett kiismernie."</div>
+                <h3>3. Próba: Kombinatorika, Kapcsoló-Állapotok &amp; Logikai Kapu</h3>
+                
+                <div class="item-grid">
+                    <div class="item-left">
+                        <p>Kattints mindkét kapcsolóra a kapu nyitásához (AND kapu)!</p>
+                        <canvas id="c2" class="test-canvas" width="500" height="120" style="cursor:pointer;" onclick="click2(event)"></canvas>
+                        <div style="margin-top:10px;">
+                            <span id="st2" class="status">Kattints a dobozokra!</span>
+                            <span id="timer3" class="item-timer"></span>
+                        </div>
+                    </div>
+
+                    <div class="item-right">
+                        <h4 style="margin-top:0; color:#0284c7;">⚙️ Kombinatorika &amp; Kapcsolási Logika</h4>
+                        
+                        <div class="q-box">
+                            <label>Miért éppen 2<sup>N</sup> a lehetséges állapotok száma N darab kapcsoló esetén?</label>
+                            <select id="sel_q4" onchange="handleAnswer(&#39;q4&#39;, this)">
+                                <option value="" disabled="" selected="">-- Válassz egy választ... --</option>
+                                <option value="wrong1">Mert minden kapcsoló csak 1 állapotot vehet fel</option>
+                                <option value="correct">Mert minden kapcsoló 2 független állapottal bír (Be/Ki), így a variációk száma 2 × 2 × ... × 2 = 2<sup>N</sup></option>
+                                <option value="wrong2">Mert a kerítésnek 2 ajtaja van</option>
+                            </select>
+
+                            <div id="box_q4" class="feedback-container">
+                                <div id="exp_q4" class="explanation-popup"></div>
+                                <canvas id="anim_q4" class="anim-canvas" width="400" height="100"></canvas>
+                            </div>
+                        </div>
+
+                        <div class="q-box">
+                            <label>Milyen logikai kapu szükséges, ha elég az EGYIK reteszt kioldani?</label>
+                            <select id="sel_q4b" onchange="handleAnswer(&#39;q4b&#39;, this)">
+                                <option value="" disabled="" selected="">-- Válassz egy választ... --</option>
+                                <option value="correct">OR (VAGY) kapu</option>
+                                <option value="wrong1">AND (ÉS) kapu</option>
+                                <option value="wrong2">NAND kapu</option>
+                            </select>
+
+                            <div id="box_q4b" class="feedback-container">
+                                <div id="exp_q4b" class="explanation-popup"></div>
+                                <canvas id="anim_q4b" class="anim-canvas" width="400" height="100"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 4. PRÓBA -->
+            <div class="card">
+                <div class="story-text">"Amikor a farkas meglátta a kutya nyakán a kikopott szőrt a lánc miatt, elgondolkodott a nehéz lánc súlyán, tömegén és az erdei út irányán."</div>
+                <h3>4. Próba: Tömeg/Súly Különbsége &amp; Iránytű (Térbeli Tájékozódás)</h3>
+                
+                <div class="item-grid">
+                    <div class="item-left">
+                        <p>Forgasd az iránytűt 90°-os pozícióba, hogy megmutassa a szabad erdőbe vezető utat!</p>
+                        <canvas id="c3" class="test-canvas" width="500" height="180"></canvas>
+                        <div style="margin-top:10px;">
+                            <button class="btn btn-wolf" onclick="rotate3()">🔄 Forgatás (+90°)</button>
+                            <span id="st3" class="status"></span>
+                            <span id="timer4" class="item-timer"></span>
+                        </div>
+                    </div>
+
+                    <div class="item-right">
+                        <h4 style="margin-top:0; color:#0284c7;">🍂 Fizikai Erők &amp; Iránytű Geometria</h4>
+                        
+                        <div class="q-box">
+                            <label>Mi a különbség a tömeg és a súly között?</label>
+                            <select id="sel_q5" onchange="handleAnswer(&#39;q5&#39;, this)">
+                                <option value="" disabled="" selected="">-- Válassz egy választ... --</option>
+                                <option value="wrong1">Nincs semmi különbség, a kettő ugyanaz</option>
+                                <option value="correct">A tömeg állandó anyagi mennyiség (kg), míg a súly a gravitáció által kifejtett erő (N)</option>
+                                <option value="wrong2">A súly állandó, a tömeg változik a gravitációtól</option>
+                            </select>
+
+                            <div id="box_q5" class="feedback-container" style="display: block;">
+                                <div id="exp_q5" class="explanation-popup success-exp">✅ Helyes! A tömeg (m) az anyagmennyiség mértéke (kg) és állandó, míg a súly (G = m·g) a gravitáció által kifejtett erő (Newton), ami a gravitációs mezőtől függ.</div>
+                                <canvas id="anim_q5" class="anim-canvas" width="400" height="100"></canvas>
+                            </div>
+                        </div>
+
+                        <div class="q-box">
+                            <label>Hány 90°-os forgatás után ér vissza az iránytű a kiindulási helyzetébe?</label>
+                            <select id="sel_q5b" onchange="handleAnswer(&#39;q5b&#39;, this)">
+                                <option value="" disabled="" selected="">-- Válassz egy választ... --</option>
+                                <option value="wrong1">2 forgatás után (180°)</option>
+                                <option value="correct">4 forgatás után (4 × 90° = 360° teljesszög)</option>
+                                <option value="wrong2">8 forgatás után (720°)</option>
+                            </select>
+
+                            <div id="box_q5b" class="feedback-container" style="display: block;">
+                                <div id="exp_q5b" class="explanation-popup success-exp">✅ Helyes! A teljes kör 360°-os. Mivel 360 / 90 = 4, pontosan 4 darab 90°-os elfordulás után érünk vissza a 0° (kezdő) pozícióba.</div>
+                                <canvas id="anim_q5b" class="anim-canvas" width="400" height="100"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 5. PRÓBA -->
+            <div class="card">
+                <div class="story-text">"Az erdei öreg tölgyfa lombjáról ritmikusan hullanak a levelek. Milyen színű levél következik a sorozatban?"</div>
+                <h3>5. Próba: Az Öreg Fa Színhullása (Logikai Színsorrend)</h3>
+                
+                <div class="item-grid">
+                    <div class="item-left">
+                        <p>Figyeld a fáról lehulló levelek színsorrendjét! Milyen színű levélnek kellene következnie az üres keretben?</p>
+                        <canvas id="cMinta" class="test-canvas" width="500" height="180"></canvas>
+                        <div style="margin-top:10px;">
+                            <button class="btn" style="background-color: #ef4444; color: white; border:none;" onclick="checkMinta(&#39;piros&#39;)">Piros Levél</button>
+                            <button class="btn" style="background-color: #2563eb; color: white; border:none;" onclick="checkMinta(&#39;kék&#39;)">Kék Levél</button>
+                            <button class="btn" style="background-color: #10b981; color: white; border:none;" onclick="checkMinta(&#39;zöld&#39;)">Zöld Levél</button>
+                            <br>
+                            <span id="stMinta" class="status"></span>
+                            <span id="timer5" class="item-timer"></span>
+                        </div>
+                    </div>
+
+                    <div class="item-right">
+                        <h4 style="margin-top:0; color:#0284c7;">🍂 Matematika: Színhullás Periódus</h4>
+                        <div class="q-box">
+                            <label>Ha az <span id="lblNIndex" style="color:#d97706; font-weight:bold;">N</span>-edik levél hullik le, milyen színű lesz az?</label>
+                            <div class="q-inline">
+                                <span style="font-weight:bold;">N = </span>
+                                <input type="number" id="inNVal" value="7" style="width:60px;" onchange="calcNthLeafColor(this.value)">
+                                ➜ <strong id="lblNResult" style="color: #ef4444;">Piros</strong>
+                            </div>
+                        </div>
+
+                        <div class="q-box">
+                            <label>Mi a lehullott levelek eloszlási periódusa (P)?</label>
+                            <select id="sel_q5c" onchange="handleAnswer(&#39;q5c&#39;, this)">
+                                <option value="" disabled="" selected="">-- Válassz egy választ... --</option>
+                                <option value="wrong1">P = 2 (Két szín váltakozik)</option>
+                                <option value="correct">P = 3 (Piros, Kék, Zöld ciklikus ismétlődése)</option>
+                                <option value="wrong2">P = 5 (Öt különböző színű levél)</option>
+                            </select>
+
+                            <div id="box_q5c" class="feedback-container">
+                                <div id="exp_q5c" class="explanation-popup"></div>
+                                <canvas id="anim_q5c" class="anim-canvas" width="400" height="100"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 6. PRÓBA -->
+            <div class="card">
+                <div class="story-text">"A farkas úgy döntött: inkább az éhség és a szabadság, mint a zsíros falatok és a lánc! Mi hiányzik az erdei ösvényről?"</div>
+                <h3>6. Próba: Vizuális Mátrix (Az Utolsó Alakzat)</h3>
+                
+                <div class="item-grid">
+                    <div class="item-left">
+                        <p>Milyen alakzat hiányzik a sor végéről? (Négyzet ➔ Háromszög ➔ Négyzet ➔ ?)</p>
+                        <canvas id="c1" class="test-canvas" width="500" height="120"></canvas>
+                        <div style="margin-top:10px;">
+                            <button class="btn" onclick="check1(&#39;kör&#39;)">Kör</button>
+                            <button class="btn" onclick="check1(&#39;négyzet&#39;)">Négyzet</button>
+                            <button class="btn" onclick="check1(&#39;háromszög&#39;)">Háromszög</button>
+                            <br>
+                            <span id="st1" class="status"></span>
+                            <span id="timer6" class="item-timer"></span>
+                        </div>
+                    </div>
+
+                    <div class="item-right">
+                        <h4 style="margin-top:0; color:#0284c7;">📐 Alakzat-Mátrix Kérdések</h4>
+                        
+                        <div class="q-box">
+                            <label>Mi a szabály a csúcsok száma alapján a sorozatban?</label>
+                            <select id="sel_q6" onchange="handleAnswer(&#39;q6&#39;, this)">
+                                <option value="" disabled="" selected="">-- Válassz egy választ... --</option>
+                                <option value="correct">4 ➔ 3 ➔ 4 ➔ 0 (Négyzet, Háromszög, Négyzet, Kör)</option>
+                                <option value="wrong1">4 ➔ 4 ➔ 4 ➔ 4 (Minden alakzat négyszög)</option>
+                                <option value="wrong2">3 ➔ 3 ➔ 3 ➔ 3 (Minden alakzat háromszög)</option>
+                            </select>
+
+                            <div id="box_q6" class="feedback-container" style="display: block;">
+                                <div id="exp_q6" class="explanation-popup success-exp">✅ Helyes! A sorozat az alakzatok csúcsainak számát követi: Négyzet (4), Háromszög (3), Négyzet (4), és végül a Kör (0 csúcs).</div>
+                                <canvas id="anim_q6" class="anim-canvas" width="400" height="100"></canvas>
+                            </div>
+                        </div>
+
+                        <div class="q-box">
+                            <label>A szabadság szimbóluma a mesében:</label>
+                            <input type="text" value="A korlátlan, nyitott végtelen erdei ösvény" readonly="">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script>
+    /* =======================================================
+       1. SKRIPT RÉSZ: INTRO ANIMÁCIÓ (SUTTOGÓ ERDŐ & KULCS)
+       ======================================================= */
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
+    let tick = 0;
+
+    let state = {
+        keyState: 'floating', 
+        doorOpen: false,
+        doorProgress: 0,
+        message: "A kapu zárva van! Kattints a mágikus kulcsra!",
+        messageTimer: 240,
+        keyX: 490,
+        keyY: 260,
+        targetX: 668,
+        targetY: 235,
+        keyAngle: 0
+    };
+
+    const particles = [];
+    for (let i = 0; i < 40; i++) {
+        particles.push({
+            x: Math.random() * canvas.width,
+            y: Math.random() * canvas.height,
+            radius: Math.random() * 2 + 1,
+            speedY: Math.random() * 0.4 + 0.1,
+            alpha: Math.random()
+        });
+    }
+
+    // CSILLOGÓ CSILLAGOK AZ ÉGBOLTON
+    const skyStars = [
+        {x: 60, y: 40, size: 5, phase: 0, speed: 0.04},
+        {x: 180, y: 55, size: 7, phase: 1.2, speed: 0.03},
+        {x: 280, y: 30, size: 6, phase: 2.5, speed: 0.05},
+        {x: 360, y: 65, size: 8, phase: 0.8, speed: 0.02},
+        {x: 460, y: 35, size: 5, phase: 3.1, speed: 0.04},
+        {x: 540, y: 70, size: 7, phase: 1.9, speed: 0.03},
+        {x: 630, y: 25, size: 6, phase: 0.4, speed: 0.06},
+        {x: 740, y: 50, size: 8, phase: 2.2, speed: 0.035}
+    ];
+
+    function drawSkyStars(tick) {
+        skyStars.forEach(s => {
+            let alpha = Math.sin(tick * s.speed + s.phase) * 0.5 + 0.5;
+            if (alpha > 0.1) {
+                draw4PointStar(s.x, s.y, s.size * alpha, alpha);
+            }
+        });
+    }
+
+    canvas.addEventListener('click', (e) => {
+        const rect = canvas.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+
+        // Farkas kattintás
+        if (x > 180 && x < 310 && y > 220 && y < 370) {
+            if (state.keyState === 'floating') {
+                showMessage("Az ezüstfarkas a mágikus kulcsra mutat. Kattints rá!");
+            } else {
+                showMessage("A farkas csendben figyel, a kapu sikeresen feltárult!");
+            }
+        }
+
+        // Kút kattintás
+        if (x > 390 && x < 470 && y > 280 && y < 370) {
+            showMessage("A régi kőkút mélyén kristálytiszta, varázslatos víz dereng...");
+        }
+
+        // Kulcs kattintás
+        let currentKeyY = state.keyState === 'floating' ? state.keyY + Math.sin(tick * 0.06) * 10 : state.keyY;
+        let distToKey = Math.hypot(x - state.keyX, y - currentKeyY);
+        
+        if (distToKey < 45 && state.keyState === 'floating') {
+            state.keyState = 'moving';
+            state.keyY = currentKeyY;
+            showMessage("A kulcs a zár felé repül...");
+        }
+
+        // Kapu kattintás
+        if (x > 610 && x < 730 && y > 130 && y < 360) {
+            if (state.doorOpen) {
+                showMessage("A kapu már nyitva van!");
+            } else if (state.keyState === 'moving' || state.keyState === 'unlocking') {
+                showMessage("A kulcs épp nyitja a zárat, egy pillanat...");
+            } else {
+                showMessage("A kapu szorosan zárva van! Kattints a lebegő kulcsra, hogy kinyissa!");
+            }
+        }
+    });
+
+    function showMessage(text) {
+        state.message = text;
+        state.messageTimer = 220;
+    }
+
+    function drawSparklingMoon(x, y, radius, tick) {
+        let auraRadius = radius + 25 + Math.sin(tick * 0.05) * 8;
+        let moonGlow = ctx.createRadialGradient(x, y, radius * 0.4, x, y, auraRadius);
+        moonGlow.addColorStop(0, 'rgba(224, 247, 250, 0.9)');
+        moonGlow.addColorStop(0.4, 'rgba(125, 207, 255, 0.35)');
+        moonGlow.addColorStop(1, 'rgba(125, 207, 255, 0)');
+        
+        ctx.fillStyle = moonGlow;
+        ctx.beginPath();
+        ctx.arc(x, y, auraRadius, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.fillStyle = '#f0fdfa';
+        ctx.beginPath();
+        ctx.arc(x, y, radius, 0, Math.PI * 2);
+        ctx.fill();
+
+        const sparkles = [
+            { dx: -22, dy: -18, speed: 0.07, phase: 0 },
+            { dx: 28, dy: -12, speed: 0.05, phase: 1.5 },
+            { dx: 18, dy: 22, speed: 0.08, phase: 3.0 },
+            { dx: -28, dy: 14, speed: 0.06, phase: 4.5 }
+        ];
+
+        sparkles.forEach(s => {
+            let alpha = Math.max(0, Math.sin(tick * s.speed + s.phase));
+            if (alpha > 0) {
+                draw4PointStar(x + s.dx, y + s.dy, 7 * alpha, alpha);
+            }
+        });
+    }
+
+    function draw4PointStar(cx, cy, size, alpha) {
+        ctx.save();
+        ctx.globalAlpha = alpha;
+        ctx.fillStyle = '#ffffff';
+        ctx.beginPath();
+        ctx.moveTo(cx, cy - size);
+        ctx.quadraticCurveTo(cx, cy, cx + size, cy);
+        ctx.quadraticCurveTo(cx, cy, cx, cy + size);
+        ctx.quadraticCurveTo(cx, cy, cx - size, cy);
+        ctx.quadraticCurveTo(cx, cy, cx, cy - size);
+        ctx.fill();
+        ctx.restore();
+    }
+
+    function drawPineTree(x, baseY, width, height, color) {
+        ctx.fillStyle = color;
+        ctx.fillRect(x - width * 0.1, baseY - height * 0.2, width * 0.2, height * 0.2);
+
+        let layers = 3;
+        for (let i = 0; i < layers; i++) {
+            let layerY = baseY - height * 0.15 - (i * (height * 0.26));
+            let layerWidth = width * (1 - i * 0.22);
+            let layerHeight = height * 0.45;
+
+            ctx.beginPath();
+            ctx.moveTo(x, layerY - layerHeight);
+            ctx.lineTo(x + layerWidth / 2, layerY);
+            ctx.lineTo(x - layerWidth / 2, layerY);
+            ctx.closePath();
+            ctx.fill();
+        }
+    }
+
+    function drawForest() {
+        drawPineTree(40, 360, 70, 180, '#131b2e');
+        drawPineTree(110, 360, 55, 140, '#131b2e');
+        drawPineTree(170, 360, 80, 200, '#0f172a');
+        drawPineTree(510, 360, 75, 190, '#131b2e');
+        drawPineTree(-10, 370, 90, 230, '#090d16');
+    }
+
+    function drawStoneWell(x, y, tick) {
+        ctx.save();
+
+        ctx.fillStyle = '#4a2511';
+        ctx.fillRect(x - 24, y - 65, 6, 45);
+        ctx.fillRect(x + 18, y - 65, 6, 45);
+
+        ctx.fillStyle = '#7c3f1d';
+        ctx.beginPath();
+        ctx.moveTo(x - 32, y - 62);
+        ctx.lineTo(x, y - 85);
+        ctx.lineTo(x + 32, y - 62);
+        ctx.lineTo(x + 28, y - 56);
+        ctx.lineTo(x, y - 76);
+        ctx.lineTo(x - 28, y - 56);
+        ctx.closePath();
+        ctx.fill();
+
+        ctx.strokeStyle = '#271105';
+        ctx.lineWidth = 1.5;
+        ctx.stroke();
+
+        ctx.fillStyle = '#a0522d';
+        ctx.fillRect(x - 18, y - 55, 36, 8);
+        ctx.fillStyle = '#fbbf24';
+        ctx.fillRect(x - 6, y - 54, 12, 6);
+
+        ctx.strokeStyle = '#d97706';
+        ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        ctx.moveTo(x, y - 48);
+        ctx.lineTo(x, y - 30);
+        ctx.stroke();
+
+        ctx.fillStyle = '#5c2c16';
+        ctx.fillRect(x - 5, y - 30, 10, 9);
+
+        let stoneGrad = ctx.createLinearGradient(x - 28, y, x + 28, y);
+        stoneGrad.addColorStop(0, '#334155');
+        stoneGrad.addColorStop(0.5, '#64748b');
+        stoneGrad.addColorStop(1, '#1e293b');
+
+        ctx.fillStyle = stoneGrad;
+        ctx.beginPath();
+        ctx.ellipse(x, y - 20, 28, 10, 0, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.fillRect(x - 28, y - 20, 56, 24);
+        ctx.beginPath();
+        ctx.ellipse(x, y + 4, 28, 10, 0, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.strokeStyle = '#0f172a';
+        ctx.lineWidth = 1;
+        ctx.strokeRect(x - 20, y - 15, 12, 7);
+        ctx.strokeRect(x, y - 15, 12, 7);
+        ctx.strokeRect(x - 10, y - 8, 12, 7);
+        ctx.strokeRect(x + 10, y - 8, 10, 7);
+
+        ctx.fillStyle = '#0f172a';
+        ctx.beginPath();
+        ctx.ellipse(x, y - 20, 22, 7, 0, 0, Math.PI * 2);
+        ctx.fill();
+
+        let waterGlow = Math.sin(tick * 0.08) * 0.3 + 0.7;
+        let waterGrad = ctx.createRadialGradient(x, y - 20, 1, x, y - 20, 18);
+        waterGrad.addColorStop(0, `rgba(56, 189, 248, ${waterGlow})`);
+        waterGrad.addColorStop(1, 'rgba(15, 23, 42, 0.9)');
+
+        ctx.fillStyle = waterGrad;
+        ctx.beginPath();
+        ctx.ellipse(x, y - 20, 20, 6, 0, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.fillStyle = '#15803d';
+        ctx.beginPath();
+        ctx.arc(x - 22, y + 2, 5, 0, Math.PI * 2);
+        ctx.arc(x + 20, y + 4, 6, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.restore();
+    }
+
+    function drawRichBrownDoorWing(x, y, w, h) {
+        let grad = ctx.createLinearGradient(x, y, x + w, y);
+        grad.addColorStop(0.0, '#4a2511');
+        grad.addColorStop(0.25, '#7c3f1d');
+        grad.addColorStop(0.5, '#a0522d');
+        grad.addColorStop(0.75, '#6b3416');
+        grad.addColorStop(1.0, '#3d1d0c');
+
+        ctx.fillStyle = grad;
+        ctx.fillRect(x, y, w, h);
+
+        ctx.strokeStyle = '#271105';
+        ctx.lineWidth = 2;
+        ctx.strokeRect(x, y, w, h);
+
+        ctx.beginPath();
+        ctx.moveTo(x + w * 0.33, y); ctx.lineTo(x + w * 0.33, y + h);
+        ctx.moveTo(x + w * 0.66, y); ctx.lineTo(x + w * 0.66, y + h);
+        ctx.stroke();
+
+        ctx.fillStyle = '#1e293b';
+        ctx.fillRect(x, y + 25, w, 5);
+        ctx.fillRect(x, y + h - 35, w, 5);
+    }
+
+    function drawDoorWindow(wx, wy, tick) {
+        let glow = Math.sin(tick * 0.08) * 0.3 + 0.7;
+
+        ctx.fillStyle = `rgba(56, 189, 248, ${glow})`;
+        ctx.beginPath();
+        ctx.arc(wx + 10, wy + 10, 10, Math.PI, 0);
+        ctx.rect(wx, wy + 10, 20, 20);
+        ctx.fill();
+
+        ctx.strokeStyle = '#1e1107';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(wx + 10, wy);
+        ctx.lineTo(wx + 10, wy + 30);
+        ctx.moveTo(wx, wy + 15);
+        ctx.lineTo(wx + 20, wy + 15);
+        ctx.stroke();
+    }
+
+    function drawStoneDoorWithWindow(tick) {
+        let archCenterX = 670;
+        let archCenterY = 175;
+        let archRadius = 45;
+
+        ctx.fillStyle = state.doorOpen ? '#102a45' : '#050811';
+        ctx.beginPath();
+        ctx.arc(archCenterX, archCenterY, archRadius, Math.PI, 0);
+        ctx.rect(625, archCenterY, 90, 185);
+        ctx.fill();
+
+        if (state.doorOpen) {
+            let portalGlow = ctx.createRadialGradient(archCenterX, 240, 10, archCenterX, 240, 80);
+            portalGlow.addColorStop(0, '#38bdf8');
+            portalGlow.addColorStop(1, 'rgba(56, 189, 248, 0)');
+            ctx.fillStyle = portalGlow;
+            ctx.beginPath();
+            ctx.arc(archCenterX, archCenterY, archRadius, Math.PI, 0);
+            ctx.rect(625, archCenterY, 90, 185);
+            ctx.fill();
+        }
+
+        if (state.doorOpen && state.doorProgress < 46) {
+            state.doorProgress += 0.8;
+        }
+
+        ctx.save();
+        ctx.beginPath();
+        ctx.arc(archCenterX, archCenterY, archRadius, Math.PI, 0);
+        ctx.rect(625, archCenterY, 90, 185);
+        ctx.clip();
+
+        let leftDoorX = 625 - state.doorProgress;
+        let rightDoorX = 670 + state.doorProgress;
+
+        drawRichBrownDoorWing(leftDoorX, 130, 45, 230);
+        drawDoorWindow(leftDoorX + 12, 185, tick);
+
+        drawRichBrownDoorWing(rightDoorX, 130, 45, 230);
+        drawDoorWindow(rightDoorX + 12, 185, tick);
+
+        if (!state.doorOpen) {
+            ctx.fillStyle = '#d97706';
+            ctx.strokeStyle = '#78350f';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.arc(archCenterX, 235, 12, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.stroke();
+
+            ctx.fillStyle = '#0f172a';
+            ctx.beginPath();
+            ctx.arc(archCenterX, 233, 3, 0, Math.PI * 2);
+            ctx.rect(archCenterX - 1.5, 233, 3, 7);
+            ctx.fill();
+        }
+
+        ctx.restore();
+
+        ctx.fillStyle = '#2d3748';
+        ctx.beginPath();
+        ctx.moveTo(540, 360);
+        ctx.lineTo(560, 110);
+        ctx.quadraticCurveTo(670, 80, 790, 100);
+        ctx.lineTo(800, 360);
+        ctx.lineTo(715, 360);
+        ctx.lineTo(715, archCenterY);
+        ctx.arc(archCenterX, archCenterY, archRadius, 0, Math.PI, true);
+        ctx.lineTo(625, 360);
+        ctx.closePath();
+        ctx.fill();
+
+        drawDenseStoneBricks();
+        drawGrassOnWall(tick);
+    }
+
+    function drawDenseStoneBricks() {
+        ctx.lineWidth = 1.5;
+        const bricks = [
+            {x: 570, y: 125, w: 26, h: 16, c: '#475569'},
+            {x: 600, y: 112, w: 28, h: 18, c: '#334155'},
+            {x: 632, y: 102, w: 32, h: 18, c: '#52627a'},
+            {x: 668, y: 100, w: 32, h: 18, c: '#38475a'},
+            {x: 704, y: 108, w: 28, h: 18, c: '#475569'},
+            {x: 736, y: 118, w: 30, h: 20, c: '#334155'},
+            {x: 550, y: 160, w: 32, h: 20, c: '#38475a'},
+            {x: 548, y: 190, w: 34, h: 22, c: '#475569'},
+            {x: 545, y: 220, w: 36, h: 22, c: '#52627a'},
+            {x: 542, y: 250, w: 38, h: 24, c: '#38475a'},
+            {x: 540, y: 282, w: 38, h: 24, c: '#334155'},
+            {x: 755, y: 150, w: 32, h: 20, c: '#52627a'},
+            {x: 752, y: 180, w: 34, h: 22, c: '#38475a'},
+            {x: 750, y: 210, w: 36, h: 22, c: '#475569'},
+            {x: 748, y: 240, w: 38, h: 24, c: '#334155'}
+        ];
+
+        bricks.forEach(b => {
+            ctx.fillStyle = b.c;
+            ctx.fillRect(b.x, b.y, b.w, b.h);
+            ctx.strokeStyle = '#121a24';
+            ctx.strokeRect(b.x, b.y, b.w, b.h);
+        });
+    }
+
+    function drawGrassOnWall(tick) {
+        let wind = Math.sin(tick * 0.05) * 3;
+
+        function drawGrassTuft(bx, by, count, height, mainColor, tipColor) {
+            ctx.save();
+            for (let i = 0; i < count; i++) {
+                let angle = ((i / count) - 0.5) * 0.8;
+                let tipX = bx + Math.sin(angle) * height + wind;
+                let tipY = by - Math.cos(angle) * height;
+
+                ctx.strokeStyle = (i % 2 === 0) ? mainColor : tipColor;
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                ctx.moveTo(bx + (i * 2 - count), by);
+                ctx.quadraticCurveTo(bx + angle * 5, by - height * 0.5, tipX, tipY);
+                ctx.stroke();
+            }
+            ctx.restore();
+        }
+
+        const topPoints = [
+            {x: 565, y: 115}, {x: 590, y: 108}, {x: 620, y: 98}, 
+            {x: 650, y: 92}, {x: 685, y: 92}, {x: 720, y: 102}, {x: 750, y: 112}
+        ];
+
+        topPoints.forEach(p => {
+            drawGrassTuft(p.x, p.y, 6, 14, '#16a34a', '#86efac');
+        });
+
+        for (let gx = 530; gx <= 790; gx += 14) {
+            drawGrassTuft(gx, 360, 7, 18 + (gx % 5), '#15803d', '#4ade80');
+        }
+    }
+
+    function updateAndDrawKey(tick) {
+        if (state.keyState === 'unlocked') return;
+
+        let currentX = state.keyX;
+        let currentY = state.keyY;
+
+        if (state.keyState === 'floating') {
+            currentY += Math.sin(tick * 0.06) * 10;
+        } 
+        else if (state.keyState === 'moving') {
+            state.keyX += (state.targetX - state.keyX) * 0.08;
+            state.keyY += (state.targetY - state.keyY) * 0.08;
+            currentX = state.keyX;
+            currentY = state.keyY;
+
+            let dist = Math.hypot(state.targetX - state.keyX, state.targetY - state.keyY);
+            if (dist < 3) {
+                state.keyX = state.targetX;
+                state.keyY = state.targetY;
+                state.keyState = 'unlocking';
+                showMessage("A kulcs elfordul a zárban!");
+            }
+        }
+        else if (state.keyState === 'unlocking') {
+            currentX = state.targetX;
+            currentY = state.targetY;
+            state.keyAngle += 0.08;
+
+            if (state.keyAngle >= Math.PI) {
+                state.keyState = 'unlocked';
+                state.doorOpen = true;
+                showMessage("Katt! A kapu kinyílt!");
+
+                // LOGIKA: Amikor a kapu kinyílt, megjelentetjük a Teszt modult
+                setTimeout(revealTestModules, 1000);
+            }
+        }
+
+        ctx.save();
+        ctx.translate(currentX, currentY);
+        ctx.rotate(state.keyAngle);
+
+        let glow = ctx.createRadialGradient(0, 0, 5, 0, 0, 25);
+        glow.addColorStop(0, 'rgba(251, 191, 36, 0.9)');
+        glow.addColorStop(1, 'rgba(251, 191, 36, 0)');
+        ctx.fillStyle = glow;
+        ctx.beginPath();
+        ctx.arc(0, 0, 25, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.strokeStyle = '#fbbf24';
+        ctx.lineWidth = 4;
+        ctx.beginPath();
+        ctx.arc(-10, 0, 8, 0, Math.PI * 2);
+        ctx.moveTo(0, 0);
+        ctx.lineTo(16, 0);
+        ctx.lineTo(16, 6);
+        ctx.moveTo(11, 0);
+        ctx.lineTo(11, 5);
+        ctx.stroke();
+
+        ctx.restore();
+    }
+
+    // VIRÁGOK RAJZOLÁSA A FARKAS MELLÉ A FŰRE
+    function drawFlowersOnGrass(tick) {
+        const flowers = [
+            {x: 180, y: 368, color: '#facc15', size: 4},
+            {x: 205, y: 375, color: '#ef4444', size: 5},
+            {x: 225, y: 362, color: '#ffffff', size: 3.5},
+            {x: 290, y: 372, color: '#38bdf8', size: 4.5},
+            {x: 315, y: 365, color: '#facc15', size: 5},
+            {x: 335, y: 378, color: '#a855f7', size: 4}
+        ];
+
+        flowers.forEach(f => {
+            let sway = Math.sin(tick * 0.04 + f.x) * 1.5;
+            let fx = f.x + sway;
+            let fy = f.y;
+
+            // Szár
+            ctx.strokeStyle = '#15803d';
+            ctx.lineWidth = 1.5;
+            ctx.beginPath();
+            ctx.moveTo(f.x, fy + 8);
+            ctx.quadraticCurveTo(f.x, fy + 4, fx, fy);
+            ctx.stroke();
+
+            // Szirmok
+            ctx.fillStyle = f.color;
+            for (let i = 0; i < 5; i++) {
+                let angle = (i * Math.PI * 2) / 5;
+                let px = fx + Math.cos(angle) * f.size;
+                let py = fy + Math.sin(angle) * f.size;
+                ctx.beginPath();
+                ctx.arc(px, py, f.size * 0.6, 0, Math.PI * 2);
+                ctx.fill();
+            }
+
+            // Virág közepe
+            ctx.fillStyle = '#f59e0b';
+            ctx.beginPath();
+            ctx.arc(fx, fy, f.size * 0.5, 0, Math.PI * 2);
+            ctx.fill();
+        });
+    }
+
+    function drawRealisticWolf(x, y, tick) {
+        ctx.save();
+        ctx.translate(x, y);
+
+        let breath = Math.sin(tick * 0.06) * 2.5;
+        let tailWag = Math.sin(tick * 0.08) * 5;
+
+        ctx.fillStyle = '#334155';
+        ctx.beginPath();
+        ctx.moveTo(-20, 20);
+        ctx.quadraticCurveTo(-55 + tailWag, 15, -65 + tailWag, -5);
+        ctx.quadraticCurveTo(-60 + tailWag, -25, -40, -15);
+        ctx.quadraticCurveTo(-25, -5, -15, 10);
+        ctx.closePath();
+        ctx.fill();
+
+        let tailGrad = ctx.createLinearGradient(-60, -20, -15, 20);
+        tailGrad.addColorStop(0, '#475569');
+        tailGrad.addColorStop(1, '#1e293b');
+        ctx.fillStyle = tailGrad;
+        ctx.fill();
+
+        let bodyGrad = ctx.createLinearGradient(0, -60, 0, 40);
+        bodyGrad.addColorStop(0, '#334155');
+        bodyGrad.addColorStop(0.5, '#475569');
+        bodyGrad.addColorStop(1, '#94a3b8');
+
+        ctx.fillStyle = bodyGrad;
+        ctx.beginPath();
+        ctx.moveTo(-5, -45 + breath * 0.5);
+        ctx.bezierCurveTo(-30, -25, -38, 5, -30, 25);
+        ctx.bezierCurveTo(-40, 30, -35, 45, -20, 45);
+        ctx.bezierCurveTo(-5, 45, 5, 40, 15, 45);
+        ctx.bezierCurveTo(25, 25, 28, -5, 18, -35 + breath);
+        ctx.lineTo(-5, -45 + breath * 0.5);
+        ctx.closePath();
+        ctx.fill();
+
+        ctx.fillStyle = '#cbd5e1';
+        ctx.beginPath();
+        ctx.moveTo(10, -30 + breath);
+        ctx.bezierCurveTo(22, -10, 20, 15, 10, 35);
+        ctx.bezierCurveTo(2, 20, 2, -10, 10, -30 + breath);
+        ctx.closePath();
+        ctx.fill();
+
+        ctx.save();
+        ctx.translate(8, -48 + breath);
+
+        let headGrad = ctx.createLinearGradient(-15, -25, 35, 10);
+        headGrad.addColorStop(0, '#334155');
+        headGrad.addColorStop(0.6, '#64748b');
+        headGrad.addColorStop(1, '#cbd5e1');
+
+        ctx.fillStyle = headGrad;
+        ctx.beginPath();
+        ctx.moveTo(-10, -12);
+        ctx.lineTo(-6, -34);
+        ctx.lineTo(2, -16);
+        ctx.lineTo(14, -8);
+        ctx.lineTo(34, -4);
+        ctx.lineTo(33, 4);
+        ctx.lineTo(16, 8);
+        ctx.bezierCurveTo(5, 16, -8, 12, -12, 0);
+        ctx.closePath();
+        ctx.fill();
+
+        ctx.fillStyle = '#1e293b';
+        ctx.beginPath();
+        ctx.moveTo(1, -14);
+        ctx.lineTo(9, -36);
+        ctx.lineTo(16, -14);
+        ctx.closePath();
+        ctx.fill();
+
+        ctx.fillStyle = '#0f172a';
+        ctx.beginPath();
+        ctx.arc(33, -2, 3, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.fillStyle = '#38bdf8';
+        ctx.shadowColor = '#38bdf8';
+        ctx.shadowBlur = 8;
+        ctx.beginPath();
+        ctx.ellipse(14, -6, 3.5, 2, Math.PI / 6, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.shadowBlur = 0;
+
+        ctx.restore();
+
+        ctx.fillStyle = '#1e293b';
+        ctx.fillRect(-22, 42, 8, 30);
+        ctx.fillRect(8, 42, 8, 30);
+        ctx.fillStyle = '#334155';
+        ctx.fillRect(-12, 42, 8, 28);
+        ctx.fillRect(18, 42, 8, 28);
+
+        ctx.restore();
+    }
+
+    function gameLoop() {
+        tick++;
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        let bgGrad = ctx.createLinearGradient(0, 0, 0, canvas.height);
+        bgGrad.addColorStop(0, '#090d16');
+        bgGrad.addColorStop(0.6, '#111827');
+        bgGrad.addColorStop(1, '#1e293b');
+        ctx.fillStyle = bgGrad;
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        particles.forEach(p => {
+            p.y -= p.speedY;
+            if (p.y < 0) p.y = canvas.height;
+            ctx.fillStyle = `rgba(255, 255, 255, ${p.alpha * 0.6})`;
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+            ctx.fill();
+        });
+
+        drawSkyStars(tick);
+        drawSparklingMoon(100, 80, 40, tick);
+        drawForest();
+
+        ctx.fillStyle = '#15803d';
+        ctx.beginPath();
+        ctx.moveTo(0, 360);
+        ctx.quadraticCurveTo(400, 340, 800, 360);
+        ctx.lineTo(800, 480);
+        ctx.lineTo(0, 480);
+        ctx.fill();
+
+        drawFlowersOnGrass(tick);
+        drawStoneWell(430, 360, tick);
+        drawStoneDoorWithWindow(tick);
+        drawRealisticWolf(250, 320, tick);
+        updateAndDrawKey(tick);
+
+        if (state.messageTimer > 0) {
+            state.messageTimer--;
+            ctx.fillStyle = 'rgba(15, 23, 42, 0.85)';
+            ctx.strokeStyle = '#38bdf8';
+            ctx.lineWidth = 1.5;
+            ctx.beginPath();
+            ctx.roundRect(160, 20, 480, 40, 8);
+            ctx.fill();
+            ctx.stroke();
+
+            ctx.fillStyle = '#f8fafc';
+            ctx.font = 'bold 15px "Segoe UI", sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillText(state.message, 400, 45);
+            ctx.textAlign = 'start';
+        }
+
+        requestAnimationFrame(gameLoop);
+    }
+
+    function revealTestModules() {
+        document.getElementById('intro-wrapper').style.display = 'none';
+        document.getElementById('test-wrapper').style.display = 'block';
+        start20MinSession();
+    }
+
+    /* =======================================================
+       2. SKRIPT RÉSZ: TESZT & NEURO-TRÉNING RENDSZER LOGIKA
+       ======================================================= */
+    const AudioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+    const animStates = {
+        q1: { val: '', time: 0 },
+        q2: { val: '', time: 0 },
+        q3: { val: '', time: 0 },
+        q4: { val: '', time: 0 },
+        q4b: { val: '', time: 0 },
+        q5: { val: '', time: 0 },
+        q5b: { val: '', time: 0 },
+        q5c: { val: '', time: 0 },
+        q6: { val: '', time: 0 }
+    };
+
+    const questionData = {
+        q1: {
+            correctVal: 'correct',
+            correctExp: '✅ Helyes! A rendszer paraméterei (vízsugár magasság, nyomás) dinamikusak, a fúvóka nyomásától, a csőátmérőtől és a gravitációtól függően változtathatók.',
+            wrongExps: {
+                wrong1: '❌ Helytelen válasz! Ezek nem fix állandók. A helyes válasz: A paraméterek megváltoztathatók a nyomás, a csőátmérő és a gravitáció módosításával.',
+                wrong2: '❌ Helytelen válasz! A hőmérsékletnek nincs közvetlen szerepe ebben. A helyes válasz: A nyomás, a csőátmérő és a gravitáció határozza meg az értékeket.'
+            }
+        },
+        q2: {
+            correctVal: 'correct',
+            correctExp: '✅ Helyes! A víz sűrűsége és rugalmassági modulusa jóval nagyobb, mint a levegőé, így a hang ~1480 m/s sebességgel (kb. 4x gyorsabban) terjed benne.',
+            wrongExps: {
+                wrong1: '❌ Helytelen válasz! A vízben kifejezetten jól terjed a hang. A helyes válasz: A víz sűrűsége miatt a hang kb. 4-szer gyorsabban terjed benne, mint a levegőben.',
+                wrong2: '❌ Helytelen válasz! A hang nem terjedhet fénysebességgel. A helyes válasz: A hangsebesség vízben kb. 1480 m/s, ami négyszerese a levegőbelinek.'
+            }
+        },
+        q3: {
+            correctVal: 'correct',
+            correctExp: '✅ Helyes! A fény fotonjainak modulációjával adatot továbbíthatunk, míg a hang hullámai digitális mintavételezéssel (PCM) elmenthetők.',
+            wrongExps: {
+                wrong1: '❌ Helytelen válasz! A fény nem csak meleget szállít (pl. optikai kábelek). A helyes válasz: A fotonok modulációjával információ vihető át, a hang pedig digitálisan rögzíthető.'
+            }
+        },
+        q4: {
+            correctVal: 'correct',
+            correctExp: '✅ Helyes! Mivel minden egyes kapcsolónak 2 állapota van (0 vagy 1), N független kapcsolónál a variációk száma a kombinatorikai szorzási szabály szerint 2^N.',
+            wrongExps: {
+                wrong1: '❌ Helytelen válasz! A kapcsolóknak 2 állapota van (Be/Ki). A helyes válasz: Mivel minden kapcsoló 2 állapotot vehet fel, N kapcsoló esetén 2^N a lehetőségek száma.',
+                wrong2: '❌ Helytelen válasz! Az ajtók számtól független a logika. A helyes válasz: A bináris kapcsolók (2 állapot) kombinációja adja a 2^N értéket.'
+            }
+        },
+        q4b: {
+            correctVal: 'correct',
+            correctExp: '✅ Helyes! Az OR (VAGY) kapu kimenete akkor válik igazra (1), ha a bemenetek közül AKÁR CSAK AZ EGYIK is aktív.',
+            wrongExps: {
+                wrong1: '❌ Helytelen válasz! Az AND (ÉS) kapuhoz MINDKÉT retesz kioldása szükséges.',
+                wrong2: '❌ Helytelen válasz! A NAND kapu a negált ÉS kapcsolatot jelenti.'
+            }
+        },
+        q5: {
+            correctVal: 'correct',
+            correctExp: '✅ Helyes! A tömeg (m) az anyagmennyiség mértéke (kg) és állandó, míg a súly (G = m·g) a gravitáció által kifejtett erő (Newton), ami a gravitációs mezőtől függ.',
+            wrongExps: {
+                wrong1: '❌ Helytelen válasz! A tömeg és a súly fizikailag eltér. A helyes válasz: A tömeg állandó (kg), míg a súly a gravitációból származó erő (N).',
+                wrong2: '❌ Helytelen válasz! Épp fordítva! A helyes válasz: A tömeg az állandó (kg), a súly pedig a gravitációtól függő erő (N).'
+            }
+        },
+        q5b: {
+            correctVal: 'correct',
+            correctExp: '✅ Helyes! A teljes kör 360°-os. Mivel 360 / 90 = 4, pontosan 4 darab 90°-os elfordulás után érünk vissza a 0° (kezdő) pozícióba.',
+            wrongExps: {
+                wrong1: '❌ Helytelen válasz! 2 forgatás csak 180°-ot (félkört) jelent, ekkor az iránytű az ellentétes irányba mutat.',
+                wrong2: '❌ Helytelen válasz! 8 forgatás 720° (két teljes kör).'
+            }
+        },
+        q5c: {
+            correctVal: 'correct',
+            correctExp: '✅ Helyes! A minta három színből áll (Piros, Kék, Zöld), amelyek folyamatosan ismétlődnek, így a periódus hossza P = 3.',
+            wrongExps: {
+                wrong1: '❌ Helytelen válasz! Nem kettő, hanem 3 különböző szín követi egymást szabályos sorrendben.',
+                wrong2: '❌ Helytelen válasz! Összesen 3 szín alkotja a ciklust.'
+            }
+        },
+        q6: {
+            correctVal: 'correct',
+            correctExp: '✅ Helyes! A sorozat az alakzatok csúcsainak számát követi: Négyzet (4), Háromszög (3), Négyzet (4), és végül a Kör (0 csúcs).',
+            wrongExps: {
+                wrong1: '❌ Helytelen válasz! A sorozatban háromszög és kör is szerepel, nem csak 4 csúcsú alakzatok.',
+                wrong2: '❌ Helytelen válasz! A csúcsok száma változik a sorozatban (4 ➔ 3 ➔ 4 ➔ 0).'
+            }
+        }
+    };
+
+    function handleAnswer(qId, selectEl) {
+        const val = selectEl.value;
+        const data = questionData[qId];
+        const box = document.getElementById(`box_${qId}`);
+        const exp = document.getElementById(`exp_${qId}`);
+
+        box.style.display = 'block';
+        animStates[qId].val = val;
+
+        if (val === data.correctVal) {
+            exp.className = 'explanation-popup success-exp';
+            exp.innerText = data.correctExp;
+        } else {
+            exp.className = 'explanation-popup error-exp';
+            exp.innerText = data.wrongExps[val] || '❌ Helytelen válasz!';
+        }
+    }
+
+    function renderAnimations() {
+        Object.keys(animStates).forEach(qId => {
+            const state = animStates[qId];
+            if (!state.val) return;
+
+            const canvasAnim = document.getElementById(`anim_${qId}`);
+            if (!canvasAnim) return;
+            const ctxAnim = canvasAnim.getContext('2d');
+            
+            // LASSÍTOTT LÉPÉSKÖZ A KÖNNYŰ KÖVETHETŐSÉGÉRT
+            state.time += 0.015; 
+            const t = state.time;
+            const w = canvasAnim.width;
+            const h = canvasAnim.height;
+
+            ctxAnim.clearRect(0, 0, w, h);
+
+            if (qId === 'q1') {
+                ctxAnim.fillStyle = '#0f172a';
+                ctxAnim.fillRect(0, 0, w, h);
+                if (state.val === 'correct') {
+                    let pHeight = 25 + Math.sin(t * 1.2) * 20;
+                    ctxAnim.fillStyle = '#0284c7';
+                    ctxAnim.fillRect(30, h - pHeight - 10, 25, pHeight);
+                    ctxAnim.strokeStyle = '#38bdf8';
+                    ctxAnim.lineWidth = 3;
+                    ctxAnim.beginPath();
+                    ctxAnim.moveTo(55, h - pHeight - 10);
+                    ctxAnim.quadraticCurveTo(150, h - pHeight - 50, 260 + Math.sin(t * 0.8) * 40, h - 10);
+                    ctxAnim.stroke();
+                    ctxAnim.fillStyle = '#10b981';
+                    ctxAnim.font = '12px monospace';
+                    ctxAnim.fillText(`Dinamikus Nyomás (p) & Parabola Sugár`, 120, 25);
+                } else {
+                    ctxAnim.strokeStyle = '#ef4444';
+                    ctxAnim.lineWidth = 2;
+                    ctxAnim.strokeRect(80, 25, 120, 50);
+                    ctxAnim.fillStyle = '#ef4444';
+                    ctxAnim.font = '12px monospace';
+                    ctxAnim.fillText('STATIKUS / INERT MODELL', 90, 55);
+                }
+            }
+
+            if (qId === 'q2') {
+                ctxAnim.fillStyle = '#0f172a';
+                ctxAnim.fillRect(0, 0, w, h);
+                if (state.val === 'correct') {
+                    ctxAnim.strokeStyle = '#38bdf8';
+                    ctxAnim.lineWidth = 2;
+                    for (let i = 0; i < 3; i++) {
+                        let r = ((t * 40 + i * 40) % 200);
+                        ctxAnim.beginPath();
+                        ctxAnim.arc(60, h/2, r, 0, Math.PI * 2);
+                        ctxAnim.stroke();
+                    }
+                    ctxAnim.fillStyle = '#38bdf8';
+                    ctxAnim.font = '12px monospace';
+                    ctxAnim.fillText('VÍZ: Hullámterjedés (~1480 m/s)', 140, 30);
+                } else {
+                    ctxAnim.strokeStyle = '#ef4444';
+                    ctxAnim.lineWidth = 2;
+                    let r = ((t * 8) % 60);
+                    ctxAnim.beginPath();
+                    ctxAnim.arc(60, h/2, r, 0, Math.PI * 2);
+                    ctxAnim.stroke();
+                    ctxAnim.fillStyle = '#ef4444';
+                    ctxAnim.font = '12px monospace';
+                    ctxAnim.fillText('KÖZEG BLOKKOLVA', 140, 30);
+                }
+            }
+
+            if (qId === 'q3') {
+                ctxAnim.fillStyle = '#0f172a';
+                ctxAnim.fillRect(0, 0, w, h);
+                if (state.val === 'correct') {
+                    for (let i = 0; i < 5; i++) {
+                        let x = ((t * 35 + i * 60) % w);
+                        ctxAnim.fillStyle = '#facc15';
+                        ctxAnim.beginPath();
+                        ctxAnim.arc(x, 30, 4, 0, Math.PI * 2);
+                        ctxAnim.fill();
+                    }
+                    ctxAnim.strokeStyle = '#10b981';
+                    ctxAnim.lineWidth = 2;
+                    ctxAnim.beginPath();
+                    for(let x=0; x<w; x+=20) {
+                        let bit = Math.sin(x + Math.floor(t * 2)) > 0 ? 65 : 85;
+                        ctxAnim.lineTo(x, bit);
+                    }
+                    ctxAnim.stroke();
+                    ctxAnim.fillStyle = '#10b981';
+                    ctxAnim.font = '11px monospace';
+                    ctxAnim.fillText('Foton Moduláció & Digitális Hang (PCM)', 10, 18);
+                } else {
+                    ctxAnim.fillStyle = '#ef4444';
+                    ctxAnim.font = '12px monospace';
+                    ctxAnim.fillText('Jelvesztés / Nincs adatátvitel', 100, 55);
+                }
+            }
+
+            if (qId === 'q4') {
+                ctxAnim.fillStyle = '#0f172a';
+                ctxAnim.fillRect(0, 0, w, h);
+                if (state.val === 'correct') {
+                    let s1 = Math.floor(t * 0.8) % 2;
+                    let s2 = Math.floor(t * 0.4) % 2;
+                    ctxAnim.fillStyle = s1 ? '#10b981' : '#64748b';
+                    ctxAnim.fillRect(40, 25, 35, 20);
+                    ctxAnim.fillStyle = s2 ? '#10b981' : '#64748b';
+                    ctxAnim.fillRect(90, 25, 35, 20);
+                    ctxAnim.fillStyle = '#f8fafc';
+                    ctxAnim.font = '12px monospace';
+                    ctxAnim.fillText(`Állapot: [${s1}] [${s2}] -> 2^N = 2^2 = 4 kombináció`, 40, 75);
+                } else {
+                    ctxAnim.fillStyle = '#ef4444';
+                    ctxAnim.font = '12px monospace';
+                    ctxAnim.fillText('Hibás logikai állapot', 90, 55);
+                }
+            }
+
+            if (qId === 'q4b') {
+                ctxAnim.fillStyle = '#0f172a';
+                ctxAnim.fillRect(0, 0, w, h);
+                if (state.val === 'correct') {
+                    let s1 = Math.floor(t * 0.8) % 2;
+                    let s2 = 0;
+                    ctxAnim.fillStyle = s1 ? '#10b981' : '#64748b';
+                    ctxAnim.fillRect(40, 25, 35, 20);
+                    ctxAnim.fillStyle = s2 ? '#10b981' : '#64748b';
+                    ctxAnim.fillRect(90, 25, 35, 20);
+                    let output = (s1 || s2) ? '#10b981' : '#ef4444';
+                    ctxAnim.fillStyle = output;
+                    ctxAnim.fillRect(160, 25, 40, 20);
+                    ctxAnim.fillStyle = '#f8fafc';
+                    ctxAnim.font = '12px monospace';
+                    ctxAnim.fillText(`OR Kapu: A = ${s1}, B = ${s2} -> Kimenet = ${s1 || s2}`, 40, 75);
+                } else {
+                    ctxAnim.fillStyle = '#ef4444';
+                    ctxAnim.font = '12px monospace';
+                    ctxAnim.fillText('Hibás logikai kapu kiválasztva', 90, 55);
+                }
+            }
+
+            if (qId === 'q5') {
+                ctxAnim.fillStyle = '#0f172a';
+                ctxAnim.fillRect(0, 0, w, h);
+                if (state.val === 'correct') {
+                    ctxAnim.fillStyle = '#a855f7';
+                    ctxAnim.fillRect(50, 25, 35, 35);
+                    ctxAnim.fillStyle = '#ffffff';
+                    ctxAnim.font = '10px sans-serif';
+                    ctxAnim.fillText('m (kg)', 54, 46);
+                    let gForce = 15 + Math.sin(t * 1.2) * 10;
+                    ctxAnim.strokeStyle = '#ef4444';
+                    ctxAnim.lineWidth = 3;
+                    ctxAnim.beginPath();
+                    ctxAnim.moveTo(67, 60);
+                    ctxAnim.lineTo(67, 60 + gForce);
+                    ctxAnim.stroke();
+                    ctxAnim.fillStyle = '#ef4444';
+                    ctxAnim.font = '12px monospace';
+                    ctxAnim.fillText(`Súlyerő F_g = m · g`, 120, 50);
+                    ctxAnim.fillStyle = '#a855f7';
+                    ctxAnim.fillText(`Tömeg (m) = Állandó`, 120, 30);
+                } else {
+                    ctxAnim.fillStyle = '#ef4444';
+                    ctxAnim.font = '12px monospace';
+                    ctxAnim.fillText('Hibás fizikai értelmezés!', 90, 55);
+                }
+            }
+
+            if (qId === 'q5b') {
+                ctxAnim.fillStyle = '#0f172a';
+                ctxAnim.fillRect(0, 0, w, h);
+                if (state.val === 'correct') {
+                    let step = Math.floor(t * 0.7) % 4;
+                    let angle = step * Math.PI / 2;
+                    
+                    ctxAnim.save();
+                    ctxAnim.translate(60, h/2);
+                    ctxAnim.rotate(angle);
+                    ctxAnim.strokeStyle = '#10b981';
+                    ctxAnim.lineWidth = 4;
+                    ctxAnim.beginPath(); ctxAnim.moveTo(0, 0); ctxAnim.lineTo(0, -25); ctxAnim.stroke();
+                    ctxAnim.restore();
+
+                    ctxAnim.fillStyle = '#10b981';
+                    ctxAnim.font = '12px monospace';
+                    ctxAnim.fillText(`Lépés: ${step + 1}/4 | Szög: ${step * 90}°`, 120, 45);
+                    ctxAnim.fillText(`4 × 90° = 360° (Teljes fordulat)`, 120, 65);
+                } else {
+                    ctxAnim.fillStyle = '#ef4444';
+                    ctxAnim.font = '12px monospace';
+                    ctxAnim.fillText('Hibás fordulatszám!', 90, 55);
+                }
+            }
+
+            if (qId === 'q5c') {
+                ctxAnim.fillStyle = '#0f172a';
+                ctxAnim.fillRect(0, 0, w, h);
+                if (state.val === 'correct') {
+                    let colors = ['#ef4444', '#2563eb', '#10b981'];
+                    let labels = ['Piros', 'Kék', 'Zöld'];
+                    let activeIdx = Math.floor(t * 0.8) % 3;
+
+                    for (let i = 0; i < 3; i++) {
+                        ctxAnim.fillStyle = (i === activeIdx) ? colors[i] : '#334155';
+                        ctxAnim.beginPath();
+                        ctxAnim.arc(50 + i * 50, h/2, i === activeIdx ? 16 : 10, 0, Math.PI * 2);
+                        ctxAnim.fill();
+                    }
+
+                    ctxAnim.fillStyle = '#10b981';
+                    ctxAnim.font = '12px monospace';
+                    ctxAnim.fillText(`Ciklus (P = 3): ${labels[activeIdx]}`, 210, 55);
+                } else {
+                    ctxAnim.fillStyle = '#ef4444';
+                    ctxAnim.font = '12px monospace';
+                    ctxAnim.fillText('Hibás periódushossz!', 90, 55);
+                }
+            }
+
+            if (qId === 'q6') {
+                ctxAnim.fillStyle = '#0f172a';
+                ctxAnim.fillRect(0, 0, w, h);
+                if (state.val === 'correct') {
+                    let activeShape = Math.floor(t * 0.6) % 4;
+                    
+                    ctxAnim.strokeStyle = activeShape === 0 ? '#10b981' : '#475569';
+                    ctxAnim.lineWidth = activeShape === 0 ? 3 : 1;
+                    ctxAnim.strokeRect(30, 30, 35, 35);
+                    
+                    ctxAnim.strokeStyle = activeShape === 1 ? '#10b981' : '#475569';
+                    ctxAnim.lineWidth = activeShape === 1 ? 3 : 1;
+                    ctxAnim.beginPath(); ctxAnim.moveTo(100, 65); ctxAnim.lineTo(117, 30); ctxAnim.lineTo(135, 65); ctxAnim.closePath(); ctxAnim.stroke();
+                    
+                    ctxAnim.strokeStyle = activeShape === 2 ? '#10b981' : '#475569';
+                    ctxAnim.lineWidth = activeShape === 2 ? 3 : 1;
+                    ctxAnim.strokeRect(170, 30, 35, 35);
+
+                    ctxAnim.strokeStyle = activeShape === 3 ? '#10b981' : '#475569';
+                    ctxAnim.lineWidth = activeShape === 3 ? 3 : 1;
+                    ctxAnim.beginPath(); ctxAnim.arc(257, 47, 18, 0, Math.PI * 2); ctxAnim.stroke();
+
+                    let vertices = [4, 3, 4, 0];
+                    let names = ['Négyzet', 'Háromszög', 'Négyzet', 'Kör'];
+                    ctxAnim.fillStyle = '#f8fafc';
+                    ctxAnim.font = '12px monospace';
+                    ctxAnim.fillText(`Aktuális: ${names[activeShape]} (${vertices[activeShape]} csúcs)`, 100, 90);
+                } else {
+                    ctxAnim.fillStyle = '#ef4444';
+                    ctxAnim.font = '12px monospace';
+                    ctxAnim.fillText('Hibás sorozat-szabály!', 90, 55);
+                }
+            }
+        });
+
+        requestAnimationFrame(renderAnimations);
+    }
+
+    let t_main = 0;
+    let currentSimMode = 'bar';
+    let sugar_ero = [80, 60, 40, 100, 70, 30, 90, 50];
+    let time_counter = 0;
+    let animating = true;
+    let activeStreamIndex = -1;
+    let flashTimer = 0;
+
+    let testStartTime = null;
+    let itemStartTimes = {};
+    let itemCompletedTimes = {};
+
+    function startTestTimers() {
+        testStartTime = Date.now();
+        itemStartTimes = { 1: Date.now(), 2: Date.now(), 3: Date.now(), 4: Date.now(), 5: Date.now(), 6: Date.now() };
+        itemCompletedTimes = {};
+        for(let i = 1; i <= 6; i++) {
+            const el = document.getElementById(`timer${i}`);
+            if(el) el.innerText = '';
+        }
+        document.getElementById('totalTimeDisplay').innerText = '';
+    }
+
+    function recordItemTime(itemNum) {
+        if (!itemCompletedTimes[itemNum] && itemStartTimes[itemNum]) {
+            const duration = ((Date.now() - itemStartTimes[itemNum]) / 1000).toFixed(1);
+            itemCompletedTimes[itemNum] = duration;
+            const el = document.getElementById(`timer${itemNum}`);
+            if(el) el.innerText = `⏱️ Megoldási idő: ${duration} mp`;
+        }
+    }
+
+    function setSimMode(mode) {
+        currentSimMode = mode;
+        const btnBar = document.getElementById('btnViewBar');
+        const btnFountain = document.getElementById('btnViewFountain');
+        const title = document.getElementById('simTitle');
+
+        if (mode === 'bar') {
+            btnBar.classList.add('view-btn-active');
+            btnFountain.classList.remove('view-btn-active');
+            title.innerText = "📊 Oszlopos Szimuláció (Erdő & Tanyavilág)";
+        } else {
+            btnFountain.classList.add('view-btn-active');
+            btnBar.classList.remove('view-btn-active');
+            title.innerText = "⛲ Erdei Forrás Szimuláció";
+        }
+    }
+
+    function updateStreamCount(newCount) {
+        let cnt = parseInt(newCount);
+        if (isNaN(cnt) || cnt < 1) cnt = 8;
+        let newArr = [];
+        for (let i = 0; i < cnt; i++) {
+            newArr.push(sugar_ero[i % sugar_ero.length] || Math.floor(Math.random() * 80) + 20);
+        }
+        sugar_ero = newArr;
+        renderAbacus();
+    }
+
+    function playSound(freq, type = 'sine', duration = 0.2) {
+        if (AudioCtx.state === 'suspended') AudioCtx.resume();
+        const osc = AudioCtx.createOscillator();
+        const gain = AudioCtx.createGain();
+        osc.type = type;
+        osc.frequency.setValueAtTime(freq, AudioCtx.currentTime);
+        gain.gain.setValueAtTime(0.1, AudioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.0001, AudioCtx.currentTime + duration);
+        osc.connect(gain);
+        gain.connect(AudioCtx.destination);
+        osc.start();
+        osc.stop(AudioCtx.currentTime + duration);
+    }
+
+    function playWolfHowl() {
+        if (AudioCtx.state === 'suspended') AudioCtx.resume();
+        const osc = AudioCtx.createOscillator();
+        const gain = AudioCtx.createGain();
+        osc.type = 'sawtooth';
+        
+        const now = AudioCtx.currentTime;
+        osc.frequency.setValueAtTime(220, now);
+        osc.frequency.exponentialRampToValueAtTime(550, now + 0.6);
+        osc.frequency.exponentialRampToValueAtTime(330, now + 1.5);
+
+        gain.gain.setValueAtTime(0.01, now);
+        gain.gain.linearRampToValueAtTime(0.15, now + 0.5);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 1.5);
+
+        osc.connect(gain);
+        gain.connect(AudioCtx.destination);
+        osc.start(now);
+        osc.stop(now + 1.5);
+    }
+
+    function playDogBark() {
+        if (AudioCtx.state === 'suspended') AudioCtx.resume();
+        const now = AudioCtx.currentTime;
+        [0, 0.2].forEach(delay => {
+            const osc = AudioCtx.createOscillator();
+            const gain = AudioCtx.createGain();
+            osc.type = 'triangle';
+            osc.frequency.setValueAtTime(300, now + delay);
+            osc.frequency.exponentialRampToValueAtTime(120, now + delay + 0.12);
+
+            gain.gain.setValueAtTime(0.2, now + delay);
+            gain.gain.exponentialRampToValueAtTime(0.01, now + delay + 0.12);
+
+            osc.connect(gain);
+            gain.connect(AudioCtx.destination);
+            osc.start(now + delay);
+            osc.stop(now + delay + 0.12);
+        });
+    }
+
+    function randomize() {
+        sugar_ero = sugar_ero.map(() => Math.floor(Math.random() * 91) + 10);
+        renderAbacus();
+    }
+
+    function start20MinSession() {
+        startTestTimers();
+        let secondsLeft = 1200;
+        const timer = setInterval(() => {
+            secondsLeft--;
+            let mins = Math.floor(secondsLeft / 60);
+            let secs = secondsLeft % 60;
+            document.getElementById('neuroTimerDisplay').innerText = 
+                `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+
+            if (secondsLeft <= 0) {
+                clearInterval(timer);
+                alert("🎉 A mesei tréning véget ért!");
+            }
+        }, 1000);
+    }
+
+    function drawMainSimulation() {
+        const cvs = document.getElementById('neuroCanvas');
+        if (!cvs) return;
+        const ctxSim = cvs.getContext('2d');
+        time_counter++;
+        flashTimer += 0.15;
+        ctxSim.clearRect(0, 0, cvs.width, cvs.height);
+
+        const barW = cvs.width / sugar_ero.length;
+        sugar_ero.forEach((val, i) => {
+            let pulse = animating ? Math.sin(time_counter * 0.1 + i) * 3 : 0;
+            let currentVal = Math.min(100, Math.max(0, val + pulse));
+            const h = (currentVal / 100) * (cvs.height - 60);
+            const x = i * barW + 8;
+            const y = cvs.height - h - 30;
+
+            const isActive = (i === activeStreamIndex);
+            let flashAlpha = isActive ? (Math.sin(flashTimer * 8) > 0 ? 1 : 0.3) : 1;
+
+            if (currentSimMode === 'bar') {
+                if (isActive) {
+                    ctxSim.fillStyle = `rgba(250, 204, 21, ${flashAlpha})`;
+                    ctxSim.shadowColor = '#facc15';
+                    ctxSim.shadowBlur = 15;
+                } else {
+                    ctxSim.fillStyle = i % 2 === 0 ? '#475569' : '#d97706';
+                    ctxSim.shadowBlur = 0;
+                }
+                ctxSim.fillRect(x, y, barW - 16, h);
+                ctxSim.shadowBlur = 0;
+            } else {
+                ctxSim.fillStyle = isActive ? `rgba(250, 204, 21, ${flashAlpha})` : '#0284c7';
+                if (isActive) { ctxSim.shadowColor = '#facc15'; ctxSim.shadowBlur = 15; }
+                ctxSim.beginPath();
+                ctxSim.arc(x + (barW - 16) / 2, cvs.height - h - 10, isActive ? 12 : 8, 0, Math.PI * 2);
+                ctxSim.fill();
+                ctxSim.shadowBlur = 0;
+            }
+
+            ctxSim.fillStyle = isActive ? '#facc15' : '#ffffff';
+            ctxSim.font = isActive ? 'bold 13px monospace' : '11px monospace';
+            ctxSim.fillText(`${Math.round(currentVal)}%`, x + 2, y - 8);
+        });
+    }
+
+    function renderAbacus() {
+        const container = document.getElementById('abacusContainer');
+        if (!container) return;
+        container.innerHTML = '';
+        sugar_ero.forEach((val, i) => {
+            const col = document.createElement('div');
+            col.style.cssText = "width: 26px; background: #1a2a3a; border: 1px solid #50f078; height: 110px; border-radius: 4px; position: relative; display: flex; flex-direction: column; justify-content: space-between; align-items: center; padding: 4px 0;";
+            col.innerHTML = `
+                <div style="width: 18px; height: 12px; background: ${i === activeStreamIndex ? '#facc15' : '#d97706'}; border-radius: 6px; cursor: pointer;" onclick="moveBead(${i})"></div>
+                <div style="width: 2px; height: 100%; background: #324650; position: absolute; z-index: 0;"></div>
+                <span style="z-index: 1; font-weight: bold; font-size: 0.7rem; color: white;">${val}</span>
+            `;
+            container.appendChild(col);
+        });
+    }
+
+    function moveBead(i) {
+        sugar_ero[i] = (sugar_ero[i] + 10) % 110;
+        activeStreamIndex = i;
+        playDogBark();
+        renderAbacus();
+    }
+
+    let ballX = 80, ballY = 75, isDragging = false;
+    const targetX = 420, targetY = 75;
+    const cMotor = document.getElementById('cMotor');
+    if (cMotor) {
+        cMotor.addEventListener('pointerdown', (e) => {
+            const rect = cMotor.getBoundingClientRect();
+            const x = (e.clientX - rect.left) * (cMotor.width / rect.width);
+            const y = (e.clientY - rect.top) * (cMotor.height / rect.height);
+            if (Math.hypot(x - ballX, y - ballY) < 30) isDragging = true;
+        });
+
+        cMotor.addEventListener('pointermove', (e) => {
+            if (isDragging) {
+                const rect = cMotor.getBoundingClientRect();
+                ballX = (e.clientX - rect.left) * (cMotor.width / rect.width);
+                ballY = (e.clientY - rect.top) * (cMotor.height / rect.height);
+            }
+        });
+
+        cMotor.addEventListener('pointerup', () => {
+            if (isDragging) {
+                isDragging = false;
+                const dist = Math.hypot(ballX - targetX, ballY - targetY);
+                const st = document.getElementById('stMotor');
+                if (dist < 25) {
+                    ballX = targetX; ballY = targetY;
+                    st.style.color = '#10b981'; st.innerText = '🎉 Helyes! A farkas átugrott a kapun!';
+                    playWolfHowl();
+                    recordItemTime(1);
+                } else {
+                    st.style.color = '#ef4444'; st.innerText = 'Próbáld pontosabban a kapu közepébe húzni!';
+                }
+            }
+        });
+    }
+
+    let currentTargetTone = 440;
+    function playTargetTone() {
+        const tones = [261.63, 440, 880];
+        currentTargetTone = tones[Math.floor(Math.random() * tones.length)];
+        playSound(currentTargetTone, 'sine', 0.6);
+        document.getElementById('stAudio').innerText = 'Hang lejátszva!';
+    }
+
+    function checkTone(freq) {
+        const st = document.getElementById('stAudio');
+        if (freq === currentTargetTone) {
+            st.style.color = '#10b981'; st.innerText = '🎉 Helyes! Felismerted a kutya jelzését!';
+            playDogBark();
+            recordItemTime(2);
+        } else {
+            st.style.color = '#ef4444'; st.innerText = '❌ Nem ez volt a hang.';
+        }
+    }
+
+    let switchA = false, switchB = false;
+    function click2(e) {
+        const rect = e.target.getBoundingClientRect();
+        const x = (e.clientX - rect.left) * (e.target.width / rect.width);
+        if (x >= 40 && x <= 120) switchA = !switchA;
+        if (x >= 150 && x <= 230) switchB = !switchB;
+
+        const st = document.getElementById('st2');
+        if (switchA && switchB) {
+            st.style.color = '#10b981'; st.innerText = '🎉 A fészer ajtaja kinyílt!';
+            playSound(523.25, 'sine', 0.3);
+            recordItemTime(3);
+        } else {
+            st.style.color = '#64748b'; st.innerText = 'Mindkét reteszt ki kell nyitni!';
+        }
+    }
+
+    let currentAngle = 270, targetAngle = 270;
+    function rotate3() {
+        targetAngle += 90;
+        setTimeout(() => {
+            const normAngle = Math.round(targetAngle) % 360;
+            const st = document.getElementById('st3');
+            if (normAngle === 90) {
+                st.style.color = '#10b981'; st.innerText = '🎉 Az iránytű az erdő felé mutat!';
+                playWolfHowl();
+                recordItemTime(4);
+            } else {
+                st.style.color = '#ef4444'; st.innerText = 'Forgasd tovább az iránytűt!';
+            }
+        }, 300);
+    }
+
+    let ansMinta = '';
+    function checkMinta(val) {
+        ansMinta = val;
+        const st = document.getElementById('stMinta');
+        if (val === 'zöld') {
+            st.style.color = '#10b981'; st.innerText = '🎉 Helyes! A zöld erdei levél következik!';
+            playSound(523.25, 'sine', 0.3);
+            recordItemTime(5);
+        } else {
+            st.style.color = '#ef4444'; st.innerText = '❌ Próbáld újra!';
+        }
+    }
+
+    function calcNthLeafColor(nVal) {
+        const colors = ['Zöld', 'Piros', 'Kék'];
+        let idx = parseInt(nVal) % 3;
+        let colorName = colors[idx];
+        const resEl = document.getElementById('lblNResult');
+        if (resEl) {
+            resEl.innerText = colorName;
+            if (colorName === 'Piros') resEl.style.color = '#ef4444';
+            else if (colorName === 'Kék') resEl.style.color = '#2563eb';
+            else resEl.style.color = '#10b981';
+        }
+    }
+
+    function check1(val) {
+        const st = document.getElementById('st1');
+        if (val === 'kör') {
+            st.style.color = '#10b981'; 
+            st.innerText = '🎉 Helyes! A farkas megőrizte a szabadságát!';
+            playWolfHowl();
+            recordItemTime(6);
+
+            if (testStartTime) {
+                const totalSecs = Math.round((Date.now() - testStartTime) / 1000);
+                const mins = Math.floor(totalSecs / 60);
+                const secs = totalSecs % 60;
+                document.getElementById('totalTimeDisplay').innerText = 
+                    `🏆 Összesített megoldási idő: ${mins > 0 ? mins + ' perc ' : ''}${secs} mp`;
+            }
+        } else {
+            st.style.color = '#ef4444'; st.innerText = '❌ Próbáld újra!';
+        }
+    }
+
+    function drawLeaf(ctx, x, y, color, angle = 0, scale = 1) {
+        ctx.save();
+        ctx.translate(x, y);
+        ctx.rotate(angle);
+        ctx.scale(scale, scale);
+        ctx.fillStyle = color;
+        ctx.beginPath();
+        ctx.moveTo(0, 0);
+        ctx.quadraticCurveTo(12, -12, 0, -25);
+        ctx.quadraticCurveTo(-12, -12, 0, 0);
+        ctx.fill();
+        ctx.strokeStyle = 'rgba(0,0,0,0.2)';
+        ctx.lineWidth = 1;
+        ctx.stroke();
+        ctx.restore();
+    }
+
+    function renderMain() {
+        t_main += 0.05;
+        drawMainSimulation();
+
+        if (cMotor) {
+            const ctxM = cMotor.getContext('2d');
+            ctxM.clearRect(0, 0, cMotor.width, cMotor.height);
+            ctxM.strokeStyle = '#2563eb'; ctxM.lineWidth = 2; ctxM.setLineDash([6, 6]);
+            ctxM.beginPath(); ctxM.arc(targetX, targetY, 22, 0, Math.PI * 2); ctxM.stroke();
+            ctxM.setLineDash([]);
+            ctxM.fillStyle = '#d97706';
+            ctxM.beginPath(); ctxM.arc(ballX, ballY, 18, 0, Math.PI * 2); ctxM.fill();
+        }
+
+        const c2 = document.getElementById('c2');
+        if (c2) {
+            const ctx2 = c2.getContext('2d');
+            ctx2.clearRect(0, 0, c2.width, c2.height);
+            ctx2.fillStyle = switchA ? '#10b981' : '#f87171';
+            ctx2.fillRect(40, 35, 80, 50);
+            ctx2.fillStyle = switchB ? '#10b981' : '#f87171';
+            ctx2.fillRect(150, 35, 80, 50);
+            ctx2.fillStyle = (switchA && switchB) ? '#10b981' : '#cbd5e1';
+            ctx2.beginPath(); ctx2.arc(310, 60, 20, 0, Math.PI * 2); ctx2.fill();
+        }
+
+        const c3 = document.getElementById('c3');
+        if (c3) {
+            const ctx3 = c3.getContext('2d');
+            ctx3.clearRect(0, 0, c3.width, c3.height);
+            currentAngle += (targetAngle - currentAngle) * 0.1;
+            ctx3.save();
+            ctx3.translate(130, 90);
+            ctx3.rotate((currentAngle * Math.PI) / 180);
+            ctx3.fillStyle = '#475569';
+            ctx3.fillRect(-8, -35, 16, 70);
+            ctx3.restore();
+        }
+
+        const cMinta = document.getElementById('cMinta');
+        if (cMinta) {
+            const ctxL = cMinta.getContext('2d');
+            ctxL.clearRect(0, 0, cMinta.width, cMinta.height);
+
+            ctxL.fillStyle = '#5c3d2e'; ctxL.beginPath(); ctxL.moveTo(50, 180); ctxL.lineTo(65, 90); ctxL.lineTo(85, 90); ctxL.lineTo(100, 180); ctxL.fill();
+            ctxL.strokeStyle = '#5c3d2e'; ctxL.lineWidth = 5;
+            ctxL.beginPath(); ctxL.moveTo(70, 110); ctxL.lineTo(40, 70); ctxL.stroke();
+            ctxL.beginPath(); ctxL.moveTo(80, 100); ctxL.lineTo(110, 65); ctxL.stroke();
+
+            ctxL.fillStyle = '#22c55e';
+            ctxL.beginPath(); ctxL.arc(40, 60, 22, 0, Math.PI * 2); ctxL.fill();
+            ctxL.beginPath(); ctxL.arc(75, 45, 28, 0, Math.PI * 2); ctxL.fill();
+            ctxL.beginPath(); ctxL.arc(110, 60, 22, 0, Math.PI * 2); ctxL.fill();
+
+            const leafColors = ['#ef4444', '#2563eb', '#10b981', '#ef4444', '#2563eb'];
+            const xPositions = [160, 210, 260, 310, 360];
+
+            for (let i = 0; i < leafColors.length; i++) {
+                let yFall = 80 + Math.sin(t_main * 2 + i * 1.2) * 22 + Math.cos(t_main + i) * 6;
+                let rotAngle = Math.sin(t_main * 1.5 + i) * 0.5;
+                drawLeaf(ctxL, xPositions[i], yFall, leafColors[i], rotAngle, 1.0);
+            }
+
+            ctxL.strokeStyle = '#94a3b8'; ctxL.lineWidth = 2; ctxL.setLineDash([4, 4]);
+            ctxL.strokeRect(410, 55, 50, 60);
+            ctxL.setLineDash([]);
+
+            if (ansMinta === 'zöld') {
+                drawLeaf(ctxL, 435, 98, '#10b981', 0, 1.2);
+            } else if (ansMinta !== '') {
+                ctxL.fillStyle = '#ef4444'; ctxL.font = 'bold 25px sans-serif';
+                ctxL.fillText('❌', 423, 95);
+            } else {
+                ctxL.fillStyle = '#64748b'; ctxL.font = 'bold 30px sans-serif';
+                ctxL.fillText('?', 427, 96);
+            }
+        }
+
+        const c1 = document.getElementById('c1');
+        if (c1) {
+            const ctxS = c1.getContext('2d');
+            ctxS.clearRect(0, 0, c1.width, c1.height);
+            ctxS.fillStyle = '#2563eb'; ctxS.fillRect(50, 35, 35, 35);
+            ctxS.fillStyle = '#7c3aed'; ctxS.beginPath(); ctxS.moveTo(160, 70); ctxS.lineTo(177, 35); ctxS.lineTo(195, 70); ctxS.fill();
+            ctxS.fillStyle = '#2563eb'; ctxS.fillRect(270, 35, 35, 35);
+        }
+
+        requestAnimationFrame(renderMain);
+    }
+
+    // INDÍTÁS LÉPÉSEI
+    window.onload = () => { 
+        gameLoop();
+        renderAbacus();
+        renderMain(); 
+        renderAnimations();
+        calcNthLeafColor(7);
+    };
+</script>
+
+
+</body></html>
