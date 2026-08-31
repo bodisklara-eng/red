@@ -1,0 +1,834 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Max-keresés Algoritmus Gyakorló</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+  :root{
+    --night-deep: #0b0e21;
+    --night: #141a35;
+    --panel: #1a2147;
+    --code-bg: #0f1330;
+    --gold: #e3b34c;
+    --gold-bright: #f7d489;
+    --rose: #d67d95;
+    --green: #6fbf8b;
+    --red: #e0708a;
+    --cream: #f7f0e3;
+    --cream-dim: #b9b2c9;
+    --font-display: 'Fraunces', Georgia, serif;
+    --font-body: 'Inter', -apple-system, sans-serif;
+    --font-mono: 'JetBrains Mono', monospace;
+  }
+
+  *{ box-sizing: border-box; }
+
+  body{
+    margin:0;
+    min-height:100vh;
+    background:
+      radial-gradient(circle at 15% 10%, rgba(227,179,76,0.07), transparent 40%),
+      radial-gradient(circle at 85% 90%, rgba(214,125,149,0.07), transparent 40%),
+      var(--night-deep);
+    color: var(--cream);
+    font-family: var(--font-body);
+    padding: 30px 16px 70px;
+  }
+
+  main{ max-width: 880px; margin: 0 auto; }
+
+  header{ text-align:center; margin-bottom: 22px; }
+  .eyebrow{
+    font-size: 11px; letter-spacing: 0.22em; text-transform: uppercase;
+    color: var(--gold); margin-bottom: 10px;
+  }
+  h1{
+    font-family: var(--font-display); font-weight: 700;
+    font-size: clamp(24px, 4vw, 34px); margin: 0 0 8px;
+  }
+  .subtitle{ color: var(--cream-dim); font-size: 14px; max-width: 520px; margin: 0 auto; line-height: 1.6; }
+
+  /* dashboard */
+  .dashboard{
+    display:flex; gap: 10px; justify-content:center; flex-wrap:wrap;
+    margin: 22px 0;
+  }
+  .stat-chip{
+    background: var(--panel); border: 1px solid rgba(227,179,76,0.15);
+    border-radius: 10px; padding: 10px 16px; text-align:center; min-width: 100px;
+  }
+  .stat-chip .val{ font-family: var(--font-mono); font-size: 20px; font-weight:600; color: var(--gold-bright); }
+  .stat-chip .lbl{ font-size: 10.5px; color: var(--cream-dim); text-transform:uppercase; letter-spacing:0.06em; margin-top:2px; }
+
+  /* phase tabs */
+  .phase-tabs{
+    display:flex; gap: 8px; flex-wrap: wrap; justify-content:center; margin-bottom: 20px;
+  }
+  .tab-btn{
+    background: var(--panel); border: 1px solid rgba(227,179,76,0.15);
+    color: var(--cream-dim); font-family: var(--font-body); font-weight:600; font-size: 12.5px;
+    padding: 10px 14px; border-radius: 10px; cursor:pointer; transition: all 0.2s ease;
+    display:flex; align-items:center; gap:6px;
+  }
+  .tab-btn:hover{ border-color: rgba(227,179,76,0.4); }
+  .tab-btn.active{ background: var(--gold); color: var(--night-deep); border-color: var(--gold); }
+  .tab-btn .check{ color: var(--green); font-size: 13px; }
+
+  .phase{ display:none; }
+  .phase.active{ display:block; animation: fade-in 0.3s ease; }
+  @keyframes fade-in{ from{ opacity:0; transform: translateY(6px);} to{ opacity:1; transform: translateY(0);} }
+
+  .panel{
+    background: var(--panel); border: 1px solid rgba(227,179,76,0.12);
+    border-radius: 16px; padding: 24px; margin-bottom: 16px;
+  }
+  .panel h2{
+    font-family: var(--font-display); font-size: 19px; margin: 0 0 6px; color: var(--gold-bright);
+  }
+  .panel .desc{ color: var(--cream-dim); font-size: 13.5px; margin-bottom: 18px; line-height:1.6; }
+
+  /* code block */
+  .code-block{
+    background: var(--code-bg); border-radius: 12px; padding: 18px 20px;
+    font-family: var(--font-mono); font-size: 13.5px; line-height: 2;
+    overflow-x: auto; border: 1px solid rgba(255,255,255,0.05);
+  }
+  .code-line{ white-space: pre; transition: background 0.3s ease; border-radius: 4px; padding: 2px 6px; margin: 0 -6px; }
+  .code-line.highlight{ background: rgba(227,179,76,0.18); }
+  .code-line.buggy-selected{ background: rgba(224,112,138,0.22); }
+  .code-line.clickable{ cursor:pointer; }
+  .code-line.clickable:hover{ background: rgba(255,255,255,0.04); }
+  .tok-kw{ color: var(--rose); }
+  .tok-fn{ color: var(--gold-bright); }
+  .tok-num{ color: #8fd0e8; }
+  .tok-str{ color: var(--green); }
+  .tok-com{ color: #6b7099; font-style: italic; }
+  .lineno{ display:inline-block; width: 22px; color: #4a5080; user-select:none; }
+
+  .blank{
+    background: rgba(227,179,76,0.1); border: 1px solid var(--gold);
+    color: var(--gold-bright); font-family: var(--font-mono); font-size: 13.5px;
+    border-radius: 5px; padding: 1px 6px; width: 60px; text-align:center;
+  }
+  .blank.correct{ border-color: var(--green); background: rgba(111,191,139,0.15); color: var(--green); }
+  .blank.incorrect{ border-color: var(--red); background: rgba(224,112,138,0.15); color: var(--red); }
+
+  .action-row{ display:flex; gap: 10px; flex-wrap:wrap; margin-top: 18px; }
+  button{
+    font-family: var(--font-body); font-weight:600; font-size: 13px; border:none;
+    border-radius: 9px; padding: 10px 18px; cursor:pointer; transition: transform 0.12s ease, filter 0.12s ease;
+  }
+  button:hover{ filter: brightness(1.12); transform: translateY(-1px); }
+  button:disabled{ opacity: 0.4; cursor:not-allowed; transform:none; }
+  .btn-check{ background: var(--gold); color: var(--night-deep); }
+  .btn-help{ background: rgba(214,125,149,0.2); color: var(--rose); }
+  .btn-reset{ background: rgba(255,255,255,0.08); color: var(--cream); }
+
+  .feedback{ margin-top: 14px; font-size: 13.5px; padding: 10px 14px; border-radius: 8px; display:none; }
+  .feedback.show{ display:block; }
+  .feedback.ok{ background: rgba(111,191,139,0.12); color: var(--green); }
+  .feedback.bad{ background: rgba(224,112,138,0.12); color: var(--red); }
+
+  /* Parsons puzzle */
+  .parsons-list{ list-style:none; padding:0; margin:0; display:flex; flex-direction:column; gap:6px; }
+  .parsons-item{
+    background: var(--code-bg); border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 8px; padding: 10px 14px; font-family: var(--font-mono); font-size: 13px;
+    cursor: grab; user-select:none; touch-action: none;
+    display:flex; align-items:center; gap:10px;
+    transition: background 0.2s ease, border-color 0.2s ease;
+  }
+  .parsons-item .handle{ color: var(--gold); font-size: 14px; }
+  .parsons-item.dragging{ opacity: 0.4; }
+  .parsons-item.correct-flash{ border-color: var(--green); background: rgba(111,191,139,0.1); }
+  .parsons-item.incorrect-flash{ border-color: var(--red); background: rgba(224,112,138,0.1); }
+
+  /* trace table */
+  table.trace-table{ width:100%; border-collapse: collapse; margin-top: 14px; font-family: var(--font-mono); font-size: 13px; }
+  table.trace-table th, table.trace-table td{
+    border: 1px solid rgba(255,255,255,0.08); padding: 8px 10px; text-align:center;
+  }
+  table.trace-table th{ color: var(--gold); font-family: var(--font-body); font-size: 11px; text-transform:uppercase; letter-spacing:0.05em; }
+  table.trace-table input{
+    width: 54px; background: rgba(227,179,76,0.08); border: 1px solid rgba(227,179,76,0.3);
+    color: var(--cream); font-family: var(--font-mono); border-radius: 5px; padding: 4px; text-align:center;
+  }
+  table.trace-table input.correct{ border-color: var(--green); color: var(--green); }
+  table.trace-table input.incorrect{ border-color: var(--red); color: var(--red); }
+
+  .mini-rack{ display:flex; gap: 10px; justify-content:center; margin: 16px 0; flex-wrap:wrap; position:relative; padding-top: 26px; }
+  .mini-chip{
+    background: var(--code-bg); border: 2px solid rgba(255,255,255,0.08); border-radius: 8px;
+    padding: 8px 12px; font-family: var(--font-mono); font-weight:600; font-size: 14px;
+    transition: all 0.3s ease; position:relative;
+  }
+  .mini-chip.current-max{ border-color: var(--gold); box-shadow: 0 0 0 3px rgba(227,179,76,0.15); }
+  .mini-chip.comparing{ border-color: var(--rose); }
+  .mini-crown{ position:absolute; top: -22px; font-size:16px; transform: translateX(-50%); transition: left 0.4s ease; }
+
+  /* bug fix options */
+  .fix-options{ display:flex; flex-direction:column; gap:8px; margin-top: 14px; }
+  .fix-option{
+    background: var(--code-bg); border: 1px solid rgba(255,255,255,0.1); border-radius:8px;
+    padding: 10px 14px; font-family: var(--font-mono); font-size: 13px; cursor:pointer;
+    transition: border-color 0.2s ease, background 0.2s ease;
+  }
+  .fix-option:hover{ border-color: rgba(227,179,76,0.4); }
+  .fix-option.selected{ border-color: var(--gold); background: rgba(227,179,76,0.08); }
+  .fix-option.correct{ border-color: var(--green); background: rgba(111,191,139,0.12); }
+  .fix-option.incorrect{ border-color: var(--red); background: rgba(224,112,138,0.12); }
+
+  /* comparison panel: student's attempt vs correct answer */
+  .compare-panel{
+    margin-top: 16px; padding: 14px 16px; background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(227,179,76,0.15); border-radius: 10px; display:none;
+  }
+  .compare-panel.show{ display:block; animation: fade-in 0.3s ease; }
+  .compare-panel h4{
+    margin: 0 0 10px; font-size: 11.5px; text-transform: uppercase; letter-spacing: 0.06em;
+    color: var(--gold); font-weight: 600;
+  }
+  .compare-row{
+    display:flex; gap: 8px; align-items:center; flex-wrap:wrap;
+    font-family: var(--font-mono); font-size: 12.5px; padding: 6px 0;
+    border-bottom: 1px dashed rgba(255,255,255,0.06);
+  }
+  .compare-row:last-child{ border-bottom:none; }
+  .compare-label{ color: var(--cream-dim); font-family: var(--font-body); font-size: 11px; min-width: 70px; }
+  .compare-value{ padding: 3px 9px; border-radius: 5px; background: rgba(255,255,255,0.05); }
+  .compare-value.mine.match{ border:1px solid var(--green); color: var(--green); }
+  .compare-value.mine.mismatch{ border:1px solid var(--red); color: var(--red); }
+  .compare-value.correct-ans{ background: rgba(227,179,76,0.12); color: var(--gold-bright); }
+
+  .compare-lists{ display:flex; gap: 18px; flex-wrap: wrap; }
+  .compare-lists .col{ flex:1; min-width: 220px; }
+  .compare-lists .col-title{
+    font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em;
+    color: var(--cream-dim); margin-bottom: 8px;
+  }
+  .compare-lists .line-item{
+    font-family: var(--font-mono); font-size: 12px; padding: 5px 9px; border-radius: 5px;
+    margin-bottom: 4px; background: rgba(255,255,255,0.04); border-left: 3px solid transparent;
+  }
+  .compare-lists .line-item.match{ border-left-color: var(--green); }
+  .compare-lists .line-item.mismatch{ border-left-color: var(--red); }
+
+  footer{ text-align:center; margin-top: 30px; color: var(--cream-dim); font-size: 11.5px; opacity:0.6; }
+
+  @media (max-width: 560px){
+    .panel{ padding: 18px; }
+    .code-block{ font-size: 12px; }
+  }
+</style>
+</head>
+<body>
+
+<main>
+  <header>
+    <div class="eyebrow">Algoritmus Gyakorló</div>
+    <h1>Max-keresés — 4 Fázisos Gyakorlás</h1>
+    <p class="subtitle">Kódkiegészítés, Parsons-puzzle, kódkövetés és hibajavítás — mindegyik fázisnál valódi, animált segítség kérhető.</p>
+  </header>
+
+  <div class="dashboard">
+    <div class="stat-chip"><div class="val" id="stat-correct">0</div><div class="lbl">Helyes</div></div>
+    <div class="stat-chip"><div class="val" id="stat-attempts">0</div><div class="lbl">Próbálkozás</div></div>
+    <div class="stat-chip"><div class="val" id="stat-phases">0/4</div><div class="lbl">Fázis kész</div></div>
+  </div>
+
+  <nav class="phase-tabs">
+    <button class="tab-btn active" data-phase="1">1. Kódkiegészítés <span class="check" id="check-1"></span></button>
+    <button class="tab-btn" data-phase="2">2. Parsons-puzzle <span class="check" id="check-2"></span></button>
+    <button class="tab-btn" data-phase="3">3. Kódkövetés <span class="check" id="check-3"></span></button>
+    <button class="tab-btn" data-phase="4">4. Hibajavítás <span class="check" id="check-4"></span></button>
+  </nav>
+
+  <!-- PHASE 1: Kódkiegészítés -->
+  <section class="phase active" id="phase-1">
+    <div class="panel">
+      <h2>1. Kódkiegészítés</h2>
+      <p class="desc">Töltsd ki a hiányzó részeket, hogy a függvény helyesen megtalálja a tömb legnagyobb elemét.</p>
+      <div class="code-block" id="p1-code"></div>
+      <div class="action-row">
+        <button class="btn-check" id="p1-check">✓ Ellenőrzés</button>
+        <button class="btn-help" id="p1-help">💡 Segítség</button>
+        <button class="btn-reset" id="p1-reset">↺ Újra</button>
+      </div>
+      <div class="feedback" id="p1-feedback"></div>
+      <div class="compare-panel" id="p1-compare">
+        <h4>Saját válaszod vs. Helyes válasz</h4>
+        <div id="p1-compare-body"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PHASE 2: Parsons puzzle -->
+  <section class="phase" id="phase-2">
+    <div class="panel">
+      <h2>2. Parsons-puzzle</h2>
+      <p class="desc">Húzd a sorokat a helyes sorrendbe, hogy a max-kereső függvény logikailag helyes legyen. (Egérrel vagy érintéssel is húzhatod.)</p>
+      <ul class="parsons-list" id="p2-list"></ul>
+      <div class="action-row">
+        <button class="btn-check" id="p2-check">✓ Ellenőrzés</button>
+        <button class="btn-help" id="p2-help">💡 Segítség</button>
+        <button class="btn-reset" id="p2-reset">↺ Újra</button>
+      </div>
+      <div class="feedback" id="p2-feedback"></div>
+      <div class="compare-panel" id="p2-compare">
+        <h4>Saját sorrended vs. Helyes sorrend</h4>
+        <div id="p2-compare-body"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PHASE 3: Kódkövetés -->
+  <section class="phase" id="phase-3">
+    <div class="panel">
+      <h2>3. Kódkövetés</h2>
+      <p class="desc">A tömb: <code id="p3-array-display" style="color:var(--gold-bright); font-family:var(--font-mono);"></code>. Add meg, mi lesz a <code style="font-family:var(--font-mono);">max</code> változó értéke minden lépés után!</p>
+      <div class="code-block" id="p3-code"></div>
+      <table class="trace-table" id="p3-table"></table>
+      <div class="mini-rack" id="p3-rack" style="display:none;"></div>
+      <div class="action-row">
+        <button class="btn-check" id="p3-check">✓ Ellenőrzés</button>
+        <button class="btn-help" id="p3-help">💡 Segítség (animáció)</button>
+        <button class="btn-reset" id="p3-reset">↺ Újra</button>
+      </div>
+      <div class="feedback" id="p3-feedback"></div>
+      <div class="compare-panel" id="p3-compare">
+        <h4>Saját válaszod vs. Helyes válasz</h4>
+        <div id="p3-compare-body"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PHASE 4: Hibajavítás -->
+  <section class="phase" id="phase-4">
+    <div class="panel">
+      <h2>4. Hibajavítás</h2>
+      <p class="desc">Ez a kód hibás — nem a legnagyobb, hanem a legkisebb elemet találja meg! Kattints arra a sorra, ahol a hibát gyanítod.</p>
+      <div class="code-block" id="p4-code"></div>
+      <div id="p4-fix-area" style="display:none;">
+        <p class="desc" style="margin-top:14px; margin-bottom:6px;">Válaszd ki a helyes javítást ehhez a sorhoz:</p>
+        <div class="fix-options" id="p4-options"></div>
+      </div>
+      <div class="action-row">
+        <button class="btn-check" id="p4-check" disabled>✓ Ellenőrzés</button>
+        <button class="btn-help" id="p4-help">💡 Segítség</button>
+        <button class="btn-reset" id="p4-reset">↺ Újra</button>
+      </div>
+      <div class="feedback" id="p4-feedback"></div>
+      <div class="compare-panel" id="p4-compare">
+        <h4>Saját választásod vs. Helyes megoldás</h4>
+        <div id="p4-compare-body"></div>
+      </div>
+    </div>
+  </section>
+
+  <footer>Kézzel épített, önálló HTML/CSS/JS alkalmazás — nincs külső könyvtár.</footer>
+</main>
+
+<script>
+(function(){
+"use strict";
+
+/* ================= Global stats ================= */
+const stats = { correct: 0, attempts: 0, phasesDone: [false,false,false,false] };
+
+function updateDashboard(){
+  document.getElementById('stat-correct').textContent = stats.correct;
+  document.getElementById('stat-attempts').textContent = stats.attempts;
+  const done = stats.phasesDone.filter(Boolean).length;
+  document.getElementById('stat-phases').textContent = done + '/4';
+  stats.phasesDone.forEach((d, idx) => {
+    document.getElementById('check-' + (idx+1)).textContent = d ? '✓' : '';
+  });
+}
+
+function recordAttempt(isCorrect){
+  stats.attempts++;
+  if(isCorrect) stats.correct++;
+  updateDashboard();
+}
+
+function markPhaseDone(phaseIdx){
+  stats.phasesDone[phaseIdx] = true;
+  updateDashboard();
+}
+
+/* ================= Tab navigation ================= */
+document.querySelectorAll('.tab-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.phase').forEach(p => p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('phase-' + btn.dataset.phase).classList.add('active');
+  });
+});
+
+function showFeedback(id, isOk, msg){
+  const el = document.getElementById(id);
+  el.textContent = msg;
+  el.className = 'feedback show ' + (isOk ? 'ok' : 'bad');
+}
+
+/* =========================================================
+   PHASE 1 — Kódkiegészítés
+   ========================================================= */
+(function(){
+  const blanksAnswers = ['0', 'length', '>', 'i'];
+  const codeHtml =
+    '<div class="code-line"><span class="lineno">1</span><span class="tok-kw">function</span> <span class="tok-fn">maxKereses</span>(tomb) {</div>' +
+    '<div class="code-line"><span class="lineno">2</span>  <span class="tok-kw">let</span> max = tomb[<input class="blank" data-i="0" size="2">];</div>' +
+    '<div class="code-line"><span class="lineno">3</span>  <span class="tok-kw">for</span> (<span class="tok-kw">let</span> i = <span class="tok-num">1</span>; i &lt; tomb.<input class="blank" data-i="1" size="6">; i++) {</div>' +
+    '<div class="code-line"><span class="lineno">4</span>    <span class="tok-kw">if</span> (tomb[i] <input class="blank" data-i="2" size="2"> max) {</div>' +
+    '<div class="code-line"><span class="lineno">5</span>      max = tomb[<input class="blank" data-i="3" size="2">];</div>' +
+    '<div class="code-line"><span class="lineno">6</span>    }</div>' +
+    '<div class="code-line"><span class="lineno">7</span>  }</div>' +
+    '<div class="code-line"><span class="lineno">8</span>  <span class="tok-kw">return</span> max;</div>' +
+    '<div class="code-line"><span class="lineno">9</span>}</div>';
+
+  document.getElementById('p1-code').innerHTML = codeHtml;
+  const blanks = () => Array.from(document.querySelectorAll('#p1-code .blank'));
+
+  document.getElementById('p1-check').addEventListener('click', () => {
+    let allCorrect = true;
+    blanks().forEach(inp => {
+      const idx = parseInt(inp.dataset.i, 10);
+      const val = inp.value.trim();
+      const ok = val === blanksAnswers[idx];
+      inp.classList.toggle('correct', ok);
+      inp.classList.toggle('incorrect', !ok);
+      if(!ok) allCorrect = false;
+    });
+    recordAttempt(allCorrect);
+    if(allCorrect){
+      showFeedback('p1-feedback', true, '✅ Helyes! Pontosan így néz ki egy egyszerű max-kereső algoritmus.');
+      markPhaseDone(0);
+    } else {
+      showFeedback('p1-feedback', false, '❌ Van még hibás mező — nézd át piros keretűeket, vagy kérj segítséget.');
+    }
+  });
+
+  document.getElementById('p1-reset').addEventListener('click', () => {
+    blanks().forEach(inp => { inp.value=''; inp.classList.remove('correct','incorrect'); });
+    document.getElementById('p1-feedback').classList.remove('show');
+    document.getElementById('p1-compare').classList.remove('show');
+  });
+
+  function renderP1Compare(snapshot){
+    const body = document.getElementById('p1-compare-body');
+    body.innerHTML = blanksAnswers.map((ans, idx) => {
+      const mine = snapshot[idx] || '(üres)';
+      const isMatch = snapshot[idx] === ans;
+      return '<div class="compare-row"><span class="compare-label">' + (idx+1) + '. mező</span>' +
+        '<span class="compare-value mine ' + (isMatch?'match':'mismatch') + '">Te: ' + mine + '</span>' +
+        '<span class="compare-value correct-ans">Helyes: ' + ans + '</span></div>';
+    }).join('');
+    document.getElementById('p1-compare').classList.add('show');
+  }
+
+  document.getElementById('p1-help').addEventListener('click', async () => {
+    const els = blanks();
+    const snapshot = els.map(inp => inp.value.trim());
+    renderP1Compare(snapshot);
+    for(let k = 0; k < els.length; k++){
+      els[k].closest('.code-line').classList.add('highlight');
+      await new Promise(r => setTimeout(r, 350));
+      els[k].value = blanksAnswers[k];
+      els[k].classList.add('correct');
+      await new Promise(r => setTimeout(r, 500));
+      els[k].closest('.code-line').classList.remove('highlight');
+    }
+    showFeedback('p1-feedback', true, '💡 A segítség kitöltötte a mezőket — fent láthatod, te mit írtál a helyes válasz mellett.');
+  });
+})();
+
+/* =========================================================
+   PHASE 2 — Parsons puzzle
+   ========================================================= */
+(function(){
+  const correctLines = [
+    'function maxKereses(tomb) {',
+    '  let max = tomb[0];',
+    '  for (let i = 1; i < tomb.length; i++) {',
+    '    if (tomb[i] > max) {',
+    '      max = tomb[i];',
+    '    }',
+    '  }',
+    '  return max;',
+    '}'
+  ];
+
+  let shuffled = [...correctLines];
+  // deterministic-ish shuffle so it's not trivially in order
+  shuffled = [shuffled[3], shuffled[0], shuffled[6], shuffled[1], shuffled[7], shuffled[2], shuffled[5], shuffled[8], shuffled[4]];
+
+  const listEl = document.getElementById('p2-list');
+
+  function renderList(lines){
+    listEl.innerHTML = '';
+    lines.forEach(line => {
+      const li = document.createElement('li');
+      li.className = 'parsons-item';
+      li.dataset.line = line;
+      li.innerHTML = '<span class="handle">⠿</span><span>' + line.replace(/</g,'&lt;').replace(/>/g,'&gt;') + '</span>';
+      listEl.appendChild(li);
+    });
+    attachDragHandlers();
+  }
+
+  renderList(shuffled);
+
+  function attachDragHandlers(){
+    let dragEl = null;
+
+    listEl.querySelectorAll('.parsons-item').forEach(item => {
+      item.addEventListener('pointerdown', (e) => {
+        dragEl = item;
+        item.classList.add('dragging');
+        item.setPointerCapture(e.pointerId);
+      });
+
+      item.addEventListener('pointermove', (e) => {
+        if(!dragEl) return;
+        const afterEl = getDragAfterElement(listEl, e.clientY);
+        if(afterEl == null){
+          listEl.appendChild(dragEl);
+        } else {
+          listEl.insertBefore(dragEl, afterEl);
+        }
+      });
+
+      item.addEventListener('pointerup', () => {
+        if(dragEl){ dragEl.classList.remove('dragging'); dragEl = null; }
+      });
+      item.addEventListener('pointercancel', () => {
+        if(dragEl){ dragEl.classList.remove('dragging'); dragEl = null; }
+      });
+    });
+  }
+
+  function getDragAfterElement(container, y){
+    const els = [...container.querySelectorAll('.parsons-item:not(.dragging)')];
+    return els.reduce((closest, child) => {
+      const box = child.getBoundingClientRect();
+      const offset = y - box.top - box.height / 2;
+      if(offset < 0 && offset > closest.offset){
+        return { offset, element: child };
+      } else {
+        return closest;
+      }
+    }, { offset: -Infinity }).element;
+  }
+
+  document.getElementById('p2-check').addEventListener('click', () => {
+    const current = Array.from(listEl.querySelectorAll('.parsons-item')).map(li => li.dataset.line);
+    const isCorrect = JSON.stringify(current) === JSON.stringify(correctLines);
+    recordAttempt(isCorrect);
+    listEl.querySelectorAll('.parsons-item').forEach((li, idx) => {
+      li.classList.remove('correct-flash','incorrect-flash');
+      li.classList.add(li.dataset.line === correctLines[idx] ? 'correct-flash' : 'incorrect-flash');
+    });
+    if(isCorrect){
+      showFeedback('p2-feedback', true, '✅ Helyes sorrend! Ez a max-kereső algoritmus logikus felépítése.');
+      markPhaseDone(1);
+    } else {
+      showFeedback('p2-feedback', false, '❌ Még nem jó a sorrend — a zöld sorok jó helyen vannak, a rózsaszínek nem.');
+    }
+  });
+
+  document.getElementById('p2-reset').addEventListener('click', () => {
+    shuffled = [shuffled[3], shuffled[0], shuffled[6], shuffled[1], shuffled[7], shuffled[2], shuffled[5], shuffled[8], shuffled[4]];
+    renderList([...correctLines].sort(() => Math.random() - 0.5));
+    document.getElementById('p2-feedback').classList.remove('show');
+    document.getElementById('p2-compare').classList.remove('show');
+  });
+
+  function escapeHtml(s){ return s.replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+  function renderP2Compare(mineOrder){
+    const body = document.getElementById('p2-compare-body');
+    const mineCol = mineOrder.map((line, idx) => {
+      const isMatch = line === correctLines[idx];
+      return '<div class="line-item ' + (isMatch?'match':'mismatch') + '">' + (idx+1) + '. ' + escapeHtml(line) + '</div>';
+    }).join('');
+    const correctCol = correctLines.map((line, idx) => '<div class="line-item">' + (idx+1) + '. ' + escapeHtml(line) + '</div>').join('');
+    body.innerHTML = '<div class="compare-lists">' +
+      '<div class="col"><div class="col-title">A te sorrended</div>' + mineCol + '</div>' +
+      '<div class="col"><div class="col-title">Helyes sorrend</div>' + correctCol + '</div>' +
+      '</div>';
+    document.getElementById('p2-compare').classList.add('show');
+  }
+
+  document.getElementById('p2-help').addEventListener('click', async () => {
+    const mySnapshotOrder = Array.from(listEl.querySelectorAll('.parsons-item')).map(li => li.dataset.line);
+    renderP2Compare(mySnapshotOrder);
+    for(let k = 0; k < correctLines.length; k++){
+      renderList([
+        ...correctLines.slice(0, k+1),
+        ...Array.from(listEl.querySelectorAll('.parsons-item')).map(li => li.dataset.line).filter(l => !correctLines.slice(0,k+1).includes(l))
+      ]);
+      const items = listEl.querySelectorAll('.parsons-item');
+      items[k].classList.add('correct-flash');
+      await new Promise(r => setTimeout(r, 260));
+    }
+    showFeedback('p2-feedback', true, '💡 A segítség helyes sorrendbe rakta a sorokat — fent láthatod, hogy a tiéd hogyan viszonyult hozzá.');
+  });
+})();
+
+/* =========================================================
+   PHASE 3 — Kódkövetés
+   ========================================================= */
+(function(){
+  const arr = [4, 9, 2, 7];
+  document.getElementById('p3-array-display').textContent = '[' + arr.join(', ') + ']';
+
+  document.getElementById('p3-code').innerHTML =
+    '<div class="code-line" id="p3-l1"><span class="lineno">1</span><span class="tok-kw">let</span> max = tomb[0]; <span class="tok-com">// max = ' + arr[0] + '</span></div>' +
+    '<div class="code-line" id="p3-l2"><span class="lineno">2</span><span class="tok-kw">for</span> (<span class="tok-kw">let</span> i = 1; i &lt; tomb.length; i++) {</div>' +
+    '<div class="code-line" id="p3-l3"><span class="lineno">3</span>  <span class="tok-kw">if</span> (tomb[i] &gt; max) { max = tomb[i]; }</div>' +
+    '<div class="code-line" id="p3-l4"><span class="lineno">4</span>}</div>';
+
+  // compute correct trace: value of max AFTER each i=1..n-1 iteration
+  const correctTrace = [];
+  let runningMax = arr[0];
+  for(let i = 1; i < arr.length; i++){
+    if(arr[i] > runningMax) runningMax = arr[i];
+    correctTrace.push(runningMax);
+  }
+
+  const table = document.getElementById('p3-table');
+  function renderTable(){
+    let html = '<tr><th>Lépés</th>' + correctTrace.map((_, k) => '<th>i = ' + (k+1) + '</th>').join('') + '</tr>';
+    html += '<tr><td>max érték</td>' + correctTrace.map((_, k) => '<td><input type="text" data-i="' + k + '"></td>').join('') + '</tr>';
+    table.innerHTML = html;
+  }
+  renderTable();
+
+  document.getElementById('p3-check').addEventListener('click', () => {
+    const inputs = Array.from(table.querySelectorAll('input'));
+    let allCorrect = true;
+    inputs.forEach(inp => {
+      const idx = parseInt(inp.dataset.i, 10);
+      const ok = inp.value.trim() === String(correctTrace[idx]);
+      inp.classList.toggle('correct', ok);
+      inp.classList.toggle('incorrect', !ok);
+      if(!ok) allCorrect = false;
+    });
+    recordAttempt(allCorrect);
+    if(allCorrect){
+      showFeedback('p3-feedback', true, '✅ Helyesen követted végig a kódot!');
+      markPhaseDone(2);
+    } else {
+      showFeedback('p3-feedback', false, '❌ Van eltérés — kérj segítséget, ha bizonytalan vagy.');
+    }
+  });
+
+  document.getElementById('p3-reset').addEventListener('click', () => {
+    renderTable();
+    document.getElementById('p3-feedback').classList.remove('show');
+    document.getElementById('p3-compare').classList.remove('show');
+    document.getElementById('p3-rack').style.display = 'none';
+  });
+
+  function renderP3Compare(snapshot){
+    const body = document.getElementById('p3-compare-body');
+    body.innerHTML =
+      '<div class="compare-row"><span class="compare-label">Te</span>' +
+      correctTrace.map((ans, idx) => {
+        const mine = snapshot[idx] || '(üres)';
+        const isMatch = snapshot[idx] === String(ans);
+        return '<span class="compare-value mine ' + (isMatch?'match':'mismatch') + '">i=' + (idx+1) + ': ' + mine + '</span>';
+      }).join('') + '</div>' +
+      '<div class="compare-row"><span class="compare-label">Helyes</span>' +
+      correctTrace.map((ans, idx) => '<span class="compare-value correct-ans">i=' + (idx+1) + ': ' + ans + '</span>').join('') + '</div>';
+    document.getElementById('p3-compare').classList.add('show');
+  }
+
+  document.getElementById('p3-help').addEventListener('click', async () => {
+    const inputs = Array.from(table.querySelectorAll('input'));
+    const snapshot = inputs.map(inp => inp.value.trim());
+    renderP3Compare(snapshot);
+
+    const rack = document.getElementById('p3-rack');
+    rack.style.display = 'flex';
+    rack.innerHTML = arr.map((v,idx) => '<div class="mini-chip" id="p3-chip-' + idx + '">' + v + '</div>').join('') +
+      '<div class="mini-crown" id="p3-crown">👑</div>';
+
+    function positionCrown(idx){
+      const chip = document.getElementById('p3-chip-' + idx);
+      const rackRect = rack.getBoundingClientRect();
+      const chipRect = chip.getBoundingClientRect();
+      document.getElementById('p3-crown').style.left = (chipRect.left - rackRect.left + chipRect.width/2) + 'px';
+    }
+
+    let maxIdx = 0;
+    document.getElementById('p3-chip-0').classList.add('current-max');
+    positionCrown(0);
+    await new Promise(r => setTimeout(r, 500));
+
+    for(let i = 1; i < arr.length; i++){
+      document.getElementById('p3-chip-' + i).classList.add('comparing');
+      document.getElementById('p3-l3').classList.add('highlight');
+      await new Promise(r => setTimeout(r, 500));
+      if(arr[i] > arr[maxIdx]){
+        document.getElementById('p3-chip-' + maxIdx).classList.remove('current-max');
+        maxIdx = i;
+        document.getElementById('p3-chip-' + maxIdx).classList.add('current-max');
+        positionCrown(maxIdx);
+      }
+      document.getElementById('p3-chip-' + i).classList.remove('comparing');
+      document.getElementById('p3-l3').classList.remove('highlight');
+      inputs[i-1].value = arr[maxIdx];
+      inputs[i-1].classList.add('correct');
+      await new Promise(r => setTimeout(r, 400));
+    }
+    showFeedback('p3-feedback', true, '💡 Az animáció végigvitte a kódkövetést — fent láthatod, mit írtál te a helyes érték mellett.');
+  });
+})();
+
+/* =========================================================
+   PHASE 4 — Hibajavítás
+   ========================================================= */
+(function(){
+  const lines = [
+    'function maxKereses(tomb) {',
+    '  let max = tomb[0];',
+    '  for (let i = 1; i < tomb.length; i++) {',
+    '    if (tomb[i] < max) {',
+    '      max = tomb[i];',
+    '    }',
+    '  }',
+    '  return max;',
+    '}'
+  ];
+  const buggyLineIdx = 3; // "if (tomb[i] < max) {"
+  const fixOptions = [
+    { text: '    if (tomb[i] < max) {', correct: false },
+    { text: '    if (tomb[i] > max) {', correct: true },
+    { text: '    if (tomb[i] == max) {', correct: false },
+    { text: '    if (tomb[i] >= max) {', correct: true }
+  ];
+
+  const codeEl = document.getElementById('p4-code');
+  function renderCode(){
+    codeEl.innerHTML = lines.map((line, idx) => {
+      const escaped = line.replace(/</g,'&lt;').replace(/>/g,'&gt;');
+      return '<div class="code-line clickable" data-idx="' + idx + '"><span class="lineno">' + (idx+1) + '</span>' + escaped + '</div>';
+    }).join('');
+    codeEl.querySelectorAll('.code-line').forEach(el => {
+      el.addEventListener('click', () => selectLine(parseInt(el.dataset.idx, 10)));
+    });
+  }
+  renderCode();
+
+  let selectedLine = null;
+  let selectedFix = null;
+
+  function selectLine(idx){
+    selectedLine = idx;
+    selectedFix = null;
+    codeEl.querySelectorAll('.code-line').forEach(el => el.classList.remove('buggy-selected'));
+    codeEl.querySelector('[data-idx="' + idx + '"]').classList.add('buggy-selected');
+
+    const fixArea = document.getElementById('p4-fix-area');
+    const optionsEl = document.getElementById('p4-options');
+    if(idx === buggyLineIdx){
+      fixArea.style.display = 'block';
+      optionsEl.innerHTML = '';
+      fixOptions.forEach((opt, oIdx) => {
+        const div = document.createElement('div');
+        div.className = 'fix-option';
+        div.textContent = opt.text;
+        div.addEventListener('click', () => {
+          selectedFix = oIdx;
+          optionsEl.querySelectorAll('.fix-option').forEach(o => o.classList.remove('selected'));
+          div.classList.add('selected');
+          document.getElementById('p4-check').disabled = false;
+        });
+        optionsEl.appendChild(div);
+      });
+    } else {
+      fixArea.style.display = 'none';
+      document.getElementById('p4-check').disabled = true;
+      showFeedback('p4-feedback', false, 'Ez a sor önmagában helyes — keresd tovább a hibás sort.');
+    }
+  }
+
+  document.getElementById('p4-check').addEventListener('click', () => {
+    if(selectedLine !== buggyLineIdx || selectedFix === null){
+      recordAttempt(false);
+      showFeedback('p4-feedback', false, '❌ Nem ezt a javítást kerestük — próbáld újra.');
+      return;
+    }
+    const isCorrect = fixOptions[selectedFix].correct;
+    recordAttempt(isCorrect);
+    const optionsEl = document.getElementById('p4-options');
+    optionsEl.querySelectorAll('.fix-option').forEach((o, idx) => {
+      o.classList.remove('selected');
+      if(idx === selectedFix) o.classList.add(isCorrect ? 'correct' : 'incorrect');
+    });
+    if(isCorrect){
+      showFeedback('p4-feedback', true, '✅ Helyes! A "<" helyett ">" (vagy ">=") kell, különben a legkisebb elemet találja meg a min helyett.');
+      markPhaseDone(3);
+    } else {
+      showFeedback('p4-feedback', false, '❌ Ez a javítás nem oldja meg helyesen a problémát — próbáld meg egy másik opcióval.');
+    }
+  });
+
+  document.getElementById('p4-reset').addEventListener('click', () => {
+    selectedLine = null; selectedFix = null;
+    renderCode();
+    document.getElementById('p4-fix-area').style.display = 'none';
+    document.getElementById('p4-check').disabled = true;
+    document.getElementById('p4-feedback').classList.remove('show');
+    document.getElementById('p4-compare').classList.remove('show');
+  });
+
+  function renderP4Compare(snapshot){
+    const body = document.getElementById('p4-compare-body');
+    let mineText;
+    if(snapshot.line === null){
+      mineText = 'Nem választottál sort.';
+    } else if(snapshot.line !== buggyLineIdx){
+      mineText = 'Kiválasztott sor: "' + lines[snapshot.line].trim() + '" (ez nem a hibás sor)';
+    } else if(snapshot.fix === null){
+      mineText = 'A hibás sort megtaláltad, de nem választottál javítást.';
+    } else {
+      mineText = 'A választott javításod: "' + fixOptions[snapshot.fix].text.trim() + '"' + (fixOptions[snapshot.fix].correct ? ' ✓ ez helyes is volt!' : ' (ez nem volt helyes)');
+    }
+    body.innerHTML =
+      '<div class="compare-row"><span class="compare-label">Te</span><span class="compare-value mine ' + (snapshot.line === buggyLineIdx && snapshot.fix !== null && fixOptions[snapshot.fix].correct ? 'match' : 'mismatch') + '">' + mineText + '</span></div>' +
+      '<div class="compare-row"><span class="compare-label">Helyes</span><span class="compare-value correct-ans">Hibás sor: "if (tomb[i] &lt; max)" → javítás: "if (tomb[i] &gt; max)" (vagy &gt;=)</span></div>';
+    document.getElementById('p4-compare').classList.add('show');
+  }
+
+  document.getElementById('p4-help').addEventListener('click', async () => {
+    renderP4Compare({ line: selectedLine, fix: selectedFix });
+    renderCode();
+    const buggyEl = codeEl.querySelector('[data-idx="' + buggyLineIdx + '"]');
+    buggyEl.classList.add('buggy-selected');
+    await new Promise(r => setTimeout(r, 500));
+    showFeedback('p4-feedback', true, '💡 A hibás sor: "if (tomb[i] < max)". Ez azt jelenti, hogy csak akkor cseréli a maximumot, ha a jelenlegi elem KISEBB — így valójában a legkisebb elemet fogja megtalálni. A helyes jel: ">" vagy ">=".');
+    await new Promise(r => setTimeout(r, 300));
+    selectLine(buggyLineIdx);
+    await new Promise(r => setTimeout(r, 400));
+    const optEls = document.querySelectorAll('#p4-options .fix-option');
+    if(optEls[1]){
+      optEls[1].classList.add('selected');
+      selectedFix = 1;
+      document.getElementById('p4-check').disabled = false;
+    }
+  });
+})();
+
+updateDashboard();
+})();
+</script>
+
+</body>
+</html>
