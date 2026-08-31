@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<!-- saved from url=(0068)file:///C:/Users/Utilizator/Downloads/gemini-code-1787751336932.html -->
+<html lang="hu"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Héroon-szökőkút Szimuláció</title>
+    <style>
+        body {
+            background-color: #0d0f18;
+            color: #ffffff;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+
+        h1 {
+            color: #7aa2f7;
+            margin-bottom: 10px;
+        }
+
+        .controls {
+            margin-bottom: 15px;
+            display: flex;
+            gap: 10px;
+        }
+
+        button {
+            background-color: #0284c7;
+            color: #ffffff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        button:hover {
+            background-color: #0369a1;
+        }
+
+        canvas {
+            border: 2px solid #2ac3de;
+            border-radius: 12px;
+            background-color: #05070a;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+        }
+    </style>
+</head>
+<body>
+
+    <h1>⛲ Héroon-szökőkút Animáció</h1>
+    <div class="controls">
+        <button onclick="toggleSimulation()">Start / Indítás</button>
+        <button onclick="resetSimulation()">Reset / Újratöltés</button>
+    </div>
+
+    <canvas id="fountainCanvas" width="600" height="650"></canvas>
+
+    <script>
+        const canvas = document.getElementById('fountainCanvas');
+        const ctx = canvas.getContext('2d');
+
+        // Állapotváltozók
+        let isRunning = false;
+        let particles = [];
+
+        // Tartályok és vízszintek (százalékban 0-100)
+        let topWaterLevel = 80;    // Felső tartály vízszintje (%)
+        let bottomWaterLevel = 10; // Alsó tartály vízszintje (%)
+
+        const containerWidth = 100;
+        const containerHeight = 140;
+
+        // Tartályok elhelyezkedése
+        const topTank = { x: 250, y: 120 };
+        const bottomTank = { x: 250, y: 380 };
+
+        function toggleSimulation() {
+            isRunning = !isRunning;
+        }
+
+        function resetSimulation() {
+            isRunning = false;
+            topWaterLevel = 80;
+            bottomWaterLevel = 10;
+            particles = [];
+            draw();
+        }
+
+        function createWaterParticles() {
+            if (!isRunning || topWaterLevel <= 5) return;
+
+            // Vízsugár a felső tartály tetejéből kilövellve
+            const fountainOriginX = topTank.x + containerWidth / 2;
+            const fountainOriginY = topTank.y - 15;
+
+            // A vízsugár magassága függ a felső tartály nyomásától/vízszintjétől
+            const pressureFactor = topWaterLevel / 100;
+
+            for (let i = 0; i < 3; i++) {
+                particles.push({
+                    x: fountainOriginX,
+                    y: fountainOriginY,
+                    vx: (Math.random() - 0.5) * 1.5,
+                    vy: -(Math.random() * 3 + 4) * pressureFactor,
+                    size: Math.random() * 2 + 2,
+                    alpha: 1
+                });
+            }
+        }
+
+        function updatePhysics() {
+            if (!isRunning) return;
+
+            // Ha van még víz a felső tartályban, áramlik át az alsóba
+            if (topWaterLevel > 2) {
+                topWaterLevel -= 0.05;
+                if (bottomWaterLevel < 95) {
+                    bottomWaterLevel += 0.05;
+                }
+            } else {
+                isRunning = false; // Kiürült a szökőkút
+            }
+
+            // Részecskék mozgatása
+            for (let i = 0; i < particles.length; i++) {
+                let p = particles[i];
+                p.x += p.vx;
+                p.y += p.vy;
+                p.vy += 0.15; // Gravitáció
+
+                // Visszahullás a felső tartályba
+                if (p.y >= topTank.y) {
+                    particles.splice(i, 1);
+                    i--;
+                }
+            }
+        }
+
+        function drawTank(x, y, label, waterLevel) {
+            ctx.save();
+
+            // Tartály körvonala
+            ctx.strokeStyle = '#38bdf8';
+            ctx.lineWidth = 3;
+            ctx.strokeRect(x, y, containerWidth, containerHeight);
+
+            // Víz a tartályban
+            const currentWaterHeight = (containerHeight * waterLevel) / 100;
+            const waterY = y + containerHeight - currentWaterHeight;
+
+            ctx.fillStyle = 'rgba(56, 189, 248, 0.6)';
+            ctx.fillRect(x + 2, waterY, containerWidth - 4, currentWaterHeight - 2);
+
+            // Címke
+            ctx.fillStyle = '#cbd5e1';
+            ctx.font = '12px Segoe UI';
+            ctx.fillText(label, x + 10, y - 10);
+
+            ctx.restore();
+        }
+
+        function drawPipes() {
+            ctx.save();
+            ctx.strokeStyle = '#cbd5e1';
+            ctx.lineWidth = 4;
+
+            const topCenterX = topTank.x + containerWidth / 2;
+            const bottomCenterX = bottomTank.x + containerWidth / 2;
+
+            // Légvezető cső (Alsó tartály tetejétől a felső tartály tetejébe)
+            ctx.beginPath();
+            ctx.moveTo(bottomTank.x + 20, bottomTank.y);
+            ctx.lineTo(topTank.x + 20, topTank.y + 10);
+            ctx.stroke();
+
+            // Vízelvezető cső (Felső tartály aljától az alsóba)
+            ctx.beginPath();
+            ctx.moveTo(topTank.x + containerWidth - 20, topTank.y + containerHeight);
+            ctx.lineTo(bottomTank.x + containerWidth - 20, bottomTank.y + containerHeight - 10);
+            ctx.stroke();
+
+            // Szökőkút kiömlő csöve (Felső tartályból a levegőbe)
+            ctx.strokeStyle = '#38bdf8';
+            ctx.beginPath();
+            ctx.moveTo(topCenterX, topTank.y + containerHeight - 20);
+            ctx.lineTo(topCenterX, topTank.y - 15);
+            ctx.stroke();
+
+            ctx.restore();
+        }
+
+        function drawParticles() {
+            ctx.save();
+            ctx.fillStyle = '#38bdf8';
+            for (let p of particles) {
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+            ctx.restore();
+        }
+
+        function draw() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Csövek rajzolása
+            drawPipes();
+
+            // Tartályok és vízszintek rajzolása
+            drawTank(topTank.x, topTank.y, 'Felső Tartály (A)', topWaterLevel);
+            drawTank(bottomTank.x, bottomTank.y, 'Alsó Tartály (B)', bottomWaterLevel);
+
+            // Vízcseppek rajzolása
+            drawParticles();
+
+            // Fizika frissítése
+            createWaterParticles();
+            updatePhysics();
+
+            requestAnimationFrame(draw);
+        }
+
+        draw();
+    </script>
+
+</body></html>
