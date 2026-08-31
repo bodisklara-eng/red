@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<!-- saved from url=(0068)file:///C:/Users/Utilizator/Downloads/gemini-code-1787587563519.html -->
+<html lang="hu"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <title>Exponenciális Munkalap - Szimulált Kiértékelés</title>
+    <style>
+        body {
+            font-family: 'Comic Sans MS', 'Segoe UI', sans-serif;
+            background-color: #f1f5f9;
+            color: #1e293b;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .paper-container {
+            background: #ffffff;
+            width: 100%;
+            max-width: 620px;
+            padding: 35px 45px;
+            border-radius: 4px;
+            box-shadow: 0 5px 25px rgba(0,0,0,0.1);
+            border: 1px solid #cbd5e1;
+            position: relative;
+        }
+        .pin {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            width: 20px;
+            height: 20px;
+            background: #facc15;
+            border-radius: 50%;
+            box-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        .header-title {
+            text-align: center;
+            color: #dc2626;
+            font-size: 19px;
+            font-weight: bold;
+            margin-bottom: 25px;
+        }
+        .task-title { font-size: 16px; font-weight: bold; margin-bottom: 12px; }
+        .equation {
+            font-size: 22px;
+            font-weight: bold;
+            color: #2563eb;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        /* Beviteli mezők stílusa kiértékelve */
+        input.white-box {
+            border: 1.5px solid #000;
+            border-radius: 2px;
+            text-align: center;
+            font-size: 16px;
+            font-weight: bold;
+            outline: none;
+            font-family: inherit;
+        }
+        
+        /* Állapotok szimulációja */
+        .correct { background-color: #86efac !important; border-color: #16a34a !important; color: #064e3b; }
+        .incorrect { background-color: #fca5a5 !important; border-color: #dc2626 !important; color: #7f1d1d; }
+
+        /* Magyarázó dobozok */
+        .explain-box {
+            background-color: #fef2f2;
+            border-left: 4px solid #ef4444;
+            color: #991b1b;
+            padding: 8px 12px;
+            font-size: 13px;
+            margin-top: 6px;
+            border-radius: 2px;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        .row {
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            gap: 8px;
+            margin: 10px 0;
+            font-size: 17px;
+            flex-wrap: wrap;
+        }
+        .fraction {
+            display: inline-flex;
+            flex-direction: column;
+            vertical-align: middle;
+            text-align: center;
+            margin: 0 4px;
+        }
+        .fraction-line { border-bottom: 2px solid #000000; margin: 2px 0; }
+        
+        .score-banner {
+            background: #1e293b;
+            color: white;
+            width: 100%;
+            max-width: 620px;
+            padding: 15px;
+            text-align: center;
+            border-radius: 8px;
+            margin-top: 20px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+<div class="paper-container">
+    <div class="pin"></div>
+
+    <div class="header-title">Még egy kis gyakorlás dolgozathoz (Kiértékelt állapot)</div>
+
+    <!-- 1. FELADAT -->
+    <div style="margin-bottom: 40px;">
+        <div class="task-title">1. Oldd meg a következő egyenletet!</div>
+        <div class="equation">4<sup>x</sup> - 9 · 2<sup>x</sup> + 8 = 0</div>
+
+        <!-- Új ismeretlen bevezetése mezők -->
+        <div class="row" style="margin-left: 10px;">
+            <span>új ismeretlen bevezetése:</span>
+            <input type="text" class="white-box correct" style="width: 28px; height: 28px;" value="y" readonly="">
+            <input type="text" class="white-box correct" style="width: 28px; height: 28px;" value="=" readonly="">
+            <div style="position: relative; display: inline-block;">
+                <input type="text" class="white-box correct" style="width: 28px; height: 28px;" value="2" readonly="">
+                <input type="text" class="white-box correct" style="width: 22px; height: 20px; font-size: 12px; position: absolute; top: -10px; right: -20px;" value="x" readonly="">
+            </div>
+        </div>
+
+        <div style="font-size: 15px; font-weight: bold; margin: 25px 0 15px 10px;">A másodfokú egyenlet két megoldása:</div>
+
+        <div style="display: flex; justify-content: space-around; align-items: flex-start; padding: 0 10px;">
+            <div>
+                <div class="row">
+                    <input type="text" class="white-box correct" style="width: 75px; height: 35px;" value="8" readonly="">
+                    <span>Ebből x:</span>
+                    <input type="text" class="white-box correct" style="width: 40px; height: 32px;" value="3" readonly="">
+                </div>
+            </div>
+            <div>
+                <div class="row">
+                    <!-- HIBÁS VÁLASZ SZIMULÁLÁSA -->
+                    <input type="text" class="white-box incorrect" style="width: 75px; height: 35px;" value="2" readonly="">
+                    <span>Ebből x:</span>
+                    <input type="text" class="white-box incorrect" style="width: 40px; height: 32px;" value="1" readonly="">
+                </div>
+                <div class="explain-box">
+                    <b>Hibás!</b> Helyesen: y = 1, mert a Viète-formulák alapján a gyökök 8 és 1. Ebből 2ˣ = 1 ⟹ <b>x = 0</b>.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 2. FELADAT -->
+    <div>
+        <div class="task-title">2. Oldd meg a következő egyenletet!</div>
+        <div class="equation"><sup>3</sup>√<span style="border-top:2px solid #2563eb;">2<sup>x</sup></span> = 2<sup>x</sup> · 8<sup>x+1</sup></div>
+
+        <!-- Lépés 1 -->
+        <div class="row">
+            <div class="fraction">
+                <input type="text" class="white-box correct" style="width: 32px; height: 24px;" value="x" readonly="">
+                <div class="fraction-line"></div>
+                <input type="text" class="white-box correct" style="width: 32px; height: 24px;" value="3" readonly="">
+            </div>
+            <span>2</span>
+            <span>= 2</span>
+            <input type="text" class="white-box correct" style="width: 28px; height: 24px;" value="x" readonly="">
+            <span>· 2</span>
+            <input type="text" class="white-box correct" style="width: 80px; height: 28px;" value="3x+3" readonly="">
+        </div>
+
+        <!-- Lépés 2 -->
+        <div class="row" style="margin-top:20px;">
+            <div class="fraction">
+                <input type="text" class="white-box correct" style="width: 32px; height: 24px;" value="x" readonly="">
+                <div class="fraction-line"></div>
+                <input type="text" class="white-box correct" style="width: 32px; height: 24px;" value="3" readonly="">
+            </div>
+            <span>2</span>
+            <span>= 2</span>
+            <!-- HIBÁS VÁLASZ SZIMULÁLÁSA -->
+            <input type="text" class="white-box incorrect" style="width: 95px; height: 30px;" value="3x+3" readonly="">
+        </div>
+        <div class="explain-box">
+            <b>Hibás!</b> Helyesen: <b>4x + 3</b>. Azonos alapú hatványok szorzásakor a kitevőket összeadjuk: x + (3x + 3) = 4x + 3.
+        </div>
+
+        <!-- Végeredmény -->
+        <div class="row" style="margin-top:25px; font-size:22px;">
+            <span>x =</span>
+            <div class="fraction">
+                <input type="text" class="white-box correct" style="width: 45px; height: 28px;" value="-9" readonly="">
+                <div class="fraction-line"></div>
+                <input type="text" class="white-box correct" style="width: 45px; height: 28px;" value="11" readonly="">
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="score-banner">
+    Kiértékelés: 12 / 15 mező helyes (80%)
+</div>
+
+
+</body></html>
