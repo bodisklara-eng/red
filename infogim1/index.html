@@ -1,0 +1,851 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mecanica Turnului de Cifre – Laborator Interactiv & Puterile lui 10</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;800&family=Manrope:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-light: #f1f5f9;
+      --card-bg: #ffffff;
+      --card-border: #cbd5e1;
+      --text-main: #1e293b;
+      --text-muted: #64748b;
+      --accent-orange: #ea580c;
+      --accent-cyan: #0d9488;
+      --accent-purple: #7c3aed;
+      --accent-yellow: #ca8a04;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    
+    body {
+      font-family: 'Manrope', sans-serif;
+      background: var(--bg-light);
+      color: var(--text-main);
+      min-height: 100vh;
+      padding: 20px;
+      position: relative;
+    }
+
+    .container { max-width: 1200px; margin: 0 auto; position: relative; z-index: 10; }
+
+    header { margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
+    h1 { font-size: 1.4rem; font-weight: 800; color: #0f172a; margin-bottom: 4px; }
+    .subtitle { color: var(--text-muted); font-size: 0.8rem; }
+
+    .mode-switch {
+      display: flex;
+      gap: 6px;
+      background: #e2e8f0;
+      padding: 4px;
+      border-radius: 12px;
+    }
+    .mode-btn {
+      background: transparent;
+      border: none;
+      padding: 7px 12px;
+      font-weight: 700;
+      font-size: 0.78rem;
+      border-radius: 9px;
+      cursor: pointer;
+      color: var(--text-muted);
+      transition: all 0.2s;
+    }
+    .mode-btn.active {
+      background: #ffffff;
+      color: #0f172a;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+    }
+
+    .glass-panel {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 16px;
+      margin-bottom: 16px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.04);
+    }
+
+    .controls-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+    }
+
+    input, button {
+      font-family: inherit;
+      border-radius: 10px;
+      border: 1px solid var(--card-border);
+      outline: none;
+    }
+
+    input[type="text"] {
+      background: #f8fafc;
+      color: var(--text-main);
+      padding: 8px 14px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 1rem;
+      width: 130px;
+    }
+
+    button {
+      background: #e2e8f0;
+      color: var(--text-main);
+      padding: 9px 14px;
+      font-weight: 700;
+      font-size: 0.82rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    button:hover { background: #cbd5e1; transform: translateY(-1px); }
+    button.primary { background: #0f172a; color: #fff; border: none; }
+    button.primary:hover { background: #1e293b; }
+
+    .lang-toggle {
+      display: flex;
+      background: #e2e8f0;
+      border-radius: 10px;
+      padding: 3px;
+      border: 1px solid var(--card-border);
+    }
+    .lang-btn {
+      background: transparent;
+      border: none;
+      padding: 6px 10px;
+      font-size: 0.72rem;
+      font-weight: 800;
+      color: var(--text-muted);
+      border-radius: 8px;
+    }
+    .lang-btn.active { background: #0f172a; color: #fff; }
+
+    /* Rúd szekció */
+    .rod-container {
+      position: relative;
+      height: 120px;
+      background: #f8fafc;
+      border: 1px solid var(--card-border);
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      padding-left: 25px;
+      margin-top: 10px;
+      overflow: hidden;
+    }
+
+    .rod-bar {
+      position: absolute;
+      left: 75px;
+      width: 80%;
+      height: 16px;
+      background: #cbd5e1;
+      border-radius: 8px;
+      box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .rod-base-item {
+      position: relative;
+      z-index: 5;
+      width: 62px;
+      height: 62px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #cbd5e1, #94a3b8);
+      border: 3px solid #64748b;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.6rem;
+      font-weight: 800;
+      color: #334155;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      margin-right: 12px;
+      user-select: none;
+    }
+
+    .discs-on-rod {
+      position: relative;
+      display: flex;
+      gap: 12px;
+      z-index: 2;
+    }
+
+    .figure-item {
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      border: 2px solid rgba(255, 255, 255, 0.8);
+      user-select: none;
+      transition: transform 0.2s ease;
+      position: relative;
+    }
+
+    .figure-item .emoji { font-size: 1.1rem; line-height: 1; }
+    .figure-item .num-badge {
+      position: absolute;
+      bottom: -4px;
+      background: #0f172a;
+      padding: 1px 5px;
+      border-radius: 10px;
+      font-size: 0.6rem;
+      font-weight: 800;
+      color: #fff;
+    }
+
+    .figure-item.draggable-right {
+      cursor: grab;
+      border-color: #f59e0b;
+      box-shadow: 0 0 15px rgba(245, 158, 11, 0.4);
+    }
+    .figure-item.draggable-right:active { cursor: grabbing; }
+    
+    .figure-item.locked-left {
+      cursor: not-allowed;
+      opacity: 0.85;
+      border-style: dashed;
+    }
+
+    .main-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    @media (max-width: 900px) {
+      .main-grid { grid-template-columns: 1fr; }
+    }
+
+    /* Kód szerkesztő */
+    .code-editor {
+      background: #0f172a;
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      overflow: hidden;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.82rem;
+      line-height: 1.6;
+      color: #f8fafc;
+    }
+
+    .editor-header {
+      background: rgba(255, 255, 255, 0.05);
+      padding: 8px 12px;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.75rem;
+      color: rgba(255, 255, 255, 0.6);
+    }
+
+    .dot { width: 9px; height: 9px; border-radius: 50%; display: inline-block; }
+    .dot-red { background: #ef4444; }
+    .dot-yellow { background: #f59e0b; }
+    .dot-green { background: #10b981; }
+
+    .code-body { padding: 12px; position: relative; }
+
+    .code-line {
+      padding: 4px 8px;
+      border-radius: 6px;
+      transition: all 0.3s ease;
+      transform-origin: left center;
+      display: inline-block;
+      width: 100%;
+    }
+
+    .code-line.active-mod { background: rgba(234, 88, 12, 0.35); border-left: 5px solid #ea580c; transform: scale(1.02); }
+    .code-line.active-add { background: rgba(13, 148, 136, 0.35); border-left: 5px solid #0d9488; transform: scale(1.02); }
+    .code-line.active-div { background: rgba(124, 58, 237, 0.35); border-left: 5px solid #7c3aed; transform: scale(1.02); }
+
+    .kw { color: #c084fc; font-weight: 600; }
+    .var { color: #fde047; }
+    .num { color: #fbbf24; }
+    .comment { color: rgba(255, 255, 255, 0.4); }
+
+    .collector-box, .tray-box {
+      min-height: 60px;
+      border: 2px dashed var(--card-border);
+      border-radius: 10px;
+      padding: 8px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+      margin-top: 6px;
+      background: #f8fafc;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 3px 8px;
+      border-radius: 20px;
+      font-size: 0.7rem;
+      font-weight: 800;
+    }
+
+    .math-popup {
+      background: #f8fafc;
+      border: 2px solid #e2e8f0;
+      border-radius: 14px;
+      padding: 14px;
+      margin-top: 14px;
+      font-size: 0.83rem;
+      line-height: 1.5;
+    }
+    .math-popup h4 { color: #0f172a; margin-bottom: 6px; font-size: 0.9rem; display: flex; align-items: center; gap: 6px; }
+
+    /* Tankönyvi feladatok mód – finomított input méretekkel */
+    .lab-container { display: none; }
+    .lab-card {
+      background: #f8fafc;
+      border: 1px solid #cbd5e1;
+      border-radius: 14px;
+      padding: 20px;
+      margin-top: 10px;
+    }
+    .lab-input {
+      width: 36px;
+      height: 28px;
+      text-align: center;
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: bold;
+      font-size: 0.9rem;
+      padding: 2px;
+      border-radius: 6px;
+      border: 2px solid #cbd5e1;
+      background: #ffffff;
+      display: inline-block;
+      vertical-align: middle;
+    }
+    .lab-input.correct { border-color: #10b981; background: #dcfce7; color: #065f46; }
+    .lab-input.incorrect { border-color: #ef4444; background: #fee2e2; color: #991b1b; }
+
+    #animCanvas {
+      position: absolute;
+      top: 0; left: 0; width: 100%; height: 100%;
+      pointer-events: none; z-index: 100;
+    }
+  </style>
+</head>
+<body>
+
+  <canvas id="animCanvas"></canvas>
+
+  <div class="container">
+    <header>
+      <div>
+        <h1>Mecanica Turnului de Cifre</h1>
+        <div class="subtitle">Laborator Interactiv • Puterile lui 10 & Exerciții cu Căsuțe</div>
+      </div>
+      <div style="display: flex; gap: 10px; align-items: center;">
+        <div class="mode-switch">
+          <button class="mode-btn active" id="btnSim" onclick="switchMode('sim')">⚙️ Simulator Tija</button>
+          <button class="mode-btn" id="btnLab" onclick="switchMode('lab')">📝 Exerciții & Căsuțe</button>
+        </div>
+        <div class="lang-toggle">
+          <button class="lang-btn active" id="btnCpp" onclick="setLanguage('cpp')">C++</button>
+          <button class="lang-btn" id="btnPy" onclick="setLanguage('py')">Python</button>
+        </div>
+      </div>
+    </header>
+
+    <!-- 1. SIMULATOR MÓD -->
+    <div id="simMode">
+      <div class="glass-panel">
+        <div class="controls-grid">
+          <label style="font-size: 0.8rem; font-weight: 700; color: var(--text-muted);">NUMĂR (0-9):</label>
+          <input type="text" id="numInput" value="4827" maxlength="10">
+          <button onclick="setNumar()">Setează</button>
+          <button onclick="numarAleatoriu()">🎲 Aleatoriu</button>
+          <button class="primary" onclick="executaPas()">▶ Pas Secvențial (% → + → /)</button>
+          <button onclick="toggleAuto()" id="btnAuto">▶ Auto</button>
+          <button onclick="resetare()">↺ Resetare</button>
+        </div>
+      </div>
+
+      <div class="glass-panel">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <span style="font-size: 0.8rem; font-weight: 800; letter-spacing: 0.5px;">
+            TIJĂ CU FIGURINE (🔒 BAZĂ la stânga | ➡️ Trage sau apasă figura din dreapta)
+          </span>
+          <span class="badge" style="background: #e0f2fe; color: #0369a1; border: 1px solid #bae6fd;" id="statusTija">
+            Figurine pe tijă: 4
+          </span>
+        </div>
+
+        <div class="rod-container" id="rodContainer">
+          <div class="rod-base-item">
+            <span>🧸</span>
+            <span style="font-size: 0.55rem;">BAZĂ</span>
+          </div>
+          <div class="rod-bar"></div>
+          <div class="discs-on-rod" id="rodDiscs"></div>
+        </div>
+      </div>
+
+      <div class="main-grid">
+        <div class="glass-panel">
+          <h3 style="font-size: 0.9rem; margin-bottom: 6px;">NUMĂR INVERSAT (COLECTOR)</h3>
+          <div class="collector-box" id="collectorBox">
+            <span style="color: var(--text-muted); font-size: 0.8rem;">Încă gol – apasă Pas sau trage figura din dreapta.</span>
+          </div>
+
+          <h3 style="font-size: 0.9rem; margin-top: 12px; margin-bottom: 6px;">TAVĂ FIGURINE SCOASE</h3>
+          <div class="tray-box" id="trayBox">
+            <span style="color: var(--text-muted); font-size: 0.8rem;">Nicio figură scoasă.</span>
+          </div>
+
+          <div class="math-popup" id="mathPopup">
+            <h4>📐 Explicație Matematică & Puterile lui 10</h4>
+            <p id="mathText">Click pe o figură sau apasă <b>▶ Pas</b> pentru a porni linia neon perfect aliniată la cod (% → + → /)!</p>
+          </div>
+        </div>
+
+        <div class="glass-panel">
+          <h3 style="font-size: 0.9rem; margin-bottom: 6px;" id="codePanelTitle">COD C++ EXECUTAT</h3>
+          <div class="code-editor">
+            <div class="editor-header">
+              <span class="dot dot-red"></span>
+              <span class="dot dot-yellow"></span>
+              <span class="dot dot-green"></span>
+              <span style="margin-left: 6px;" id="codeFilename">turn.cpp</span>
+            </div>
+            <div class="code-body" id="codeContainerBody"></div>
+          </div>
+
+          <div style="margin-top: 14px; font-size: 0.83rem; line-height: 1.5;">
+            <p><strong>Stare variabile & Poziție:</strong></p>
+            <ul style="list-style: none; padding-left: 0; margin-top: 4px; color: var(--text-muted);">
+              <li>• Original: <span class="var" id="valOriginal" style="color:#d97706; font-weight:700;">4827</span></li>
+              <li>• Curent <span class="kw">n</span>: <span class="num" id="valN" style="color:#0d9488; font-weight:700;">4827</span></li>
+              <li>• Valoare <span class="var">invers</span>: <span style="color: #7c3aed; font-weight: 800;" id="valInvers">0</span></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. TANKÖNYVI LABOR / KITÖLTŐS NÉGYZETES MÓD -->
+    <div id="labMode" class="lab-container">
+      <div class="glass-panel">
+        <h2 style="font-size: 1.15rem; margin-bottom: 6px;">📝 Fișă de Lucru Interactivă – Puterile lui 10 și Căsuțe</h2>
+        <p style="color: var(--text-muted); font-size: 0.82rem; margin-bottom: 15px;">
+          Completează căsuțele libere bazându-te pe descompunerea zecimală și pe pașii algoritmului!
+        </p>
+
+        <div class="lab-card">
+          <h3 style="font-size: 0.95rem; color: #1e293b; margin-bottom: 8px;">1. Descompunerea în baza 10 cu puteri</h3>
+          <p style="font-size: 0.85rem; margin-bottom: 10px;">Model: 4827 = 4 x 1000 + 8 x 100 + 2 x 10 + 7 x 1</p>
+          
+          <div style="display: flex; flex-direction: column; gap: 8px; font-size: 0.9rem; font-family: 'JetBrains Mono', monospace;">
+            <div>a) 5042 = <input type="text" class="lab-input" data-ans="5"> x 1000 + <input type="text" class="lab-input" data-ans="0"> x 100 + <input type="text" class="lab-input" data-ans="4"> x 10 + <input type="text" class="lab-input" data-ans="2"> x 1</div>
+            <div>b) 6030 = <input type="text" class="lab-input" data-ans="6"> x 1000 + <input type="text" class="lab-input" data-ans="0"> x 100 + <input type="text" class="lab-input" data-ans="3"> x 10 + <input type="text" class="lab-input" data-ans="0"> x 1</div>
+            <div>c) 840 = <input type="text" class="lab-input" data-ans="8"> x 100 + <input type="text" class="lab-input" data-ans="4"> x 10 + <input type="text" class="lab-input" data-ans="0"> x 1</div>
+          </div>
+        </div>
+
+        <div class="lab-card" style="margin-top: 15px;">
+          <h3 style="font-size: 0.95rem; color: #1e293b; margin-bottom: 8px;">2. Pas cu pas prin înmulțire cu 10</h3>
+          <p style="font-size: 0.85rem; margin-bottom: 10px;">Completează căsuțele pentru numărul n = 4827:</p>
+          
+          <div style="display: flex; flex-direction: column; gap: 8px; font-size: 0.88rem; font-family: 'JetBrains Mono', monospace;">
+            <div>• Pas 1: 4827 % 10 = <input type="text" class="lab-input" data-ans="7"> | invers = 0 x 10 + <input type="text" class="lab-input" data-ans="7"> = <input type="text" class="lab-input" data-ans="7"></div>
+            <div>• Pas 2: 482 % 10 = <input type="text" class="lab-input" data-ans="2"> | invers = 7 x 10 + <input type="text" class="lab-input" data-ans="2"> = 72</div>
+            <div>• Pas 3: 48 % 10 = <input type="text" class="lab-input" data-ans="8"> | invers = 72 x 10 + <input type="text" class="lab-input" data-ans="8"> = 728</div>
+            <div>• Pas 4: 4 % 10 = <input type="text" class="lab-input" data-ans="4"> | invers = 728 x 10 + <input type="text" class="lab-input" data-ans="4"> = 7284</div>
+          </div>
+        </div>
+
+        <div class="lab-card" style="margin-top: 15px;">
+          <h3 style="font-size: 0.95rem; color: #1e293b; margin-bottom: 8px;">3. Structura buclei C++</h3>
+          <div style="font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; background: #0f172a; color: #f8fafc; padding: 12px; border-radius: 8px; line-height: 1.6;">
+            while ( n > <input type="text" class="lab-input" data-ans="0"> ) {<br>
+            &nbsp;&nbsp;cifra = n % <input type="text" class="lab-input" data-ans="10">;<br>
+            &nbsp;&nbsp;invers = invers * <input type="text" class="lab-input" data-ans="10"> + cifra;<br>
+            &nbsp;&nbsp;n = n / <input type="text" class="lab-input" data-ans="10">;<br>
+            }
+          </div>
+        </div>
+
+        <div style="margin-top: 15px; text-align: center;">
+          <button class="primary" onclick="verificaRaspunsuriLab()" style="padding: 10px 20px; font-size: 0.9rem;">✨ Verifică Răspunsurile</button>
+          <span id="labFeedback" style="margin-left: 15px; font-weight: 700; font-size: 0.9rem;"></span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const figurineMap = {
+      0: { emoji: '🔴', bg: '#fee2e2' },
+      1: { emoji: '🍎', bg: '#ffedd5' },
+      2: { emoji: '🧸', bg: '#fef08a' },
+      3: { emoji: '💎', bg: '#d1fae5' },
+      4: { emoji: '🦗', bg: '#ccfbf1' },
+      5: { emoji: '⭐', bg: '#ede9fe' },
+      6: { emoji: '🌸', bg: '#fce7f3' },
+      7: { emoji: '🚀', bg: '#e0f2fe' },
+      8: { emoji: '🐢', bg: '#ccfbf1' },
+      9: { emoji: '🎨', bg: '#fae8ff' }
+    };
+    
+    let numOriginal = 4827;
+    let nCurent = 4827;
+    let inversCurent = 0;
+    let discuriTija = [4, 8, 2, 7];
+    let discuriColector = [];
+    let discuriTava = [];
+    let pasAuto = null;
+    let currentLang = 'cpp';
+
+    function switchMode(mode) {
+      if (mode === 'sim') {
+        document.getElementById('simMode').style.display = 'block';
+        document.getElementById('labMode').style.display = 'none';
+        document.getElementById('btnSim').classList.add('active');
+        document.getElementById('btnLab').classList.remove('active');
+      } else {
+        document.getElementById('simMode').style.display = 'none';
+        document.getElementById('labMode').style.display = 'block';
+        document.getElementById('btnLab').classList.add('active');
+        document.getElementById('btnSim').classList.remove('active');
+      }
+    }
+
+    function setLanguage(lang) {
+      currentLang = lang;
+      document.getElementById('btnCpp').className = 'lang-btn ' + (lang === 'cpp' ? 'active' : '');
+      document.getElementById('btnPy').className = 'lang-btn ' + (lang === 'py' ? 'active' : '');
+      document.getElementById('codePanelTitle').innerText = lang === 'cpp' ? 'COD C++ EXECUTAT' : 'COD PYTHON EXECUTAT';
+      document.getElementById('codeFilename').innerText = lang === 'cpp' ? 'turn.cpp' : 'turn.py';
+      renderCode();
+    }
+
+    function renderCode() {
+      const body = document.getElementById('codeContainerBody');
+      if (currentLang === 'cpp') {
+        body.innerHTML = `
+          <div><span class="kw">int</span> n = <span class="num" id="codeN">${numOriginal}</span>;</div>
+          <div><span class="kw">int</span> invers = <span class="num" id="codeInvers">${inversCurent}</span>;</div>
+          <div><span class="kw">int</span> cifra;</div>
+          <div style="margin-bottom: 4px;"><span class="kw">while</span> (n > <span class="num">0</span>) {</div>
+          
+          <div class="code-line" id="lineMod" style="position:relative;" data-target="mod">
+            &nbsp;&nbsp;cifra = n % <span class="num">10</span>; <span class="comment">// 1. Extragere unități</span>
+          </div>
+          <div class="code-line" id="lineAdd" style="position:relative;" data-target="add">
+            &nbsp;&nbsp;invers = invers * <span class="num">10</span> + cifra; <span class="comment">// 2. Urcare ordin</span>
+          </div>
+          <div class="code-line" id="lineDiv" style="position:relative;" data-target="div">
+            &nbsp;&nbsp;n = n / <span class="num">10</span>; <span class="comment">// 3. Scurtare</span>
+          </div>
+          
+          <div>}</div>
+        `;
+      } else {
+        body.innerHTML = `
+          <div>n = <span class="num" id="codeN">${numOriginal}</span></div>
+          <div>invers = <span class="num" id="codeInvers">${inversCurent}</span></div>
+          <div style="margin-bottom: 4px;"><span class="kw">while</span> n > 0:</div>
+          
+          <div class="code-line" id="lineMod" style="position:relative;" data-target="mod">
+            &nbsp;&nbsp;cifra = n % <span class="num">10</span> <span class="comment"># 1. Extragere</span>
+          </div>
+          <div class="code-line" id="lineAdd" style="position:relative;" data-target="add">
+            &nbsp;&nbsp;invers = invers * <span class="num">10</span> + cifra <span class="comment"># 2. Urcare ordin</span>
+          </div>
+          <div class="code-line" id="lineDiv" style="position:relative;" data-target="div">
+            &nbsp;&nbsp;n = n // <span class="num">10</span> <span class="comment"># 3. Scurtare</span>
+          </div>
+        `;
+      }
+      updateValori();
+    }
+
+    function renderTija() {
+      const container = document.getElementById('rodDiscs');
+      container.innerHTML = '';
+      discuriTija.forEach((val, idx) => {
+        const figData = figurineMap[val] || { emoji: '⭐', bg: '#ede9fe' };
+        const disc = document.createElement('div');
+        const isRightEnd = (idx === discuriTija.length - 1);
+        
+        disc.className = 'figure-item ' + (isRightEnd ? 'draggable-right' : 'locked-left');
+        disc.style.backgroundColor = figData.bg;
+        disc.innerHTML = `<span class="emoji">${figData.emoji}</span><span class="num-badge">${val}</span>`;
+        disc.id = 'disc-tija-' + idx;
+
+        disc.addEventListener('click', () => {
+          if (isRightEnd) executaPas();
+        });
+
+        if (isRightEnd) {
+          disc.title = "Ultima figură – apasă sau trage pe tavă!";
+          disc.draggable = true;
+          disc.addEventListener('dragstart', (e) => {
+            e.dataTransfer.setData('text/plain', JSON.stringify({val, index: idx, from: 'tija'}));
+          });
+        } else {
+          disc.title = "Zăvorât! Doar figura din dreapta este activă.";
+        }
+        container.appendChild(disc);
+      });
+      document.getElementById('statusTija').innerText = `Figurine pe tijă: ${discuriTija.length}`;
+    }
+
+    function renderColector() {
+      const container = document.getElementById('collectorBox');
+      container.innerHTML = '';
+      if (discuriColector.length === 0) {
+        container.innerHTML = '<span style="color: var(--text-muted); font-size: 0.8rem;">Încă gol – apasă Pas sau trage figura din dreapta.</span>';
+        return;
+      }
+      discuriColector.forEach((val) => {
+        const figData = figurineMap[val] || { emoji: '⭐', bg: '#ede9fe' };
+        const disc = document.createElement('div');
+        disc.className = 'figure-item';
+        disc.style.width = '40px'; disc.style.height = '40px';
+        disc.style.backgroundColor = figData.bg;
+        disc.innerHTML = `<span class="emoji" style="font-size:0.95rem;">${figData.emoji}</span><span class="num-badge" style="font-size:0.5rem;">${val}</span>`;
+        container.appendChild(disc);
+      });
+    }
+
+    function renderTava() {
+      const container = document.getElementById('trayBox');
+      container.innerHTML = '';
+      if (discuriTava.length === 0) {
+        container.innerHTML = '<span style="color: var(--text-muted); font-size: 0.8rem;">Nicio figură scoasă.</span>';
+        return;
+      }
+      discuriTava.forEach((val) => {
+        const figData = figurineMap[val] || { emoji: '⭐', bg: '#ede9fe' };
+        const disc = document.createElement('div');
+        disc.className = 'figure-item';
+        disc.style.width = '40px'; disc.style.height = '40px';
+        disc.style.backgroundColor = figData.bg;
+        disc.innerHTML = `<span class="emoji" style="font-size:0.95rem;">${figData.emoji}</span><span class="num-badge" style="font-size:0.5rem;">${val}</span>`;
+        container.appendChild(disc);
+      });
+    }
+
+    const trayBox = document.getElementById('trayBox');
+    trayBox.addEventListener('dragover', (e) => e.preventDefault());
+    trayBox.addEventListener('drop', (e) => {
+      e.preventDefault();
+      const data = JSON.parse(e.dataTransfer.getData('text/plain'));
+      if (data.from === 'tija' && data.index === discuriTija.length - 1) {
+        executaPas();
+      }
+    });
+
+    function updateValori() {
+      document.getElementById('valOriginal').innerText = numOriginal;
+      document.getElementById('valN').innerText = nCurent;
+      document.getElementById('valInvers').innerText = inversCurent;
+      if (document.getElementById('codeN')) document.getElementById('codeN').innerText = numOriginal;
+      if (document.getElementById('codeInvers')) document.getElementById('codeInvers').innerText = inversCurent;
+    }
+
+    function resetareLinii() {
+      const lines = document.querySelectorAll('.code-line');
+      lines.forEach(l => l.className = 'code-line');
+      clearCanvas();
+    }
+
+    // Pontos neon vonal illesztés a kódblokk belső margójához igazítva
+    function drawSingleNeonLine(discElementId, targetKey, color, callback) {
+      const discEl = document.getElementById(discElementId);
+      const lineEl = document.querySelector(`[data-target="${targetKey}"]`);
+      if (!discEl || !lineEl) { if (callback) callback(); return; }
+
+      resetareLinii();
+
+      const dRect = discEl.getBoundingClientRect();
+      const lRect = lineEl.getBoundingClientRect();
+      const canvas = document.getElementById('animCanvas');
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      const ctx = canvas.getContext('2d');
+
+      let startX = dRect.left + dRect.width / 2;
+      let startY = dRect.top + dRect.height / 2;
+      // Kalibrálva a kódsor tényleges kezdőkoordinátájához (padding figyelembevételével)
+      let endX = lRect.left + 12; 
+      let endY = lRect.top + lRect.height / 2;
+
+      let progress = 0;
+      function animate() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        progress += 0.08;
+        if (progress > 1) progress = 1;
+
+        let curX = startX + (endX - startX) * progress;
+        let curY = startY + (endY - startY) * progress;
+
+        ctx.beginPath();
+        ctx.moveTo(startX, startY);
+        ctx.lineTo(curX, curY);
+        ctx.strokeStyle = color;
+        ctx.lineWidth = 4;
+        ctx.shadowBlur = 12;
+        ctx.shadowColor = color;
+        ctx.stroke();
+
+        if (progress < 1) {
+          requestAnimationFrame(animate);
+        } else {
+          lineEl.classList.add(targetKey === 'mod' ? 'active-mod' : (targetKey === 'add' ? 'active-add' : 'active-div'));
+          setTimeout(() => { if (callback) callback(); }, 500);
+        }
+      }
+      animate();
+    }
+
+    function clearCanvas() {
+      const canvas = document.getElementById('animCanvas');
+      const ctx = canvas.getContext('2d');
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+    }
+
+    function executaPas() {
+      if (discuriTija.length === 0) {
+        if (pasAuto) toggleAuto();
+        return;
+      }
+
+      const rightIdx = discuriTija.length - 1;
+      const val = discuriTija[rightIdx];
+      const discId = 'disc-tija-' + rightIdx;
+      const nVech = nCurent;
+      const invVech = inversCurent;
+
+      document.getElementById('mathText').innerHTML = `
+        1. <b>Extragere (n % 10):</b> cifra = ${nVech} % 10 = <span style="color:var(--accent-orange); font-weight:800;">${val}</span>.<br>
+        <i>Linia neon s-a oprit exact la începutul liniei de cod.</i>
+      `;
+      
+      drawSingleNeonLine(discId, 'mod', '#ea580c', () => {
+        const noulInvers = invVech * 10 + val;
+        document.getElementById('mathText').innerHTML = `
+          1. Extragere: cifra = ${val}<br>
+          2. <b>Reconstrucție (invers * 10 + cifra):</b> ${invVech} x 10 + ${val} = <span style="color:var(--accent-cyan); font-weight:800;">${noulInvers}</span>.<br>
+          <i>Linia neon s-a oprit exact la linia de adăugare.</i>
+        `;
+
+        drawSingleNeonLine(discId, 'add', '#0d9488', () => {
+          const noulN = Math.floor(nVech / 10);
+          document.getElementById('mathText').innerHTML = `
+            1. Extragere: ${val} | 2. Invers: ${noulInvers}<br>
+            3. <b>Scurtare (n / 10):</b> n = ${nVech} / 10 = <span style="color:var(--accent-purple); font-weight:800;">${noulN}</span>.<br>
+            <i>Figura a fost scoasă de pe tijă, valoarea n scade.</i>
+          `;
+
+          drawSingleNeonLine(discId, 'div', '#7c3aed', () => {
+            discuriTija.pop();
+            discuriTava.push(val);
+            discuriColector.push(val);
+            inversCurent = noulInvers;
+            nCurent = noulN;
+
+            renderTija();
+            renderTava();
+            renderColector();
+            updateValori();
+
+            setTimeout(() => { resetareLinii(); }, 600);
+          });
+        });
+      });
+    }
+
+    function setNumar() {
+      const inp = document.getElementById('numInput').value;
+      const num = parseInt(inp);
+      if (isNaN(num) || num <= 0) return;
+      numOriginal = num;
+      resetare();
+    }
+
+    function numarAleatoriu() {
+      numOriginal = Math.floor(Math.random() * 8999) + 1000;
+      document.getElementById('numInput').value = numOriginal;
+      resetare();
+    }
+
+    function resetare() {
+      if (pasAuto) clearInterval(pasAuto);
+      pasAuto = null;
+      document.getElementById('btnAuto').innerText = '▶ Auto';
+      
+      nCurent = numOriginal;
+      inversCurent = 0;
+      discuriTija = numOriginal.toString().split('').map(Number);
+      discuriColector = [];
+      discuriTava = [];
+      
+      renderCode();
+      renderTija();
+      renderColector();
+      renderTava();
+      clearCanvas();
+      document.getElementById('mathText').innerHTML = 'Click pe o figură sau apasă <b>▶ Pas</b> pentru a porni linia secvențială (% → + → /)!';
+    }
+
+    function toggleAuto() {
+      const btn = document.getElementById('btnAuto');
+      if (pasAuto) {
+        clearInterval(pasAuto);
+        pasAuto = null;
+        btn.innerText = '▶ Auto';
+      } else {
+        btn.innerText = '⏸ Pauză';
+        executaPas();
+        pasAuto = setInterval(executaPas, 3200);
+      }
+    }
+
+    function verificaRaspunsuriLab() {
+      const inputs = document.querySelectorAll('.lab-input');
+      let corecte = 0;
+      inputs.forEach(inp => {
+        const expected = inp.getAttribute('data-ans');
+        if (inp.value.trim() === expected) {
+          inp.classList.add('correct');
+          inp.classList.remove('incorrect');
+          corecte++;
+        } else {
+          inp.classList.add('incorrect');
+          inp.classList.remove('correct');
+        }
+      });
+      const fb = document.getElementById('labFeedback');
+      if (corecte === inputs.length) {
+        fb.style.color = '#065f46';
+        fb.innerHTML = '🎉 Felicitări! Toate răspunsurile sunt corecte!';
+      } else {
+        fb.style.color = '#991b1b';
+        fb.innerHTML = `⚠️ Ai ${corecte} din ${inputs.length} corecte. Mai încearcă!`;
+      }
+    }
+
+    renderCode();
+    renderTija();
+    renderColector();
+    renderTava();
+  </script>
+</body>
+</html>
