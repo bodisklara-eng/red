@@ -1,0 +1,872 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Turnul Rotativ 3D – Stivă & Puterile lui 10 Interactive</title>
+    <style>
+        :root {
+            --bg: #f8fafc;
+            --card: #ffffff;
+            --tx: #0f172a;
+            --mut: #64748b;
+            --bd: #cbd5e1;
+            --ac: #0d9488;
+            --ac-hover: #0f766e;
+        }
+
+        * { 
+            box-sizing: border-box; 
+            margin: 0; 
+            padding: 0; 
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--tx);
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        h1 {
+            margin: 0 0 6px;
+            text-align: center;
+            font-size: clamp(22px, 4vw, 32px);
+            background: linear-gradient(90deg, #0284c7, #10b981, #f59e0b, #ef4444);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            font-weight: 800;
+        }
+
+        .sub {
+            text-align: center;
+            color: var(--mut);
+            margin-bottom: 20px;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .nav-tabs {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+
+        button {
+            font: inherit;
+            cursor: pointer;
+            border: 2px solid var(--bd);
+            background: var(--card);
+            color: var(--tx);
+            padding: 8px 18px;
+            border-radius: 999px;
+            font-weight: 700;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.04);
+        }
+
+        button:hover {
+            border-color: var(--ac);
+            color: var(--ac);
+            transform: translateY(-1px);
+        }
+
+        button.active {
+            background: var(--ac);
+            border-color: var(--ac);
+            color: #fff;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: 480px 1fr;
+            gap: 24px;
+            max-width: 1350px;
+            margin: auto;
+            align-items: start;
+        }
+
+        @media(max-width: 980px) {
+            .grid { 
+                grid-template-columns: 1fr; 
+            }
+        }
+
+        .card {
+            background: var(--card);
+            border: 1px solid var(--bd);
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.06);
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .canvas-container {
+            position: relative;
+            width: 100%;
+            height: 330px;
+            background: linear-gradient(180deg, #f0fdfa 0%, #e0f2fe 100%);
+            border-radius: 14px;
+            border: 1px solid #99f6e4;
+            overflow: hidden;
+        }
+
+        canvas {
+            width: 100%;
+            height: 100%;
+            display: block;
+            touch-action: none;
+            cursor: grab;
+        }
+
+        .tower-height-badge {
+            position: absolute;
+            top: 14px;
+            left: 14px;
+            font-size: 11px;
+            font-weight: 800;
+            color: #0f766e;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 5px 12px;
+            border-radius: 20px;
+            backdrop-filter: blur(4px);
+            border: 1px solid #ccfbf1;
+            z-index: 10;
+            pointer-events: none;
+        }
+
+        .palette-title {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--mut);
+        }
+
+        .palette {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            align-items: center;
+            padding: 10px;
+            background: #f8fafc;
+            border-radius: 12px;
+            border: 1px dashed var(--bd);
+        }
+
+        .sub-tower-zone {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+            align-items: center;
+            padding: 8px;
+            background: #fff1f2;
+            border-radius: 12px;
+            border: 1px dashed #fecdd3;
+            min-height: 48px;
+        }
+
+        .sub-tower-title {
+            font-size: 12px;
+            font-weight: 700;
+            color: #be123c;
+            margin-bottom: 2px;
+        }
+
+        .blk {
+            width: 38px;
+            height: 38px;
+            border-radius: 10px;
+            display: grid;
+            place-items: center;
+            font-size: 15px;
+            font-weight: 800;
+            color: #fff;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.15);
+            cursor: pointer;
+            user-select: none;
+            transition: transform 0.15s;
+        }
+
+        .blk:hover { 
+            transform: translateY(-3px) scale(1.05); 
+        }
+
+        .controls-row {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .output-box {
+            display: flex;
+            gap: 6px;
+            min-height: 34px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .output-box span {
+            background: var(--ac);
+            color: #fff;
+            border-radius: 8px;
+            padding: 4px 10px;
+            font-weight: 800;
+            font-family: monospace;
+            font-size: 12px;
+            box-shadow: 0 2px 6px rgba(13,148,136,0.25);
+        }
+
+        #msg {
+            padding: 10px 12px;
+            border-radius: 10px;
+            background: #f0fdfa;
+            border: 1px solid #99f6e4;
+            font-size: 12px;
+            font-weight: 600;
+            color: #0f766e;
+        }
+
+        #msg.bad { 
+            border-color: #fecaca; 
+            color: #dc2626; 
+            background: #fef2f2; 
+        }
+
+        .gear-icon {
+            display: inline-block;
+            font-size: 18px;
+            animation: gearSpin 8s linear infinite;
+        }
+
+        @keyframes gearSpin { 
+            to { transform: rotate(360deg); } 
+        }
+
+        .pipe-container {
+            background: #090d16;
+            border-radius: 14px;
+            border: 1px solid #334155;
+            box-shadow: inset 0 2px 10px rgba(0,0,0,0.6);
+            overflow: hidden;
+        }
+
+        .pipe-topbar {
+            background: #1e293b;
+            padding: 8px 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #334155;
+        }
+
+        .terminal-dots {
+            display: flex;
+            gap: 6px;
+        }
+
+        .terminal-dots span {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+
+        .dot-red { background: #ef4444; }
+        .dot-yellow { background: #f59e0b; }
+        .dot-green { background: #10b981; }
+
+        .pipe-title {
+            color: #94a3b8;
+            font-size: 11px;
+            font-family: monospace;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+
+        .pipe-content {
+            padding: 14px;
+            font: 12px/1.6 Consolas, monospace;
+            color: #f8fafc;
+            min-height: 180px;
+            max-height: 320px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+            word-break: break-all;
+        }
+
+        .lang-tabs {
+            display: flex;
+            gap: 8px;
+        }
+
+        .lang-btn {
+            font-size: 12px;
+            padding: 6px 14px;
+            border-radius: 8px;
+            border: 1px solid var(--bd);
+            background: #fff;
+            font-weight: 700;
+        }
+
+        .lang-btn.active {
+            background: #1e293b;
+            color: #fff;
+            border-color: #1e293b;
+        }
+
+        h3 { 
+            font-size: 15px; 
+            color: var(--tx); 
+            display: flex; 
+            align-items: center; 
+            gap: 8px; 
+        }
+
+        .math-panel {
+            border: 1px solid #ccfbf1;
+            background: linear-gradient(145deg, #f0fdfa, #ffffff);
+            border-radius: 14px;
+            padding: 14px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .math-panel h4 {
+            color: #0f766e;
+            font-size: 13px;
+        }
+
+        .power-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(75px, 1fr));
+            gap: 6px;
+            max-height: 140px;
+            overflow-y: auto;
+        }
+
+        /* Interaktív 10-es hatvány gombok a piros nyíl helyén */
+        .power-box {
+            background: #0f172a;
+            color: #38bdf8;
+            padding: 8px 6px;
+            border-radius: 8px;
+            text-align: center;
+            font-family: monospace;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            cursor: pointer;
+            border: 1px solid #334155;
+            transition: all 0.2s;
+        }
+
+        .power-box:hover {
+            border-color: #2dd4bf;
+            transform: translateY(-2px);
+            background: #1e293b;
+        }
+
+        .power-box .p-val {
+            font-size: 13px;
+            font-weight: bold;
+            color: #facc15;
+        }
+
+        .math-card {
+            background: rgba(15, 23, 42, 0.75);
+            border-left: 4px solid #2dd4bf;
+            padding: 10px;
+            border-radius: 0 8px 8px 0;
+            margin-bottom: 6px;
+        }
+
+        .math-title { 
+            color: #2dd4bf; 
+            font-weight: bold; 
+            margin-bottom: 3px; 
+            font-size: 11px;
+        }
+
+        .math-val { 
+            color: #facc15; 
+            font-family: monospace; 
+            font-size: 12px;
+            word-break: break-all;
+        }
+
+        .search-box {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            margin-top: 4px;
+        }
+
+        .search-box input {
+            padding: 4px 8px;
+            border-radius: 6px;
+            border: 1px solid var(--bd);
+            font: inherit;
+            width: 60px;
+            text-align: center;
+            font-weight: bold;
+        }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+</head>
+<body>
+
+    <h1>🧩 Turnul Rotativ 3D – Puterile lui 10 & Extragerea Cifrelor</h1>
+    <p class="sub">Clic pe puterile lui 10 de mai jos pentru a studia în Pipe cum se extrag cifrele prin împărțire și stivă!</p>
+
+    <div class="nav-tabs" id="tabs">
+        <button data-t="free" class="active">🎲 Mod Stivă (LIFO cu Animație)</button>
+        <button id="resetBtn">↺ Repornire Turn</button>
+    </div>
+
+    <div class="grid">
+        <!-- Bal oldali panel: 3D vászon, paletta -->
+        <div class="card">
+            <div class="canvas-container">
+                <div class="tower-height-badge" id="heightBadge">NUMĂR CURENT: 0</div>
+                <canvas id="cv"></canvas>
+            </div>
+            
+            <div class="palette-title">Paletă cifre (clic pentru PUSH pe turn):</div>
+            <div class="palette" id="pal"></div>
+
+            <div class="controls-row">
+                <button id="popBtn" style="background: #ef4444; color: #fff; border: none;">⬇ Pop (Ia din vârf animat)</button>
+                <span style="font-size: 11px; color: var(--mut); font-weight: 600;">Ieșire:</span>
+                <div class="output-box" id="out"></div>
+            </div>
+
+            <div>
+                <div class="sub-tower-title">Discuri luate de pe turn (sub turn / panou):</div>
+                <div class="sub-tower-zone" id="subTowerZone">
+                    <span style="font-size: 11px; color: #94a3b8; font-style: italic;">Niciun disc jos. Apasă pe Pop sau pe vârful turnului!</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Jobb oldali panel: Interaktív Puterile lui 10 és Pipe -->
+        <div class="card">
+            <h3><span class="gear-icon" id="gear">⚙️</span> Terminal Pipe & Puterile lui 10</h3>
+            
+            <div class="lang-tabs">
+                <button class="lang-btn active" id="btnCpp" onclick="switchLang('cpp')">C++ (stack)</button>
+                <button class="lang-btn" id="btnPy" onclick="switchLang('python')">Python (LIFO)</button>
+                <button class="lang-btn" id="btnMath" onclick="switchLang('math')">🧮 Fundament Matematic</button>
+            </div>
+
+            <!-- Pipe Box -->
+            <div class="pipe-container">
+                <div class="pipe-topbar">
+                    <div class="terminal-dots">
+                        <span class="dot-red"></span>
+                        <span class="dot-yellow"></span>
+                        <span class="dot-green"></span>
+                    </div>
+                    <div class="pipe-title" id="pipeTitle">stdout – cplusplus_stack.cpp</div>
+                    <div style="font-size:10px; color:#64748b;">UTF-8</div>
+                </div>
+                <div class="pipe-content" id="pipeContent"></div>
+            </div>
+
+            <div id="msg">Apasă pe oricare putere a lui 10 de mai jos pentru lecția de extragere a cifrelor!</div>
+
+            <!-- Interaktív Puterile lui 10 panely (A piros nyíl helyén) -->
+            <div class="math-panel">
+                <h4>📈 Puterile lui 10 (Clic pe o putere pentru explicație în Pipe):</h4>
+                <div class="power-grid" id="powerGrid"></div>
+
+                <div class="search-box">
+                    <span style="font-size: 11px; font-weight: bold; color: #0f766e;">Pași pentru cifră:</span>
+                    <input type="number" id="searchDigit" min="0" max="9" value="5" oninput="calculateSteps()">
+                    <span id="searchResult" style="font-size: 11px; color: #0f766e; font-weight: bold;">de la vârf (pop)</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const COLOR_PALETTE = [
+            { c: 0x64748b, hex: '#64748b', label: '0' },
+            { c: 0xef4444, hex: '#ef4444', label: '1' },
+            { c: 0xf97316, hex: '#f97316', label: '2' },
+            { c: 0xf59e0b, hex: '#f59e0b', label: '3' },
+            { c: 0x10b981, hex: '#10b981', label: '4' },
+            { c: 0x06b6d4, hex: '#06b6d4', label: '5' },
+            { c: 0x3b82f6, hex: '#3b82f6', label: '6' },
+            { c: 0x6366f1, hex: '#6366f1', label: '7' },
+            { c: 0x8b5cf6, hex: '#8b5cf6', label: '8' },
+            { c: 0xd946ef, hex: '#d946ef', label: '9' }
+        ];
+
+        let stack = [];
+        let subTower = [];
+        let outputList = [];
+        let currentView = 'cpp';
+        let selectedPower = null; // A kiválasztott 10 hatvány a Pipe magyarázathoz
+
+        let animatingRing = null;
+
+        const cv = document.getElementById('cv');
+        const pal = document.getElementById('pal');
+        const subTowerZone = document.getElementById('subTowerZone');
+        const out = document.getElementById('out');
+        const msg = document.getElementById('msg');
+        const heightBadge = document.getElementById('heightBadge');
+        const pipeTitle = document.getElementById('pipeTitle');
+        const pipeContent = document.getElementById('pipeContent');
+        const powerGrid = document.getElementById('powerGrid');
+        const gearIcon = document.getElementById('gear');
+        const searchDigitInput = document.getElementById('searchDigit');
+        const searchResult = document.getElementById('searchResult');
+
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(45, 520 / 330, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ canvas: cv, antialias: true, alpha: true });
+        
+        function resizeCanvas() {
+            const container = cv.parentElement;
+            const width = container.clientWidth;
+            const height = container.clientHeight;
+            renderer.setSize(width, height);
+            camera.aspect = width / height;
+            camera.updateProjectionMatrix();
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.9);
+        scene.add(ambientLight);
+
+        const dirLight = new THREE.DirectionalLight(0xffffff, 0.75);
+        dirLight.position.set(15, 30, 20);
+        scene.add(dirLight);
+
+        const baseGeo = new THREE.CylinderGeometry(4.2, 4.6, 0.5, 32);
+        const baseMat = new THREE.MeshStandardMaterial({ color: 0x0d9488, roughness: 0.3 });
+        const base = new THREE.Mesh(baseGeo, baseMat);
+        base.position.y = -2.1;
+        scene.add(base);
+
+        const poleGeo = new THREE.CylinderGeometry(0.28, 0.28, 8.5, 32);
+        const poleMat = new THREE.MeshStandardMaterial({ color: 0x94a3b8, metalness: 0.4, roughness: 0.2 });
+        const pole = new THREE.Mesh(poleGeo, poleMat);
+        pole.position.y = 1.8;
+        scene.add(pole);
+
+        camera.position.set(0, 1.8, 14.5);
+        camera.lookAt(0, 0, 0);
+
+        let ringMeshes = [];
+
+        function createRingMesh(index) {
+            const radius = 3.2 - index * 0.25;
+            const tube = 0.34;
+            const geo = new THREE.TorusGeometry(radius, tube, 16, 50);
+            const mat = new THREE.MeshStandardMaterial({ 
+                color: COLOR_PALETTE[index].c, 
+                roughness: 0.2, 
+                metalness: 0.1 
+            });
+            const mesh = new THREE.Mesh(geo, mat);
+            mesh.rotation.x = Math.PI / 2;
+            return mesh;
+        }
+
+        function updateUI() {
+            pal.innerHTML = '';
+            COLOR_PALETTE.forEach((item, val) => {
+                const btn = document.createElement('div');
+                btn.className = 'blk';
+                btn.style.background = item.hex;
+                btn.textContent = val;
+                btn.addEventListener('click', () => pushRing(val));
+                pal.appendChild(btn);
+            });
+
+            subTowerZone.innerHTML = '';
+            if (subTower.length === 0) {
+                subTowerZone.innerHTML = `<span style="font-size: 11px; color: #94a3b8; font-style: italic;">Niciun disc jos. Apasă pe Pop sau pe vârful turnului!</span>`;
+            } else {
+                subTower.forEach((val, idx) => {
+                    const dBtn = document.createElement('div');
+                    dBtn.className = 'blk';
+                    dBtn.style.background = COLOR_PALETTE[val].hex;
+                    dBtn.textContent = val;
+                    dBtn.title = "Click pentru a pune înapoi pe stivă";
+                    dBtn.addEventListener('click', () => restoreFromSubTower(idx));
+                    subTowerZone.appendChild(dBtn);
+                });
+            }
+
+            if (!animatingRing) {
+                ringMeshes.forEach(m => scene.remove(m));
+                ringMeshes = [];
+
+                stack.forEach((val, pos) => {
+                    const m = createRingMesh(val);
+                    m.position.y = -1.6 + pos * 0.75;
+                    scene.add(m);
+                    ringMeshes.push(m);
+                });
+            }
+
+            out.innerHTML = '';
+            outputList.forEach(v => {
+                const span = document.createElement('span');
+                span.textContent = v;
+                out.appendChild(span);
+            });
+
+            const numStr = stack.length > 0 ? stack.join('') : '0';
+            heightBadge.textContent = `NUMĂR FORMAT: ${numStr} (Stivă: ${stack.length})`;
+            
+            updatePowersOfTen();
+            calculateSteps();
+            updatePipeWindow();
+        }
+
+        function pushRing(val) {
+            stack.push(val);
+            gearIcon.classList.add('fast');
+            setTimeout(() => gearIcon.classList.remove('fast'), 800);
+            showMsg(`✅ push(${val}) -> Cifră adăugată pe turn. Stivă: [${stack.join(', ')}]`, 'ok');
+            updateUI();
+        }
+
+        cv.addEventListener('click', (e) => {
+            if (stack.length > 0 && !animatingRing) {
+                popRingAnimated();
+            }
+        });
+
+        function popRing() {
+            if (stack.length === 0 || animatingRing) return;
+            popRingAnimated();
+        }
+
+        function popRingAnimated() {
+            if (stack.length === 0) {
+                showMsg('⚠️ Stiva este goală!', 'bad');
+                return;
+            }
+            const val = stack[stack.length - 1];
+            const topMesh = ringMeshes[ringMeshes.length - 1];
+
+            if (!topMesh) {
+                executePopLogic();
+                return;
+            }
+
+            animatingRing = {
+                mesh: topMesh,
+                val: val,
+                startY: topMesh.position.y,
+                targetY: 5.5,
+                startTime: performance.now(),
+                duration: 500
+            };
+
+            showMsg(`⬇ Se extrage animat cifra ${val} din vârf...`, 'bad');
+        }
+
+        function executePopLogic() {
+            const val = stack.pop();
+            subTower.push(val);
+            outputList.push(val);
+            animatingRing = null;
+            showMsg(`⬇ pop() -> Cifra ${val} a ajuns pe panou.`, 'bad');
+            updateUI();
+        }
+
+        function restoreFromSubTower(idx) {
+            const val = subTower.splice(idx, 1)[0];
+            stack.push(val);
+            showMsg(`⬆ push(${val}) -> S-a pus înapoi pe stivă.`, 'ok');
+            updateUI();
+        }
+
+        function showMsg(text, type) {
+            msg.textContent = text;
+            msg.className = type === 'bad' ? 'bad' : '';
+        }
+
+        function switchLang(lang) {
+            currentView = lang;
+            document.getElementById('btnCpp').className = `lang-btn ${lang === 'cpp' ? 'active' : ''}`;
+            document.getElementById('btnPy').className = `lang-btn ${lang === 'python' ? 'active' : ''}`;
+            document.getElementById('btnMath').className = `lang-btn ${lang === 'math' ? 'active' : ''}`;
+            updatePipeWindow();
+        }
+
+        // Dinamikus 10-es hatványok generálása gombokként (A piros nyíl helyén)
+        function updatePowersOfTen() {
+            powerGrid.innerHTML = '';
+            const n = stack.length;
+            if (n === 0) {
+                powerGrid.innerHTML = `<div style="color:#94a3b8; font-size:11px; grid-column: span 3;">Adaugă discuri pentru a genera puterile lui 10!</div>`;
+                return;
+            }
+            for (let i = 0; i < n; i++) {
+                let power = n - 1 - i;
+                let digit = stack[i]; 
+                let box = document.createElement('div');
+                box.className = 'power-box';
+                box.title = "Clic pentru a vedea explicația în Pipe";
+                box.innerHTML = `
+                    <div class="p-val">10<sup>${power}</sup></div>
+                    <div style="font-size:10px; color:#38bdf8;">Cifră: ${digit}</div>
+                `;
+                // Kattintásra kiválasztjuk ezt a hatványt a Pipe magyarázathoz
+                box.addEventListener('click', () => {
+                    selectedPower = { power: power, digit: digit };
+                    switchLang('math');
+                    showMsg(`ℹ️ S-a selectat 10^${power} (cifra ${digit}) pentru explicație în Pipe.`, 'ok');
+                });
+                powerGrid.appendChild(box);
+            }
+        }
+
+        function calculateSteps() {
+            const target = parseInt(searchDigitInput.value);
+            if (isNaN(target) || stack.length === 0) {
+                searchResult.textContent = "Stivă goală / invalid";
+                return;
+            }
+            let steps = -1;
+            for (let i = stack.length - 1; i >= 0; i--) {
+                if (stack[i] === target) {
+                    steps = stack.length - 1 - i; 
+                    break;
+                }
+            }
+            if (steps === -1) {
+                searchResult.textContent = `Cifra ${target} nu este pe turn.`;
+            } else if (steps === 0) {
+                searchResult.textContent = `Cifra ${target} este în VÂRF (0 pop).`;
+            } else {
+                searchResult.textContent = `Necesită ${steps} pop().`;
+            }
+        }
+
+        function updatePipeWindow() {
+            if (currentView === 'cpp') {
+                pipeTitle.textContent = "stdout – cplusplus_stack.cpp";
+                let code = 
+`#include <iostream>
+#include <stack>
+using namespace std;
+
+int main() {
+    stack<int> stiva;`;
+                
+                if (stack.length === 0) {
+                    code += `\n    // Stiva este goală`;
+                } else {
+                    stack.forEach(v => {
+                        code += `\n    stiva.push(${v});`;
+                    });
+                    code += `\n    int varf = stiva.top();`;
+                }
+                code += `\n    return 0;\n}`;
+                pipeContent.innerHTML = `<span style="color:#38bdf8;">${code.replace(/</g, '&lt;').replace(/>/g, '&gt;')}</span>`;
+            } 
+            else if (currentView === 'python') {
+                pipeTitle.textContent = "stdout – python_lifo_stack.py";
+                let code = 
+`# Structura de date Stivă (LIFO) în Python
+stiva = []`;
+
+                if (stack.length === 0) {
+                    code += `\n# Stiva este goală`;
+                } else {
+                    stack.forEach(v => {
+                        code += `\nstiva.append(${v})  # push`;
+                    });
+                    code += `\nvarf = stiva[-1]      # top`;
+                }
+                
+                pipeContent.innerHTML = `<span style="color:#facc15;">${code}</span>`;
+            } 
+            else {
+                pipeTitle.textContent = "stdout – extragere_cifre_puterile_10.log";
+                let numVal = stack.length > 0 ? stack.join('') : '0';
+                
+                let detailHtml = "";
+                if (selectedPower !== null && stack.length > 0) {
+                    let p = selectedPower.power;
+                    let d = selectedPower.digit;
+                    let powVal = Math.pow(10, p);
+                    detailHtml = `
+                    <div style="border-top:1px dashed #334155; margin-top:6px; padding-top:6px; color:#38bdf8;">
+                        🎯 <b>Lecție extragere pentru 10<sup>${p}</sup>:</b><br>
+                        • Număr întreg: <b>${numVal}</b><br>
+                        • Împărțire la 10<sup>${p}</sup> (${powVal}): <code>${numVal} / ${powVal} = ${Math.floor(numVal / powVal)}</code><br>
+                        • Aplicare <code>% 10</code> (Restul împărțirii): <code>(${Math.floor(numVal / powVal)}) % 10 = ${d}</code><br>
+                        • <i>Prin stivă (LIFO):</i> Cifra ${d} se află la distanța de ${stack.length - 1 - stack.indexOf(d)} pop-uri de bază.
+                    </div>`;
+                } else {
+                    detailHtml = `<div style="color:#94a3b8; font-size:11px; margin-top:6px;">💡 <i>Sugestie: Clic pe un buton cu 10^k de mai jos pentru a vedea formula exactă de extragere a cifrei!</i></div>`;
+                }
+
+                let expanded = stack.length > 0 ? stack.map((c, i) => `${c} · 10<sup>${stack.length - 1 - i}</sup>`).join(' + ') : '0';
+                let mathHtml = `
+                    <div class="math-card" style="margin-bottom:6px;">
+                        <div class="math-title">📌 Număr întreg format (Baza 10):</div>
+                        <div class="math-val">${numVal}</div>
+                    </div>
+                    <div class="math-card" style="margin-bottom:6px;">
+                        <div class="math-title">📐 Polinomul Zecimal:</div>
+                        <div class="math-val">S = ${expanded}</div>
+                    </div>
+                    ${detailHtml}
+                `;
+                pipeContent.innerHTML = mathHtml;
+            }
+        }
+
+        document.getElementById('popBtn').addEventListener('click', popRing);
+        document.getElementById('resetBtn').addEventListener('click', () => {
+            stack = [];
+            subTower = [];
+            outputList = [];
+            animatingRing = null;
+            selectedPower = null;
+            showMsg('↺ Stivă și colecție golite. Turn repornit!', 'ok');
+            updateUI();
+        });
+
+        let angle = 0;
+        function animate(now) {
+            requestAnimationFrame(animate);
+            angle += 0.005;
+            scene.rotation.y = Math.sin(angle) * 0.25;
+
+            if (animatingRing) {
+                const elapsed = now - animatingRing.startTime;
+                const progress = Math.min(elapsed / animatingRing.duration, 1);
+                
+                animatingRing.mesh.position.y = animatingRing.startY + (animatingRing.targetY - animatingRing.startY) * progress;
+                animatingRing.mesh.rotation.z += 0.1;
+
+                if (progress === 1) {
+                    executePopLogic();
+                }
+            }
+
+            renderer.render(scene, camera);
+        }
+
+        updateUI();
+        requestAnimationFrame(animate);
+    </script>
+</body>
+</html>
