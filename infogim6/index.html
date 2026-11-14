@@ -1,0 +1,1173 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prelucrarea cifrelor unui număr natural – Simulare interactivă (n % 10 și n / 10)</title>
+    <!-- Încărcare Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Fonturi Google: Inter, Fira Code (pentru cod) și Patrick Hand (pentru cifra scrisă pe hârtie) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@500;700&family=Inter:wght@400;500;600;700;800&family=Patrick+Hand&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8f6f0;
+            color: #1B365D;
+            user-select: none;
+        }
+        .code-font {
+            font-family: 'Fira Code', monospace;
+        }
+        .paper-font {
+            font-family: 'Patrick Hand', cursive, sans-serif;
+        }
+        /* Tranziții fluide pentru evidențierea liniilor din pseudocod */
+        .pseudo-line {
+            transition: all 0.25s ease;
+            border-left: 4px solid transparent;
+        }
+        .pseudo-line.active-cond {
+            background-color: rgba(168, 85, 247, 0.22);
+            border-left-color: #c084fc;
+            color: #f3e8ff;
+            transform: translateX(4px);
+        }
+        .pseudo-line.active-extract {
+            background-color: rgba(245, 158, 11, 0.25);
+            border-left-color: #fbbf24;
+            color: #fef3c7;
+            transform: translateX(4px);
+        }
+        .pseudo-line.active-sum {
+            background-color: rgba(16, 185, 129, 0.25);
+            border-left-color: #34d399;
+            color: #d1fae5;
+            transform: translateX(4px);
+        }
+        .pseudo-line.active-div {
+            background-color: rgba(59, 130, 246, 0.28);
+            border-left-color: #60a5fa;
+            color: #dbeafe;
+            transform: translateX(4px);
+        }
+        /* Container responsiv pentru scena Canvas */
+        #canvas-wrapper {
+            position: relative;
+            width: 100%;
+            height: 440px;
+            border-radius: 1rem;
+            overflow: hidden;
+            box-shadow: inset 0 2px 12px rgba(27, 54, 93, 0.08);
+            background: radial-gradient(circle at 50% 32%, #fffdf9 0%, #ede8dc 100%);
+        }
+        @media (max-width: 640px) {
+            #canvas-wrapper {
+                height: 360px;
+            }
+        }
+        canvas {
+            display: block;
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+</head>
+<body class="antialiased min-h-screen flex flex-col">
+
+    <!-- Antet superior -->
+    <header class="bg-[#1B365D] text-white shadow-md sticky top-0 z-20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3.5 flex flex-wrap items-center justify-between gap-3">
+            <div class="flex items-center gap-3">
+                <div class="w-11 h-11 rounded-xl bg-[#2C6B9E] border border-sky-300/30 text-white flex items-center justify-center shadow-inner">
+                    <!-- Pictogramă foarfecă SVG -->
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <circle cx="6" cy="6" r="3"></circle>
+                        <circle cx="6" cy="18" r="3"></circle>
+                        <line x1="20" y1="4" x2="8.12" y2="15.88"></line>
+                        <line x1="14.47" y1="14.48" x2="20" y2="20"></line>
+                        <line x1="8.12" y1="8.12" x2="12" y2="12"></line>
+                    </svg>
+                </div>
+                <div>
+                    <h1 class="text-lg sm:text-xl font-extrabold tracking-tight text-white">
+                        Prelucrarea cifrelor unui număr natural
+                    </h1>
+                    <p class="text-xs sm:text-sm text-sky-200 font-medium">
+                        Extragerea ultimei cifre (<span class="code-font text-amber-300 font-bold">n % 10</span>) și eliminarea ei (<span class="code-font text-sky-300 font-bold">n / 10</span>) prin tăierea hârtiei
+                    </p>
+                </div>
+            </div>
+
+            <!-- Comutator sunet -->
+            <div class="flex items-center gap-2.5">
+                <span class="hidden md:inline-block text-xs font-semibold px-3 py-1 rounded-full bg-white/10 text-sky-100 border border-white/15">
+                    Informatică și TIC • Clasa a VI-a
+                </span>
+                <button id="btn-sound" type="button" onclick="toggleSound()"
+                        class="px-3.5 py-2 rounded-xl bg-[#2C6B9E] hover:bg-sky-700 text-white transition flex items-center gap-2 text-xs sm:text-sm font-bold shadow-sm border border-sky-300/30 cursor-pointer"
+                        title="Activează sau dezactivează efectul sonor al foarfecii">
+                    <span id="sound-icon">🔊</span>
+                    <span id="sound-label">Sunet: Pornit</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Conținut principal -->
+    <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 py-5 grid grid-cols-1 lg:grid-cols-12 gap-6">
+
+        <!-- Coloana stângă (7/12): Panou de control + Scena interactivă Canvas -->
+        <section class="lg:col-span-7 flex flex-col gap-4">
+
+            <!-- Panou de configurare a numărului și butonul principal de tăiere -->
+            <div class="bg-white rounded-2xl p-4 shadow-sm border border-stone-200 flex flex-col gap-3">
+                <div class="flex flex-wrap items-center justify-between gap-3">
+                    <div class="flex flex-wrap items-center gap-2">
+                        <label for="input-number" class="text-sm font-bold text-[#1B365D] whitespace-nowrap">
+                            Introdu un număr natural:
+                        </label>
+                        <input id="input-number" type="text" inputmode="numeric" maxlength="9" value="4729"
+                               class="w-36 px-3 py-2 rounded-xl border-2 border-stone-300 focus:border-[#2C6B9E] focus:outline-none code-font text-lg font-bold text-[#1B365D] bg-[#f8f6f0] transition"
+                               placeholder="ex. 4729">
+                        <button type="button" onclick="applyCustomNumber()"
+                                class="px-3.5 py-2 rounded-xl bg-[#1B365D] hover:bg-[#2C6B9E] text-white text-xs sm:text-sm font-bold transition shadow-sm cursor-pointer">
+                            Setează numărul
+                        </button>
+                        <button type="button" onclick="generateRandomNumber()"
+                                class="px-3 py-2 rounded-xl bg-stone-100 hover:bg-stone-200 text-[#1B365D] text-xs sm:text-sm font-bold transition border border-stone-300 flex items-center gap-1 cursor-pointer"
+                                title="Generează un număr natural aleatoriu">
+                            <span>🎲</span>
+                            <span>Număr aleatoriu</span>
+                        </button>
+                    </div>
+
+                    <!-- Exemple rapide -->
+                    <div class="flex items-center gap-1.5 text-xs">
+                        <span class="text-stone-500 font-semibold">Exemple:</span>
+                        <button type="button" onclick="setPresetNumber(4729)" class="px-2 py-1 rounded-lg bg-stone-100 hover:bg-amber-100 text-[#1B365D] font-bold code-font border border-stone-200 transition cursor-pointer">4729</button>
+                        <button type="button" onclick="setPresetNumber(5803)" class="px-2 py-1 rounded-lg bg-stone-100 hover:bg-amber-100 text-[#1B365D] font-bold code-font border border-stone-200 transition cursor-pointer">5803</button>
+                        <button type="button" onclick="setPresetNumber(12345)" class="px-2 py-1 rounded-lg bg-stone-100 hover:bg-amber-100 text-[#1B365D] font-bold code-font border border-stone-200 transition cursor-pointer">12345</button>
+                    </div>
+                </div>
+
+                <!-- Rândul de acțiune principală: Tăiere și Resetare -->
+                <div class="flex flex-wrap items-center justify-between gap-3 pt-2 border-t border-stone-100">
+                    <button id="btn-cut" type="button" onclick="triggerCut()"
+                            class="flex-1 sm:flex-initial px-6 py-3 rounded-xl bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 active:scale-[0.99] text-white font-extrabold text-sm sm:text-base shadow-md hover:shadow-lg transition flex items-center justify-center gap-2.5 cursor-pointer">
+                        <span class="text-lg">✂️</span>
+                        <span>Taie ultima cifră! (n % 10 &amp; n / 10)</span>
+                    </button>
+
+                    <button id="btn-reset" type="button" onclick="resetSimulation()"
+                            class="px-4 py-3 rounded-xl bg-stone-100 hover:bg-stone-200 text-[#1B365D] font-bold text-xs sm:text-sm transition border border-stone-300 flex items-center gap-1.5 cursor-pointer"
+                            title="Reia simularea de la numărul inițial">
+                        <span>↺</span>
+                        <span>Resetează</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Bară de stare / Mesaj didactic -->
+            <div id="status-banner" class="bg-sky-50 border border-sky-200 text-[#1B365D] px-4 py-2.5 rounded-xl text-sm font-semibold flex items-center gap-2.5 shadow-sm">
+                <span class="text-lg">💡</span>
+                <span id="status-text">Apasă pe butonul „Taie ultima cifră!” (sau tasta Space) pentru a tăia ultima cifră din dreapta!</span>
+            </div>
+
+            <!-- Scena Canvas: Fâșia de hârtie, mâna cu foarfeca și cifrele care cad ca o frunză -->
+            <div id="canvas-wrapper" class="border-2 border-stone-300 shadow-md">
+                <canvas id="simCanvas"></canvas>
+            </div>
+
+            <!-- Legendă vizuală sub scenă -->
+            <div class="flex flex-wrap items-center justify-between gap-2 text-xs text-stone-600 px-1">
+                <div class="flex flex-wrap items-center gap-4">
+                    <span class="flex items-center gap-1.5 font-medium">
+                        <span class="w-3.5 h-3.5 rounded-sm bg-amber-200 border border-amber-500 inline-block"></span>
+                        <span>Ultima cifră din dreapta (de tăiat: <strong class="code-font text-amber-800">n % 10</strong>)</span>
+                    </span>
+                    <span class="flex items-center gap-1.5 font-medium">
+                        <span class="w-3.5 h-3.5 rounded-sm bg-white border border-stone-400 inline-block"></span>
+                        <span>Numărul rămas pe foaie (<strong class="code-font text-[#2C6B9E]">n / 10</strong>)</span>
+                    </span>
+                </div>
+                <span class="font-semibold text-stone-400">Sfat: Poți tăia și apăsând tasta Space!</span>
+            </div>
+        </section>
+
+        <!-- Coloana dreaptă (5/12): Variabile în timp real + Pseudocod + Tabel de urmărire -->
+        <aside class="lg:col-span-5 flex flex-col gap-4">
+
+            <!-- Panou variabile și formule -->
+            <div class="bg-white rounded-2xl p-4 shadow-sm border border-stone-200">
+                <h2 class="text-xs font-extrabold uppercase tracking-wider text-stone-400 mb-3">
+                    Variabile și rezultate în timp real
+                </h2>
+                <div class="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
+                    <!-- Numărul curent n -->
+                    <div class="p-3 rounded-xl bg-stone-50 border border-stone-200">
+                        <div class="text-[11px] font-bold text-stone-500">Numărul curent (n)</div>
+                        <div id="val-n" class="code-font text-xl sm:text-2xl font-extrabold text-[#1B365D] mt-0.5">4729</div>
+                    </div>
+
+                    <!-- Ultima cifră tăiată c -->
+                    <div class="p-3 rounded-xl bg-amber-50 border border-amber-200">
+                        <div class="text-[11px] font-bold text-amber-800">Ultima cifră (c = n % 10)</div>
+                        <div id="val-c" class="code-font text-xl sm:text-2xl font-extrabold text-amber-600 mt-0.5">—</div>
+                    </div>
+
+                    <!-- Număr de cifre -->
+                    <div class="p-3 rounded-xl bg-purple-50 border border-purple-200">
+                        <div class="text-[11px] font-bold text-purple-800">Număr de cifre (nr_cifre)</div>
+                        <div id="val-cnt" class="code-font text-xl sm:text-2xl font-extrabold text-purple-700 mt-0.5">0</div>
+                    </div>
+
+                    <!-- Suma cifrelor -->
+                    <div class="p-3 rounded-xl bg-emerald-50 border border-emerald-200">
+                        <div class="text-[11px] font-bold text-emerald-800">Suma cifrelor (suma)</div>
+                        <div id="val-sum" class="code-font text-xl sm:text-2xl font-extrabold text-emerald-700 mt-0.5">0</div>
+                    </div>
+
+                    <!-- Oglinditul numărului -->
+                    <div class="p-3 rounded-xl bg-sky-50 border border-sky-200 col-span-2">
+                        <div class="text-[11px] font-bold text-[#2C6B9E]">Oglinditul numărului (oglindit)</div>
+                        <div id="val-rev" class="code-font text-xl sm:text-2xl font-extrabold text-[#1B365D] mt-0.5">0</div>
+                    </div>
+                </div>
+
+                <!-- Expresiile matematice ale ultimului pas -->
+                <div class="mt-3 p-3 rounded-xl bg-[#f8f6f0] border border-stone-200 text-xs sm:text-sm code-font text-[#1B365D] flex flex-col gap-1">
+                    <div id="formula-mod">Restul împărțirii la 10: n % 10 = ?</div>
+                    <div id="formula-div">Câtul împărțirii la 10: n / 10 = ?</div>
+                </div>
+            </div>
+
+            <!-- Panou Pseudocod (conform programei din România) -->
+            <div class="bg-white rounded-2xl p-4 shadow-sm border border-stone-200">
+                <div class="flex items-center justify-between mb-2">
+                    <h2 class="text-xs font-extrabold uppercase tracking-wider text-stone-400">
+                        Algoritm în pseudocod
+                    </h2>
+                    <span class="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-sky-100 text-[#1B365D]">
+                        Structura repetitivă
+                    </span>
+                </div>
+                <div class="bg-[#1B365D] text-slate-100 rounded-xl p-3.5 code-font text-xs sm:text-sm leading-relaxed overflow-x-auto shadow-inner">
+                    <div id="code-l1" class="px-2 py-0.5 rounded text-sky-300">citește n; suma ← 0; nr_cifre ← 0; oglindit ← 0</div>
+                    <div id="code-l2" class="pseudo-line px-2 py-1 rounded font-semibold text-purple-300">cât timp n &gt; 0 execută</div>
+                    <div id="code-l3" class="pseudo-line px-2 py-1 rounded pl-6">c ← n % 10 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="text-sky-300/70 text-xs">// extrage ultima cifră</span></div>
+                    <div id="code-l4" class="pseudo-line px-2 py-1 rounded pl-6">suma ← suma + c; nr_cifre ← nr_cifre + 1</div>
+                    <div id="code-l4b" class="pseudo-line px-2 py-1 rounded pl-6">oglindit ← oglindit * 10 + c</div>
+                    <div id="code-l5" class="pseudo-line px-2 py-1 rounded pl-6">n ← n / 10 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="text-sky-300/70 text-xs">// taie ultima cifră</span></div>
+                    <div id="code-l6" class="px-2 py-0.5 rounded font-semibold text-purple-300">sfârșit cât timp</div>
+                    <div id="code-l7" class="px-2 py-0.5 rounded text-emerald-300">scrie suma, nr_cifre, oglindit</div>
+                </div>
+            </div>
+
+            <!-- Tabel de urmărire a execuției -->
+            <div class="bg-white rounded-2xl p-4 shadow-sm border border-stone-200 flex-1 flex flex-col">
+                <h2 class="text-xs font-extrabold uppercase tracking-wider text-stone-400 mb-2">
+                    Tabel de urmărire a execuției
+                </h2>
+                <div class="overflow-x-auto max-h-44 overflow-y-auto border border-stone-200 rounded-xl">
+                    <table class="w-full text-left border-collapse text-xs">
+                        <thead>
+                            <tr class="bg-stone-100 text-[#1B365D] border-b border-stone-200">
+                                <th class="py-2 px-2 font-extrabold">Pas</th>
+                                <th class="py-2 px-2 font-extrabold">Condiția n &gt; 0</th>
+                                <th class="py-2 px-2 font-extrabold text-amber-700">c = n%10</th>
+                                <th class="py-2 px-2 font-extrabold text-emerald-700">suma</th>
+                                <th class="py-2 px-2 font-extrabold text-purple-700">nr_cifre</th>
+                                <th class="py-2 px-2 font-extrabold text-[#2C6B9E]">n = n/10</th>
+                            </tr>
+                        </thead>
+                        <tbody id="trace-tbody" class="code-font divide-y divide-stone-100">
+                            <!-- Rândurile se adaugă dinamic la fiecare tăiere -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </aside>
+    </main>
+
+    <script>
+        // =========================================================================
+        // 1. SINTEZĂ SONORĂ WEB AUDIO API – EFECT REALIST DE TĂIERE A HÂRTIEI
+        // =========================================================================
+        let soundEnabled = true;
+        let audioCtx = null;
+
+        function initAudio() {
+            if (!audioCtx) {
+                const AudioContext = window.AudioContext || window.webkitAudioContext;
+                if (AudioContext) {
+                    audioCtx = new AudioContext();
+                }
+            }
+            if (audioCtx && audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+        }
+
+        function toggleSound() {
+            soundEnabled = !soundEnabled;
+            const icon = document.getElementById('sound-icon');
+            const label = document.getElementById('sound-label');
+            icon.textContent = soundEnabled ? '🔊' : '🔇';
+            label.textContent = soundEnabled ? 'Sunet: Pornit' : 'Sunet: Oprit';
+        }
+
+        // Generează sunetul specific foarfecii care taie fibra de hârtie
+        function playSnipSound(pitchMultiplier = 1.0) {
+            if (!soundEnabled) return;
+            try {
+                initAudio();
+                if (!audioCtx) return;
+
+                const now = audioCtx.currentTime;
+                const duration = 0.14;
+
+                // Zgomot alb filtrat pentru foșnetul fibrelor de hârtie
+                const bufferSize = Math.floor(audioCtx.sampleRate * duration);
+                const noiseBuffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+                const output = noiseBuffer.getChannelData(0);
+                for (let i = 0; i < bufferSize; i++) {
+                    output[i] = (Math.random() * 2 - 1) * Math.exp(-i / (bufferSize * 0.45));
+                }
+
+                const whiteNoise = audioCtx.createBufferSource();
+                whiteNoise.buffer = noiseBuffer;
+
+                const bandpass = audioCtx.createBiquadFilter();
+                bandpass.type = 'bandpass';
+                bandpass.frequency.setValueAtTime(2400 * pitchMultiplier, now);
+                bandpass.frequency.exponentialRampToValueAtTime(4200 * pitchMultiplier, now + duration);
+                bandpass.Q.value = 3.2;
+
+                const noiseGain = audioCtx.createGain();
+                noiseGain.gain.setValueAtTime(0.38, now);
+                noiseGain.gain.exponentialRampToValueAtTime(0.01, now + duration);
+
+                whiteNoise.connect(bandpass);
+                bandpass.connect(noiseGain);
+                noiseGain.connect(audioCtx.destination);
+                whiteNoise.start(now);
+
+                // Clinchet metalic fin la închiderea lamelor foarfecii
+                const osc = audioCtx.createOscillator();
+                const oscGain = audioCtx.createGain();
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(1850 * pitchMultiplier, now + 0.04);
+                osc.frequency.exponentialRampToValueAtTime(3650 * pitchMultiplier, now + duration);
+
+                oscGain.gain.setValueAtTime(0.001, now);
+                oscGain.gain.linearRampToValueAtTime(0.09, now + 0.06);
+                oscGain.gain.exponentialRampToValueAtTime(0.001, now + duration);
+
+                osc.connect(oscGain);
+                oscGain.connect(audioCtx.destination);
+                osc.start(now);
+                osc.stop(now + duration);
+            } catch (e) {
+                // Ignoră erorile audio dacă browserul restricționează redarea
+            }
+        }
+
+        // =========================================================================
+        // 2. STAREA SIMULĂRII ȘI VARIABILELE ALGORITMULUI
+        // =========================================================================
+        let initialNumber = 4729;
+        let currentNumber = 4729;
+        let digitsArray = ['4', '7', '2', '9'];
+        let sumDigits = 0;
+        let countDigits = 0;
+        let reverseNumber = 0;
+        let lastExtracted = null;
+        let stepCounter = 0;
+
+        // Stările mașinii de animație: 'IDLE' | 'APPROACH' | 'CUTTING' | 'RETREAT'
+        let animState = 'IDLE';
+        let animProgress = 0;
+        let cutProgress = 0;
+        let bladeAngle = 0.42;
+        let snipCountTriggered = 0;
+
+        // Poziția mâinii cu foarfeca
+        let handPos = { x: 0, y: 0 };
+        let handStartPos = { x: 0, y: 0 };
+        let handTargetPos = { x: 0, y: 0 };
+
+        // Pătrățelele de hârtie care cad legănându-se ca o frunză de toamnă
+        let fallingLeaves = [];
+        // Pătrățelele adunate în tava de jos
+        let landedChips = [];
+        // Mici resturi de hârtie rezultate la tăiere
+        let paperScraps = [];
+
+        const canvas = document.getElementById('simCanvas');
+        const ctx = canvas.getContext('2d');
+        let cw = 800;
+        let ch = 440;
+
+        function resizeCanvas() {
+            const wrapper = document.getElementById('canvas-wrapper');
+            const rect = wrapper.getBoundingClientRect();
+            const dpr = window.devicePixelRatio || 1;
+            cw = rect.width;
+            ch = rect.height;
+            canvas.width = cw * dpr;
+            canvas.height = ch * dpr;
+            ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+            if (animState === 'IDLE') {
+                handPos.x = cw - 95;
+                handPos.y = ch * 0.54;
+            }
+        }
+
+        window.addEventListener('resize', resizeCanvas);
+
+        // =========================================================================
+        // 3. INTERACȚIUNI UTILIZATOR (SETARE NUMĂR, TĂIERE, RESETARE)
+        // =========================================================================
+        function setStatus(msg, type = 'info') {
+            const banner = document.getElementById('status-banner');
+            const textEl = document.getElementById('status-text');
+            textEl.textContent = msg;
+
+            banner.className = "px-4 py-2.5 rounded-xl text-sm font-semibold flex items-center gap-2.5 shadow-sm border transition-colors ";
+            if (type === 'warning') {
+                banner.className += "bg-amber-50 border-amber-300 text-amber-900";
+            } else if (type === 'success') {
+                banner.className += "bg-emerald-50 border-emerald-300 text-emerald-900";
+            } else if (type === 'error') {
+                banner.className += "bg-rose-50 border-rose-300 text-rose-900";
+            } else {
+                banner.className += "bg-sky-50 border-sky-200 text-[#1B365D]";
+            }
+        }
+
+        function setPresetNumber(num) {
+            initialNumber = num;
+            document.getElementById('input-number').value = String(num);
+            resetSimulation();
+        }
+
+        function applyCustomNumber() {
+            const raw = document.getElementById('input-number').value.trim();
+            const parsed = parseInt(raw, 10);
+            if (isNaN(parsed) || parsed <= 0 || parsed > 999999999 || !/^\d+$/.test(raw)) {
+                setStatus("Te rugăm să introduci un număr natural nenul (între 1 și 999999999)!", 'error');
+                return;
+            }
+            initialNumber = parsed;
+            document.getElementById('input-number').value = String(parsed);
+            resetSimulation();
+        }
+
+        function generateRandomNumber() {
+            const lengths = [3, 4, 5, 6];
+            const len = lengths[Math.floor(Math.random() * lengths.length)];
+            const min = Math.pow(10, len - 1);
+            const max = Math.pow(10, len) - 1;
+            const rand = Math.floor(Math.random() * (max - min + 1)) + min;
+            initialNumber = rand;
+            document.getElementById('input-number').value = String(rand);
+            resetSimulation();
+        }
+
+        function resetSimulation() {
+            currentNumber = initialNumber;
+            digitsArray = String(currentNumber).split('');
+            sumDigits = 0;
+            countDigits = 0;
+            reverseNumber = 0;
+            lastExtracted = null;
+            stepCounter = 0;
+            fallingLeaves = [];
+            landedChips = [];
+            paperScraps = [];
+            animState = 'IDLE';
+            animProgress = 0;
+            cutProgress = 0;
+            bladeAngle = 0.42;
+
+            handPos.x = cw - 95;
+            handPos.y = ch * 0.54;
+
+            updateVariablesUI();
+            clearCodeHighlights();
+
+            const tbody = document.getElementById('trace-tbody');
+            tbody.innerHTML = `
+                <tr class="bg-stone-50/70 text-stone-500">
+                    <td class="py-1.5 px-2 font-bold">Inițial</td>
+                    <td class="py-1.5 px-2">—</td>
+                    <td class="py-1.5 px-2">—</td>
+                    <td class="py-1.5 px-2">0</td>
+                    <td class="py-1.5 px-2">0</td>
+                    <td class="py-1.5 px-2 font-bold text-[#1B365D]">${initialNumber}</td>
+                </tr>
+            `;
+
+            document.getElementById('formula-mod').textContent = 'Restul împărțirii la 10: n % 10 = ?';
+            document.getElementById('formula-div').textContent = 'Câtul împărțirii la 10: n / 10 = ?';
+
+            const btnCut = document.getElementById('btn-cut');
+            btnCut.disabled = false;
+            btnCut.classList.remove('opacity-50', 'cursor-not-allowed');
+
+            setStatus("Apasă pe butonul „Taie ultima cifră!” (sau tasta Space) pentru a tăia ultima cifră din dreapta!", 'info');
+        }
+
+        function clearCodeHighlights() {
+            ['code-l2', 'code-l3', 'code-l4', 'code-l4b', 'code-l5'].forEach(id => {
+                const el = document.getElementById(id);
+                el.classList.remove('active-cond', 'active-extract', 'active-sum', 'active-div');
+            });
+        }
+
+        function updateVariablesUI() {
+            document.getElementById('val-n').textContent = currentNumber;
+            document.getElementById('val-c').textContent = lastExtracted !== null ? lastExtracted : '—';
+            document.getElementById('val-cnt').textContent = countDigits;
+            document.getElementById('val-sum').textContent = sumDigits;
+            document.getElementById('val-rev').textContent = reverseNumber;
+        }
+
+        // Calculează coordonatele fâșiei de hârtie astfel încât să fie centrată
+        function getPaperLayout() {
+            const count = digitsArray.length;
+            const cellSize = Math.min(68, Math.max(42, (cw - 140) / Math.max(count, 4)));
+            const cellHeight = cellSize * 1.28;
+            const totalWidth = Math.max(1, count) * cellSize;
+            const startX = (cw - totalWidth) / 2 - 22;
+            const startY = ch * 0.23;
+            return { cellSize, cellHeight, totalWidth, startX, startY, count };
+        }
+
+        // =========================================================================
+        // 4. DECLANȘAREA TĂIERII ȘI ACTUALIZAREA PASULUI ALGORITMULUI
+        // =========================================================================
+        function triggerCut() {
+            if (animState !== 'IDLE') return;
+            if (currentNumber <= 0 || digitsArray.length === 0) {
+                setStatus("n = 0 — Algoritmul s-a oprit! Toate cifrele au fost tăiate. Apasă „Resetează” sau introdu un alt număr.", 'warning');
+                return;
+            }
+
+            initAudio();
+            const layout = getPaperLayout();
+            const cutLineX = layout.startX + (layout.count - 1) * layout.cellSize;
+            const cutStartY = layout.startY + layout.cellHeight + 16;
+
+            handStartPos = { x: handPos.x, y: handPos.y };
+            handTargetPos = { x: cutLineX, y: cutStartY };
+
+            animState = 'APPROACH';
+            animProgress = 0;
+            cutProgress = 0;
+            snipCountTriggered = 0;
+
+            clearCodeHighlights();
+            document.getElementById('code-l2').classList.add('active-cond');
+            setStatus("Țac-țac! Foarfeca taie acum ultima cifră de pe fâșia de hârtie...", 'warning');
+        }
+
+        // Finalizarea tăierii: bucata de hârtie se desprinde și cade legănându-se
+        function completeCutStep() {
+            const layout = getPaperLayout();
+            const cutDigit = digitsArray[digitsArray.length - 1];
+            const digitNum = parseInt(cutDigit, 10);
+            const prevN = currentNumber;
+            const nextN = Math.floor(prevN / 10);
+
+            const pieceX = layout.startX + (layout.count - 1) * layout.cellSize;
+            const pieceY = layout.startY;
+
+            // Creăm pătrățelul de hârtie care cade cu fizică de frunză purtată de aer
+            fallingLeaves.push({
+                digit: cutDigit,
+                x: pieceX,
+                y: pieceY,
+                baseX: pieceX,
+                width: layout.cellSize,
+                height: layout.cellHeight,
+                vy: 1.15,
+                swayAmp: 34 + Math.random() * 18,
+                swayFreq: 0.042 + Math.random() * 0.015,
+                phase: Math.random() * Math.PI * 2,
+                rotation: 0,
+                flipPhase: 0,
+                flipSpeed: 0.065,
+                targetY: ch - 48
+            });
+
+            // Mici resturi de hârtie la linia de tăiere
+            for (let i = 0; i < 8; i++) {
+                paperScraps.push({
+                    x: pieceX + (Math.random() - 0.5) * 8,
+                    y: pieceY + Math.random() * layout.cellHeight,
+                    vx: (Math.random() - 0.3) * 3.2,
+                    vy: -1 - Math.random() * 2.5,
+                    size: 3 + Math.random() * 4,
+                    rot: Math.random() * Math.PI,
+                    vrot: (Math.random() - 0.5) * 0.2,
+                    alpha: 1.0
+                });
+            }
+
+            // Actualizăm variabilele algoritmului
+            digitsArray.pop();
+            currentNumber = nextN;
+            lastExtracted = digitNum;
+            countDigits += 1;
+            sumDigits += digitNum;
+            reverseNumber = reverseNumber * 10 + digitNum;
+            stepCounter += 1;
+
+            updateVariablesUI();
+
+            // Actualizăm formulele și liniile active din pseudocod
+            document.getElementById('formula-mod').innerHTML =
+                `Restul împărțirii la 10: <span class="font-bold text-amber-700">${prevN} % 10 = ${digitNum}</span> &nbsp;→&nbsp; c = ${digitNum}`;
+            document.getElementById('formula-div').innerHTML =
+                `Câtul împărțirii la 10: <span class="font-bold text-[#2C6B9E]">${prevN} / 10 = ${nextN}</span> &nbsp;→&nbsp; n = ${nextN}`;
+
+            clearCodeHighlights();
+            document.getElementById('code-l3').classList.add('active-extract');
+            document.getElementById('code-l4').classList.add('active-sum');
+            document.getElementById('code-l4b').classList.add('active-sum');
+            document.getElementById('code-l5').classList.add('active-div');
+
+            // Adăugăm pasul în tabelul de urmărire a execuției
+            const tbody = document.getElementById('trace-tbody');
+            const tr = document.createElement('tr');
+            tr.className = "hover:bg-stone-50 transition-colors";
+            tr.innerHTML = `
+                <td class="py-1.5 px-2 font-bold text-stone-500">Pasul ${stepCounter}</td>
+                <td class="py-1.5 px-2 text-purple-700 font-semibold">Adevărat (${prevN} &gt; 0)</td>
+                <td class="py-1.5 px-2 font-bold text-amber-700 bg-amber-50/60">${digitNum}</td>
+                <td class="py-1.5 px-2 font-bold text-emerald-700">${sumDigits}</td>
+                <td class="py-1.5 px-2 font-bold text-purple-700">${countDigits}</td>
+                <td class="py-1.5 px-2 font-bold text-[#2C6B9E]">${nextN}</td>
+            `;
+            tbody.appendChild(tr);
+
+            if (currentNumber === 0) {
+                const stopTr = document.createElement('tr');
+                stopTr.className = "bg-rose-50/70 text-rose-800 font-bold";
+                stopTr.innerHTML = `
+                    <td class="py-1.5 px-2">Pasul ${stepCounter + 1}</td>
+                    <td class="py-1.5 px-2">Fals (0 &gt; 0)</td>
+                    <td class="py-1.5 px-2">—</td>
+                    <td class="py-1.5 px-2">${sumDigits}</td>
+                    <td class="py-1.5 px-2">${countDigits}</td>
+                    <td class="py-1.5 px-2">STOP</td>
+                `;
+                tbody.appendChild(stopTr);
+
+                setStatus("n = 0 — Algoritmul s-a oprit! Condiția (n > 0) a devenit falsă.", 'success');
+                const btnCut = document.getElementById('btn-cut');
+                btnCut.disabled = true;
+                btnCut.classList.add('opacity-50', 'cursor-not-allowed');
+            } else {
+                setStatus(`Cifră tăiată: ${digitNum} (${prevN} % 10 = ${digitNum}). A rămas pe foaie: ${nextN} (${prevN} / 10 = ${nextN}).`, 'success');
+            }
+
+            tbody.parentElement.parentElement.scrollTop = tbody.parentElement.parentElement.scrollHeight;
+        }
+
+        // =========================================================================
+        // 5. FUNCȚII DE DESENARE PE CANVAS (HÂRTIA, MÂNA CU FOARFECA, FRUNZELE)
+        // =========================================================================
+        function drawPaperStrip() {
+            const layout = getPaperLayout();
+
+            ctx.save();
+            ctx.font = '700 12px Inter, sans-serif';
+            ctx.fillStyle = '#57534e';
+            ctx.textAlign = 'center';
+
+            if (digitsArray.length === 0) {
+                // Stare finală: fâșia de hârtie a fost tăiată complet (n = 0)
+                const stubW = 140;
+                const stubH = layout.cellHeight;
+                const stubX = (cw - stubW) / 2 - 22;
+                const stubY = layout.startY;
+
+                ctx.fillStyle = '#ffffff';
+                ctx.strokeStyle = '#94a3b8';
+                ctx.lineWidth = 2;
+                ctx.setLineDash([6, 4]);
+                ctx.beginPath();
+                ctx.roundRect(stubX, stubY, stubW, stubH, 10);
+                ctx.fill();
+                ctx.stroke();
+                ctx.setLineDash([]);
+
+                ctx.font = '800 24px "Fira Code", monospace';
+                ctx.fillStyle = '#64748b';
+                ctx.fillText('n = 0', stubX + stubW / 2, stubY + stubH / 2 + 8);
+
+                ctx.font = '700 12px Inter, sans-serif';
+                ctx.fillStyle = '#059669';
+                ctx.fillText('n = 0 — Algoritmul s-a oprit!', stubX + stubW / 2, stubY - 12);
+                ctx.restore();
+                return;
+            }
+
+            ctx.fillText('FÂȘIE DE HÂRTIE (valoarea curentă a lui n)', layout.startX + layout.totalWidth / 2, layout.startY - 14);
+
+            // Umbră fină sub fâșia de hârtie
+            ctx.shadowColor = 'rgba(27, 54, 93, 0.14)';
+            ctx.shadowBlur = 14;
+            ctx.shadowOffsetX = 0;
+            ctx.shadowOffsetY = 6;
+
+            for (let i = 0; i < digitsArray.length; i++) {
+                const isLast = (i === digitsArray.length - 1);
+                const cx = layout.startX + i * layout.cellSize;
+                const cy = layout.startY;
+
+                ctx.save();
+                // Înclinare ușoară a ultimei celule în timp ce foarfeca urcă pe linia de tăiere
+                if (isLast && animState === 'CUTTING') {
+                    const bendAngle = cutProgress * 0.09;
+                    ctx.translate(cx, cy);
+                    ctx.rotate(bendAngle);
+                    ctx.translate(-cx, -cy);
+                }
+
+                // Fundalul celulei de hârtie
+                ctx.fillStyle = isLast ? '#fef3c7' : '#ffffff';
+                ctx.beginPath();
+                const tl = i === 0 ? 10 : 0;
+                const bl = i === 0 ? 10 : 0;
+                const tr = isLast ? 10 : 0;
+                const br = isLast ? 10 : 0;
+                ctx.roundRect(cx, cy, layout.cellSize, layout.cellHeight, [tl, tr, br, bl]);
+                ctx.fill();
+
+                ctx.shadowColor = 'transparent';
+
+                // Liniatură fină tip caiet dictando
+                ctx.strokeStyle = isLast ? 'rgba(245, 158, 11, 0.25)' : 'rgba(148, 163, 184, 0.25)';
+                ctx.lineWidth = 1;
+                for (let lineY = cy + 16; lineY < cy + layout.cellHeight - 8; lineY += 14) {
+                    ctx.beginPath();
+                    ctx.moveTo(cx + 4, lineY);
+                    ctx.lineTo(cx + layout.cellSize - 4, lineY);
+                    ctx.stroke();
+                }
+
+                // Conturul celulei
+                ctx.strokeStyle = isLast ? '#f59e0b' : '#cbd5e1';
+                ctx.lineWidth = 2;
+                ctx.stroke();
+
+                // Cifra scrisă în celulă
+                ctx.font = `700 ${Math.floor(layout.cellSize * 0.68)}px "Patrick Hand", cursive`;
+                ctx.fillStyle = isLast ? '#b45309' : '#1B365D';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText(digitsArray[i], cx + layout.cellSize / 2, cy + layout.cellHeight / 2 + 2);
+
+                // Linia punctată de tăiere în stânga ultimei cifre
+                if (isLast) {
+                    const cutX = cx;
+                    ctx.strokeStyle = '#ef4444';
+                    ctx.lineWidth = 2.5;
+                    ctx.setLineDash([6, 5]);
+                    ctx.beginPath();
+                    ctx.moveTo(cutX, cy - 8);
+                    ctx.lineTo(cutX, cy + layout.cellHeight + 8);
+                    ctx.stroke();
+                    ctx.setLineDash([]);
+
+                    // Porțiunea deja tăiată marcată cu linie roșie continuă
+                    if (animState === 'CUTTING' && cutProgress > 0) {
+                        const cutBottom = cy + layout.cellHeight;
+                        const cutCurrentY = cutBottom - cutProgress * layout.cellHeight;
+                        ctx.strokeStyle = '#dc2626';
+                        ctx.lineWidth = 3;
+                        ctx.beginPath();
+                        ctx.moveTo(cutX, cutBottom);
+                        ctx.lineTo(cutX, cutCurrentY);
+                        ctx.stroke();
+                    }
+
+                    ctx.font = '700 11px "Fira Code", monospace';
+                    ctx.fillStyle = '#d97706';
+                    ctx.fillText('n % 10', cx + layout.cellSize / 2, cy + layout.cellHeight + 19);
+                }
+
+                ctx.restore();
+            }
+
+            // Eticheta pentru partea rămasă (n / 10)
+            if (digitsArray.length > 1) {
+                const remWidth = (digitsArray.length - 1) * layout.cellSize;
+                ctx.font = '700 11px "Fira Code", monospace';
+                ctx.fillStyle = '#2C6B9E';
+                ctx.textAlign = 'center';
+                ctx.fillText('n / 10', layout.startX + remWidth / 2, layout.startY + layout.cellHeight + 19);
+            }
+
+            ctx.restore();
+        }
+
+        // Desenează mâna ilustrată care ține foarfeca animată
+        function drawHandWithScissors(pivotX, pivotY, openAngle) {
+            ctx.save();
+            ctx.translate(pivotX, pivotY);
+            ctx.rotate(-Math.PI / 2 + 0.12);
+
+            // Lama inferioară
+            ctx.save();
+            ctx.rotate(openAngle * 0.5);
+            drawScissorBlade(false);
+            ctx.restore();
+
+            // Lama superioară
+            ctx.save();
+            ctx.rotate(-openAngle * 0.5);
+            drawScissorBlade(true);
+            ctx.restore();
+
+            // Șurubul central al foarfecii
+            ctx.fillStyle = '#475569';
+            ctx.beginPath();
+            ctx.arc(0, 0, 4.5, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.fillStyle = '#cbd5e1';
+            ctx.beginPath();
+            ctx.arc(-1, -1, 1.8, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Mâna care prinde mânerele foarfecii
+            drawHoldingHand(openAngle);
+
+            ctx.restore();
+        }
+
+        function drawScissorBlade(isUpper) {
+            const bladeLen = 64;
+            const handleLen = 46;
+
+            const grad = ctx.createLinearGradient(0, -6, bladeLen, 6);
+            grad.addColorStop(0, '#94a3b8');
+            grad.addColorStop(0.5, '#f8fafc');
+            grad.addColorStop(1, '#64748b');
+
+            ctx.fillStyle = grad;
+            ctx.strokeStyle = '#334155';
+            ctx.lineWidth = 1.4;
+
+            ctx.beginPath();
+            if (isUpper) {
+                ctx.moveTo(-6, 0);
+                ctx.lineTo(bladeLen, -2);
+                ctx.quadraticCurveTo(bladeLen * 0.6, -11, -6, -8);
+            } else {
+                ctx.moveTo(-6, 0);
+                ctx.lineTo(bladeLen, 2);
+                ctx.quadraticCurveTo(bladeLen * 0.6, 11, -6, 8);
+            }
+            ctx.closePath();
+            ctx.fill();
+            ctx.stroke();
+
+            // Inelul ergonomic al mânerului
+            const ringY = isUpper ? -15 : 15;
+            const ringX = -handleLen;
+
+            ctx.strokeStyle = '#dc2626';
+            ctx.lineWidth = 6.5;
+            ctx.beginPath();
+            ctx.ellipse(ringX, ringY, 17, 11, isUpper ? -0.15 : 0.15, 0, Math.PI * 2);
+            ctx.stroke();
+
+            ctx.strokeStyle = '#b91c1c';
+            ctx.lineWidth = 5;
+            ctx.beginPath();
+            ctx.moveTo(-4, isUpper ? -3 : 3);
+            ctx.lineTo(ringX + 14, ringY);
+            ctx.stroke();
+        }
+
+        function drawHoldingHand(openAngle) {
+            const skinFill = '#f5c29b';
+            const skinDark = '#d99b6c';
+            const sleeveColor = '#1B365D';
+
+            // Degetul mare
+            ctx.fillStyle = skinFill;
+            ctx.strokeStyle = skinDark;
+            ctx.lineWidth = 1.8;
+            ctx.beginPath();
+            ctx.roundRect(-58, -23 - openAngle * 6, 26, 14, 7);
+            ctx.fill();
+            ctx.stroke();
+
+            // Degetul arătător și mijlociu
+            ctx.beginPath();
+            ctx.roundRect(-62, 7 + openAngle * 6, 30, 16, 8);
+            ctx.fill();
+            ctx.stroke();
+
+            // Palma
+            ctx.beginPath();
+            ctx.roundRect(-95, -24, 46, 48, 18);
+            ctx.fill();
+            ctx.stroke();
+
+            // Degetele inelar și mic îndoite
+            ctx.beginPath();
+            ctx.roundRect(-76, 18, 22, 11, 5);
+            ctx.fill();
+            ctx.stroke();
+
+            // Manșeta cămășii
+            ctx.fillStyle = '#ffffff';
+            ctx.strokeStyle = '#cbd5e1';
+            ctx.beginPath();
+            ctx.roundRect(-108, -26, 16, 52, 4);
+            ctx.fill();
+            ctx.stroke();
+
+            // Mâneca
+            ctx.fillStyle = sleeveColor;
+            ctx.beginPath();
+            ctx.roundRect(-150, -29, 44, 58, 6);
+            ctx.fill();
+        }
+
+        // Desenează tava de jos și cifrele tăiate care cad ca o frunză
+        function drawFallingLeavesAndTray() {
+            const trayY = ch - 70;
+            ctx.save();
+            ctx.fillStyle = 'rgba(248, 246, 240, 0.9)';
+            ctx.fillRect(0, trayY, cw, ch - trayY);
+
+            ctx.strokeStyle = '#cbd5e1';
+            ctx.lineWidth = 1.5;
+            ctx.setLineDash([5, 4]);
+            ctx.beginPath();
+            ctx.moveTo(16, trayY);
+            ctx.lineTo(cw - 16, trayY);
+            ctx.stroke();
+            ctx.setLineDash([]);
+
+            ctx.font = '700 11px Inter, sans-serif';
+            ctx.fillStyle = '#57534e';
+            ctx.textAlign = 'left';
+            ctx.fillText('Cifre extrase în ordinea tăierii (de la dreapta la stânga, c = n % 10):', 18, trayY + 16);
+
+            // Cifrele deja așezate în tava de colectare
+            landedChips.forEach((chip, idx) => {
+                const targetX = 22 + idx * 45;
+                const targetY = ch - 45;
+                chip.x += (targetX - chip.x) * 0.15;
+                chip.y += (targetY - chip.y) * 0.15;
+                chip.rot += (chip.finalRot - chip.rot) * 0.15;
+
+                ctx.save();
+                ctx.translate(chip.x + 18, chip.y + 18);
+                ctx.rotate(chip.rot);
+                ctx.fillStyle = '#fef3c7';
+                ctx.strokeStyle = '#f59e0b';
+                ctx.lineWidth = 1.8;
+                ctx.beginPath();
+                ctx.roundRect(-18, -18, 36, 36, 6);
+                ctx.fill();
+                ctx.stroke();
+
+                ctx.font = '700 22px "Patrick Hand", cursive';
+                ctx.fillStyle = '#b45309';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText(chip.digit, 0, 1);
+                ctx.restore();
+            });
+
+            // Pătrățelele de hârtie aflate în cădere cu mișcare de frunză
+            for (let i = fallingLeaves.length - 1; i >= 0; i--) {
+                const leaf = fallingLeaves[i];
+                leaf.phase += leaf.swayFreq;
+                leaf.flipPhase += leaf.flipSpeed;
+                leaf.y += leaf.vy;
+                leaf.x = leaf.baseX + Math.sin(leaf.phase) * leaf.swayAmp;
+                leaf.rotation = Math.cos(leaf.phase) * 0.55 + Math.sin(leaf.flipPhase * 0.5) * 0.25;
+
+                // Efect de rotire în perspectivă 3D
+                const scaleX = 0.72 + 0.28 * Math.cos(leaf.flipPhase);
+
+                ctx.save();
+                ctx.translate(leaf.x + leaf.width / 2, leaf.y + leaf.height / 2);
+                ctx.rotate(leaf.rotation);
+                ctx.scale(scaleX, 1);
+
+                ctx.shadowColor = 'rgba(180, 83, 9, 0.22)';
+                ctx.shadowBlur = 10;
+                ctx.shadowOffsetY = 6;
+
+                ctx.fillStyle = '#fde68a';
+                ctx.strokeStyle = '#d97706';
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                ctx.roundRect(-leaf.width / 2, -leaf.height / 2, leaf.width, leaf.height, 8);
+                ctx.fill();
+                ctx.stroke();
+
+                ctx.shadowColor = 'transparent';
+                ctx.font = `700 ${Math.floor(leaf.width * 0.65)}px "Patrick Hand", cursive`;
+                ctx.fillStyle = '#92400e';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText(leaf.digit, 0, 2);
+                ctx.restore();
+
+                if (leaf.y >= leaf.targetY - 12) {
+                    landedChips.push({
+                        digit: leaf.digit,
+                        x: leaf.x,
+                        y: leaf.y,
+                        rot: leaf.rotation,
+                        finalRot: (Math.random() - 0.5) * 0.22
+                    });
+                    fallingLeaves.splice(i, 1);
+                }
+            }
+
+            // Mici resturi de hârtie
+            for (let i = paperScraps.length - 1; i >= 0; i--) {
+                const s = paperScraps[i];
+                s.x += s.vx;
+                s.y += s.vy;
+                s.vy += 0.14;
+                s.rot += s.vrot;
+                s.alpha -= 0.022;
+
+                if (s.alpha <= 0) {
+                    paperScraps.splice(i, 1);
+                    continue;
+                }
+
+                ctx.save();
+                ctx.globalAlpha = s.alpha;
+                ctx.translate(s.x, s.y);
+                ctx.rotate(s.rot);
+                ctx.fillStyle = '#fef3c7';
+                ctx.strokeStyle = '#f59e0b';
+                ctx.lineWidth = 1;
+                ctx.fillRect(-s.size / 2, -s.size / 2, s.size, s.size * 0.7);
+                ctx.strokeRect(-s.size / 2, -s.size / 2, s.size, s.size * 0.7);
+                ctx.restore();
+            }
+
+            ctx.restore();
+        }
+
+        // =========================================================================
+        // 6. BUCLA PRINCIPALĂ DE ANIMAȚIE (60 FPS)
+        // =========================================================================
+        function updateAnimation() {
+            const layout = getPaperLayout();
+
+            if (animState === 'APPROACH') {
+                animProgress += 0.065;
+                const ease = 1 - Math.pow(1 - Math.min(1, animProgress), 3);
+                handPos.x = handStartPos.x + (handTargetPos.x - handStartPos.x) * ease;
+                handPos.y = handStartPos.y + (handTargetPos.y - handStartPos.y) * ease;
+                bladeAngle = 0.2 + 0.38 * ease;
+
+                if (animProgress >= 1) {
+                    animState = 'CUTTING';
+                    animProgress = 0;
+                    cutProgress = 0;
+                }
+            } else if (animState === 'CUTTING') {
+                animProgress += 0.024;
+                cutProgress = Math.min(1, animProgress);
+
+                const cutLineX = layout.startX + (layout.count - 1) * layout.cellSize;
+                const bottomY = layout.startY + layout.cellHeight + 10;
+                const topY = layout.startY - 6;
+
+                handPos.x = cutLineX;
+                handPos.y = bottomY - cutProgress * (bottomY - topY);
+
+                // Două mișcări ferme de tăiere pe lungimea liniei punctate
+                const cycle = (cutProgress * 2) % 1;
+                bladeAngle = 0.04 + 0.46 * Math.abs(Math.cos(cycle * Math.PI));
+
+                if (cutProgress >= 0.22 && snipCountTriggered === 0) {
+                    playSnipSound(0.96);
+                    snipCountTriggered = 1;
+                } else if (cutProgress >= 0.72 && snipCountTriggered === 1) {
+                    playSnipSound(1.06);
+                    snipCountTriggered = 2;
+                }
+
+                if (animProgress >= 1) {
+                    completeCutStep();
+                    animState = 'RETREAT';
+                    animProgress = 0;
+                    handStartPos = { x: handPos.x, y: handPos.y };
+                    handTargetPos = { x: cw - 95, y: ch * 0.54 };
+                }
+            } else if (animState === 'RETREAT') {
+                animProgress += 0.055;
+                const ease = 1 - Math.pow(1 - Math.min(1, animProgress), 3);
+                handPos.x = handStartPos.x + (handTargetPos.x - handStartPos.x) * ease;
+                handPos.y = handStartPos.y + (handTargetPos.y - handStartPos.y) * ease;
+                bladeAngle = 0.08 + 0.34 * ease;
+
+                if (animProgress >= 1) {
+                    animState = 'IDLE';
+                    animProgress = 0;
+                }
+            } else {
+                const t = Date.now() * 0.0025;
+                handPos.y = ch * 0.54 + Math.sin(t) * 4;
+                bladeAngle = 0.40 + Math.sin(t * 1.4) * 0.04;
+            }
+        }
+
+        function renderLoop() {
+            ctx.clearRect(0, 0, cw, ch);
+
+            updateAnimation();
+            drawFallingLeavesAndTray();
+            drawPaperStrip();
+            drawHandWithScissors(handPos.x, handPos.y, bladeAngle);
+
+            requestAnimationFrame(renderLoop);
+        }
+
+        // Control de la tastatură (Space = tăiere, Enter = setare număr)
+        window.addEventListener('keydown', (e) => {
+            if (document.activeElement === document.getElementById('input-number')) {
+                if (e.key === 'Enter') {
+                    applyCustomNumber();
+                    document.getElementById('input-number').blur();
+                }
+                return;
+            }
+            if (e.code === 'Space') {
+                e.preventDefault();
+                triggerCut();
+            }
+        });
+
+        window.onload = function () {
+            resizeCanvas();
+            resetSimulation();
+            renderLoop();
+        };
+    </script>
+</body>
+</html>
