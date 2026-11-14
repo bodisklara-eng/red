@@ -1,0 +1,1772 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Laborator Interactiv: Prelucrarea Cifrelor unui Număr — Animații și Exerciții</title>
+<style>
+  :root {
+    --bg: #eef2f6;
+    --surface: #ffffff;
+    --primary: #1b365d;
+    --primary-light: #2563eb;
+    --accent: #f59e0b;
+    --accent-dark: #d97706;
+    --success: #059669;
+    --danger: #dc2626;
+    --text: #0f172a;
+    --muted: #475569;
+    --border: #cbd5e1;
+    --code-bg: #0f172a;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.5;
+  }
+  header {
+    background: linear-gradient(135deg, #0f172a 0%, #1b365d 60%, #1e40af 100%);
+    color: #ffffff;
+    padding: 0.9rem 1.4rem;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    box-shadow: 0 4px 14px rgba(15, 23, 42, 0.18);
+  }
+  header h1 {
+    font-size: 1.25rem;
+    font-weight: 700;
+  }
+  header p {
+    font-size: 0.83rem;
+    color: #cbd5e1;
+  }
+  .header-actions {
+    display: flex;
+    gap: 0.6rem;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+  .pill-btn {
+    background: rgba(255, 255, 255, 0.14);
+    border: 1px solid rgba(255, 255, 255, 0.28);
+    color: #ffffff;
+    padding: 0.4rem 0.85rem;
+    border-radius: 999px;
+    font-size: 0.83rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .pill-btn:hover {
+    background: rgba(255, 255, 255, 0.26);
+  }
+  .tabs-bar {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 0.55rem 1.25rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+    justify-content: center;
+  }
+  .tab-btn {
+    border: 1px solid var(--border);
+    background: #f8fafc;
+    color: var(--text);
+    padding: 0.45rem 0.9rem;
+    border-radius: 10px;
+    font-weight: 600;
+    font-size: 0.86rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+  .tab-btn:hover {
+    border-color: var(--primary-light);
+    background: #eff6ff;
+  }
+  .tab-btn.active {
+    background: var(--primary);
+    color: #ffffff;
+    border-color: var(--primary);
+    box-shadow: 0 3px 10px rgba(27, 54, 93, 0.25);
+  }
+  .layout {
+    max-width: 1360px;
+    margin: 1rem auto;
+    padding: 0 1rem 1.75rem 1rem;
+    display: grid;
+    grid-template-columns: 1.55fr 1fr;
+    gap: 1.2rem;
+  }
+  @media (max-width: 1020px) {
+    .layout { grid-template-columns: 1fr; }
+  }
+  .card {
+    background: var(--surface);
+    border-radius: 14px;
+    border: 1px solid var(--border);
+    box-shadow: 0 4px 14px rgba(15, 23, 42, 0.05);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+  .card-header {
+    padding: 0.72rem 1.1rem;
+    background: #f8fafc;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  .card-title {
+    font-weight: 700;
+    font-size: 0.96rem;
+    color: var(--primary);
+  }
+  .badge {
+    font-size: 0.78rem;
+    background: #dbeafe;
+    color: #1e40af;
+    padding: 0.2rem 0.65rem;
+    border-radius: 999px;
+    font-weight: 600;
+    font-family: 'Consolas', monospace;
+  }
+  .controls-bar {
+    padding: 0.7rem 1.1rem;
+    background: #f8fafc;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.55rem;
+  }
+  .input-group {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+  .input-group label {
+    font-weight: 600;
+    font-size: 0.88rem;
+  }
+  input[type="number"], input[type="text"] {
+    padding: 0.42rem 0.65rem;
+    border: 2px solid var(--border);
+    border-radius: 8px;
+    font-size: 0.95rem;
+    font-weight: 700;
+    font-family: 'Consolas', monospace;
+    color: var(--primary);
+  }
+  input[type="number"] { width: 125px; }
+  input[type="text"] { width: 165px; }
+  input:focus {
+    outline: none;
+    border-color: var(--primary-light);
+  }
+  .btn {
+    border: none;
+    padding: 0.46rem 0.9rem;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.86rem;
+    cursor: pointer;
+    transition: transform 0.1s, background 0.2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+  .btn:active { transform: scale(0.97); }
+  .btn-cut {
+    background: var(--accent);
+    color: #0f172a;
+    box-shadow: 0 2px 8px rgba(245, 158, 11, 0.35);
+  }
+  .btn-cut:hover { background: var(--accent-dark); color: #ffffff; }
+  .btn-cut:disabled {
+    background: #94a3b8;
+    color: #ffffff;
+    cursor: not-allowed;
+    box-shadow: none;
+  }
+  .btn-primary {
+    background: var(--primary-light);
+    color: #ffffff;
+  }
+  .btn-primary:hover { background: #1d4ed8; }
+  .btn-success {
+    background: var(--success);
+    color: #ffffff;
+  }
+  .btn-success:hover { background: #047857; }
+  .btn-outline {
+    background: #ffffff;
+    border: 1px solid var(--border);
+    color: var(--text);
+  }
+  .btn-outline:hover { background: #f1f5f9; }
+
+  .digit-pad {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+    align-items: center;
+  }
+  .digit-key {
+    width: 33px;
+    height: 33px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: #ffffff;
+    font-weight: 700;
+    font-family: 'Consolas', monospace;
+    font-size: 0.98rem;
+    cursor: pointer;
+    color: var(--primary);
+  }
+  .digit-key:hover {
+    background: var(--primary-light);
+    color: #ffffff;
+    border-color: var(--primary-light);
+  }
+
+  .canvas-wrapper {
+    position: relative;
+    width: 100%;
+    background: radial-gradient(circle at top, #ffffff 0%, #f1f5f9 100%);
+  }
+  canvas {
+    display: block;
+    width: 100%;
+    height: 305px;
+  }
+  .formula-banner {
+    padding: 0.65rem 1.1rem;
+    background: #eff6ff;
+    border-top: 1px solid #bfdbfe;
+    font-size: 0.88rem;
+    color: #1e3a8a;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  .formula-pill {
+    font-family: 'Consolas', monospace;
+    background: #ffffff;
+    padding: 0.22rem 0.6rem;
+    border-radius: 6px;
+    border: 1px solid #93c5fd;
+    font-weight: 700;
+  }
+
+  /* Secțiunea de Exerciții / Sarcini interactive */
+  .tasks-section {
+    padding: 0.85rem 1.1rem;
+    background: #ffffff;
+    border-top: 1px solid var(--border);
+  }
+  .tasks-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 0.65rem;
+  }
+  .task-selector {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.38rem;
+  }
+  .task-pill {
+    border: 1px solid var(--border);
+    background: #f8fafc;
+    padding: 0.32rem 0.7rem;
+    border-radius: 999px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .task-pill.active {
+    background: var(--primary-light);
+    color: #ffffff;
+    border-color: var(--primary-light);
+  }
+  .task-pill.solved {
+    background: #d1fae5;
+    color: #065f46;
+    border-color: #059669;
+  }
+  .task-box {
+    background: #f8fafc;
+    border: 1px solid var(--border);
+    border-left: 4px solid var(--primary-light);
+    border-radius: 10px;
+    padding: 0.75rem 0.95rem;
+  }
+  .task-prompt {
+    font-size: 0.9rem;
+    margin-bottom: 0.55rem;
+    color: #0f172a;
+  }
+  .task-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .task-feedback {
+    margin-top: 0.5rem;
+    font-size: 0.86rem;
+    font-weight: 600;
+    min-height: 1.2rem;
+  }
+  .task-feedback.ok { color: var(--success); }
+  .task-feedback.err { color: var(--danger); }
+
+  /* Panou lateral */
+  .side-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 1.1rem;
+  }
+  .vars-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.55rem;
+    padding: 0.85rem 1.1rem;
+  }
+  .var-box {
+    background: #f8fafc;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 0.5rem;
+    text-align: center;
+  }
+  .var-box.highlight {
+    border-color: var(--accent);
+    background: #fffbeb;
+  }
+  .var-name {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--muted);
+    text-transform: uppercase;
+  }
+  .var-val {
+    font-family: 'Consolas', monospace;
+    font-size: 1.25rem;
+    font-weight: 800;
+    color: var(--primary);
+    margin-top: 0.1rem;
+  }
+  .code-box {
+    background: var(--code-bg);
+    color: #e2e8f0;
+    font-family: 'Consolas', 'Courier New', monospace;
+    font-size: 0.84rem;
+    padding: 0.8rem 1rem;
+    line-height: 1.58;
+  }
+  .code-line {
+    padding: 0.08rem 0.45rem;
+    border-radius: 4px;
+  }
+  .code-line.active-line {
+    background: rgba(245, 158, 11, 0.28);
+    color: #fde68a;
+    font-weight: 700;
+    border-left: 3px solid #f59e0b;
+  }
+  .code-comment {
+    color: #94a3b8;
+    font-style: italic;
+  }
+  .trace-wrapper {
+    max-height: 190px;
+    overflow-y: auto;
+    padding: 0 1.1rem 0.9rem 1.1rem;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.82rem;
+    font-family: 'Consolas', monospace;
+  }
+  th {
+    background: #f1f5f9;
+    color: var(--primary);
+    padding: 0.4rem;
+    text-align: center;
+    border-bottom: 2px solid var(--border);
+    position: sticky;
+    top: 0;
+  }
+  td {
+    padding: 0.35rem;
+    text-align: center;
+    border-bottom: 1px solid #e2e8f0;
+  }
+  tr:last-child td {
+    background: #fefce8;
+    font-weight: 700;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div>
+    <h1>Laborator Interactiv: Prelucrarea Cifrelor unui Număr</h1>
+    <p>Animații cu tăierea cifrelor pe bandă de hârtie, modele vizuale și exerciții practice</p>
+  </div>
+  <div class="header-actions">
+    <button class="pill-btn" id="btn-sound" onclick="toggleSound()">🔊 Sunet: PORNIT</button>
+  </div>
+</header>
+
+<div class="tabs-bar" id="tabs-bar">
+  <button class="tab-btn active" data-mode="paperCut" onclick="selectMode('paperCut')">✂️ <span>1. Tăiere pe bandă de hârtie (Suma și Nr. cifre)</span></button>
+  <button class="tab-btn" data-mode="mirror" onclick="selectMode('mirror')">🏭 <span>2. Fabrica de Oglindit</span></button>
+  <button class="tab-btn" data-mode="scale" onclick="selectMode('scale')">⚖️ <span>3. Detectivul cu Balanța (Max)</span></button>
+  <button class="tab-btn" data-mode="slide" onclick="selectMode('slide')">🛝 <span>4. Toboganul Par / Impar</span></button>
+  <button class="tab-btn" data-mode="palindrome" onclick="selectMode('palindrome')">✂️ <span>5. Foarfeca Dublă (Palindrom)</span></button>
+  <button class="tab-btn" data-mode="builder" onclick="selectMode('builder')">🧱 <span>6. Tubul Constructor (×10 + c)</span></button>
+</div>
+
+<div class="layout">
+  <!-- Coloana stângă: Canvas animat + Comenzi + Exerciții -->
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title" id="sim-title">1. Tăiere pe bandă de hârtie: Eliminarea cifrelor de la dreapta la stânga</span>
+      <span class="badge" id="sim-badge">c &lt;- n % 10 | n &lt;- n / 10</span>
+    </div>
+
+    <div class="controls-bar">
+      <div class="input-group" id="number-input-group">
+        <label for="input-n">Număr (n):</label>
+        <input type="number" id="input-n" value="4729" min="1" max="9999999">
+        <button class="btn btn-outline" onclick="resetSim()">Setează</button>
+      </div>
+
+      <div class="digit-pad" id="builder-pad" style="display:none;">
+        <span style="font-weight:600; font-size:0.86rem;">Introdu cifră:</span>
+      </div>
+
+      <button class="btn btn-cut" id="btn-cut" onclick="triggerStep()">✂️ <span id="lbl-cut">Taie cifra (c &lt;- n % 10)</span></button>
+      <button class="btn btn-outline" id="btn-auto" onclick="toggleAuto()">▶️ <span id="lbl-auto">Automat</span></button>
+      <button class="btn btn-outline" onclick="randomNumber()">🎲 <span>Aleator</span></button>
+    </div>
+
+    <div class="canvas-wrapper">
+      <canvas id="simCanvas" width="840" height="305"></canvas>
+    </div>
+
+    <div class="formula-banner">
+      <span id="sim-explanation">Apasă pe «Taie cifra»! Mâna cu foarfeca va tăia cifra din dreapta, iar bucata tăiată va cădea rotindu-se ca o frunză.</span>
+      <span class="formula-pill" id="live-formula">n = 4729</span>
+    </div>
+
+    <!-- Secțiunea de sarcini și exerciții interactive -->
+    <div class="tasks-section">
+      <div class="tasks-header">
+        <span class="card-title">📝 Exerciții și sarcini de rezolvat</span>
+        <div class="task-selector" id="task-selector"></div>
+      </div>
+      <div class="task-box">
+        <div class="task-prompt" id="task-prompt"></div>
+        <div class="task-actions">
+          <button class="btn btn-primary" onclick="loadTaskNumber()">📥 Încarcă numărul în animație</button>
+          <input type="text" id="task-answer" placeholder="Răspunsul tău...">
+          <button class="btn btn-success" onclick="checkTaskAnswer()">✅ Verifică</button>
+          <button class="btn btn-outline" onclick="showTaskHint()">💡 Indiciu</button>
+        </div>
+        <div class="task-feedback" id="task-feedback"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Coloana dreaptă: Variabile, Pseudocod, Tabel de urmărire -->
+  <div class="side-panel">
+    <div class="card">
+      <div class="card-header">
+        <span class="card-title">Starea variabilelor</span>
+      </div>
+      <div class="vars-grid" id="vars-grid"></div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <span class="card-title">Pseudocod</span>
+      </div>
+      <div class="code-box" id="code-box"></div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <span class="card-title">Tabel de urmărire a execuției</span>
+      </div>
+      <div class="trace-wrapper">
+        <table>
+          <thead id="trace-head"></thead>
+          <tbody id="trace-body"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ==========================================
+// DATELE MODURILOR DE SIMULARE
+// ==========================================
+const MODES = {
+  paperCut: {
+    title: "1. Tăiere pe bandă de hârtie: Eliminarea cifrelor de la dreapta la stânga",
+    badge: "c <- n % 10 | n <- n / 10",
+    cutLabel: "Taie cifra (c <- n % 10)",
+    ready: "Apasă pe «Taie cifra»! Mâna cu foarfeca va tăia cifra din dreapta, iar bucata tăiată va cădea rotindu-se ca o frunză.",
+    done: "Toate cifrele au fost tăiate! Numărul a ajuns la 0.",
+    stepMsg: (c, count, sum) => `Cifra tăiată: ${c}. Număr de cifre: ${count}, Suma cifrelor: ${sum}.`,
+    code: [
+      "citește n",
+      "nr_cifre <- 0; suma <- 0",
+      "cât timp n > 0 execută",
+      "    c <- n % 10            // taie ultima cifră",
+      "    nr_cifre <- nr_cifre + 1",
+      "    suma <- suma + c",
+      "    n <- n / 10            // elimină cifra tăiată",
+      "sfârșit cât timp",
+      "scrie nr_cifre, suma"
+    ],
+    vars: ["n (rămas)", "nr_cifre", "suma"],
+    traceCols: ["Pas", "c = n % 10", "nr_cifre", "suma", "n nou"]
+  },
+  mirror: {
+    title: "2. Fabrica de Oglindit: Bandă rulantă și turnul valorilor",
+    badge: "oglindit = oglindit × 10 + c",
+    cutLabel: "Taie și trimite la oglindit",
+    ready: "Apasă «Taie și trimite la oglindit»! Foarfeca taie ultima cifră, iar bucata cade rotindu-se spre turnul oglindit.",
+    done: "Gata! Numărul inițial s-a terminat (n = 0), iar în turn s-a format oglinditul.",
+    stepMsg: (c, prev, next) => `Tăiat: ${c}. Turnul vechi (${prev}) urcă un nivel (×10 = ${prev*10}), dedesubt intră ${c} → ${next}.`,
+    code: [
+      "citește n",
+      "oglindit <- 0",
+      "cât timp n > 0 execută",
+      "    c <- n % 10          // extrage ultima cifră",
+      "    oglindit <- oglindit * 10 + c",
+      "    n <- n / 10          // elimină ultima cifră",
+      "sfârșit cât timp",
+      "scrie oglindit"
+    ],
+    vars: ["n (rămas)", "c (tăiat)", "oglindit"],
+    traceCols: ["Pas", "n > 0", "c = n % 10", "oglindit", "n nou"]
+  },
+  scale: {
+    title: "3. Detectivul cu Balanța: Căutarea cifrei maxime",
+    badge: "dacă c > max atunci max <- c",
+    cutLabel: "Taie și cântărește cifra",
+    ready: "Fiecare cifră tăiată cade în talerul drept. Dacă este mai mare decât Campionul, îi ia locul!",
+    done: "Verificare încheiată! În talerul stâng a rămas cifra maximă.",
+    stepBigger: (c, oldM) => `Cifră nouă: ${c} > ${oldM}! Balanța s-a înclinat, noul campion este ${c}.`,
+    stepSmaller: (c, oldM) => `Cifră nouă: ${c} ≤ ${oldM}. Vechiul campion (${oldM}) rămâne pe taler.`,
+    code: [
+      "citește n",
+      "max <- 0",
+      "cât timp n > 0 execută",
+      "    c <- n % 10",
+      "    dacă c > max atunci max <- c",
+      "    n <- n / 10",
+      "sfârșit cât timp",
+      "scrie max"
+    ],
+    vars: ["n (rămas)", "c (curent)", "max (campion)"],
+    traceCols: ["Pas", "c = n % 10", "c > max?", "max", "n nou"]
+  },
+  slide: {
+    title: "4. Toboganul de Sortare: Cifre Pare sau Impare?",
+    badge: "dacă c % 2 == 0 → Stânga | altfel → Dreapta",
+    cutLabel: "Taie și sortează cifra",
+    ready: "Cifra tăiată cade pe tobogan. Clapeta din mijloc (c % 2 == 0) le separă în două coșuri!",
+    done: "Toate cifrele au ajuns în coșul corespunzător!",
+    stepEven: (c) => `Cifra ${c} este PARĂ (${c} % 2 == 0) → Clapeta se deschide spre STÂNGA!`,
+    stepOdd: (c) => `Cifra ${c} este IMPARĂ (${c} % 2 == 1) → Clapeta se deschide spre DREAPTA!`,
+    code: [
+      "citește n",
+      "nr_pare <- 0; nr_impare <- 0",
+      "cât timp n > 0 execută",
+      "    c <- n % 10",
+      "    dacă c % 2 == 0 atunci nr_pare <- nr_pare + 1",
+      "    altfel nr_impare <- nr_impare + 1",
+      "    n <- n / 10",
+      "sfârșit cât timp"
+    ],
+    vars: ["n (rămas)", "nr_pare", "nr_impare"],
+    traceCols: ["Pas", "c", "c % 2 == 0", "nr_pare", "nr_impare"]
+  },
+  palindrome: {
+    title: "5. Foarfeca Dublă: Este numărul simetric? (Palindrom)",
+    badge: "prima_cifră == ultima_cifră ?",
+    cutLabel: "Taie capetele extreme",
+    ready: "Două foarfeci taie simultan prima și ultima cifră și le compară în centru!",
+    donePal: "SIMETRIC! Toate perechile extreme au coincis → Numărul este PALINDROM.",
+    doneNotPal: "DIFERENȚĂ! Cele două cifre extreme nu coincid → NU este palindrom.",
+    stepMatch: (f, l) => `Stânga (${f}) == Dreapta (${l}) → Coincid! Continuăm spre interior.`,
+    stepMismatch: (f, l) => `Stânga (${f}) ≠ Dreapta (${l}) → Diferență! Ne oprim imediat.`,
+    code: [
+      "// Verificare simultană din ambele capete",
+      "palindrom <- ADEVĂRAT",
+      "cât timp (cel puțin 2 cifre) și palindrom execută",
+      "    prima <- prima_cifră(n); ultima <- n % 10",
+      "    dacă prima != ultima atunci palindrom <- FALS",
+      "    elimină prima și ultima cifră",
+      "sfârșit cât timp",
+      "scrie palindrom"
+    ],
+    vars: ["număr rămas", "prima / ultima", "palindrom"],
+    traceCols: ["Pas", "prima", "ultima", "Egale?", "Rămas"]
+  },
+  builder: {
+    title: "6. Tubul Constructor: Cum se formează numărul invers?",
+    badge: "n = n × 10 + cifra_introdusă",
+    cutLabel: "Introdu cifră",
+    ready: "Apasă butoanele de cifre (0–9)! Fiecare cifră împinge numărul existent spre stânga (×10).",
+    stepBuild: (d, prev, next) => `Introdus: ${d}. Numărul ${prev} glisează la stânga (${prev} × 10 = ${prev*10}), se lipește ${d} → ${next}.`,
+    code: [
+      "n <- 0",
+      "repetă pentru fiecare cifră citită (c):",
+      "    // Numărul existent glisează la stânga (×10)",
+      "    n <- n * 10 + c",
+      "    // Pistolul de lipit fixează noua unitate",
+      "până când nu mai sunt cifre",
+      "scrie n"
+    ],
+    vars: ["cifra (c)", "n anterior × 10", "n construit"],
+    traceCols: ["Pas", "c", "n × 10", "n nou"]
+  }
+};
+
+// ==========================================
+// EXERCIȚII INTERACTIVE PENTRU ELEVI
+// ==========================================
+const TASKS = [
+  {
+    id: 1,
+    label: "Ex. 1: Suma cifrelor",
+    mode: "paperCut",
+    number: 5829,
+    prompt: "Exercițiul 1: Încarcă numărul n = 5829, taie pe rând toate cifrele și scrie suma cifrelor sale.",
+    hint: "Adună fiecare bucată de hârtie tăiată: 9 + 2 + 8 + 5 = ?",
+    answer: "24"
+  },
+  {
+    id: 2,
+    label: "Ex. 2: Numărul de cifre",
+    mode: "paperCut",
+    number: 40720,
+    prompt: "Exercițiul 2: Încarcă numărul n = 40720 și determină câte cifre are (de câte ori se execută bucla).",
+    hint: "Fiecare tăiere cu foarfeca numără o cifră până când n devine 0.",
+    answer: "5"
+  },
+  {
+    id: 3,
+    label: "Ex. 3: Oglinditul numărului",
+    mode: "mirror",
+    number: 349,
+    prompt: "Exercițiul 3: Încarcă numărul n = 349 în «Fabrica de Oglindit» și scrie oglinditul obținut.",
+    hint: "Ultima cifră tăiată devine prima cifră a oglinditului.",
+    answer: "943"
+  },
+  {
+    id: 4,
+    label: "Ex. 4: Cifra maximă",
+    mode: "scale",
+    number: 6294,
+    prompt: "Exercițiul 4: Încarcă numărul n = 6294 în «Detectivul cu Balanța» și scrie cifra maximă.",
+    hint: "Compară fiecare cifră tăiată cu campionul curent (max).",
+    answer: "9"
+  },
+  {
+    id: 5,
+    label: "Ex. 5: Cifre pare",
+    mode: "slide",
+    number: 48352,
+    prompt: "Exercițiul 5: Încarcă numărul n = 48352 în «Toboganul de Sortare» și scrie câte cifre pare conține.",
+    hint: "Verifică condiția c % 2 == 0 pentru fiecare cifră.",
+    answer: "3"
+  },
+  {
+    id: 6,
+    label: "Ex. 6: Palindrom",
+    mode: "palindrome",
+    number: 12321,
+    prompt: "Exercițiul 6: Încarcă numărul n = 12321 în «Foarfeca Dublă». Este palindrom? (Scrie DA sau NU).",
+    hint: "Compară prima cifră cu ultima, apoi pe a doua cu penultima.",
+    answer: "DA"
+  }
+];
+
+let currentTaskIndex = 0;
+let solvedTasks = new Set();
+
+function initTasksUI() {
+  const sel = document.getElementById('task-selector');
+  sel.innerHTML = TASKS.map((t, idx) => {
+    const cls = ['task-pill'];
+    if (idx === currentTaskIndex) cls.push('active');
+    if (solvedTasks.has(t.id)) cls.push('solved');
+    return `<button class="${cls.join(' ')}" onclick="selectTask(${idx})">${t.label}</button>`;
+  }).join('');
+  renderCurrentTask();
+}
+
+function selectTask(idx) {
+  currentTaskIndex = idx;
+  document.getElementById('task-answer').value = '';
+  document.getElementById('task-feedback').textContent = '';
+  document.getElementById('task-feedback').className = 'task-feedback';
+  initTasksUI();
+}
+
+function renderCurrentTask() {
+  const t = TASKS[currentTaskIndex];
+  document.getElementById('task-prompt').textContent = t.prompt;
+}
+
+function loadTaskNumber() {
+  const t = TASKS[currentTaskIndex];
+  selectMode(t.mode, false);
+  document.getElementById('input-n').value = t.number;
+  resetSim();
+}
+
+function showTaskHint() {
+  const t = TASKS[currentTaskIndex];
+  const fb = document.getElementById('task-feedback');
+  fb.className = 'task-feedback';
+  fb.textContent = '💡 ' + t.hint;
+}
+
+function checkTaskAnswer() {
+  const t = TASKS[currentTaskIndex];
+  const userVal = document.getElementById('task-answer').value.trim().toUpperCase();
+  const fb = document.getElementById('task-feedback');
+  if (!userVal) {
+    fb.className = 'task-feedback err';
+    fb.textContent = 'Introdu un răspuns înainte de verificare.';
+    return;
+  }
+  if (userVal === t.answer.toUpperCase()) {
+    solvedTasks.add(t.id);
+    playSound('win');
+    fb.className = 'task-feedback ok';
+    fb.textContent = `✅ Corect! Răspunsul este ${t.answer}.`;
+    initTasksUI();
+  } else {
+    playSound('buzz');
+    fb.className = 'task-feedback err';
+    fb.textContent = '❌ Încă nu este corect. Rulează animația pas cu pas și încearcă din nou!';
+  }
+}
+
+// ==========================================
+// SINTETIZATOR AUDIO (Web Audio API)
+// ==========================================
+let soundEnabled = true;
+let audioCtx = null;
+
+function playSound(type) {
+  if (!soundEnabled) return;
+  try {
+    if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    if (audioCtx.state === 'suspended') audioCtx.resume();
+    const now = audioCtx.currentTime;
+
+    if (type === 'snip') {
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(1350, now);
+      osc.frequency.exponentialRampToValueAtTime(340, now + 0.085);
+      gain.gain.setValueAtTime(0.18, now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.085);
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      osc.start(now);
+      osc.stop(now + 0.085);
+    } else if (type === 'pop') {
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(440, now);
+      osc.frequency.exponentialRampToValueAtTime(700, now + 0.11);
+      gain.gain.setValueAtTime(0.15, now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.11);
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      osc.start(now);
+      osc.stop(now + 0.11);
+    } else if (type === 'win') {
+      [523.25, 659.25, 783.99].forEach((freq, idx) => {
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(freq, now + idx * 0.07);
+        gain.gain.setValueAtTime(0.14, now + idx * 0.07);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.07 + 0.22);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start(now + idx * 0.07);
+        osc.stop(now + idx * 0.07 + 0.22);
+      });
+    } else if (type === 'buzz') {
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.type = 'sawtooth';
+      osc.frequency.setValueAtTime(160, now);
+      osc.frequency.linearRampToValueAtTime(110, now + 0.24);
+      gain.gain.setValueAtTime(0.14, now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.24);
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      osc.start(now);
+      osc.stop(now + 0.24);
+    }
+  } catch (e) {}
+}
+
+function toggleSound() {
+  soundEnabled = !soundEnabled;
+  document.getElementById('btn-sound').textContent = soundEnabled ? "🔊 Sunet: PORNIT" : "🔇 Sunet: OPRIT";
+}
+
+// ==========================================
+// STARE ȘI MOTOR DE ANIMAȚIE
+// ==========================================
+let currentMode = 'paperCut';
+let autoTimer = null;
+
+let state = {
+  digits: [4, 7, 2, 9],
+  stepCount: 0,
+  done: false,
+  anim: null,
+  cutCount: 0,
+  cutSum: 0,
+  fallenLeaves: [],
+  mirrorTower: [],
+  mirrorVal: 0,
+  maxVal: 0,
+  scaleAngle: 0,
+  targetScaleAngle: 0,
+  evenList: [],
+  oddList: [],
+  gateAngle: 0,
+  isPal: true,
+  palPairs: [],
+  builtDigits: [],
+  builtVal: 0,
+  lastC: null
+};
+
+const canvas = document.getElementById('simCanvas');
+const ctx = canvas.getContext('2d');
+
+const pad = document.getElementById('builder-pad');
+for (let d = 0; d <= 9; d++) {
+  const b = document.createElement('button');
+  b.className = 'digit-key';
+  b.textContent = d;
+  b.onclick = () => dropBuilderDigit(d);
+  pad.appendChild(b);
+}
+
+function selectMode(mode, shouldReset = true) {
+  stopAuto();
+  currentMode = mode;
+  document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.mode === mode);
+  });
+
+  const isBuilder = (mode === 'builder');
+  document.getElementById('number-input-group').style.display = isBuilder ? 'none' : 'flex';
+  document.getElementById('btn-cut').style.display = isBuilder ? 'none' : 'inline-flex';
+  document.getElementById('btn-auto').style.display = isBuilder ? 'none' : 'inline-flex';
+  document.getElementById('builder-pad').style.display = isBuilder ? 'flex' : 'none';
+
+  if (shouldReset) {
+    resetSim();
+  }
+}
+
+function randomNumber() {
+  stopAuto();
+  if (currentMode === 'builder') {
+    resetSim();
+    let i = 0;
+    const t = setInterval(() => {
+      const d = (i === 0) ? Math.floor(Math.random() * 8) + 1 : Math.floor(Math.random() * 10);
+      dropBuilderDigit(d);
+      i++;
+      if (i >= 4) clearInterval(t);
+    }, 650);
+    return;
+  }
+  const examples = currentMode === 'palindrome'
+    ? [12321, 45654, 12341, 7887, 94529, 30503]
+    : [4729, 8351, 2946, 5184, 7039, 6492];
+  const pick = examples[Math.floor(Math.random() * examples.length)];
+  document.getElementById('input-n').value = pick;
+  resetSim();
+}
+
+function resetSim() {
+  stopAuto();
+  let raw = parseInt(document.getElementById('input-n').value, 10);
+  if (isNaN(raw) || raw < 1) raw = 4729;
+  if (raw > 9999999) raw = 9999999;
+  document.getElementById('input-n').value = raw;
+
+  state = {
+    digits: String(raw).split('').map(Number),
+    stepCount: 0,
+    done: false,
+    anim: null,
+    cutCount: 0,
+    cutSum: 0,
+    fallenLeaves: [],
+    mirrorTower: [],
+    mirrorVal: 0,
+    maxVal: 0,
+    scaleAngle: 0,
+    targetScaleAngle: 0,
+    evenList: [],
+    oddList: [],
+    gateAngle: 0,
+    isPal: true,
+    palPairs: [],
+    builtDigits: [],
+    builtVal: 0,
+    lastC: null
+  };
+
+  document.getElementById('btn-cut').disabled = false;
+  document.getElementById('trace-body').innerHTML = '';
+  updateTexts();
+  renderSidePanel(-1);
+}
+
+function updateTexts() {
+  const m = MODES[currentMode];
+  document.getElementById('lbl-cut').textContent = m.cutLabel;
+  document.getElementById('lbl-auto').textContent = autoTimer ? "Oprește" : "Automat";
+  document.getElementById('sim-title').textContent = m.title;
+  document.getElementById('sim-badge').textContent = m.badge;
+  if (state.stepCount === 0 && !state.anim) {
+    document.getElementById('sim-explanation').textContent = m.ready;
+    document.getElementById('live-formula').textContent = currentMode === 'builder'
+      ? 'n = 0'
+      : `n = ${state.digits.join('')}`;
+  }
+}
+
+function toggleAuto() {
+  if (autoTimer) {
+    stopAuto();
+  } else {
+    if (state.done) resetSim();
+    triggerStep();
+    autoTimer = setInterval(() => {
+      if (state.done) {
+        stopAuto();
+      } else if (!state.anim) {
+        triggerStep();
+      }
+    }, 1250);
+    updateTexts();
+  }
+}
+
+function stopAuto() {
+  if (autoTimer) {
+    clearInterval(autoTimer);
+    autoTimer = null;
+    updateTexts();
+  }
+}
+
+// ==========================================
+// LOGICA PAȘILOR ȘI PORNIREA ANIMAȚIEI
+// ==========================================
+function triggerStep() {
+  if (state.anim || state.done) return;
+  const m = MODES[currentMode];
+
+  if (currentMode === 'paperCut') {
+    if (state.digits.length === 0) return;
+    const c = state.digits.pop();
+    state.stepCount++;
+    state.lastC = c;
+    playSound('snip');
+
+    state.anim = {
+      type: 'paperCut',
+      c: c,
+      t: 0,
+      duration: 68,
+      onComplete: () => {
+        state.cutCount++;
+        state.cutSum += c;
+        state.fallenLeaves.push(c);
+        playSound('pop');
+        const remStr = state.digits.length ? state.digits.join('') : '0';
+        document.getElementById('sim-explanation').textContent = m.stepMsg(c, state.cutCount, state.cutSum);
+        document.getElementById('live-formula').textContent = `c = ${c} | suma = ${state.cutSum} | n = ${remStr}`;
+        addTraceRow([state.stepCount, c, state.cutCount, state.cutSum, remStr]);
+        if (state.digits.length === 0) {
+          state.done = true;
+          document.getElementById('btn-cut').disabled = true;
+          document.getElementById('sim-explanation').textContent = m.done;
+          playSound('win');
+        }
+        renderSidePanel(6);
+      }
+    };
+    renderSidePanel(3);
+  }
+  else if (currentMode === 'mirror') {
+    if (state.digits.length === 0) return;
+    const c = state.digits.pop();
+    const prevVal = state.mirrorVal;
+    const nextVal = prevVal * 10 + c;
+    state.stepCount++;
+    state.lastC = c;
+    playSound('snip');
+
+    state.anim = {
+      type: 'mirror',
+      c: c,
+      t: 0,
+      duration: 68,
+      onComplete: () => {
+        state.mirrorTower.push(c);
+        state.mirrorVal = nextVal;
+        playSound('pop');
+        const remStr = state.digits.length ? state.digits.join('') : '0';
+        document.getElementById('sim-explanation').textContent = m.stepMsg(c, prevVal, nextVal);
+        document.getElementById('live-formula').textContent = `${prevVal} × 10 + ${c} = ${nextVal}`;
+        addTraceRow([state.stepCount, 'DA', c, nextVal, remStr]);
+        if (state.digits.length === 0) {
+          state.done = true;
+          document.getElementById('btn-cut').disabled = true;
+          document.getElementById('sim-explanation').textContent = m.done;
+          playSound('win');
+        }
+        renderSidePanel(4);
+      }
+    };
+    renderSidePanel(3);
+  }
+  else if (currentMode === 'scale') {
+    if (state.digits.length === 0) return;
+    const c = state.digits.pop();
+    const oldMax = state.maxVal;
+    const isBigger = c > oldMax;
+    state.stepCount++;
+    state.lastC = c;
+    playSound('snip');
+
+    state.anim = {
+      type: 'scale',
+      c: c,
+      isBigger: isBigger,
+      t: 0,
+      duration: 66,
+      onComplete: () => {
+        if (isBigger) {
+          state.maxVal = c;
+          state.targetScaleAngle = -0.22;
+          playSound('win');
+          document.getElementById('sim-explanation').textContent = m.stepBigger(c, oldMax);
+        } else {
+          state.targetScaleAngle = 0.22;
+          playSound('pop');
+          document.getElementById('sim-explanation').textContent = m.stepSmaller(c, oldMax);
+        }
+        setTimeout(() => { state.targetScaleAngle = 0; }, 450);
+        const remStr = state.digits.length ? state.digits.join('') : '0';
+        document.getElementById('live-formula').textContent = `max(${oldMax}, ${c}) = ${state.maxVal}`;
+        addTraceRow([state.stepCount, c, isBigger ? 'DA' : 'NU', state.maxVal, remStr]);
+        if (state.digits.length === 0) {
+          state.done = true;
+          document.getElementById('btn-cut').disabled = true;
+          document.getElementById('sim-explanation').textContent = m.done;
+        }
+        renderSidePanel(4);
+      }
+    };
+    renderSidePanel(3);
+  }
+  else if (currentMode === 'slide') {
+    if (state.digits.length === 0) return;
+    const c = state.digits.pop();
+    const isEven = (c % 2 === 0);
+    state.stepCount++;
+    state.lastC = c;
+    playSound('snip');
+
+    state.anim = {
+      type: 'slide',
+      c: c,
+      isEven: isEven,
+      t: 0,
+      duration: 68,
+      onComplete: () => {
+        if (isEven) {
+          state.evenList.push(c);
+          document.getElementById('sim-explanation').textContent = m.stepEven(c);
+        } else {
+          state.oddList.push(c);
+          document.getElementById('sim-explanation').textContent = m.stepOdd(c);
+        }
+        playSound('pop');
+        document.getElementById('live-formula').textContent = `${c} % 2 = ${c % 2}`;
+        addTraceRow([state.stepCount, c, isEven ? 'DA' : 'NU', state.evenList.length, state.oddList.length]);
+        if (state.digits.length === 0) {
+          state.done = true;
+          document.getElementById('btn-cut').disabled = true;
+          document.getElementById('sim-explanation').textContent = m.done;
+          playSound('win');
+        }
+        renderSidePanel(isEven ? 4 : 5);
+      }
+    };
+    renderSidePanel(3);
+  }
+  else if (currentMode === 'palindrome') {
+    if (state.digits.length <= 1) {
+      state.done = true;
+      document.getElementById('btn-cut').disabled = true;
+      document.getElementById('sim-explanation').textContent = m.donePal;
+      playSound('win');
+      return;
+    }
+    const first = state.digits.shift();
+    const last = state.digits.pop();
+    const match = (first === last);
+    state.stepCount++;
+    state.lastC = `${first} vs ${last}`;
+    playSound('snip');
+
+    state.anim = {
+      type: 'palindrome',
+      first: first,
+      last: last,
+      match: match,
+      t: 0,
+      duration: 66,
+      onComplete: () => {
+        state.palPairs.push({ first, last, match });
+        const remStr = state.digits.length ? state.digits.join('') : '—';
+        addTraceRow([state.stepCount, first, last, match ? 'DA' : 'NU', remStr]);
+        document.getElementById('live-formula').textContent = `${first} ${match ? '==' : '!='} ${last}`;
+        if (!match) {
+          state.isPal = false;
+          state.done = true;
+          document.getElementById('btn-cut').disabled = true;
+          document.getElementById('sim-explanation').textContent = m.doneNotPal;
+          playSound('buzz');
+        } else if (state.digits.length <= 1) {
+          state.done = true;
+          document.getElementById('btn-cut').disabled = true;
+          document.getElementById('sim-explanation').textContent = m.donePal;
+          playSound('win');
+        } else {
+          document.getElementById('sim-explanation').textContent = m.stepMatch(first, last);
+          playSound('pop');
+        }
+        renderSidePanel(4);
+      }
+    };
+    renderSidePanel(3);
+  }
+}
+
+function dropBuilderDigit(d) {
+  if (state.anim) return;
+  if (state.builtDigits.length >= 7) {
+    resetSim();
+  }
+  const m = MODES.builder;
+  const prevVal = state.builtVal;
+  const nextVal = prevVal * 10 + d;
+  state.stepCount++;
+  state.lastC = d;
+  playSound('pop');
+
+  state.anim = {
+    type: 'builder',
+    d: d,
+    t: 0,
+    duration: 46,
+    onComplete: () => {
+      state.builtDigits.push(d);
+      state.builtVal = nextVal;
+      document.getElementById('sim-explanation').textContent = m.stepBuild(d, prevVal, nextVal);
+      document.getElementById('live-formula').textContent = `${prevVal} × 10 + ${d} = ${nextVal}`;
+      addTraceRow([state.stepCount, d, prevVal * 10, nextVal]);
+      renderSidePanel(3);
+    }
+  };
+  renderSidePanel(3);
+}
+
+// ==========================================
+// RANDARE PANOU LATERAL
+// ==========================================
+function renderSidePanel(activeLine = -1) {
+  const m = MODES[currentMode];
+
+  const vGrid = document.getElementById('vars-grid');
+  let vals = [];
+  if (currentMode === 'paperCut') {
+    vals = [state.digits.length ? state.digits.join('') : '0', state.cutCount, state.cutSum];
+  } else if (currentMode === 'mirror') {
+    vals = [state.digits.length ? state.digits.join('') : '0', state.lastC ?? '—', state.mirrorVal];
+  } else if (currentMode === 'scale') {
+    vals = [state.digits.length ? state.digits.join('') : '0', state.lastC ?? '—', state.maxVal];
+  } else if (currentMode === 'slide') {
+    vals = [state.digits.length ? state.digits.join('') : '0', state.evenList.length, state.oddList.length];
+  } else if (currentMode === 'palindrome') {
+    vals = [state.digits.length ? state.digits.join('') : '—', state.lastC ?? '—', state.isPal ? 'DA' : 'NU'];
+  } else if (currentMode === 'builder') {
+    vals = [state.lastC ?? '—', state.builtDigits.length > 1 ? Math.floor(state.builtVal / 10) * 10 : 0, state.builtVal];
+  }
+
+  vGrid.innerHTML = m.vars.map((name, idx) => `
+    <div class="var-box ${idx === 2 ? 'highlight' : ''}">
+      <div class="var-name">${name}</div>
+      <div class="var-val">${vals[idx]}</div>
+    </div>
+  `).join('');
+
+  const cBox = document.getElementById('code-box');
+  cBox.innerHTML = m.code.map((line, idx) => {
+    const parts = line.split('//');
+    const codeHtml = parts.length > 1
+      ? `${parts[0]}<span class="code-comment">//${parts[1]}</span>`
+      : line;
+    return `<div class="code-line ${idx === activeLine ? 'active-line' : ''}">${codeHtml}</div>`;
+  }).join('');
+
+  const tHead = document.getElementById('trace-head');
+  tHead.innerHTML = `<tr>${m.traceCols.map(c => `<th>${c}</th>`).join('')}</tr>`;
+}
+
+function addTraceRow(cells) {
+  const tbody = document.getElementById('trace-body');
+  const tr = document.createElement('tr');
+  tr.innerHTML = cells.map(val => `<td>${val}</td>`).join('');
+  tbody.appendChild(tr);
+  tbody.parentElement.parentElement.scrollTop = tbody.parentElement.parentElement.scrollHeight;
+}
+
+// ==========================================
+// FUNCȚII DE DESENARE PE CANVAS
+// ==========================================
+function drawPaperBox(x, y, w, h, digit, bg = '#ffffff', border = '#1b365d', textColor = '#0f172a', angle = 0, scaleX = 1) {
+  ctx.save();
+  ctx.translate(x + w / 2, y + h / 2);
+  ctx.rotate(angle);
+  ctx.scale(scaleX, 1);
+  ctx.shadowColor = 'rgba(15, 23, 42, 0.14)';
+  ctx.shadowBlur = 7;
+  ctx.shadowOffsetY = 2;
+
+  ctx.fillStyle = bg;
+  ctx.strokeStyle = border;
+  ctx.lineWidth = 2.4;
+  ctx.beginPath();
+  ctx.roundRect(-w / 2, -h / 2, w, h, 8);
+  ctx.fill();
+  ctx.stroke();
+
+  ctx.shadowColor = 'transparent';
+  ctx.fillStyle = textColor;
+  ctx.font = 'bold 26px Consolas, monospace';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText(String(digit), 0, 2);
+  ctx.restore();
+}
+
+function drawHandWithScissors(x, y, snipPhase = 0, flip = false) {
+  ctx.save();
+  ctx.translate(x, y);
+  if (flip) ctx.scale(-1, 1);
+
+  const openAngle = 0.42 * Math.abs(Math.cos(snipPhase * Math.PI * 2));
+
+  ctx.fillStyle = '#fed7aa';
+  ctx.strokeStyle = '#c2410c';
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.roundRect(14, -14, 68, 28, 12);
+  ctx.fill();
+  ctx.stroke();
+
+  ctx.fillStyle = '#fdba74';
+  ctx.beginPath();
+  ctx.roundRect(8, -10, 18, 9, 4);
+  ctx.fill();
+  ctx.beginPath();
+  ctx.roundRect(8, 2, 18, 9, 4);
+  ctx.fill();
+
+  ctx.save();
+  ctx.rotate(-openAngle);
+  ctx.fillStyle = '#94a3b8';
+  ctx.beginPath();
+  ctx.moveTo(0, 0);
+  ctx.lineTo(-38, -7);
+  ctx.lineTo(-44, 0);
+  ctx.closePath();
+  ctx.fill();
+  ctx.strokeStyle = '#dc2626';
+  ctx.lineWidth = 3.5;
+  ctx.beginPath();
+  ctx.arc(16, -10, 9, 0, Math.PI * 2);
+  ctx.stroke();
+  ctx.restore();
+
+  ctx.save();
+  ctx.rotate(openAngle);
+  ctx.fillStyle = '#cbd5e1';
+  ctx.beginPath();
+  ctx.moveTo(0, 0);
+  ctx.lineTo(-38, 7);
+  ctx.lineTo(-44, 0);
+  ctx.closePath();
+  ctx.fill();
+  ctx.strokeStyle = '#dc2626';
+  ctx.lineWidth = 3.5;
+  ctx.beginPath();
+  ctx.arc(16, 10, 9, 0, Math.PI * 2);
+  ctx.stroke();
+  ctx.restore();
+
+  ctx.fillStyle = '#0f172a';
+  ctx.beginPath();
+  ctx.arc(0, 0, 3.2, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.restore();
+}
+
+function drawPaperStrip(digits, centerX, y, label, boxW = 54, boxH = 58) {
+  const totalW = Math.max(digits.length, 1) * boxW;
+  const startX = centerX - totalW / 2;
+
+  ctx.fillStyle = '#334155';
+  ctx.font = 'bold 13px Segoe UI, sans-serif';
+  ctx.textAlign = 'center';
+  ctx.fillText(label, centerX, y - 11);
+
+  if (digits.length === 0) {
+    drawPaperBox(centerX - 36, y, 72, boxH, '0', '#f1f5f9', '#94a3b8', '#94a3b8');
+    return { startX: centerX - 36, endX: centerX + 36, boxW, boxH };
+  }
+
+  digits.forEach((d, i) => {
+    const bx = startX + i * boxW;
+    const isLast = (i === digits.length - 1);
+    drawPaperBox(bx, y, boxW, boxH, d, isLast ? '#fef3c7' : '#ffffff', isLast ? '#f59e0b' : '#1b365d');
+    if (i > 0) {
+      ctx.save();
+      ctx.setLineDash([4, 4]);
+      ctx.strokeStyle = '#dc2626';
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.moveTo(bx, y - 5);
+      ctx.lineTo(bx, y + boxH + 5);
+      ctx.stroke();
+      ctx.restore();
+    }
+  });
+
+  return { startX, endX: startX + totalW, boxW, boxH };
+}
+
+// ==========================================
+// BUCLA PRINCIPALĂ DE ANIMAȚIE (60 FPS)
+// ==========================================
+let beltOffset = 0;
+
+function renderLoop() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  if (state.anim) {
+    state.anim.t++;
+    if (state.anim.t >= state.anim.duration) {
+      const cb = state.anim.onComplete;
+      state.anim = null;
+      if (cb) cb();
+    }
+  }
+
+  // MOD 1: TĂIERE PE BANDĂ DE HÂRTIE — APROPIAT DE TAVA DE COLECTARE
+  if (currentMode === 'paperCut') {
+    const stripY = 34;
+    const stripH = 56;
+    const stripInfo = drawPaperStrip(state.digits, 420, stripY, 'Bandă de hârtie cu numărul (n)', 54, stripH);
+    const cutX = stripInfo.endX;
+
+    // Tava de colectare apropiată imediat dedesubt
+    const trayLabelY = 192;
+    const trayY = 200;
+    const trayH = 56;
+    ctx.fillStyle = '#e2e8f0';
+    ctx.strokeStyle = '#94a3b8';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.roundRect(140, trayY, 560, trayH, 12);
+    ctx.fill();
+    ctx.stroke();
+
+    ctx.fillStyle = '#334155';
+    ctx.font = 'bold 13px Segoe UI, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Cifre tăiate (colectate de la dreapta la stânga)', 420, trayLabelY);
+
+    // Cifrele deja căzute în tavă
+    state.fallenLeaves.forEach((d, idx) => {
+      const lx = 158 + idx * 58;
+      drawPaperBox(lx, trayY + 6, 46, 44, d, '#fef3c7', '#d97706');
+    });
+
+    if (state.anim && state.anim.type === 'paperCut') {
+      const p = state.anim.t / state.anim.duration;
+      if (p < 0.32) {
+        drawHandWithScissors(cutX + 24, stripY + 28, p * 3.1);
+        drawPaperBox(cutX, stripY, 54, stripH, state.anim.c, '#fef3c7', '#dc2626');
+      } else {
+        // Căderea rotindu-se ca o frunză între bandă și tavă
+        const fallP = (p - 0.32) / 0.68;
+        const targetX = 158 + state.fallenLeaves.length * 58;
+        const curX = cutX + (targetX - cutX) * fallP + Math.sin(fallP * Math.PI * 3.5) * 30 * (1 - fallP * 0.55);
+        const curY = stripY + fallP * (trayY + 6 - stripY);
+        const leafAngle = Math.sin(fallP * Math.PI * 4) * 0.52;
+        const leafScale = 0.76 + 0.24 * Math.cos(fallP * Math.PI * 5);
+        drawPaperBox(curX, curY, 52, stripH, state.anim.c, '#fde68a', '#f59e0b', '#0f172a', leafAngle, leafScale);
+      }
+    } else if (state.digits.length > 0 && !state.done) {
+      drawHandWithScissors(cutX + 26, stripY + 28, 0);
+    }
+  }
+
+  // MOD 2: FABRICA DE OGLINDIT
+  else if (currentMode === 'mirror') {
+    const stripInfo = drawPaperStrip(state.digits, 560, 34, 'Bandă de hârtie (n)', 52, 54);
+    const cutX = stripInfo.endX;
+
+    beltOffset = (beltOffset + (state.anim ? 2.5 : 0.4)) % 24;
+    ctx.fillStyle = '#334155';
+    ctx.beginPath();
+    ctx.roundRect(140, 232, 560, 24, 12);
+    ctx.fill();
+    ctx.strokeStyle = '#94a3b8';
+    ctx.lineWidth = 2;
+    for (let x = 160 + beltOffset; x < 685; x += 24) {
+      ctx.beginPath();
+      ctx.moveTo(x, 236);
+      ctx.lineTo(x - 8, 252);
+      ctx.stroke();
+    }
+    ctx.fillStyle = '#475569';
+    ctx.font = 'bold 12px Segoe UI, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('BANDĂ RULANTĂ (× 10)', 420, 274);
+
+    ctx.fillStyle = '#1b365d';
+    ctx.font = 'bold 13px Segoe UI, sans-serif';
+    ctx.fillText('Turn oglindit', 195, 24);
+
+    const towerLift = (state.anim && state.anim.type === 'mirror' && state.anim.t > 36)
+      ? ((state.anim.t - 36) / 32) * 42
+      : 0;
+
+    state.mirrorTower.forEach((d, idx) => {
+      const fromBottom = state.mirrorTower.length - 1 - idx;
+      const ty = 186 - fromBottom * 42 - towerLift;
+      drawPaperBox(168, ty, 50, 38, d, '#dbeafe', '#2563eb', '#1b365d');
+    });
+
+    if (state.anim && state.anim.type === 'mirror') {
+      const p = state.anim.t / state.anim.duration;
+      if (p < 0.3) {
+        drawHandWithScissors(cutX + 24, 62, p * 3.3);
+        drawPaperBox(cutX, 34, 52, 54, state.anim.c, '#fef3c7', '#dc2626');
+      } else if (p < 0.65) {
+        const dropP = (p - 0.3) / 0.35;
+        const dy = 34 + dropP * 154;
+        const sway = Math.sin(dropP * Math.PI * 3) * 18 * (1 - dropP * 0.5);
+        const leafAngle = Math.sin(dropP * Math.PI * 3.5) * 0.45;
+        drawPaperBox(cutX + sway, dy, 52, 54, state.anim.c, '#fde68a', '#f59e0b', '#0f172a', leafAngle);
+      } else {
+        const slideP = (p - 0.65) / 0.35;
+        const sx = cutX - slideP * (cutX - 168);
+        drawPaperBox(sx, 188, 50, 38, state.anim.c, '#fde68a', '#f59e0b');
+      }
+    } else if (state.digits.length > 0 && !state.done) {
+      drawHandWithScissors(cutX + 26, 62, 0);
+    }
+  }
+
+  // MOD 3: DETECTIVUL CU BALANȚA
+  else if (currentMode === 'scale') {
+    const stripInfo = drawPaperStrip(state.digits, 420, 32, 'Bandă de hârtie (n)', 52, 52);
+    const cutX = stripInfo.endX;
+
+    state.scaleAngle += (state.targetScaleAngle - state.scaleAngle) * 0.15;
+
+    ctx.fillStyle = '#334155';
+    ctx.beginPath();
+    ctx.roundRect(350, 272, 140, 16, 6);
+    ctx.fill();
+    ctx.fillRect(413, 155, 14, 117);
+
+    ctx.save();
+    ctx.translate(420, 160);
+    ctx.rotate(state.scaleAngle);
+    ctx.fillStyle = '#0f172a';
+    ctx.fillRect(-155, -5, 310, 9);
+
+    ctx.strokeStyle = '#64748b';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(-145, 0); ctx.lineTo(-175, 46);
+    ctx.moveTo(-145, 0); ctx.lineTo(-115, 46);
+    ctx.stroke();
+    ctx.fillStyle = '#059669';
+    ctx.fillRect(-185, 46, 80, 9);
+    drawPaperBox(-171, -4, 50, 48, state.maxVal, '#d1fae5', '#059669', '#065f46');
+
+    ctx.beginPath();
+    ctx.moveTo(145, 0); ctx.lineTo(115, 46);
+    ctx.moveTo(145, 0); ctx.lineTo(175, 46);
+    ctx.stroke();
+    ctx.fillStyle = '#f59e0b';
+    ctx.fillRect(105, 46, 80, 9);
+    ctx.restore();
+
+    ctx.fillStyle = '#065f46';
+    ctx.font = 'bold 12px Segoe UI, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('CAMPION (max)', 275, 248);
+    ctx.fillStyle = '#b45309';
+    ctx.fillText('PROVOCATOR (c)', 565, 248);
+
+    if (state.anim && state.anim.type === 'scale') {
+      const p = state.anim.t / state.anim.duration;
+      if (p < 0.35) {
+        drawHandWithScissors(cutX + 24, 58, p * 2.8);
+        drawPaperBox(cutX, 32, 52, 52, state.anim.c, '#fef3c7', '#dc2626');
+      } else {
+        const dropP = (p - 0.35) / 0.65;
+        const dx = cutX + dropP * (539 - cutX) + Math.sin(dropP * Math.PI * 2.5) * 16;
+        const dy = 32 + dropP * 130;
+        const leafAngle = Math.sin(dropP * Math.PI * 3) * 0.4;
+        drawPaperBox(dx, dy, 50, 48, state.anim.c, '#fde68a', '#f59e0b', '#0f172a', leafAngle);
+      }
+    } else if (state.digits.length > 0 && !state.done) {
+      drawHandWithScissors(cutX + 26, 58, 0);
+    }
+  }
+
+  // MOD 4: TOBOGANUL PAR / IMPAR
+  else if (currentMode === 'slide') {
+    const stripInfo = drawPaperStrip(state.digits, 420, 28, 'Bandă de hârtie (n)', 52, 50);
+    const cutX = stripInfo.endX;
+
+    ctx.strokeStyle = '#94a3b8';
+    ctx.lineWidth = 9;
+    ctx.lineCap = 'round';
+    ctx.beginPath();
+    ctx.moveTo(420, 102); ctx.lineTo(420, 145);
+    ctx.moveTo(420, 145); ctx.lineTo(230, 222);
+    ctx.moveTo(420, 145); ctx.lineTo(610, 222);
+    ctx.stroke();
+
+    let targetGate = 0;
+    if (state.anim && state.anim.type === 'slide') {
+      targetGate = state.anim.isEven ? 0.65 : -0.65;
+    }
+    state.gateAngle += (targetGate - state.gateAngle) * 0.2;
+
+    ctx.save();
+    ctx.translate(420, 145);
+    ctx.rotate(state.gateAngle);
+    ctx.fillStyle = '#dc2626';
+    ctx.fillRect(-4.5, -26, 9, 30);
+    ctx.restore();
+
+    ctx.fillStyle = '#dbeafe';
+    ctx.strokeStyle = '#2563eb';
+    ctx.lineWidth = 2.4;
+    ctx.beginPath();
+    ctx.roundRect(120, 226, 220, 56, 10);
+    ctx.fill(); ctx.stroke();
+
+    ctx.fillStyle = '#fce7f3';
+    ctx.strokeStyle = '#db2777';
+    ctx.beginPath();
+    ctx.roundRect(500, 226, 220, 56, 10);
+    ctx.fill(); ctx.stroke();
+
+    ctx.fillStyle = '#1e40af';
+    ctx.font = 'bold 12px Segoe UI, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText(`PARE (c%2=0): ${state.evenList.join(', ')}`, 230, 298);
+
+    ctx.fillStyle = '#9d174d';
+    ctx.fillText(`IMPARE (c%2=1): ${state.oddList.join(', ')}`, 610, 298);
+
+    state.evenList.slice(-4).forEach((d, idx) => {
+      drawPaperBox(135 + idx * 48, 234, 42, 40, d, '#ffffff', '#2563eb');
+    });
+    state.oddList.slice(-4).forEach((d, idx) => {
+      drawPaperBox(515 + idx * 48, 234, 42, 40, d, '#ffffff', '#db2777');
+    });
+
+    if (state.anim && state.anim.type === 'slide') {
+      const p = state.anim.t / state.anim.duration;
+      if (p < 0.3) {
+        drawHandWithScissors(cutX + 24, 52, p * 3.3);
+        drawPaperBox(cutX, 28, 52, 50, state.anim.c, '#fef3c7', '#dc2626');
+      } else if (p < 0.55) {
+        const p2 = (p - 0.3) / 0.25;
+        const sx = cutX + p2 * (394 - cutX);
+        const sy = 28 + p2 * 88;
+        const leafAngle = Math.sin(p2 * Math.PI * 2) * 0.35;
+        drawPaperBox(sx, sy, 52, 50, state.anim.c, '#fde68a', '#f59e0b', '#0f172a', leafAngle);
+      } else {
+        const p3 = (p - 0.55) / 0.45;
+        const targetX = state.anim.isEven ? 205 : 585;
+        const sx = 394 + p3 * (targetX - 394) + Math.sin(p3 * Math.PI * 3) * 14;
+        const sy = 116 + p3 * 118;
+        const leafAngle = Math.sin(p3 * Math.PI * 3) * 0.4;
+        drawPaperBox(sx, sy, 46, 44, state.anim.c, '#fde68a', '#f59e0b', '#0f172a', leafAngle);
+      }
+    } else if (state.digits.length > 0 && !state.done) {
+      drawHandWithScissors(cutX + 26, 52, 0);
+    }
+  }
+
+  // MOD 5: FOARFECA DUBLĂ (PALINDROM)
+  else if (currentMode === 'palindrome') {
+    const stripInfo = drawPaperStrip(state.digits, 420, 34, 'Bandă de hârtie (n)', 52, 52);
+
+    state.palPairs.forEach((pair, idx) => {
+      const py = 116 + idx * 48;
+      const bg = pair.match ? '#d1fae5' : '#fee2e2';
+      const brd = pair.match ? '#059669' : '#dc2626';
+      drawPaperBox(325, py, 46, 42, pair.first, bg, brd);
+      drawPaperBox(469, py, 46, 42, pair.last, bg, brd);
+      ctx.fillStyle = brd;
+      ctx.font = 'bold 20px Segoe UI, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText(pair.match ? '==' : '≠', 420, py + 23);
+    });
+
+    if (state.anim && state.anim.type === 'palindrome') {
+      const p = state.anim.t / state.anim.duration;
+      const py = 116 + state.palPairs.length * 48;
+      if (p < 0.35) {
+        drawHandWithScissors(stripInfo.startX - 24, 60, p * 2.8, true);
+        drawHandWithScissors(stripInfo.endX + 24, 60, p * 2.8, false);
+        drawPaperBox(stripInfo.startX - 52, 34, 52, 52, state.anim.first, '#fef3c7', '#dc2626');
+        drawPaperBox(stripInfo.endX, 34, 52, 52, state.anim.last, '#fef3c7', '#dc2626');
+      } else {
+        const p2 = (p - 0.35) / 0.65;
+        const sway = Math.sin(p2 * Math.PI * 3) * 14;
+        const leafAngle = Math.sin(p2 * Math.PI * 3) * 0.35;
+        const lx = (stripInfo.startX - 52) + p2 * (325 - (stripInfo.startX - 52)) + sway;
+        const rx = stripInfo.endX + p2 * (469 - stripInfo.endX) - sway;
+        const curY = 34 + p2 * (py - 34);
+        drawPaperBox(lx, curY, 46, 42, state.anim.first, '#fde68a', '#f59e0b', '#0f172a', leafAngle);
+        drawPaperBox(rx, curY, 46, 42, state.anim.last, '#fde68a', '#f59e0b', '#0f172a', -leafAngle);
+      }
+    } else if (state.digits.length > 1 && !state.done) {
+      drawHandWithScissors(stripInfo.startX - 26, 60, 0, true);
+      drawHandWithScissors(stripInfo.endX + 26, 60, 0, false);
+    }
+  }
+
+  // MOD 6: TUBUL CONSTRUCTOR
+  else if (currentMode === 'builder') {
+    ctx.fillStyle = '#e2e8f0';
+    ctx.strokeStyle = '#64748b';
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.roundRect(140, 130, 560, 84, 14);
+    ctx.fill();
+    ctx.stroke();
+
+    ctx.fillStyle = '#334155';
+    ctx.font = 'bold 13px Segoe UI, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('TUB CONSTRUCTOR (×10 + c)', 420, 238);
+
+    ctx.fillStyle = '#cbd5e1';
+    ctx.beginPath();
+    ctx.moveTo(610, 56); ctx.lineTo(675, 56);
+    ctx.lineTo(660, 130); ctx.lineTo(625, 130);
+    ctx.closePath();
+    ctx.fill();
+
+    const shiftLeft = (state.anim && state.anim.type === 'builder')
+      ? (state.anim.t / state.anim.duration) * 58
+      : 0;
+
+    if (state.builtDigits.length === 0 && !state.anim) {
+      ctx.fillStyle = '#94a3b8';
+      ctx.font = 'bold 19px Consolas, monospace';
+      ctx.fillText('GOL (0)', 420, 178);
+    }
+
+    state.builtDigits.forEach((d, idx) => {
+      const fromRight = state.builtDigits.length - 1 - idx;
+      const bx = 615 - fromRight * 58 - shiftLeft;
+      drawPaperBox(bx, 144, 50, 54, d, '#dbeafe', '#2563eb', '#1b365d');
+    });
+
+    if (state.anim && state.anim.type === 'builder') {
+      const p = state.anim.t / state.anim.duration;
+      const dy = 42 + p * 102;
+      const sway = Math.sin(p * Math.PI * 2) * 9;
+      drawPaperBox(615 + sway, dy, 50, 54, state.anim.d, '#fde68a', '#f59e0b');
+    }
+  }
+
+  requestAnimationFrame(renderLoop);
+}
+
+// Inițializare
+initTasksUI();
+resetSim();
+requestAnimationFrame(renderLoop);
+</script>
+</body>
+</html>
