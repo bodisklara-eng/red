@@ -1,0 +1,1615 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Stivă Orizontală 3D – Drag & Drop, Înghețare Strictă LIFO & Schimbare Cifră</title>
+    <style>
+        :root {
+            --bg: #f8fafc;
+            --card: #ffffff;
+            --tx: #0f172a;
+            --mut: #64748b;
+            --bd: #cbd5e1;
+            --ac: #0d9488;
+            --ac-hover: #0f766e;
+            --ice: #38bdf8;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            background: var(--bg);
+            color: var(--tx);
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            padding: 18px;
+            min-height: 100vh;
+        }
+
+        h1 {
+            margin: 0 0 4px;
+            text-align: center;
+            font-size: clamp(20px, 3.6vw, 30px);
+            background: linear-gradient(90deg, #0284c7, #0d9488, #f59e0b, #ef4444);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            font-weight: 800;
+        }
+
+        .sub {
+            text-align: center;
+            color: var(--mut);
+            margin-bottom: 16px;
+            font-size: 13.5px;
+            font-weight: 500;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: 540px 1fr;
+            gap: 20px;
+            max-width: 1400px;
+            margin: auto;
+            align-items: start;
+        }
+
+        @media(max-width: 1060px) {
+            .grid { grid-template-columns: 1fr; }
+        }
+
+        .card {
+            background: var(--card);
+            border: 1px solid var(--bd);
+            border-radius: 20px;
+            padding: 18px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.06);
+            display: flex;
+            flex-direction: column;
+            gap: 13px;
+        }
+
+        .canvas-container {
+            position: relative;
+            width: 100%;
+            height: 320px;
+            background: linear-gradient(180deg, #f0fdfa 0%, #e0f2fe 100%);
+            border-radius: 14px;
+            border: 1px solid #99f6e4;
+            overflow: hidden;
+        }
+
+        canvas {
+            width: 100%;
+            height: 100%;
+            display: block;
+            touch-action: none;
+            cursor: grab;
+        }
+
+        canvas:active {
+            cursor: grabbing;
+        }
+
+        /* Tooltip interactiv pentru schimbarea cifrei la tragere / selectare */
+        .replace-tooltip {
+            position: absolute;
+            display: none;
+            background: rgba(15, 23, 42, 0.96);
+            color: #f8fafc;
+            border: 2px solid #f59e0b;
+            border-radius: 14px;
+            padding: 12px 14px;
+            z-index: 50;
+            box-shadow: 0 14px 32px rgba(0,0,0,0.35);
+            max-width: 280px;
+            animation: popIn 0.18s ease-out;
+        }
+
+        @keyframes popIn {
+            from { opacity: 0; transform: scale(0.92) translateY(6px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+
+        .replace-tooltip-title {
+            font-size: 12.5px;
+            font-weight: 800;
+            color: #fbbf24;
+            margin-bottom: 6px;
+            line-height: 1.35;
+        }
+
+        .replace-tooltip-sub {
+            font-size: 11px;
+            color: #cbd5e1;
+            margin-bottom: 8px;
+            line-height: 1.35;
+        }
+
+        .tooltip-digits-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 5px;
+            margin-bottom: 8px;
+        }
+
+        .tooltip-digit-choice {
+            border: none;
+            border-radius: 7px;
+            padding: 6px 0;
+            font-weight: 800;
+            font-size: 13px;
+            color: #fff;
+            cursor: pointer;
+            transition: transform 0.12s;
+        }
+
+        .tooltip-digit-choice:hover {
+            transform: scale(1.1);
+            outline: 2px solid #fff;
+        }
+
+        .tooltip-actions {
+            display: flex;
+            justify-content: space-between;
+            gap: 6px;
+        }
+
+        .tooltip-btn-small {
+            flex: 1;
+            border: 1px solid #475569;
+            background: #1e293b;
+            color: #e2e8f0;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 5px 8px;
+            border-radius: 7px;
+            cursor: pointer;
+        }
+
+        .tooltip-btn-small:hover {
+            background: #334155;
+        }
+
+        .tower-height-badge {
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            font-size: 11px;
+            font-weight: 800;
+            color: #0f766e;
+            background: rgba(255, 255, 255, 0.94);
+            padding: 5px 12px;
+            border-radius: 20px;
+            border: 1px solid #ccfbf1;
+            z-index: 10;
+            pointer-events: none;
+        }
+
+        .scale-mode-badge {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            font-size: 10.5px;
+            font-weight: 800;
+            color: #7c2d12;
+            background: rgba(255, 247, 237, 0.94);
+            padding: 5px 10px;
+            border-radius: 20px;
+            border: 1px solid #fed7aa;
+            z-index: 10;
+            pointer-events: none;
+        }
+
+        .direction-badge {
+            position: absolute;
+            bottom: 10px;
+            right: 12px;
+            font-size: 11px;
+            font-weight: 800;
+            color: #0284c7;
+            background: rgba(255, 255, 255, 0.92);
+            padding: 4px 10px;
+            border-radius: 999px;
+            border: 1px solid #bae6fd;
+            z-index: 10;
+            pointer-events: none;
+        }
+
+        .palette-box {
+            background: #f8fafc;
+            border: 1px dashed var(--bd);
+            border-radius: 12px;
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .palette-title {
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--tx);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .palette-row {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .digit-disk-btn {
+            border: none;
+            border-radius: 50%;
+            color: #fff;
+            font-weight: 800;
+            display: grid;
+            place-items: center;
+            cursor: pointer;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.18);
+            transition: transform 0.15s ease, box-shadow 0.15s ease;
+            user-select: none;
+        }
+
+        .digit-disk-btn:hover {
+            transform: translateY(-3px) scale(1.08);
+            box-shadow: 0 6px 14px rgba(0,0,0,0.24);
+        }
+
+        .config-box {
+            background: #f1f5f9;
+            padding: 12px;
+            border-radius: 12px;
+            border: 1px solid var(--bd);
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .config-row {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+        }
+
+        .config-row input[type="number"] {
+            width: 68px;
+            padding: 5px;
+            border-radius: 6px;
+            border: 1px solid var(--bd);
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .digits-container {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+            margin-top: 2px;
+        }
+
+        .digit-input-cell {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2px;
+        }
+
+        .digit-input-cell input {
+            width: 34px;
+            height: 36px;
+            font-size: 15px;
+            font-weight: bold;
+            text-align: center;
+            border-radius: 8px;
+            border: 2px solid var(--ac);
+            background: #fff;
+        }
+
+        .digit-input-cell span {
+            font-size: 9px;
+            color: var(--mut);
+            font-weight: 700;
+        }
+
+        .sub-tower-zone {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+            align-items: center;
+            padding: 8px;
+            background: #fff1f2;
+            border-radius: 12px;
+            border: 1px dashed #fecdd3;
+            min-height: 46px;
+        }
+
+        .sub-tower-title {
+            font-size: 12px;
+            font-weight: 700;
+            color: #be123c;
+            margin-bottom: 3px;
+        }
+
+        button.ctrl-btn {
+            font: inherit;
+            cursor: pointer;
+            border: 2px solid var(--bd);
+            background: var(--card);
+            color: var(--tx);
+            padding: 7px 13px;
+            border-radius: 999px;
+            font-weight: 700;
+            font-size: 12px;
+            transition: all 0.2s ease;
+        }
+
+        button.ctrl-btn:hover {
+            border-color: var(--ac);
+            color: var(--ac);
+        }
+
+        .primary-btn {
+            background: var(--ac) !important;
+            color: #fff !important;
+            border-color: var(--ac) !important;
+        }
+        .primary-btn:hover {
+            background: var(--ac-hover) !important;
+        }
+
+        .mode-toggle-btn {
+            background: #fef3c7 !important;
+            border-color: #f59e0b !important;
+            color: #92400e !important;
+        }
+        .mode-toggle-btn:hover {
+            background: #fde68a !important;
+        }
+
+        .controls-row {
+            display: flex;
+            gap: 7px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        #msg {
+            padding: 9px 12px;
+            border-radius: 10px;
+            background: #f0fdfa;
+            border: 1px solid #99f6e4;
+            font-size: 12px;
+            font-weight: 600;
+            color: #0f766e;
+            line-height: 1.4;
+        }
+
+        #msg.bad { border-color: #fecaca; color: #dc2626; background: #fef2f2; }
+        #msg.ice { border-color: #7dd3fc; color: #0369a1; background: #f0f9ff; }
+
+        .pipe-container {
+            background: #090d16;
+            border-radius: 14px;
+            border: 1px solid #334155;
+            overflow: hidden;
+        }
+
+        .pipe-topbar {
+            background: #1e293b;
+            padding: 8px 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #334155;
+        }
+
+        .terminal-dots { display: flex; gap: 6px; }
+        .terminal-dots span { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
+        .dot-red { background: #ef4444; }
+        .dot-yellow { background: #f59e0b; }
+        .dot-green { background: #10b981; }
+
+        .pipe-title { color: #94a3b8; font-size: 11px; font-family: monospace; font-weight: 700; }
+
+        .pipe-content {
+            padding: 13px;
+            font: 12px/1.55 Consolas, monospace;
+            color: #f8fafc;
+            min-height: 220px;
+            max-height: 360px;
+            overflow-y: auto;
+            white-space: normal;
+            word-break: break-word;
+        }
+
+        .lang-tabs { display: flex; gap: 6px; flex-wrap: wrap; }
+        .lang-btn { font-size: 11px; padding: 5px 12px; border-radius: 6px; cursor: pointer; border: 1px solid var(--bd); background: #fff; font-weight: 700; }
+        .lang-btn.active { background: #1e293b; color: #fff; border-color: #1e293b; }
+
+        h3 { font-size: 15px; color: var(--tx); display: flex; align-items: center; gap: 8px; }
+
+        .math-panel {
+            border: 1px solid #99f6e4;
+            background: linear-gradient(145deg, #f0fdfa, #ffffff);
+            border-radius: 14px;
+            padding: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .math-panel h4 { color: #0f766e; font-size: 13px; }
+
+        .power-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(84px, 1fr));
+            gap: 8px;
+            max-height: 165px;
+            overflow-y: auto;
+            padding: 2px;
+        }
+
+        .power-box {
+            background: #0f172a;
+            color: #38bdf8;
+            padding: 8px 6px;
+            border-radius: 10px;
+            text-align: center;
+            font-family: monospace;
+            cursor: pointer;
+            border: 2px solid #334155;
+            transition: all 0.2s;
+            position: relative;
+        }
+        .power-box:hover { border-color: #2dd4bf; background: #1e293b; transform: translateY(-2px); }
+        .power-box .p-val { font-size: 13.5px; font-weight: bold; color: #facc15; }
+        .power-box .p-cif { font-size: 11px; color: #38bdf8; margin-top: 2px; font-weight: 600; }
+
+        @keyframes icePulse {
+            0% {
+                box-shadow: 0 0 4px #38bdf8, inset 0 0 6px rgba(56, 189, 248, 0.35);
+                border-color: #38bdf8;
+                background: #0c4a6e;
+                transform: scale(1);
+            }
+            50% {
+                box-shadow: 0 0 18px #7dd3fc, inset 0 0 14px rgba(186, 230, 253, 0.8);
+                border-color: #e0f2fe;
+                background: #0284c7;
+                transform: scale(1.04);
+            }
+            100% {
+                box-shadow: 0 0 4px #38bdf8, inset 0 0 6px rgba(56, 189, 248, 0.35);
+                border-color: #38bdf8;
+                background: #0c4a6e;
+                transform: scale(1);
+            }
+        }
+
+        @keyframes targetGlow {
+            0% { box-shadow: 0 0 5px #f59e0b; border-color: #f59e0b; }
+            50% { box-shadow: 0 0 16px #fbbf24; border-color: #fef08a; }
+            100% { box-shadow: 0 0 5px #f59e0b; border-color: #f59e0b; }
+        }
+
+        @keyframes zeroBlink {
+            0%, 100% {
+                color: #38bdf8;
+                background: rgba(56, 189, 248, 0.22);
+                text-shadow: 0 0 8px #38bdf8;
+                border-radius: 4px;
+            }
+            50% {
+                color: #ffffff;
+                background: rgba(245, 158, 11, 0.55);
+                text-shadow: 0 0 12px #facc15;
+                border-radius: 4px;
+            }
+        }
+
+        .blink-zero {
+            animation: zeroBlink 0.95s infinite ease-in-out;
+            padding: 0 2px;
+            font-weight: 900;
+            display: inline-block;
+        }
+
+        .power-box.frozen-blink {
+            animation: icePulse 1.05s infinite ease-in-out;
+        }
+        .power-box.frozen-blink .p-val,
+        .power-box.frozen-blink .p-cif {
+            color: #ffffff;
+        }
+
+        .power-box.target-blink {
+            animation: targetGlow 1.1s infinite ease-in-out;
+            background: #451a03;
+        }
+
+        .math-card {
+            background: rgba(15, 23, 42, 0.85);
+            border-left: 4px solid #2dd4bf;
+            padding: 10px 12px;
+            border-radius: 0 8px 8px 0;
+            margin-bottom: 8px;
+        }
+        .math-title { color: #2dd4bf; font-weight: bold; font-size: 11.5px; margin-bottom: 5px; }
+
+        .textbook-sum-wrapper {
+            display: inline-block;
+            background: #0f172a;
+            border: 1px solid #334155;
+            border-radius: 10px;
+            padding: 10px 16px;
+            margin-top: 4px;
+            font-family: 'Consolas', 'Courier New', monospace;
+        }
+
+        .textbook-row {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            font-size: 15px;
+            line-height: 1.65;
+            letter-spacing: 2px;
+        }
+
+        .textbook-row.active-row {
+            background: rgba(245, 158, 11, 0.14);
+            border-radius: 6px;
+            padding: 0 4px;
+        }
+
+        .textbook-plus {
+            color: #94a3b8;
+            margin-right: 10px;
+            font-weight: bold;
+            width: 14px;
+            text-align: center;
+        }
+
+        .textbook-digits {
+            text-align: right;
+            min-width: 110px;
+            font-weight: 800;
+        }
+
+        .textbook-pow-tag {
+            margin-left: 16px;
+            font-size: 11.5px;
+            letter-spacing: 0;
+            color: #94a3b8;
+            min-width: 115px;
+            text-align: left;
+            padding: 2px 7px;
+            border-radius: 6px;
+            background: rgba(30, 41, 59, 0.9);
+            border: 1px solid #334155;
+        }
+
+        .textbook-pow-tag.blink-pow {
+            animation: icePulse 1.05s infinite ease-in-out;
+            color: #ffffff;
+            font-weight: bold;
+        }
+
+        .textbook-line {
+            border-top: 2px solid #facc15;
+            margin: 4px 0;
+        }
+
+        .textbook-total {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            font-size: 16px;
+            font-weight: 900;
+            color: #facc15;
+            letter-spacing: 2px;
+        }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+</head>
+<body>
+
+    <h1>🧩 Stivă Orizontală 3D – Drag & Drop, Înghețare Strictă LIFO & Schimbare Cifră</h1>
+    <p class="sub">Trage discurile spre dreapta pentru a le scoate (Drag & Drop), respectă ordinea LIFO când există blocaj și schimbă cifra din tooltip!</p>
+
+    <div class="grid">
+        <!-- Panou Stânga: 3D Orizontal + Paletă 0..9 + Controale -->
+        <div class="card">
+            <div class="canvas-container" id="canvasContainer">
+                <div class="tower-height-badge" id="heightBadge">NUMĂR: (Tijă goală)</div>
+                <div class="scale-mode-badge" id="scaleModeBadge">Mărime: Valoarea cifrei (0..9)</div>
+                <div class="direction-badge">Trage spre Dreapta ➔ Pop / Schimbă cifra</div>
+
+                <!-- Tooltip interactiv pentru schimbarea cifrei -->
+                <div class="replace-tooltip" id="replaceTooltip">
+                    <div class="replace-tooltip-title" id="tooltipTitle">🔄 Schimbi cifra?</div>
+                    <div class="replace-tooltip-sub" id="tooltipSub">Alege noua cifră cu care vrei să înlocuiești acest disc:</div>
+                    <div class="tooltip-digits-grid" id="tooltipDigitsGrid"></div>
+                    <div class="tooltip-actions">
+                        <button type="button" class="tooltip-btn-small" id="tooltipKeepBtn">Doar scoate (Pop)</button>
+                        <button type="button" class="tooltip-btn-small" id="tooltipCancelBtn">Anulează</button>
+                    </div>
+                </div>
+
+                <canvas id="cv"></canvas>
+            </div>
+
+            <!-- Paletă discuri 0..9 pentru construcție directă -->
+            <div class="palette-box">
+                <div class="palette-title">
+                    <span>🎯 Adaugă cifră pe tijă (Push 0..9):</span>
+                    <span style="font-size:10.5px; color:var(--mut);">Dimensiune proporțională cu cifra</span>
+                </div>
+                <div class="palette-row" id="digitPalette"></div>
+            </div>
+
+            <div class="controls-row" style="justify-content: space-between;">
+                <button id="toggleSizeBtn" class="ctrl-btn mode-toggle-btn" onclick="toggleSizeMode()">🔄 Comută mărimea: După Cifră / Pozițional (Stânga ➔ Dreapta)</button>
+            </div>
+
+            <div class="controls-row" style="justify-content: space-between;">
+                <button id="popBtn" class="ctrl-btn primary-btn" style="background: #ef4444 !important; border-color:#ef4444 !important;">➡ Pop Dreapta (Scoate vârful)</button>
+                <button id="thawBtn" class="ctrl-btn" style="border-color:#38bdf8; color:#0284c7;">🔥 Dezgheață</button>
+                <button id="resetBtn" class="ctrl-btn">↺ Golește Stiva</button>
+            </div>
+
+            <div id="msg">Tija este goală. Încarcă numărul din casete sau adaugă discuri 0..9, apoi trage-le spre dreapta!</div>
+
+            <div>
+                <div class="sub-tower-title">Discuri extrase (în ordinea LIFO, de la dreapta la stânga):</div>
+                <div class="sub-tower-zone" id="subTowerZone">
+                    <span style="font-size: 11px; color: #94a3b8; font-style: italic;">Niciun disc extras încă.</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Panou Dreapta: Configurare Casete, Pipe și Puterile lui 10 -->
+        <div class="card">
+            <h3>⚙️ Configurare Număr (Casete) & Analiză Pozițională</h3>
+
+            <div class="config-box">
+                <div class="config-row">
+                    <label style="font-size: 12px; font-weight: bold;">Lungime număr (1 - 16, tip long long):</label>
+                    <input type="number" id="numLength" min="1" max="16" value="3" onchange="generateDigitInputs()">
+                </div>
+                <div style="font-size: 11px; color: var(--mut);">Introdu cifrele în casete și încarcă-le pe tijă:</div>
+                <div class="digits-container" id="digitsContainer"></div>
+                <button class="ctrl-btn primary-btn" onclick="loadFromBoxes()" style="margin-top: 4px; width: 100%;">Încarcă Numărul din Casete 🚀</button>
+            </div>
+
+            <div class="lang-tabs">
+                <button class="lang-btn active" id="btnMath" onclick="switchLang('math')">🧮 Analiză Matematică & Puteri 10</button>
+                <button class="lang-btn" id="btnCpp" onclick="switchLang('cpp')">C++ (stack)</button>
+                <button class="lang-btn" id="btnPy" onclick="switchLang('python')">Python (LIFO)</button>
+            </div>
+
+            <div class="pipe-container">
+                <div class="pipe-topbar">
+                    <div class="terminal-dots"><span class="dot-red"></span><span class="dot-yellow"></span><span class="dot-green"></span></div>
+                    <div class="pipe-title" id="pipeTitle">stdout – descompunere_manual_clasa_3.log</div>
+                    <div style="font-size:10px; color:#64748b;">UTF-8</div>
+                </div>
+                <div class="pipe-content" id="pipeContent"></div>
+            </div>
+
+            <!-- Puterile lui 10 -->
+            <div class="math-panel">
+                <h4>📈 Puterile lui 10 (Clic pentru detalii în Pipe):</h4>
+                <div class="power-grid" id="powerGrid"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const COLOR_PALETTE = [
+            { c: 0x64748b, hex: '#64748b' }, // 0
+            { c: 0xef4444, hex: '#ef4444' }, // 1
+            { c: 0xf97316, hex: '#f97316' }, // 2
+            { c: 0xf59e0b, hex: '#f59e0b' }, // 3
+            { c: 0x10b981, hex: '#10b981' }, // 4
+            { c: 0x06b6d4, hex: '#06b6d4' }, // 5
+            { c: 0x3b82f6, hex: '#3b82f6' }, // 6
+            { c: 0x6366f1, hex: '#6366f1' }, // 7
+            { c: 0x8b5cf6, hex: '#8b5cf6' }, // 8
+            { c: 0xd946ef, hex: '#d946ef' }  // 9
+        ];
+
+        let stack = [];
+        let subTower = [];
+        let currentView = 'math';
+        let selectedPower = null;
+        let targetIndex = null; // Dacă nu e null, discurile cu index > targetIndex sunt ÎNGHEȚATE și trebuie scoase pe rând!
+        let animatingRing = null;
+        let sizeMode = 'digit';
+
+        // Stare Drag & Drop pe tijă
+        let dragState = {
+            active: false,
+            index: -1,
+            mesh: null,
+            startX: 0,
+            startClientX: 0,
+            startClientY: 0,
+            moved: false
+        };
+
+        const cv = document.getElementById('cv');
+        const canvasContainer = document.getElementById('canvasContainer');
+        const digitPalette = document.getElementById('digitPalette');
+        const digitsContainer = document.getElementById('digitsContainer');
+        const subTowerZone = document.getElementById('subTowerZone');
+        const msg = document.getElementById('msg');
+        const heightBadge = document.getElementById('heightBadge');
+        const scaleModeBadge = document.getElementById('scaleModeBadge');
+        const pipeTitle = document.getElementById('pipeTitle');
+        const pipeContent = document.getElementById('pipeContent');
+        const powerGrid = document.getElementById('powerGrid');
+
+        // Elemente Tooltip
+        const replaceTooltip = document.getElementById('replaceTooltip');
+        const tooltipTitle = document.getElementById('tooltipTitle');
+        const tooltipSub = document.getElementById('tooltipSub');
+        const tooltipDigitsGrid = document.getElementById('tooltipDigitsGrid');
+        const tooltipKeepBtn = document.getElementById('tooltipKeepBtn');
+        const tooltipCancelBtn = document.getElementById('tooltipCancelBtn');
+        let pendingReplaceIndex = null;
+
+        function hideReplaceTooltip() {
+            replaceTooltip.style.display = 'none';
+            pendingReplaceIndex = null;
+        }
+
+        function showReplaceTooltip(idx, clientX, clientY, allowPopOnly) {
+            if (idx < 0 || idx >= stack.length) return;
+            pendingReplaceIndex = idx;
+            const currentDigit = stack[idx];
+            const power = stack.length - 1 - idx;
+
+            tooltipTitle.textContent = `🔄 Schimbi cifra ${currentDigit} (poziția 10^${power})?`;
+            tooltipSub.textContent = allowPopOnly
+                ? `Alege o nouă cifră (0..9) pentru a o înlocui pe tijă, sau scoate discul definitiv (Pop):`
+                : `Alege o nouă cifră (0..9) cu care să înlocuiești cifra ${currentDigit} pe această poziție:`;
+
+            tooltipDigitsGrid.innerHTML = '';
+            for (let d = 0; d <= 9; d++) {
+                const btn = document.createElement('button');
+                btn.type = 'button';
+                btn.className = 'tooltip-digit-choice';
+                btn.style.background = COLOR_PALETTE[d].hex;
+                btn.textContent = d;
+                if (d === currentDigit) {
+                    btn.style.opacity = '0.55';
+                    btn.title = 'Cifra curentă';
+                }
+                btn.addEventListener('click', () => {
+                    const oldVal = stack[idx];
+                    stack[idx] = d;
+                    syncInputsWithStack();
+                    selectedPower = { power: power, digit: d };
+                    showMsg(`🔄 Cifra ${oldVal} de pe poziția 10^${power} a fost schimbată cu ${d}! Număr nou: ${stack.join('')}`, 'ok');
+                    hideReplaceTooltip();
+                    updateUI();
+                });
+                tooltipDigitsGrid.appendChild(btn);
+            }
+
+            tooltipKeepBtn.style.display = allowPopOnly ? 'inline-block' : 'none';
+            tooltipKeepBtn.onclick = () => {
+                hideReplaceTooltip();
+                popRingAnimated();
+            };
+            tooltipCancelBtn.onclick = () => {
+                hideReplaceTooltip();
+                updateUI();
+            };
+
+            const rect = canvasContainer.getBoundingClientRect();
+            let left = clientX - rect.left - 130;
+            let top = clientY - rect.top - 115;
+            if (left < 10) left = 10;
+            if (left > rect.width - 275) left = rect.width - 275;
+            if (top < 10) top = 10;
+            if (top > rect.height - 165) top = rect.height - 165;
+
+            replaceTooltip.style.left = `${left}px`;
+            replaceTooltip.style.top = `${top}px`;
+            replaceTooltip.style.display = 'block';
+        }
+
+        function buildDigitPalette() {
+            digitPalette.innerHTML = '';
+            for (let d = 0; d <= 9; d++) {
+                const btn = document.createElement('button');
+                btn.type = 'button';
+                btn.className = 'digit-disk-btn';
+                const pxSize = 28 + d * 1.6;
+                btn.style.width = `${pxSize}px`;
+                btn.style.height = `${pxSize}px`;
+                btn.style.fontSize = `${12 + Math.floor(d / 3)}px`;
+                btn.style.background = COLOR_PALETTE[d].hex;
+                btn.textContent = d;
+                btn.title = `Adaugă cifra ${d} la capătul din dreapta al stivei (Push)`;
+                btn.addEventListener('click', () => pushDigitFromPalette(d));
+                digitPalette.appendChild(btn);
+            }
+        }
+
+        function pushDigitFromPalette(d) {
+            if (animatingRing) return;
+            hideReplaceTooltip();
+            if (stack.length >= 16) {
+                showMsg('⚠️ Lungimea maximă recomandată (16 cifre, tip long long) a fost atinsă!', 'bad');
+                return;
+            }
+            // Dacă există un blocaj activ, adăugarea unui nou disc în dreapta îl face și pe acesta blocant (înghețat) peste țintă!
+            stack.push(d);
+            selectedPower = { power: 0, digit: d };
+            syncInputsWithStack();
+            if (targetIndex !== null) {
+                const blockers = (stack.length - 1) - targetIndex;
+                showMsg(`➕ push(${d}) -> S-a adăugat discul ${d} în dreapta. Blocajul rămâne activ (${blockers} discuri înghețate peste țintă)!`, 'ice');
+            } else {
+                showMsg(`➕ push(${d}) -> S-a adăugat discul cu cifra ${d} la capătul din dreapta!`, 'ok');
+            }
+            updateUI();
+        }
+
+        function toggleSizeMode() {
+            sizeMode = (sizeMode === 'digit') ? 'positional' : 'digit';
+            if (sizeMode === 'digit') {
+                scaleModeBadge.textContent = 'Mărime: Valoarea cifrei (0..9)';
+                showMsg('📏 Mod activ: Mărimea fiecărui disc este proporțională cu cifra de pe el (0 = mic, 9 = mare).', 'ok');
+            } else {
+                scaleModeBadge.textContent = 'Mărime: Descrescătoare Stânga ➔ Dreapta';
+                showMsg('📐 Mod activ: Mărimea discurilor scade de la stânga la dreapta conform ordinului pozițional (10^k).', 'ok');
+            }
+            updateUI();
+        }
+
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(42, 540 / 320, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ canvas: cv, antialias: true, alpha: true });
+
+        function resizeCanvas() {
+            const width = canvasContainer.clientWidth;
+            const height = canvasContainer.clientHeight;
+            renderer.setSize(width, height);
+            camera.aspect = width / height;
+            camera.updateProjectionMatrix();
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.95);
+        scene.add(ambientLight);
+
+        const dirLight = new THREE.DirectionalLight(0xffffff, 0.8);
+        dirLight.position.set(10, 22, 18);
+        scene.add(dirLight);
+
+        const rodGroup = new THREE.Group();
+        scene.add(rodGroup);
+
+        const baseGeo = new THREE.CylinderGeometry(3.4, 3.7, 0.5, 32);
+        const baseMat = new THREE.MeshStandardMaterial({ color: 0x0d9488, roughness: 0.3 });
+        const base = new THREE.Mesh(baseGeo, baseMat);
+        base.rotation.z = Math.PI / 2;
+        base.position.set(-4.4, 0, 0);
+        rodGroup.add(base);
+
+        const poleGeo = new THREE.CylinderGeometry(0.25, 0.25, 9.0, 32);
+        const poleMat = new THREE.MeshStandardMaterial({ color: 0x94a3b8, metalness: 0.45, roughness: 0.25 });
+        const pole = new THREE.Mesh(poleGeo, poleMat);
+        pole.rotation.z = Math.PI / 2;
+        pole.position.set(0.1, 0, 0);
+        rodGroup.add(pole);
+
+        camera.position.set(0, 1.35, 14.6);
+        camera.lookAt(0, 0, 0);
+
+        let ringMeshes = [];
+        const textureCache = {};
+
+        function getDigitTexture(val, bgHex, isFrozen) {
+            const key = `${val}_${bgHex}_${isFrozen}`;
+            if (textureCache[key]) return textureCache[key];
+
+            const canvas = document.createElement('canvas');
+            canvas.width = 256;
+            canvas.height = 64;
+            const ctx = canvas.getContext('2d');
+
+            ctx.fillStyle = isFrozen ? '#7dd3fc' : bgHex;
+            ctx.fillRect(0, 0, 256, 64);
+
+            ctx.fillStyle = isFrozen ? '#0f172a' : '#ffffff';
+            ctx.font = 'bold 38px Segoe UI, Arial';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+
+            for (let k = 0; k < 4; k++) {
+                ctx.fillText(String(val), 32 + k * 64, 34);
+            }
+
+            const tex = new THREE.CanvasTexture(canvas);
+            tex.wrapS = THREE.RepeatWrapping;
+            tex.wrapT = THREE.RepeatWrapping;
+            textureCache[key] = tex;
+            return tex;
+        }
+
+        function generateDigitInputs(presetDigits = null) {
+            let len = parseInt(document.getElementById('numLength').value) || 3;
+            if (len < 1) len = 1;
+            if (len > 16) len = 16;
+            document.getElementById('numLength').value = len;
+
+            digitsContainer.innerHTML = '';
+            for (let i = 0; i < len; i++) {
+                const cell = document.createElement('div');
+                cell.className = 'digit-input-cell';
+                let val = 0;
+                if (presetDigits && i < presetDigits.length) {
+                    val = presetDigits[i];
+                } else if (i < stack.length) {
+                    val = stack[i];
+                }
+                cell.innerHTML = `
+                    <input type="number" min="0" max="9" value="${val}" id="dig_${i}">
+                    <span>10<sup>${len - 1 - i}</sup></span>
+                `;
+                digitsContainer.appendChild(cell);
+            }
+        }
+
+        function syncInputsWithStack() {
+            let len = Math.max(1, stack.length);
+            document.getElementById('numLength').value = len;
+            digitsContainer.innerHTML = '';
+            for (let i = 0; i < stack.length; i++) {
+                const cell = document.createElement('div');
+                cell.className = 'digit-input-cell';
+                cell.innerHTML = `
+                    <input type="number" min="0" max="9" value="${stack[i]}" id="dig_${i}">
+                    <span>10<sup>${stack.length - 1 - i}</sup></span>
+                `;
+                digitsContainer.appendChild(cell);
+            }
+        }
+
+        function loadFromBoxes() {
+            hideReplaceTooltip();
+            const len = Math.max(1, Math.min(16, parseInt(document.getElementById('numLength').value) || 1));
+            stack = [];
+            subTower = [];
+            targetIndex = null;
+            for (let i = 0; i < len; i++) {
+                const inp = document.getElementById(`dig_${i}`);
+                let val = inp ? parseInt(inp.value) : 0;
+                if (isNaN(val) || val < 0) val = 0;
+                if (val > 9) val = val % 10;
+                if (inp) inp.value = val;
+                stack.push(val);
+            }
+            if (stack.length > 0) {
+                selectedPower = { power: stack.length - 1, digit: stack[0] };
+            }
+            showMsg(`✅ S-au pus pe tijă cele ${len} discuri corespunzătoare numărului ${stack.join('')}! Trage un disc spre dreapta sau fă clic pe el.`, 'ok');
+            updateUI();
+        }
+
+        function createRingMesh(index, totalCount, val, isFrozen, isTarget) {
+            let radius;
+            if (sizeMode === 'digit') {
+                radius = 1.05 + (val / 9) * 1.70;
+            } else {
+                const maxR = 2.75;
+                const minR = 1.05;
+                const step = (maxR - minR) / Math.max(totalCount, 1);
+                radius = maxR - index * step;
+            }
+
+            const tube = 0.29;
+            const geo = new THREE.TorusGeometry(Math.max(radius, 0.85), tube, 18, 50);
+
+            const bgHex = COLOR_PALETTE[val % COLOR_PALETTE.length].hex;
+            const tex = getDigitTexture(val, bgHex, isFrozen);
+
+            let emissiveHex = 0x000000;
+            let emissiveInt = 0;
+            let opacity = 1.0;
+            let transparent = false;
+
+            if (isFrozen) {
+                emissiveHex = 0x0284c7;
+                emissiveInt = 0.45;
+                opacity = 0.90;
+                transparent = true;
+            } else if (isTarget) {
+                emissiveHex = 0xf59e0b;
+                emissiveInt = 0.35;
+            }
+
+            const mat = new THREE.MeshStandardMaterial({
+                map: tex,
+                emissive: emissiveHex,
+                emissiveIntensity: emissiveInt,
+                roughness: isFrozen ? 0.08 : 0.25,
+                metalness: isFrozen ? 0.3 : 0.08,
+                transparent: transparent,
+                opacity: opacity
+            });
+
+            const mesh = new THREE.Mesh(geo, mat);
+            mesh.rotation.y = Math.PI / 2;
+            mesh.userData = { index: index, val: val };
+            return mesh;
+        }
+
+        function updateUI() {
+            subTowerZone.innerHTML = '';
+            if (subTower.length === 0) {
+                subTowerZone.innerHTML = `<span style="font-size: 11px; color: #94a3b8; font-style: italic;">Niciun disc extras încă.</span>`;
+            } else {
+                subTower.forEach((val, idx) => {
+                    const d = document.createElement('div');
+                    d.style.cssText = `width:32px; height:32px; border-radius:8px; display:grid; place-items:center; font-weight:800; color:#fff; background:${COLOR_PALETTE[val % COLOR_PALETTE.length].hex}; cursor:pointer; font-size:13px; box-shadow:0 2px 5px rgba(0,0,0,0.15);`;
+                    d.textContent = val;
+                    d.title = "Clic pentru a pune înapoi la capătul din dreapta (Push)";
+                    d.addEventListener('click', () => restoreFromSubTower(idx));
+                    subTowerZone.appendChild(d);
+                });
+            }
+
+            if (!animatingRing && !dragState.active) {
+                ringMeshes.forEach(m => rodGroup.remove(m));
+                ringMeshes = [];
+
+                const spacing = Math.min(0.70, 7.4 / Math.max(stack.length, 1));
+                stack.forEach((val, pos) => {
+                    const isFrozen = (targetIndex !== null && pos > targetIndex);
+                    const isTarget = (targetIndex !== null && pos === targetIndex);
+                    const m = createRingMesh(pos, stack.length, val, isFrozen, isTarget);
+                    m.position.x = -3.8 + pos * spacing;
+                    rodGroup.add(m);
+                    ringMeshes.push(m);
+                });
+            }
+
+            if (stack.length > 0) {
+                heightBadge.textContent = `NUMĂR PE TIJĂ: ${stack.join('')} (Discuri: ${stack.length})`;
+            } else {
+                heightBadge.textContent = `NUMĂR: (Tijă goală)`;
+            }
+
+            updatePowersOfTen();
+            updatePipeWindow();
+        }
+
+        // --- LOGICA DRAG & DROP PE TIJĂ + BLOCAJ STRICT LIFO ---
+        const raycaster = new THREE.Raycaster();
+        const mouse = new THREE.Vector2();
+
+        function getIntersectedRing(clientX, clientY) {
+            const rect = cv.getBoundingClientRect();
+            mouse.x = ((clientX - rect.left) / rect.width) * 2 - 1;
+            mouse.y = -((clientY - rect.top) / rect.height) * 2 + 1;
+            raycaster.setFromCamera(mouse, camera);
+            const intersects = raycaster.intersectObjects(ringMeshes);
+            return intersects.length > 0 ? intersects[0].object : null;
+        }
+
+        cv.addEventListener('pointerdown', (e) => {
+            if (animatingRing || stack.length === 0) return;
+            const hitMesh = getIntersectedRing(e.clientX, e.clientY);
+            if (!hitMesh) return;
+
+            hideReplaceTooltip();
+            const idx = hitMesh.userData.index;
+
+            dragState.active = true;
+            dragState.index = idx;
+            dragState.mesh = hitMesh;
+            dragState.startX = hitMesh.position.x;
+            dragState.startClientX = e.clientX;
+            dragState.startClientY = e.clientY;
+            dragState.moved = false;
+
+            if (cv.setPointerCapture) {
+                try { cv.setPointerCapture(e.pointerId); } catch (_) {}
+            }
+        });
+
+        cv.addEventListener('pointermove', (e) => {
+            if (!dragState.active || !dragState.mesh) return;
+
+            const deltaPx = e.clientX - dragState.startClientX;
+            if (Math.abs(deltaPx) > 5) {
+                dragState.moved = true;
+            }
+
+            const topIdx = stack.length - 1;
+            // Discul din capătul din dreapta (topIdx) poate fi tras liber spre dreapta
+            if (dragState.index === topIdx) {
+                const moveUnits = Math.max(0, deltaPx * 0.024);
+                dragState.mesh.position.x = dragState.startX + moveUnits;
+                dragState.mesh.rotation.x += 0.08;
+            } else {
+                // Un disc din interior nu poate ieși direct: vibrează ușor / se mișcă foarte puțin pentru a arăta blocajul
+                const clampedMove = Math.max(-0.18, Math.min(0.28, deltaPx * 0.004));
+                dragState.mesh.position.x = dragState.startX + clampedMove;
+            }
+        });
+
+        cv.addEventListener('pointerup', (e) => {
+            if (!dragState.active) return;
+
+            const idx = dragState.index;
+            const deltaPx = e.clientX - dragState.startClientX;
+            const wasDraggedRight = (deltaPx > 32);
+            const wasClicked = !dragState.moved;
+
+            // Resetăm starea drag înainte de a actualiza UI-ul
+            if (dragState.mesh) {
+                dragState.mesh.position.x = dragState.startX;
+            }
+            dragState.active = false;
+            dragState.mesh = null;
+
+            const topIdx = stack.length - 1;
+
+            // CAZUL 1: Utilizatorul a tras discul spre dreapta (Drag & Drop)
+            if (wasDraggedRight) {
+                if (idx === topIdx) {
+                    // Este discul din vârful din dreapta!
+                    // Întrebăm în tooltip dacă dorește să schimbe cifra sau să o scoată (Pop)
+                    selectedPower = { power: 0, digit: stack[idx] };
+                    switchLang('math');
+                    updateUI();
+                    showReplaceTooltip(idx, e.clientX, e.clientY, true);
+                } else {
+                    // Este un disc din interior (blocat de discurile din dreapta lui)!
+                    // REGULA STRICTĂ: Nu deblocăm nimic până nu sunt scoase TOATE discurile blocate!
+                    const blockersCount = topIdx - idx;
+                    const power = stack.length - 1 - idx;
+
+                    // Dacă nu există deja un blocaj sau dacă se blochează acest disc, activăm/menținem înghețarea
+                    if (targetIndex === null || idx < targetIndex) {
+                        targetIndex = idx;
+                    }
+                    selectedPower = { power: power, digit: stack[idx] };
+                    switchLang('math');
+                    updateUI();
+
+                    showMsg(`❄️ BLOCAT (LIFO)! Nu poți trage direct cifra ${stack[idx]}! Mai întâi trebuie să tragi spre dreapta cele ${topIdx - targetIndex} discuri înghețate! (Sau alege din tooltip dacă vrei să schimbi cifra)`, 'ice');
+                    showReplaceTooltip(idx, e.clientX, e.clientY, false);
+                }
+                return;
+            }
+
+            // CAZUL 2: Simplu clic pe un disc
+            if (wasClicked) {
+                handleDiskClick(idx, e.clientX, e.clientY);
+            } else {
+                updateUI();
+            }
+        });
+
+        function handleDiskClick(idx, clientX = null, clientY = null) {
+            const topIdx = stack.length - 1;
+            const power = stack.length - 1 - idx;
+            selectedPower = { power: power, digit: stack[idx] };
+            switchLang('math');
+
+            // Dacă există deja un blocaj activ (targetIndex !== null) și mai sunt discuri înghețate deasupra:
+            if (targetIndex !== null && targetIndex < topIdx) {
+                const remainingBlockers = topIdx - targetIndex;
+                if (idx === topIdx) {
+                    // Utilizatorul dă clic pe discul înghețat din dreapta pentru a-l scoate!
+                    popRingAnimated();
+                    return;
+                } else {
+                    // Nu deblocăm! Păstrăm blocajul activ până când toate discurile înghețate sunt scoase!
+                    showMsg(`❄️ BLOCAJ ACTIV! Mai ai de scos ${remainingBlockers} discuri înghețate din dreapta înainte să se deblocheze stiva!`, 'ice');
+                    updateUI();
+                    if (clientX !== null && clientY !== null) {
+                        showReplaceTooltip(idx, clientX, clientY, false);
+                    }
+                    return;
+                }
+            }
+
+            // Dacă nu există un blocaj nerezolvat:
+            if (idx === topIdx) {
+                // Clic pe discul din capătul din dreapta -> îl scoate (Pop)
+                targetIndex = null;
+                popRingAnimated();
+            } else {
+                // Clic pe un disc din interior -> activează înghețarea tuturor discurilor din dreapta lui!
+                targetIndex = idx;
+                const blockersCount = topIdx - idx;
+                showMsg(`❄️ ÎNGHEȚARE ACTIVĂ: Pentru a elibera cifra ${stack[idx]} (10^${power}), trebuie să scoți pe rând toate cele ${blockersCount} discuri înghețate din dreapta!`, 'ice');
+                updateUI();
+            }
+        }
+
+        document.getElementById('popBtn').addEventListener('click', () => {
+            hideReplaceTooltip();
+            if (stack.length > 0 && !animatingRing) popRingAnimated();
+        });
+
+        document.getElementById('thawBtn').addEventListener('click', () => {
+            hideReplaceTooltip();
+            if (targetIndex !== null && targetIndex < stack.length - 1) {
+                const rem = (stack.length - 1) - targetIndex;
+                showMsg(`⚠️ Atenție: Conform regulii LIFO, scoate mai întâi cele ${rem} discuri înghețate din dreapta (sau apasă Golește Stiva)!`, 'ice');
+                return;
+            }
+            targetIndex = null;
+            selectedPower = null;
+            showMsg('🔥 Selecția a fost dezghețată.', 'ok');
+            updateUI();
+        });
+
+        function popRingAnimated() {
+            if (stack.length === 0 || animatingRing) return;
+            hideReplaceTooltip();
+            const val = stack[stack.length - 1];
+            const topMesh = ringMeshes[ringMeshes.length - 1];
+
+            if (!topMesh) {
+                executePopLogic();
+                return;
+            }
+
+            animatingRing = {
+                mesh: topMesh,
+                val: val,
+                startX: topMesh.position.x,
+                targetX: 6.8,
+                startTime: performance.now(),
+                duration: 380
+            };
+        }
+
+        function executePopLogic() {
+            const val = stack.pop();
+            subTower.push(val);
+            animatingRing = null;
+
+            if (stack.length > 0) {
+                syncInputsWithStack();
+            } else {
+                document.getElementById('numLength').value = 1;
+                generateDigitInputs([0]);
+            }
+
+            if (targetIndex !== null) {
+                if (stack.length - 1 === targetIndex) {
+                    // Abia ACUM, după ce TOATE discurile blocate au fost scoase, se deblochează!
+                    const freedDigit = stack[targetIndex];
+                    targetIndex = null;
+                    showMsg(`✅ DEBLOCAT! Ai scos toate discurile înghețate! Acum cifra ${freedDigit} este liberă în capătul din dreapta!`, 'ok');
+                } else if (stack.length - 1 < targetIndex) {
+                    targetIndex = null;
+                    showMsg(`➡ Discul ${val} a fost scos de la capătul din dreapta.`, 'ok');
+                } else {
+                    const remaining = (stack.length - 1) - targetIndex;
+                    showMsg(`❄️ S-a scos ${val}. Blocajul RĂMÂNE ACTIV: mai sunt ${remaining} discuri înghețate de scos de la dreapta la stânga!`, 'ice');
+                }
+            } else {
+                showMsg(`➡ pop() spre dreapta: a ieșit cifra ${val}.`, 'ok');
+            }
+
+            updateUI();
+        }
+
+        function restoreFromSubTower(idx) {
+            if (animatingRing) return;
+            hideReplaceTooltip();
+            const val = subTower.splice(idx, 1)[0];
+            stack.push(val);
+            syncInputsWithStack();
+            showMsg(`⬅ push(${val}) adăugat înapoi în capătul din dreapta.`, 'ok');
+            updateUI();
+        }
+
+        function showMsg(text, type) {
+            msg.textContent = text;
+            msg.className = type === 'bad' ? 'bad' : (type === 'ice' ? 'ice' : '');
+        }
+
+        function switchLang(lang) {
+            currentView = lang;
+            document.getElementById('btnMath').className = `lang-btn ${lang === 'math' ? 'active' : ''}`;
+            document.getElementById('btnCpp').className = `lang-btn ${lang === 'cpp' ? 'active' : ''}`;
+            document.getElementById('btnPy').className = `lang-btn ${lang === 'python' ? 'active' : ''}`;
+            updatePipeWindow();
+        }
+
+        function updatePowersOfTen() {
+            powerGrid.innerHTML = '';
+            const n = stack.length;
+            if (n === 0) {
+                powerGrid.innerHTML = `<div style="color:#94a3b8; font-size:11px; grid-column: span 4;">Tija este goală. Încarcă un număr din casete sau din discurile 0..9!</div>`;
+                return;
+            }
+            for (let i = 0; i < n; i++) {
+                let power = n - 1 - i;
+                let digit = stack[i];
+                const isFrozen = (targetIndex !== null && i > targetIndex);
+                const isTarget = (targetIndex !== null && i === targetIndex);
+
+                let box = document.createElement('div');
+                box.className = 'power-box';
+                if (isFrozen) box.classList.add('frozen-blink');
+                if (isTarget) box.classList.add('target-blink');
+
+                let subText = isFrozen ? `❄️ Blocat (${digit})` : (isTarget ? `🎯 Țintă (${digit})` : `Cifră: ${digit}`);
+                box.innerHTML = `
+                    <div class="p-val">10<sup>${power}</sup></div>
+                    <div class="p-cif">${subText}</div>
+                `;
+                box.addEventListener('click', () => {
+                    handleDiskClick(i);
+                });
+                powerGrid.appendChild(box);
+            }
+        }
+
+        function buildTextbookVerticalSumHTML() {
+            const n = stack.length;
+            if (n === 0) return '';
+
+            let rowsHtml = '';
+            for (let i = 0; i < n; i++) {
+                const digit = stack[i];
+                const power = n - 1 - i;
+                const isSelectedRow = (targetIndex !== null && targetIndex === i) || (selectedPower !== null && selectedPower.power === power);
+                const isFrozenRow = (targetIndex !== null && i > targetIndex);
+                const shouldBlinkZeros = (targetIndex === null || isSelectedRow || isFrozenRow);
+
+                let zerosHtml = '';
+                for (let z = 0; z < power; z++) {
+                    if (shouldBlinkZeros && power > 0) {
+                        zerosHtml += `<span class="blink-zero">0</span>`;
+                    } else {
+                        zerosHtml += `0`;
+                    }
+                }
+
+                const digitColor = COLOR_PALETTE[digit % COLOR_PALETTE.length].hex;
+                const plusSign = (i === n - 1) ? '+' : '&nbsp;';
+                const powUnit = (BigInt(10) ** BigInt(power)).toString();
+                const powBlinkClass = (isSelectedRow || isFrozenRow) ? 'blink-pow' : '';
+
+                rowsHtml += `
+                    <div class="textbook-row ${isSelectedRow ? 'active-row' : ''}">
+                        <span class="textbook-plus">${plusSign}</span>
+                        <span class="textbook-digits">
+                            <span style="color:${digitColor};">${digit}</span>${zerosHtml}
+                        </span>
+                        <span class="textbook-pow-tag ${powBlinkClass}">
+                            = ${digit} × 10<sup>${power}</sup> (${powUnit})
+                        </span>
+                    </div>
+                `;
+            }
+
+            const totalStr = stack.join('');
+            return `
+                <div class="textbook-sum-wrapper">
+                    ${rowsHtml}
+                    <div class="textbook-line"></div>
+                    <div class="textbook-total">
+                        <span class="textbook-plus">=</span>
+                        <span class="textbook-digits">${totalStr}</span>
+                        <span class="textbook-pow-tag" style="background:transparent; border:none; color:#2dd4bf; font-weight:bold;">
+                            Suma totală
+                        </span>
+                    </div>
+                </div>
+            `;
+        }
+
+        function updatePipeWindow() {
+            const numStr = stack.length > 0 ? stack.join('') : '0';
+
+            if (currentView === 'cpp') {
+                pipeTitle.textContent = "stdout – stiva_orizontala.cpp";
+                let code = `#include <iostream>
+#include <stack>
+using namespace std;
+
+int main() {
+    long long numar = ${numStr}LL;
+    stack<int> stiva;
+`;
+                stack.forEach((v, i) => {
+                    let note = (targetIndex !== null && i > targetIndex) ? " // INGHETAT (blocat)" : "";
+                    code += `    stiva.push(${v});${note}
+`;
+                });
+                let activePower = (selectedPower !== null) ? selectedPower.power : (targetIndex !== null ? (stack.length - 1) - targetIndex : null);
+                if (activePower !== null) {
+                    code += `
+    // Algoritmul de extragere a cifrei de pe pozitia 10^${activePower}:
+`;
+                    code += `    long long temp = numar;
+`;
+                    code += `    for(int pas = 0; pas < ${activePower}; pas++) {
+`;
+                    code += `        stiva.pop();      // scoatem discul din dreapta
+`;
+                    code += `        temp = temp / 10; // eliminam ultima cifra
+`;
+                    code += `    }
+`;
+                    code += `    int cifra_tinta = temp % 10; // cifra extrasa: ${stack[stack.length - 1 - activePower]}
+`;
+                }
+                code += `    return 0;
+}`;
+                pipeContent.innerHTML = `<pre style="color:#38bdf8; font-family:Consolas, monospace;">${code.replace(/</g, '&lt;').replace(/>/g, '&gt;')}</pre>`;
+            } else if (currentView === 'python') {
+                pipeTitle.textContent = "stdout – stiva_orizontala.py";
+                let code = `# Stivă orizontală LIFO (de la stânga la dreapta)
+numar = ${numStr}
+stiva = [${stack.join(', ')}]
+`;
+                let activePower = (selectedPower !== null) ? selectedPower.power : (targetIndex !== null ? (stack.length - 1) - targetIndex : null);
+                if (activePower !== null) {
+                    code += `
+# Algoritmul de extragere a cifrei de pe poziția 10^${activePower}:
+temp = numar
+for pas in range(${activePower}):
+    stiva.pop()       # scoatem discul blocat din dreapta
+    temp = temp // 10 # împărțire întreagă la 10
+
+cifra_tinta = temp % 10  # rezultatul este ${stack[stack.length - 1 - activePower]}
+`;
+                }
+                pipeContent.innerHTML = `<pre style="color:#facc15; font-family:Consolas, monospace;">${code}</pre>`;
+            } else {
+                pipeTitle.textContent = "stdout – descompunere_manual_clasa_3.log";
+
+                if (stack.length === 0) {
+                    pipeContent.innerHTML = `
+                        <div class="math-card">
+                            <div class="math-title">📌 Tija este goală</div>
+                            <div style="color:#94a3b8; font-size:12px;">
+                                Încarcă un număr din casetele din dreapta (ex: <b>786</b>) sau adaugă cifre din paleta <b>0..9</b>, apoi trage sau fă clic pe un disc de pe tijă!
+                            </div>
+                        </div>
+                    `;
+                    return;
+                }
+
+                let detailHtml = "";
+                let algoHtml = "";
+                if (selectedPower !== null) {
+                    let p = selectedPower.power;
+                    let d = selectedPower.digit;
+                    let blockers = (targetIndex !== null) ? ((stack.length - 1) - targetIndex) : 0;
+                    let powVal = BigInt(10) ** BigInt(p);
+                    let numBig = BigInt(numStr);
+                    let divRes = numBig / powVal;
+
+                    detailHtml = `
+                    <div style="border-top:1px dashed #38bdf8; margin-top:8px; padding-top:8px; color:#bae6fd; font-size:11.5px; line-height:1.5;">
+                        🎯 <b>Disc selectat: cifra ${d}</b> (ordinul 10<sup>${p}</sup> = ${powVal}, adică <b>${BigInt(d) * powVal}</b>)<br>
+                        • Discuri blocate în dreapta (LIFO): <b>${blockers}</b>
+                    </div>`;
+
+                    // Construim pașii algoritmului de extragere a cifrelor (împărțiri repetate la 10) până la cifra selectată
+                    let temp = numBig;
+                    let stepsRows = "";
+                    for (let step = 0; step <= p; step++) {
+                        let rem = temp % 10n;
+                        let nextTemp = temp / 10n;
+                        let isTargetStep = (step === p);
+                        let rowBg = isTargetStep ? "background:rgba(245,158,11,0.22); border:1px solid #f59e0b; border-radius:6px; padding:3px 6px;" : "padding:2px 6px; opacity:0.88;";
+                        let tag = isTargetStep
+                            ? `<span style="color:#facc15; font-weight:bold;"> ⬅ CIFRA ȚINTĂ (${rem})!</span>`
+                            : `<span style="color:#94a3b8;"> (eliminăm cifra ${rem} din dreapta)</span>`;
+
+                        stepsRows += `
+                        <div style="${rowBg} margin-bottom:4px; font-family:Consolas, monospace; font-size:11.5px;">
+                            <span style="color:#38bdf8; font-weight:bold;">Pasul ${step + 1} (10<sup>${step}</sup>):</span>
+                            <code>c = ${temp} % 10 = <b style="color:#facc15;">${rem}</b></code>;
+                            <code>n = ${temp} / 10 = <b style="color:#a7f3d0;">${nextTemp}</b></code>
+                            ${tag}
+                        </div>`;
+                        temp = nextTemp;
+                    }
+
+                    algoHtml = `
+                    <div class="math-card" style="border-left-color:#f59e0b; margin-top:8px;">
+                        <div class="math-title" style="color:#fbbf24;">⚙️ Operațiile algoritmului de extragere a cifrei ${d} (de la dreapta la stânga):</div>
+                        <div style="font-size:11.5px; color:#e2e8f0; margin-bottom:6px; line-height:1.45;">
+                            <b>1. Metoda iterativă (împărțiri succesive la 10, exact ca scoaterea discurilor LIFO):</b>
+                        </div>
+                        ${stepsRows}
+                        <div style="border-top:1px dashed #475569; margin-top:6px; padding-top:6px; font-size:11.5px; color:#e2e8f0; line-height:1.5;">
+                            <b>2. Metoda directă (cu puterea lui 10<sup>${p}</sup> = ${powVal}):</b><br>
+                            • Trunchiere la dreapta: <code>${numStr} / 10<sup>${p}</sup> = ${numStr} / ${powVal} = <b style="color:#a7f3d0;">${divRes}</b></code><br>
+                            • Extragere ultima cifră: <code>${divRes} % 10 = <b style="color:#facc15;">${d}</b></code>
+                        </div>
+                    </div>`;
+                } else {
+                    detailHtml = `<div style="color:#94a3b8; font-size:11px; margin-top:6px;">💡 <i>Fă clic sau trage un disc de pe tijă pentru a vedea adunarea pe coloane și pașii algoritmului!</i></div>`;
+                }
+
+                const textbookHtml = buildTextbookVerticalSumHTML();
+
+                pipeContent.innerHTML = `
+                    <div class="math-card">
+                        <div class="math-title">📘 Adunare pozițională (ca în manualul de clasa a III-a):</div>
+                        ${textbookHtml}
+                        ${detailHtml}
+                    </div>
+                    ${algoHtml}
+                `;
+            }
+        }
+
+        document.getElementById('resetBtn').addEventListener('click', () => {
+            hideReplaceTooltip();
+            stack = [];
+            subTower = [];
+            animatingRing = null;
+            selectedPower = null;
+            targetIndex = null;
+            showMsg('↺ Stiva a fost golită. Tija nu are discuri până nu încarci numărul din casete!', 'ok');
+            updateUI();
+        });
+
+        let timeAcc = 0;
+        function animate(now) {
+            requestAnimationFrame(animate);
+            timeAcc += 0.015;
+
+            rodGroup.rotation.x = Math.sin(timeAcc * 0.5) * 0.14;
+            rodGroup.rotation.y = Math.cos(timeAcc * 0.35) * 0.08;
+
+            if (targetIndex !== null && !animatingRing) {
+                ringMeshes.forEach((m, idx) => {
+                    if (idx > targetIndex && m.material) {
+                        m.material.emissiveIntensity = 0.35 + Math.sin(timeAcc * 4.5) * 0.25;
+                    }
+                });
+            }
+
+            if (animatingRing) {
+                const elapsed = now - animatingRing.startTime;
+                const progress = Math.min(elapsed / animatingRing.duration, 1);
+                animatingRing.mesh.position.x = animatingRing.startX + (animatingRing.targetX - animatingRing.startX) * progress;
+                animatingRing.mesh.rotation.x += 0.14;
+
+                if (progress === 1) {
+                    executePopLogic();
+                }
+            }
+
+            renderer.render(scene, camera);
+        }
+
+        buildDigitPalette();
+        generateDigitInputs([7, 8, 6]);
+        updateUI();
+        requestAnimationFrame(animate);
+    </script>
+</body>
+</html>
